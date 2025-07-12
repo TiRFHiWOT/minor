@@ -704,6 +704,30 @@ export type Database = {
         }
         Relationships: []
       }
+      peak_daily_visitors_tracking: {
+        Row: {
+          created_at: string
+          id: string
+          peak_count: number
+          peak_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          peak_count?: number
+          peak_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          peak_count?: number
+          peak_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       peak_users_tracking: {
         Row: {
           created_at: string
@@ -1405,6 +1429,13 @@ export type Database = {
         Args: { p_session_id: string }
         Returns: string
       }
+      get_peak_daily_visitors: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          peak_count: number
+          peak_date: string
+        }[]
+      }
       get_peak_users: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -1563,6 +1594,10 @@ export type Database = {
       }
       sync_topic_reply_counts: {
         Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      update_peak_daily_visitors: {
+        Args: { p_count: number; p_date: string }
         Returns: undefined
       }
       update_peak_users: {

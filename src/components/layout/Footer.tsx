@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useEnhancedForumStats } from '@/hooks/useEnhancedForumStats';
 import { useForumSettings } from '@/hooks/useForumSettings';
 import { useVisitors24h } from '@/hooks/useVisitors24h';
-import { usePeakUsers } from '@/hooks/usePeakUsers';
+import { usePeakDailyVisitors } from '@/hooks/usePeakDailyVisitors';
 import { Facebook, Twitter, Instagram, Youtube, Users, Calendar } from 'lucide-react';
 
 const ContactFormModal = () => {
@@ -124,7 +124,7 @@ export const Footer = () => {
   const { data: stats } = useEnhancedForumStats();
   const { getSetting } = useForumSettings();
   const { data: visitors24h } = useVisitors24h();
-  const { data: peakData } = usePeakUsers();
+  const { data: peakData } = usePeakDailyVisitors();
 
   return (
     <footer className="bg-card border-t mt-auto">
