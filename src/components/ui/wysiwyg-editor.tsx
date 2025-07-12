@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { 
   Bold, 
@@ -13,7 +14,9 @@ import {
   Image,
   AlignLeft,
   AlignCenter,
-  AlignRight
+  AlignRight,
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 
 interface WysiwygEditorProps {
@@ -41,43 +44,94 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [editorContent, setEditorContent] = useState(value || '');
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [useFallback, setUseFallback] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // Initialize editor content only once with innerHTML to match how we read it
+  // Initialize editor with error handling and debugging
   useEffect(() => {
-    if (editorRef.current && !isInitialized && value && value !== editorRef.current.innerHTML) {
-      // Use innerHTML for both setting AND reading to avoid mismatch
-      editorRef.current.innerHTML = value;
-      setIsInitialized(true);
-    }
+    const initializeEditor = async () => {
+      try {
+        setIsLoading(true);
+        console.log('WysiwygEditor: Initializing editor...', { value, disabled, hideToolbar });
+        
+        // Check if contentEditable is supported
+        if (typeof document.execCommand !== 'function') {
+          console.warn('WysiwygEditor: execCommand not supported, falling back to textarea');
+          setUseFallback(true);
+          setErrorMessage('Rich text editing not supported in this browser');
+          return;
+        }
+
+        // Check if we're in a problematic environment
+        if (typeof window === 'undefined' || !window.getSelection) {
+          console.warn('WysiwygEditor: Window/Selection API not available');
+          setUseFallback(true);
+          setErrorMessage('Rich text editing not available');
+          return;
+        }
+
+        if (editorRef.current && !isInitialized) {
+          try {
+            // Test contentEditable functionality
+            editorRef.current.contentEditable = 'true';
+            editorRef.current.innerHTML = value || '';
+            
+            // Test if we can focus the editor
+            editorRef.current.focus();
+            editorRef.current.blur();
+            
+            setIsInitialized(true);
+            setHasError(false);
+            console.log('WysiwygEditor: Successfully initialized');
+          } catch (error) {
+            console.error('WysiwygEditor: Error initializing contentEditable:', error);
+            setHasError(true);
+            setUseFallback(true);
+            setErrorMessage(`Editor initialization failed: ${error.message}`);
+          }
+        }
+      } catch (error) {
+        console.error('WysiwygEditor: Unexpected error during initialization:', error);
+        setHasError(true);
+        setUseFallback(true);
+        setErrorMessage(`Unexpected error: ${error.message}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeEditor();
   }, [value, isInitialized]);
 
   const handleInput = () => {
-    if (editorRef.current) {
-      // Store cursor position before handling input
-      const selection = window.getSelection();
-      const range = selection?.getRangeAt(0);
-      const cursorOffset = range?.startOffset || 0;
-      console.log('Before handleInput - cursor position:', cursorOffset);
-      
-      const content = editorRef.current.innerHTML;
-      console.log('Editor input - raw content:', content);
-      
-      // Minimal cleaning - only remove truly empty elements
-      const cleanContent = content
-        .replace(/<p><\/p>/g, '') // Remove empty paragraphs
-        .replace(/<div><\/div>/g, ''); // Remove empty divs
-      
-      console.log('Editor input - cleaned content:', cleanContent);
-      
-      // Check if content actually changed before calling onChange
-      if (cleanContent !== editorContent) {
-        console.log('Content changed, calling onChange');
-        setEditorContent(cleanContent);
-        onChange(cleanContent);
-      } else {
-        console.log('Content unchanged, skipping onChange');
+    try {
+      if (editorRef.current) {
+        const content = editorRef.current.innerHTML;
+        
+        // Minimal cleaning - only remove truly empty elements
+        const cleanContent = content
+          .replace(/<p><\/p>/g, '') // Remove empty paragraphs
+          .replace(/<div><\/div>/g, ''); // Remove empty divs
+        
+        // Check if content actually changed before calling onChange
+        if (cleanContent !== editorContent) {
+          setEditorContent(cleanContent);
+          onChange(cleanContent);
+        }
       }
+    } catch (error) {
+      console.error('WysiwygEditor: Error in handleInput:', error);
+      setHasError(true);
+      setErrorMessage(`Input error: ${error.message}`);
     }
+  };
+
+  const handleFallbackChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    setEditorContent(newValue);
+    onChange(newValue);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -87,9 +141,25 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
   };
 
   const execCommand = (command: string, value?: string) => {
-    document.execCommand(command, false, value);
-    editorRef.current?.focus();
-    handleInput();
+    try {
+      if (useFallback) return; // Don't execute commands in fallback mode
+      
+      document.execCommand(command, false, value);
+      editorRef.current?.focus();
+      handleInput();
+    } catch (error) {
+      console.error('WysiwygEditor: Error executing command:', command, error);
+      setHasError(true);
+      setErrorMessage(`Command error: ${error.message}`);
+    }
+  };
+
+  const retryInitialization = () => {
+    setHasError(false);
+    setUseFallback(false);
+    setIsInitialized(false);
+    setErrorMessage('');
+    console.log('WysiwygEditor: Retrying initialization...');
   };
 
   const insertLink = () => {
@@ -153,10 +223,85 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
     { icon: AlignRight, command: 'justifyRight', title: 'Align Right' },
   ];
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className={cn("w-full max-w-full border border-input rounded-md bg-background flex items-center justify-center", className)} style={{ height }}>
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <RefreshCw className="h-4 w-4 animate-spin" />
+          <span>Loading editor...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Show fallback textarea if needed
+  if (useFallback) {
+    return (
+      <div className={cn("w-full max-w-full", className)}>
+        {hasError && (
+          <div className="mb-2 p-2 bg-destructive/10 border border-destructive/20 rounded-md">
+            <div className="flex items-center gap-2 text-destructive text-sm">
+              <AlertTriangle className="h-4 w-4" />
+              <span>{errorMessage}</span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={retryInitialization}
+                className="ml-auto h-6 px-2 text-xs"
+              >
+                <RefreshCw className="h-3 w-3 mr-1" />
+                Retry
+              </Button>
+            </div>
+          </div>
+        )}
+        <Textarea
+          value={editorContent}
+          onChange={handleFallbackChange}
+          placeholder={placeholder}
+          disabled={disabled}
+          className="min-h-[200px] resize-vertical"
+          style={{ height: height - 40 }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={cn("w-full max-w-full border border-input rounded-md bg-background overflow-hidden", className)}>
+      {/* Error banner */}
+      {hasError && (
+        <div className="bg-destructive/10 border-b border-destructive/20 p-2">
+          <div className="flex items-center gap-2 text-destructive text-sm">
+            <AlertTriangle className="h-4 w-4" />
+            <span>{errorMessage}</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={retryInitialization}
+              className="ml-auto h-6 px-2 text-xs"
+            >
+              <RefreshCw className="h-3 w-3 mr-1" />
+              Retry
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setUseFallback(true)}
+              className="h-6 px-2 text-xs"
+            >
+              Use Simple Editor
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Sticky Toolbar */}
-      {!hideToolbar && (
+      {!hideToolbar && !useFallback && (
         <div className="sticky top-0 z-10 flex items-center gap-1 p-2 border-b border-input bg-muted/50 overflow-x-auto scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {toolbarButtons.map((button, index) => (
             <Button
@@ -167,13 +312,13 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
               className="h-8 w-8 p-0 flex-shrink-0"
               onClick={() => button.value ? execCommand(button.command, button.value) : formatText(button.command)}
               title={button.title}
-              disabled={disabled}
+              disabled={disabled || useFallback}
             >
               <button.icon className="h-4 w-4" />
             </Button>
           ))}
           
-          {allowImages && (
+          {allowImages && !useFallback && (
             <>
               <div className="w-px h-6 bg-border mx-1 flex-shrink-0" />
               <Button
@@ -183,7 +328,7 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
                 className="h-8 px-2 flex-shrink-0"
                 onClick={insertLink}
                 title="Insert Link"
-                disabled={disabled}
+                disabled={disabled || useFallback}
               >
                 <Link className="h-4 w-4 mr-1" />
                 <span className="text-xs hidden sm:inline">Link</span>
@@ -195,7 +340,7 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
                 className="h-8 px-2 flex-shrink-0"
                 onClick={insertImage}
                 title="Insert Image"
-                disabled={disabled}
+                disabled={disabled || useFallback}
               >
                 <Image className="h-4 w-4 mr-1" />
                 <span className="text-xs hidden sm:inline">Image</span>
@@ -215,36 +360,45 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
       />
 
       {/* Scrollable Editor Container */}
-      <div
-        className="relative"
-        style={{ 
-          height: height - (hideToolbar ? 0 : 48),
-          overflowY: 'auto'
-        }}
-      >
+      {!useFallback && (
         <div
-          ref={editorRef}
-          contentEditable={!disabled}
-          className={cn(
-            "w-full max-w-full p-3 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 min-h-full prose prose-sm break-words",
-            disabled && "opacity-50 cursor-not-allowed"
-          )}
+          className="relative"
           style={{ 
-            maxWidth: '100%',
-            wordWrap: 'break-word',
-            overflowWrap: 'break-word',
-            hyphens: 'auto',
-            direction: 'ltr',
-            textAlign: 'left',
-            unicodeBidi: 'plaintext'
+            height: height - (hideToolbar ? 0 : 48) - (hasError ? 40 : 0),
+            overflowY: 'auto'
           }}
-          onInput={handleInput}
-          onKeyDown={handleKeyDown}
-          data-placeholder={placeholder}
-          dir="ltr"
-          suppressContentEditableWarning={true}
-        />
-      </div>
+        >
+          <div
+            ref={editorRef}
+            contentEditable={!disabled && !useFallback}
+            className={cn(
+              "w-full max-w-full p-3 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 min-h-full prose prose-sm break-words",
+              disabled && "opacity-50 cursor-not-allowed",
+              useFallback && "hidden"
+            )}
+            style={{ 
+              maxWidth: '100%',
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word',
+              hyphens: 'auto',
+              direction: 'ltr',
+              textAlign: 'left',
+              unicodeBidi: 'plaintext'
+            }}
+            onInput={handleInput}
+            onKeyDown={handleKeyDown}
+            data-placeholder={placeholder}
+            dir="ltr"
+            suppressContentEditableWarning={true}
+            onError={(e) => {
+              console.error('WysiwygEditor: ContentEditable error:', e);
+              setHasError(true);
+              setUseFallback(true);
+              setErrorMessage('Editor encountered an error');
+            }}
+          />
+        </div>
+      )}
 
       <style>{`
         /* Hide scrollbars on toolbar */
