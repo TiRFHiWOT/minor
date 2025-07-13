@@ -1175,6 +1175,8 @@ export type Database = {
           content: string | null
           created_at: string | null
           id: string
+          ip_address: unknown | null
+          is_anonymous: boolean | null
           is_locked: boolean | null
           is_pinned: boolean | null
           last_reply_at: string | null
@@ -1198,6 +1200,8 @@ export type Database = {
           content?: string | null
           created_at?: string | null
           id?: string
+          ip_address?: unknown | null
+          is_anonymous?: boolean | null
           is_locked?: boolean | null
           is_pinned?: boolean | null
           last_reply_at?: string | null
@@ -1221,6 +1225,8 @@ export type Database = {
           content?: string | null
           created_at?: string | null
           id?: string
+          ip_address?: unknown | null
+          is_anonymous?: boolean | null
           is_locked?: boolean | null
           is_pinned?: boolean | null
           last_reply_at?: string | null

@@ -20,6 +20,10 @@ export const useCreateTopic = () => {
     mutationFn: async (data: CreateTopicData) => {
       console.log('Creating topic:', data);
 
+      // Get user's IP address for tracking
+      const userIP = await getUserIPWithFallback();
+      console.log('DEBUG TOPIC: Got user IP:', userIP);
+
       // Get category info including moderation requirements
       const { data: category, error: categoryError } = await supabase
         .from('categories')
@@ -49,7 +53,9 @@ export const useCreateTopic = () => {
         view_count: 0,
         reply_count: 0,
         last_reply_at: new Date().toISOString(),
-        moderation_status: category.requires_moderation ? 'pending' : 'approved'
+        moderation_status: category.requires_moderation ? 'pending' : 'approved',
+        ip_address: userIP,
+        is_anonymous: !user
       };
 
       if (user) {
@@ -84,6 +90,29 @@ export const useCreateTopic = () => {
       }
 
       console.log('Topic created successfully:', topic);
+
+      // Log IP activity for topic creation
+      if (userIP) {
+        try {
+          const sessionId = sessionManager.getSessionId();
+          await supabase.rpc('log_ip_activity', {
+            p_ip_address: userIP,
+            p_session_id: sessionId,
+            p_activity_type: 'topic_creation',
+            p_content_id: topic.id,
+            p_content_type: 'topic',
+            p_action_data: {
+              title: data.title,
+              category_id: data.category_id,
+              author_type: user ? 'authenticated' : 'anonymous'
+            }
+          });
+        } catch (logError) {
+          console.error('Failed to log IP activity for topic creation:', logError);
+          // Don't throw - topic creation was successful
+        }
+      }
+
       return topic;
     },
     onSuccess: (topic) => {
