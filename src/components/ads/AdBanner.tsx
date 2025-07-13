@@ -32,12 +32,12 @@ export const AdBanner: React.FC<AdBannerProps> = ({ className = '' }) => {
 
   return (
     <div className={`w-full my-6 ${className}`}>
-      <div className="flex justify-center">
-        <div className="max-w-[728px] w-full">
+      <div className="flex justify-center px-4">
+        <div className="w-full min-w-[320px] max-w-[728px]">
           <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
           <ins 
             className="adsbygoogle"
-            style={{ display: 'block' }}
+            style={{ display: 'block', width: '100%', minHeight: '90px' }}
             data-ad-client="ca-pub-5447109336224364"
             data-ad-slot="2511588978"
             data-ad-format="auto"
