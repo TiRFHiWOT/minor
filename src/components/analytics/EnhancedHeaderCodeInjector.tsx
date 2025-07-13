@@ -15,7 +15,15 @@ export const EnhancedHeaderCodeInjector = () => {
   
   // Get both legacy header code and new header scripts
   const legacyHeaderCode = getSetting('header_code', '');
-  const headerScripts: HeaderScript[] = JSON.parse(getSetting('header_scripts', '[]'));
+  const headerScriptsRaw = getSetting('header_scripts', '[]');
+  
+  let headerScripts: HeaderScript[] = [];
+  try {
+    headerScripts = headerScriptsRaw && headerScriptsRaw !== '' ? JSON.parse(headerScriptsRaw) : [];
+  } catch (error) {
+    console.error('Error parsing header scripts:', error);
+    headerScripts = [];
+  }
   
   // Check if advertising is enabled
   const advertisingEnabled = getSetting('advertising_enabled', 'true') === 'true';
