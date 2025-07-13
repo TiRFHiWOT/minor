@@ -1,41 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { BarChart3, TrendingUp, Eye, MousePointer } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { BarChart3, TrendingUp, Eye, MousePointer, Calendar } from 'lucide-react';
+import { useAdAnalytics } from '@/hooks/useAdAnalytics';
 
 export const AdAnalytics = () => {
-  // This is a placeholder component for future analytics implementation
-  // In a real implementation, you would fetch data from ad_analytics table
+  const [dateRange, setDateRange] = useState<'today' | 'week' | 'month'>('month');
+  const { summary, adSpacePerformance, isLoading } = useAdAnalytics(dateRange);
 
-  const mockData = [
-    {
-      adSpace: 'Header Banner',
-      impressions: 12543,
-      clicks: 234,
-      ctr: 1.87,
-      revenue: 45.67,
-    },
-    {
-      adSpace: 'Sidebar Ad',
-      impressions: 8932,
-      clicks: 156,
-      ctr: 1.75,
-      revenue: 31.22,
-    },
-    {
-      adSpace: 'Between Posts',
-      impressions: 15678,
-      clicks: 298,
-      ctr: 1.90,
-      revenue: 62.34,
-    },
-  ];
+  const formatGrowth = (growth: number) => {
+    const sign = growth >= 0 ? '+' : '';
+    return `${sign}${growth.toFixed(1)}%`;
+  };
+
+  const getGrowthColor = (growth: number) => {
+    if (growth > 0) return 'text-green-600';
+    if (growth < 0) return 'text-red-600';
+    return 'text-muted-foreground';
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <BarChart3 className="h-8 w-8 mx-auto mb-4 animate-pulse" />
+            <p>Loading analytics...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">Ad Analytics</h2>
-        <p className="text-muted-foreground">Track performance of your advertising placements</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Ad Analytics</h2>
+          <p className="text-muted-foreground">Track performance of your advertising placements</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4" />
+          <Select value={dateRange} onValueChange={(value: 'today' | 'week' | 'month') => setDateRange(value)}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="today">Today</SelectItem>
+              <SelectItem value="week">Last 7 days</SelectItem>
+              <SelectItem value="month">Last 30 days</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -46,9 +63,9 @@ export const AdAnalytics = () => {
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">37,153</div>
-            <p className="text-xs text-muted-foreground">
-              +12.5% from last month
+            <div className="text-2xl font-bold">{summary.total_impressions.toLocaleString()}</div>
+            <p className={`text-xs ${getGrowthColor(summary.impressions_growth)}`}>
+              {formatGrowth(summary.impressions_growth)} from previous period
             </p>
           </CardContent>
         </Card>
@@ -59,9 +76,9 @@ export const AdAnalytics = () => {
             <MousePointer className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">688</div>
-            <p className="text-xs text-muted-foreground">
-              +8.2% from last month
+            <div className="text-2xl font-bold">{summary.total_clicks.toLocaleString()}</div>
+            <p className={`text-xs ${getGrowthColor(summary.clicks_growth)}`}>
+              {formatGrowth(summary.clicks_growth)} from previous period
             </p>
           </CardContent>
         </Card>
@@ -72,9 +89,9 @@ export const AdAnalytics = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1.85%</div>
-            <p className="text-xs text-muted-foreground">
-              +0.3% from last month
+            <div className="text-2xl font-bold">{summary.average_ctr.toFixed(2)}%</div>
+            <p className={`text-xs ${getGrowthColor(summary.ctr_growth)}`}>
+              {formatGrowth(summary.ctr_growth)} from previous period
             </p>
           </CardContent>
         </Card>
@@ -85,9 +102,9 @@ export const AdAnalytics = () => {
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$139.23</div>
-            <p className="text-xs text-muted-foreground">
-              +15.8% from last month
+            <div className="text-2xl font-bold">${summary.total_revenue.toFixed(2)}</div>
+            <p className={`text-xs ${getGrowthColor(summary.revenue_growth)}`}>
+              {formatGrowth(summary.revenue_growth)} from previous period
             </p>
           </CardContent>
         </Card>
@@ -100,45 +117,60 @@ export const AdAnalytics = () => {
           <CardDescription>Performance metrics for each advertising placement</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {mockData.map((item, index) => (
-              <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <h4 className="font-medium">{item.adSpace}</h4>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Eye className="h-3 w-3" />
-                      {item.impressions.toLocaleString()} impressions
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MousePointer className="h-3 w-3" />
-                      {item.clicks} clicks
-                    </span>
+          {adSpacePerformance.length > 0 ? (
+            <div className="space-y-4">
+              {adSpacePerformance.map((item) => (
+                <div key={item.ad_space_id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div>
+                    <h4 className="font-medium">{item.ad_space_name}</h4>
+                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Eye className="h-3 w-3" />
+                        {item.impressions.toLocaleString()} impressions
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MousePointer className="h-3 w-3" />
+                        {item.clicks} clicks
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant="secondary">{item.ctr.toFixed(2)}% CTR</Badge>
+                    </div>
+                    <div className="font-medium">${item.revenue.toFixed(2)}</div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="secondary">{item.ctr}% CTR</Badge>
-                  </div>
-                  <div className="font-medium">${item.revenue}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground">No analytics data available</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Data will appear here once your ad spaces start receiving traffic.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Placeholder for Charts */}
+      {/* Performance Overview */}
       <Card>
         <CardHeader>
-          <CardTitle>Performance Over Time</CardTitle>
-          <CardDescription>Coming soon: Interactive charts and detailed analytics</CardDescription>
+          <CardTitle>Performance Overview</CardTitle>
+          <CardDescription>
+            {adSpacePerformance.length > 0 
+              ? `Analytics for ${adSpacePerformance.length} ad space${adSpacePerformance.length > 1 ? 's' : ''}`
+              : "Create ad spaces and start collecting analytics data"
+            }
+          </CardDescription>
         </CardHeader>
         <CardContent className="h-64 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
-            <BarChart3 className="h-12 w-12 mx-auto mb-4" />
-            <p>Analytics charts will be implemented here</p>
-            <p className="text-sm">Track impressions, clicks, and revenue over time</p>
+            <TrendingUp className="h-12 w-12 mx-auto mb-4" />
+            <p>Detailed charts and analytics coming soon</p>
+            <p className="text-sm">Advanced reporting features will be available here</p>
           </div>
         </CardContent>
       </Card>

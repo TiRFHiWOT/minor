@@ -23,25 +23,39 @@ export const useAdSpaces = () => {
   const { data: adSpaces, isLoading } = useQuery({
     queryKey: ['adSpaces'],
     queryFn: async () => {
+      console.log('🔍 Fetching ad spaces...');
       const { data, error } = await supabase
         .from('ad_spaces')
         .select('*')
         .order('display_order', { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error fetching ad spaces:', error);
+        throw error;
+      }
+      
+      console.log('✅ Fetched ad spaces:', data);
       return data as AdSpace[];
     },
   });
 
   const createAdSpace = useMutation({
     mutationFn: async (adSpace: Omit<AdSpace, 'id' | 'created_at' | 'updated_at' | 'created_by'>) => {
+      console.log('💾 Creating ad space with data:', adSpace);
+      
       const { data, error } = await supabase
         .from('ad_spaces')
         .insert([adSpace])
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Database error creating ad space:', error);
+        console.error('Error details:', { message: error.message, hint: error.hint, details: error.details });
+        throw error;
+      }
+      
+      console.log('✅ Ad space created in database:', data);
       return data;
     },
     onSuccess: () => {

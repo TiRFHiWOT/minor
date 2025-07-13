@@ -81,14 +81,25 @@ export const AdSpaceManager = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (editingAdSpace) {
-      await updateAdSpace.mutateAsync({ id: editingAdSpace.id, ...formData });
-    } else {
-      await createAdSpace.mutateAsync(formData);
-    }
+    console.log('🚀 Attempting to submit ad space:', formData);
     
-    setIsDialogOpen(false);
-    resetForm();
+    try {
+      if (editingAdSpace) {
+        console.log('📝 Updating existing ad space:', editingAdSpace.id);
+        await updateAdSpace.mutateAsync({ id: editingAdSpace.id, ...formData });
+        console.log('✅ Ad space updated successfully');
+      } else {
+        console.log('➕ Creating new ad space');
+        const result = await createAdSpace.mutateAsync(formData);
+        console.log('✅ Ad space created successfully:', result);
+      }
+      
+      setIsDialogOpen(false);
+      resetForm();
+    } catch (error) {
+      console.error('❌ Failed to submit ad space:', error);
+      // Error is already handled by the mutation's onError callback
+    }
   };
 
   const handleDelete = async (id: string) => {
