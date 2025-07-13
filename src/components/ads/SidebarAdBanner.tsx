@@ -38,7 +38,7 @@ export const SidebarAdBanner: React.FC<SidebarAdBannerProps> = ({ className = ''
           className="adsbygoogle"
           style={{ display: 'block', width: '100%', minHeight: '250px' }}
           data-ad-client="ca-pub-5447109336224364"
-          data-ad-slot="2511588978"
+          data-ad-slot="4012372906"
           data-ad-format="auto"
           data-full-width-responsive="true"
         ></ins>
