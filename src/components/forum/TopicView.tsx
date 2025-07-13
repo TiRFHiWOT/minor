@@ -18,6 +18,7 @@ import { ReportModal } from './ReportModal';
 import { PostComponent } from './PostComponent';
 import { InlineReplyForm } from './InlineReplyForm';
 import { AdminControls } from './AdminControls';
+import { AdBanner } from '@/components/ads/AdBanner';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -563,14 +564,19 @@ export const TopicView = () => {
           </div>
         ) : posts && posts.length > 0 ? (
           <div className="space-y-1">
-            {organizeReplies(posts).map((reply) => (
-              <PostComponent
-                key={reply.id}
-                post={reply}
-                topicId={topic.id || ''}
-                depth={0}
-                onReport={handleReport}
-              />
+            {organizeReplies(posts).map((reply, index) => (
+              <React.Fragment key={reply.id}>
+                <PostComponent
+                  post={reply}
+                  topicId={topic.id || ''}
+                  depth={0}
+                  onReport={handleReport}
+                />
+                {/* Insert ad banner every 4 comments (desktop only) */}
+                {(index + 1) % 4 === 0 && index < posts.length - 1 && (
+                  <AdBanner />
+                )}
+              </React.Fragment>
             ))}
           </div>
         ) : (
