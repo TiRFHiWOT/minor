@@ -159,46 +159,62 @@ export const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-medium">Follow Us</h4>
             <div className="flex space-x-3">
-              {getSetting('social_facebook', '') && (
-                <a
-                  href={getSetting('social_facebook', '')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Facebook className="h-5 w-5" />
-                </a>
-              )}
-              {getSetting('social_twitter', '') && (
-                <a
-                  href={getSetting('social_twitter', '')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Twitter className="h-5 w-5" />
-                </a>
-              )}
-              {getSetting('social_instagram', '') && (
-                <a
-                  href={getSetting('social_instagram', '')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Instagram className="h-5 w-5" />
-                </a>
-              )}
-              {getSetting('social_youtube', '') && (
-                <a
-                  href={getSetting('social_youtube', '')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Youtube className="h-5 w-5" />
-                </a>
-              )}
+              {(() => {
+                const facebookUrl = getSetting('social_facebook', '');
+                const cleanUrl = typeof facebookUrl === 'string' ? facebookUrl.replace(/^"(.*)"$/, '$1') : '';
+                return cleanUrl && cleanUrl !== '' && (
+                  <a
+                    href={cleanUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                );
+              })()}
+              {(() => {
+                const twitterUrl = getSetting('social_twitter', '');
+                const cleanUrl = typeof twitterUrl === 'string' ? twitterUrl.replace(/^"(.*)"$/, '$1') : '';
+                return cleanUrl && cleanUrl !== '' && (
+                  <a
+                    href={cleanUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Twitter className="h-5 w-5" />
+                  </a>
+                );
+              })()}
+              {(() => {
+                const instagramUrl = getSetting('social_instagram', '');
+                const cleanUrl = typeof instagramUrl === 'string' ? instagramUrl.replace(/^"(.*)"$/, '$1') : '';
+                return cleanUrl && cleanUrl !== '' && (
+                  <a
+                    href={cleanUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                );
+              })()}
+              {(() => {
+                const youtubeUrl = getSetting('social_youtube', '');
+                const cleanUrl = typeof youtubeUrl === 'string' ? youtubeUrl.replace(/^"(.*)"$/, '$1') : '';
+                return cleanUrl && cleanUrl !== '' && (
+                  <a
+                    href={cleanUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Youtube className="h-5 w-5" />
+                  </a>
+                );
+              })()}
             </div>
           </div>
 
