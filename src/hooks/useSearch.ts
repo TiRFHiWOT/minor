@@ -44,7 +44,8 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
             view_count,
             author_id,
             categories (name, color, slug)
-          `);
+          `)
+          .eq('moderation_status', 'approved');
 
         // For multiple words, get broader results and filter client-side
         const searchConditions = searchWords.map(word => 
@@ -129,6 +130,7 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
             created_at,
             author_id
           `)
+          .eq('moderation_status', 'approved')
           .or(searchConditions)
           .order('created_at', { ascending: false })
           .limit(200); // Increased limit for client-side filtering
