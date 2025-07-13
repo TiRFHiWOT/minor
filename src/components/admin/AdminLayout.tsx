@@ -12,7 +12,8 @@ import {
   Home,
   Flag,
   Search,
-  AlertTriangle
+  AlertTriangle,
+  DollarSign
 } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -38,6 +39,7 @@ export const AdminLayout = () => {
     { path: '/admin/content', label: 'Content', icon: MessageSquare },
     { path: '/admin/moderation', label: 'Moderation', icon: Flag },
     { path: '/admin/spam', label: 'Spam Management', icon: AlertTriangle },
+    { path: '/admin/advertising', label: 'Advertising', icon: DollarSign },
     { path: '/admin/seo', label: 'SEO', icon: Search },
     { path: '/admin/settings', label: 'Settings', icon: Settings },
   ];

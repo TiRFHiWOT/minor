@@ -34,11 +34,12 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminContent from "./pages/admin/AdminContent";
 import AdminModeration from "./pages/admin/AdminModeration";
 import AdminSpam from "./pages/admin/AdminSpam";
-import AdminSettings from "./pages/admin/AdminSettings";
 import AdminSEO from "./pages/admin/AdminSEO";
+import AdminAdvertising from "./pages/admin/AdminAdvertising";
 
 import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
 import { HeaderCodeInjector } from "./components/analytics/HeaderCodeInjector";
+import { EnhancedHeaderCodeInjector } from "./components/analytics/EnhancedHeaderCodeInjector";
 import { CookieConsent } from "./components/cookies/CookieConsent";
 import { CookieDebugPanel } from "./components/cookies/CookieDebugPanel";
 import { MaintenanceWrapper } from "./components/MaintenanceWrapper";
@@ -58,7 +59,7 @@ const App = () => (
         <AuthProvider>
           <OnlineUsersProvider>
             <StickyBanner />
-            <HeaderCodeInjector />
+            <EnhancedHeaderCodeInjector />
             <CookieConsent />
             <Toaster />
             <Sonner />
@@ -91,6 +92,7 @@ const App = () => (
                     <Route path="content" element={<AdminContent />} />
                     <Route path="moderation" element={<AdminModeration />} />
                     <Route path="spam" element={<AdminSpam />} />
+                    <Route path="advertising" element={<AdminAdvertising />} />
                     <Route path="seo" element={<AdminSEO />} />
                     <Route path="settings" element={<AdminSettings />} />
                   </Route>
