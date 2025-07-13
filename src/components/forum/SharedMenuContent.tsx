@@ -46,6 +46,16 @@ export const SharedMenuContent = ({ onNavigate }: SharedMenuContentProps) => {
         </div>
       </div>
 
+      {/* Community Links */}
+      <div className="border-t pt-4">
+        <h3 className="text-sm font-medium text-muted-foreground mb-3">Community</h3>
+        <div className="space-y-2">
+          <Button variant="ghost" className="w-full justify-start" asChild>
+            <Link to="/rules" onClick={onNavigate}>Forum Rules</Link>
+          </Button>
+        </div>
+      </div>
+
       {/* User Actions */}
       <div className="border-t pt-4">
         {user ? (

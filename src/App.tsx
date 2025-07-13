@@ -22,6 +22,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import ForumRules from "./pages/ForumRules";
 
 import Blog from "./pages/Blog";
 import Topics from "./pages/Topics";
@@ -113,6 +114,7 @@ const App = () => (
                     <Route path="settings" element={<Settings />} />
                     <Route path="terms" element={<Terms />} />
                     <Route path="privacy" element={<Privacy />} />
+                    <Route path="rules" element={<ForumRules />} />
                     <Route path="blog" element={<Blog />} />
                   </Route>
                   

@@ -142,6 +142,9 @@ export const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-medium">Quick Links</h4>
             <div className="flex flex-col space-y-2 text-sm">
+              <Link to="/rules" className="hover:text-primary transition-colors">
+                Forum Rules
+              </Link>
               <Link to="/terms" className="hover:text-primary transition-colors">
                 Terms & Conditions
               </Link>
