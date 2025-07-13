@@ -127,8 +127,25 @@ export const useForumSettings = () => {
   });
 
   const getSetting = (key: string, defaultValue: any = '') => {
-    const value = settings?.[key]?.value ?? defaultValue;
-    console.log('getSetting called for key:', key, 'value:', value, 'defaultValue:', defaultValue);
+    if (!settings) {
+      console.log('getSetting called but settings not loaded yet, returning default for key:', key);
+      return defaultValue;
+    }
+    
+    const setting = settings[key];
+    if (!setting) {
+      console.log('getSetting: No setting found for key:', key, 'returning default:', defaultValue);
+      return defaultValue;
+    }
+    
+    const value = setting.value;
+    console.log('getSetting called for key:', key, 'value:', value, 'type:', typeof value, 'defaultValue:', defaultValue);
+    
+    // Handle null/undefined values
+    if (value === null || value === undefined) {
+      return defaultValue;
+    }
+    
     return value;
   };
 

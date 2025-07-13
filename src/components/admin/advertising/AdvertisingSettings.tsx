@@ -127,8 +127,8 @@ export const AdvertisingSettings = () => {
               <Label htmlFor="ad_blocker_message">Ad Blocker Message</Label>
               <Textarea
                 id="ad_blocker_message"
-                value={JSON.parse(getSetting('ad_blocker_message', '"Please consider disabling your ad blocker to support our site."'))}
-                onChange={(e) => handleSettingChange('ad_blocker_message', JSON.stringify(e.target.value), 'string')}
+                value={getSetting('ad_blocker_message', 'Please consider disabling your ad blocker to support our site.')}
+                onChange={(e) => handleSettingChange('ad_blocker_message', e.target.value, 'string')}
                 placeholder="Message to show when ad blocker is detected"
                 rows={3}
               />

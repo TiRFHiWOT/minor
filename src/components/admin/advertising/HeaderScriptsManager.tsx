@@ -29,8 +29,33 @@ export const HeaderScriptsManager = () => {
     is_active: true,
   });
 
-  // Get current header scripts from settings
-  const headerScripts: HeaderScript[] = JSON.parse(getSetting('header_scripts', '[]'));
+  // Get current header scripts from settings with safe parsing
+  const getHeaderScripts = (): HeaderScript[] => {
+    try {
+      const rawSetting = getSetting('header_scripts', '[]');
+      
+      // If it's already an array (parsed), return it
+      if (Array.isArray(rawSetting)) {
+        return rawSetting;
+      }
+      
+      // If it's a string, try to parse it
+      if (typeof rawSetting === 'string') {
+        if (rawSetting === '' || rawSetting === 'null' || rawSetting === 'undefined') {
+          return [];
+        }
+        return JSON.parse(rawSetting);
+      }
+      
+      // Fallback to empty array
+      return [];
+    } catch (error) {
+      console.error('Error parsing header scripts:', error);
+      return [];
+    }
+  };
+  
+  const headerScripts: HeaderScript[] = getHeaderScripts();
 
   const resetForm = () => {
     setFormData({
