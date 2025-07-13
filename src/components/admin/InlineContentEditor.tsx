@@ -27,7 +27,10 @@ export const InlineContentEditor: React.FC<InlineContentEditorProps> = ({
   const content = getSetting(settingKey, defaultContent);
 
   const handleEdit = () => {
-    setEditContent(content);
+    // Get the current content from database or fallback to default
+    const currentContent = content || defaultContent;
+    console.log('Loading content for editing:', { settingKey, currentContent, length: currentContent.length });
+    setEditContent(currentContent);
     setIsEditing(true);
   };
 
