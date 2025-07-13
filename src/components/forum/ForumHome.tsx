@@ -77,51 +77,79 @@ export const ForumHome = () => {
         </p>
         
         {/* Social Media Links */}
-        {(getSetting('social_facebook', '') || getSetting('social_twitter', '') || getSetting('social_instagram', '') || getSetting('social_youtube', '')) && (
-          <div className="flex items-center gap-3 mt-3">
-            <span className="text-sm text-muted-foreground">Follow us:</span>
-            {getSetting('social_facebook', '') && (
-              <a
-                href={getSetting('social_facebook', '')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-            )}
-            {getSetting('social_twitter', '') && (
-              <a
-                href={getSetting('social_twitter', '')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
-            )}
-            {getSetting('social_instagram', '') && (
-              <a
-                href={getSetting('social_instagram', '')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-            )}
-            {getSetting('social_youtube', '') && (
-              <a
-                href={getSetting('social_youtube', '')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Youtube className="h-5 w-5" />
-              </a>
-            )}
-          </div>
-        )}
+        {(() => {
+          // Clean URLs by removing JSON encoding quotes
+          const cleanUrl = (url: string) => {
+            if (!url || typeof url !== 'string') return '';
+            return url.replace(/^"(.*)"$/, '$1').trim();
+          };
+
+          const facebookUrl = cleanUrl(getSetting('social_facebook', ''));
+          const twitterUrl = cleanUrl(getSetting('social_twitter', ''));
+          const instagramUrl = cleanUrl(getSetting('social_instagram', ''));
+          const youtubeUrl = cleanUrl(getSetting('social_youtube', ''));
+
+          // Validate URLs start with http/https
+          const isValidUrl = (url: string) => {
+            return url && (url.startsWith('http://') || url.startsWith('https://'));
+          };
+
+          const validFacebook = isValidUrl(facebookUrl);
+          const validTwitter = isValidUrl(twitterUrl);
+          const validInstagram = isValidUrl(instagramUrl);
+          const validYoutube = isValidUrl(youtubeUrl);
+
+          // Only show if at least one valid social link exists
+          const hasValidSocialLinks = validFacebook || validTwitter || validInstagram || validYoutube;
+
+          if (!hasValidSocialLinks) return null;
+
+          return (
+            <div className="flex items-center gap-3 mt-3">
+              <span className="text-sm text-muted-foreground">Follow us:</span>
+              {validFacebook && (
+                <a
+                  href={facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+              )}
+              {validTwitter && (
+                <a
+                  href={twitterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Twitter className="h-5 w-5" />
+                </a>
+              )}
+              {validInstagram && (
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+              )}
+              {validYoutube && (
+                <a
+                  href={youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Youtube className="h-5 w-5" />
+                </a>
+              )}
+            </div>
+          );
+        })()}
       </div>
 
 
