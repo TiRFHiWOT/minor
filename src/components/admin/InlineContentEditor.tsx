@@ -29,6 +29,8 @@ export const InlineContentEditor: React.FC<InlineContentEditorProps> = ({
   const cleanHtmlForEditor = (htmlContent: string) => {
     if (!htmlContent) return '';
     
+    console.log('🧹 Cleaning HTML for editor. Original length:', htmlContent.length);
+    
     // Remove Tiptap editor metadata that can interfere with editing
     let cleaned = htmlContent
       .replace(/\s*data-start="[^"]*"/g, '')
@@ -37,18 +39,27 @@ export const InlineContentEditor: React.FC<InlineContentEditorProps> = ({
       .replace(/\s*contenteditable="[^"]*"/g, '')
       .trim();
     
+    console.log('✨ Cleaned HTML length:', cleaned.length);
+    console.log('🔍 Cleaned content preview:', cleaned.substring(0, 300) + '...');
+    
     return cleaned;
   };
 
   const handleEdit = () => {
+    console.log('🎯 handleEdit called for settingKey:', settingKey);
+    console.log('📊 Raw content from getSetting:', content ? 'Content exists' : 'No content');
+    console.log('📏 Raw content length:', content?.length || 0);
+    
     // Get the current content from database or fallback to default
     const rawContent = content || defaultContent;
     const cleanedContent = cleanHtmlForEditor(rawContent);
     
-    console.log('Loading content for editing:', { 
+    console.log('🔄 Loading content for editing:', { 
       settingKey, 
-      rawContent: rawContent.substring(0, 200) + '...', 
-      cleanedContent: cleanedContent.substring(0, 200) + '...',
+      hasRawContent: !!rawContent,
+      rawContentPreview: rawContent.substring(0, 200) + '...', 
+      hasCleanedContent: !!cleanedContent,
+      cleanedContentPreview: cleanedContent.substring(0, 200) + '...',
       rawLength: rawContent.length,
       cleanedLength: cleanedContent.length 
     });
