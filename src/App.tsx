@@ -36,6 +36,7 @@ import AdminModeration from "./pages/admin/AdminModeration";
 import AdminSpam from "./pages/admin/AdminSpam";
 import AdminSEO from "./pages/admin/AdminSEO";
 import AdminAdvertising from "./pages/admin/AdminAdvertising";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
 import { HeaderCodeInjector } from "./components/analytics/HeaderCodeInjector";
