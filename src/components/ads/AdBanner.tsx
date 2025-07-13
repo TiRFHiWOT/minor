@@ -1,12 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AdBannerProps {
   className?: string;
 }
 
+declare global {
+  interface Window {
+    adsbygoogle: any[];
+  }
+}
+
 export const AdBanner: React.FC<AdBannerProps> = ({ className = '' }) => {
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    try {
+      // Initialize AdSense ad
+      if (window.adsbygoogle && !isMobile) {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      }
+    } catch (error) {
+      console.error('AdSense error:', error);
+    }
+  }, [isMobile]);
 
   // Hide on mobile devices
   if (isMobile) {
@@ -16,17 +33,16 @@ export const AdBanner: React.FC<AdBannerProps> = ({ className = '' }) => {
   return (
     <div className={`w-full my-6 ${className}`}>
       <div className="flex justify-center">
-        <div className="bg-muted/30 border border-border/50 rounded-lg p-4 min-h-[100px] flex items-center justify-center max-w-[728px] w-full">
-          {/* Placeholder for Google AdSense code */}
-          <div className="text-center">
-            <div className="text-xs text-muted-foreground mb-2">Advertisement</div>
-            <div className="text-sm text-muted-foreground">
-              728 x 90 Banner Ad Space
-            </div>
-            <div className="text-xs text-muted-foreground/70 mt-1">
-              Replace this div with your Google AdSense code
-            </div>
-          </div>
+        <div className="max-w-[728px] w-full">
+          <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
+          <ins 
+            className="adsbygoogle"
+            style={{ display: 'block' }}
+            data-ad-client="ca-pub-5447109336224364"
+            data-ad-slot="2511588978"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
         </div>
       </div>
     </div>
