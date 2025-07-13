@@ -9,6 +9,7 @@ import { useCategoriesByActivity } from '@/hooks/useCategoriesByActivity';
 import { useCategoryStats } from '@/hooks/useCategoryStats';
 import { useEnhancedForumStats } from '@/hooks/useEnhancedForumStats';
 import { QuickTopicModal } from './QuickTopicModal';
+import { SidebarAdBanner } from '@/components/ads/SidebarAdBanner';
 import { cn } from '@/lib/utils';
 
 // Component to display category stats
@@ -100,6 +101,9 @@ export const ForumSidebarNav = () => {
           )}
         </div>
       </Card>
+
+      {/* Sidebar Advertisement */}
+      <SidebarAdBanner />
 
     </div>
   );
