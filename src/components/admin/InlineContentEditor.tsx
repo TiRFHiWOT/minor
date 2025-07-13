@@ -26,11 +26,34 @@ export const InlineContentEditor: React.FC<InlineContentEditorProps> = ({
 
   const content = getSetting(settingKey, defaultContent);
 
+  const cleanHtmlForEditor = (htmlContent: string) => {
+    if (!htmlContent) return '';
+    
+    // Remove Tiptap editor metadata that can interfere with editing
+    let cleaned = htmlContent
+      .replace(/\s*data-start="[^"]*"/g, '')
+      .replace(/\s*data-end="[^"]*"/g, '')
+      .replace(/\s*data-placeholder="[^"]*"/g, '')
+      .replace(/\s*contenteditable="[^"]*"/g, '')
+      .trim();
+    
+    return cleaned;
+  };
+
   const handleEdit = () => {
     // Get the current content from database or fallback to default
-    const currentContent = content || defaultContent;
-    console.log('Loading content for editing:', { settingKey, currentContent, length: currentContent.length });
-    setEditContent(currentContent);
+    const rawContent = content || defaultContent;
+    const cleanedContent = cleanHtmlForEditor(rawContent);
+    
+    console.log('Loading content for editing:', { 
+      settingKey, 
+      rawContent: rawContent.substring(0, 200) + '...', 
+      cleanedContent: cleanedContent.substring(0, 200) + '...',
+      rawLength: rawContent.length,
+      cleanedLength: cleanedContent.length 
+    });
+    
+    setEditContent(cleanedContent);
     setIsEditing(true);
   };
 
