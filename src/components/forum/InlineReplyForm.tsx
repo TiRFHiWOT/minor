@@ -53,17 +53,8 @@ export const InlineReplyForm: React.FC<InlineReplyFormProps> = ({
       return;
     }
 
-    // Basic validation for anonymous users (IP ban checking is now in useCreatePost)
+    // Basic validation for anonymous users (rate limits removed)
     if (!user) {
-      if (!tempUser.canPost) {
-        toast({
-          title: "Rate limit exceeded",
-          description: "You've reached your daily posting limit for anonymous users",
-          variant: "destructive",
-        });
-        return;
-      }
-
       const validation = tempUser.validateContent(content);
       if (!validation.isValid) {
         setContentErrors(validation.errors);

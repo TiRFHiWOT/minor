@@ -76,7 +76,7 @@ export const useEnhancedSpamDetection = () => {
 
       if (ipError) {
         console.error('IP ban check failed:', ipError);
-        // Continue with rate limit check if IP check fails
+        // Continue with unlimited posting if IP check fails
       } else if (ipCheck) {
         const result = ipCheck as { is_banned: boolean; ban_type?: string; expires_at?: string; reason?: string };
         
@@ -99,29 +99,21 @@ export const useEnhancedSpamDetection = () => {
         }
       }
 
-      const { data, error } = await supabase.rpc('check_enhanced_anonymous_rate_limit', {
-        user_ip: userIP,
-        p_session_id: sessionId,
-        p_fingerprint_hash: fingerprint,
-        p_content_type: contentType
-      });
-
-      if (error) {
-        console.error('Rate limit check failed:', error);
-        return {
-          allowed: false,
-          reason: 'check_failed',
-          message: 'Unable to verify posting limits. Please try again.'
-        };
-      }
-
-      return data as unknown as SpamCheckResult & RateLimitInfo;
+      // POSTING LIMITS REMOVED - Always allow posting
+      return {
+        allowed: true,
+        remainingPostsHour: 999999,
+        remainingPostsDay: 999999,
+        remainingTopicsDay: 999999
+      };
     } catch (error) {
       console.error('Error checking rate limit:', error);
+      // Allow posting even if check fails
       return {
-        allowed: false,
-        reason: 'unknown_error',
-        message: 'An unexpected error occurred. Please try again.'
+        allowed: true,
+        remainingPostsHour: 999999,
+        remainingPostsDay: 999999,
+        remainingTopicsDay: 999999
       };
     } finally {
       setIsChecking(false);

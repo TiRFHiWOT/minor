@@ -115,33 +115,8 @@ class SessionManager {
   }
 
   async checkRateLimit(): Promise<{ canPost: boolean; remainingPosts: number }> {
-    if (!this.tempUserId || !this.sessionId) {
-      return { canPost: false, remainingPosts: 0 };
-    }
-
-    try {
-      // Use enhanced rate limiting
-      const { data, error } = await supabase.rpc('check_enhanced_anonymous_rate_limit', {
-        user_ip: await this.getClientIP(),
-        p_session_id: this.sessionId,
-        p_fingerprint_hash: null, // Will be handled by the enhanced system
-        p_content_type: 'post'
-      });
-
-      if (error) {
-        console.error('Error checking enhanced rate limit:', error);
-        return { canPost: false, remainingPosts: 0 };
-      }
-
-      const result = data as any;
-      return { 
-        canPost: result.allowed || false, 
-        remainingPosts: result.remaining_posts_day || 0 
-      };
-    } catch (error) {
-      console.error('Failed to check rate limit:', error);
-      return { canPost: false, remainingPosts: 0 };
-    }
+    // POSTING LIMITS REMOVED - Always allow posting
+    return { canPost: true, remainingPosts: 999999 };
   }
 
   private async getClientIP(): Promise<string> {

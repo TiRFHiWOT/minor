@@ -19,20 +19,14 @@ export const useCreatePost = () => {
 
   return useMutation({
     mutationFn: async (data: CreatePostData) => {
-      // For anonymous users, check enhanced rate limits including IP bans
+      // For anonymous users, check spam content only (rate limits removed)
       if (!user) {
         const tempUserId = sessionManager.getTempUserId();
         if (!tempUserId) {
           throw new Error('No temporary user session available');
         }
         
-        // Check rate limits (includes IP ban check)
-        const rateLimitCheck = await checkRateLimit(tempUserId, 'post');
-        if (!rateLimitCheck.allowed) {
-          throw new Error(rateLimitCheck.message || 'Rate limit exceeded or IP banned');
-        }
-
-        // Analyze content for spam
+        // Analyze content for spam only
         const contentAnalysis = await analyzeContent(data.content, 'post');
         if (!contentAnalysis.allowed) {
           throw new Error(contentAnalysis.message || 'Content flagged as spam');

@@ -47,20 +47,9 @@ export const CreateTopic = () => {
       return;
     }
 
-    // Enhanced validation for anonymous users
+    // Enhanced validation for anonymous users - RATE LIMITS REMOVED
     if (!user) {
-      // Check rate limits with enhanced system
-      const rateLimitCheck = await spamDetection.checkRateLimit(tempUser.getTempUserId() || '', 'topic');
-      if (!rateLimitCheck.allowed) {
-        toast({
-          title: "Posting Restricted",
-          description: rateLimitCheck.message || "Rate limit exceeded",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Analyze content for spam
+      // Still check for spam content but remove rate limiting
       const contentAnalysis = await spamDetection.analyzeContent(formData.content, 'topic');
       if (!contentAnalysis.allowed) {
         setContentErrors([contentAnalysis.message || 'Content flagged as spam']);
@@ -129,15 +118,9 @@ export const CreateTopic = () => {
         <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
           <div className="text-sm text-blue-800">
             <div className="font-medium">Posting as: {tempUser.tempUser.display_name}</div>
-            <div className="text-xs mt-1">
-              {tempUser.canPost 
-                ? `${tempUser.remainingPosts} posts remaining in the next 12 hours`
-                : 'Rate limit reached (5 posts per 12 hours)'
-              }
-            </div>
             <div className="text-xs mt-2 text-blue-600">
               <a href="/register" className="underline hover:no-underline">
-                Create account for unlimited posting + images/links
+                Create account for additional features like images and links
               </a>
             </div>
           </div>
@@ -195,7 +178,7 @@ export const CreateTopic = () => {
             </Button>
             <Button 
               type="submit" 
-              disabled={createTopicMutation.isPending || (!user && !tempUser.canPost)}
+              disabled={createTopicMutation.isPending}
             >
               {createTopicMutation.isPending ? 'Creating...' : 'Create Topic'}
             </Button>
