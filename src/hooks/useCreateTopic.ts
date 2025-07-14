@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { generateSlugFromTitle } from '@/utils/urlHelpers';
 import { useAuth } from './useAuth';
 import { sessionManager } from '@/utils/sessionManager';
-import { getUserIPWithFallback } from '@/utils/ipUtils';
+import { getMandatoryUserIP } from '@/utils/ipUtils';
 
 interface CreateTopicData {
   title: string;
@@ -20,9 +20,15 @@ export const useCreateTopic = () => {
     mutationFn: async (data: CreateTopicData) => {
       console.log('Creating topic:', data);
 
-      // Get user's IP address for tracking
-      const userIP = await getUserIPWithFallback();
-      console.log('DEBUG TOPIC: Got user IP:', userIP);
+      // Get user's IP address for tracking - MANDATORY
+      let userIP: string;
+      try {
+        userIP = await getMandatoryUserIP();
+        console.log('DEBUG TOPIC: Got mandatory user IP:', userIP);
+      } catch (ipError) {
+        console.error('Failed to get IP address:', ipError);
+        throw new Error('Unable to determine your IP address. Please check your network connection and try again.');
+      }
 
       // Get category info including moderation requirements
       const { data: category, error: categoryError } = await supabase
@@ -98,26 +104,24 @@ export const useCreateTopic = () => {
 
       console.log('Topic created successfully:', topic);
 
-      // Log IP activity for topic creation
-      if (userIP) {
-        try {
-          const sessionId = sessionManager.getSessionId();
-          await supabase.rpc('log_ip_activity', {
-            p_ip_address: userIP,
-            p_session_id: sessionId,
-            p_activity_type: 'topic_creation',
-            p_content_id: topic.id,
-            p_content_type: 'topic',
-            p_action_data: {
-              title: data.title,
-              category_id: data.category_id,
-              author_type: user ? 'authenticated' : 'anonymous'
-            }
-          });
-        } catch (logError) {
-          console.error('Failed to log IP activity for topic creation:', logError);
-          // Don't throw - topic creation was successful
-        }
+      // Log IP activity for topic creation - IP is guaranteed to exist
+      try {
+        const sessionId = sessionManager.getSessionId();
+        await supabase.rpc('log_ip_activity', {
+          p_ip_address: userIP,
+          p_session_id: sessionId,
+          p_activity_type: 'topic_creation',
+          p_content_id: topic.id,
+          p_content_type: 'topic',
+          p_action_data: {
+            title: data.title,
+            category_id: data.category_id,
+            author_type: user ? 'authenticated' : 'anonymous'
+          }
+        });
+      } catch (logError) {
+        console.error('Failed to log IP activity for topic creation:', logError);
+        // Don't throw - topic creation was successful
       }
 
       return topic;

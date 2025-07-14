@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { sessionManager } from '@/utils/sessionManager';
-import { getUserIPWithFallback } from '@/utils/ipUtils';
+import { getMandatoryUserIP } from '@/utils/ipUtils';
 import { useEnhancedSpamDetection } from './useEnhancedSpamDetection';
 
 interface CreatePostData {
@@ -71,8 +71,15 @@ export const useCreatePost = () => {
         throw new Error(`Posts can only be created in discussion or age group categories. This topic is in "${topic.categories?.name}" which is for browsing only.`);
       }
 
-      // Get user's IP address for admin tracking
-      const userIP = await getUserIPWithFallback();
+      // Get user's IP address for admin tracking - MANDATORY
+      let userIP: string;
+      try {
+        userIP = await getMandatoryUserIP();
+        console.log('DEBUG POST: Got mandatory user IP:', userIP);
+      } catch (ipError) {
+        console.error('Failed to get IP address:', ipError);
+        throw new Error('Unable to determine your IP address. Please check your network connection and try again.');
+      }
 
       // Determine moderation status: all posts are auto-approved
       let moderationStatus = 'approved';

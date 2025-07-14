@@ -13,10 +13,13 @@ interface GeolocationData {
   isp: string;
 }
 
-// Utility function to get user's IP address using Supabase Edge Function
-export const getUserIP = async (): Promise<string | null> => {
+// Enhanced IP detection with multiple fallbacks and retry logic
+export const getUserIP = async (retryCount: number = 0): Promise<string | null> => {
+  const maxRetries = 3;
+  
   try {
-    console.log('Attempting to get IP from edge function...');
+    console.log(`Attempting to get IP from edge function (attempt ${retryCount + 1})...`);
+    
     // Try to get IP from our Supabase Edge Function first
     const { data, error } = await supabase.functions.invoke('get-client-ip');
     
@@ -27,25 +30,51 @@ export const getUserIP = async (): Promise<string | null> => {
       return data.ip;
     }
     
-    console.log('Edge function failed or returned unknown IP, trying external services');
-    throw new Error('Edge function failed');
+    throw new Error('Edge function failed or returned unknown IP');
   } catch (error) {
-    console.error('Failed to get IP from edge function:', error);
+    console.error(`Failed to get IP from edge function (attempt ${retryCount + 1}):`, error);
     
-    // Fallback to external service
-    try {
-      console.log('Trying external IP service...');
-      const response = await fetch('https://api.ipify.org?format=json');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    // Try multiple external services as fallbacks
+    const fallbackServices = [
+      { url: 'https://api.ipify.org?format=json', key: 'ip' },
+      { url: 'https://ipapi.co/json/', key: 'ip' },
+      { url: 'https://httpbin.org/ip', key: 'origin' }
+    ];
+    
+    for (const service of fallbackServices) {
+      try {
+        console.log(`Trying external IP service: ${service.url}`);
+        const response = await fetch(service.url, { 
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const ip = data[service.key];
+        
+        if (ip && ip !== 'unknown') {
+          console.log(`IP address fetched from ${service.url}:`, ip);
+          return ip;
+        }
+      } catch (fallbackError) {
+        console.error(`Failed to get IP from ${service.url}:`, fallbackError);
+        continue;
       }
-      const data = await response.json();
-      console.log('IP address fetched from external service:', data.ip);
-      return data.ip || null;
-    } catch (fallbackError) {
-      console.error('Failed to get IP from external service:', fallbackError);
-      return null;
     }
+    
+    // If all services failed and we haven't exceeded retry limit, try again
+    if (retryCount < maxRetries) {
+      console.log(`All services failed, retrying (${retryCount + 1}/${maxRetries})...`);
+      await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
+      return getUserIP(retryCount + 1);
+    }
+    
+    console.error('All IP detection methods failed after retries');
+    return null;
   }
 };
 
@@ -70,8 +99,18 @@ export const getIPGeolocation = async (ip: string): Promise<GeolocationData | nu
   }
 };
 
-// Alternative method using multiple services as fallback
+// Mandatory IP detection that throws error if IP cannot be obtained
+export const getMandatoryUserIP = async (): Promise<string> => {
+  const ip = await getUserIP();
+  
+  if (!ip || ip === 'unknown') {
+    throw new Error('Unable to determine IP address. Please check your network connection and try again.');
+  }
+  
+  return ip;
+};
+
+// Alternative method using multiple services as fallback (maintained for compatibility)
 export const getUserIPWithFallback = async (): Promise<string | null> => {
-  // Use the primary getUserIP function which now handles both edge function and fallback
   return getUserIP();
 };
