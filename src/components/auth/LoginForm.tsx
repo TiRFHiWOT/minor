@@ -16,6 +16,8 @@ export const LoginForm = () => {
   const navigate = useNavigate();
   const { signIn, loading } = useAuth();
   const { toast } = useToast();
+  const [showResetForm, setShowResetForm] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
   const captchaRef = useRef<HCaptchaRef>(null);
   const [formData, setFormData] = useState({
     email: '',
@@ -92,6 +94,41 @@ export const LoginForm = () => {
     });
   };
 
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!resetEmail) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Reset email sent",
+        description: "Check your email for password reset instructions.",
+      });
+      setShowResetForm(false);
+      setResetEmail('');
+    } catch (error) {
+      toast({
+        title: "Reset failed",
+        description: "Failed to send reset email. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -126,7 +163,16 @@ export const LoginForm = () => {
               />
             </div>
             <div>
-              <Label htmlFor="password">Password</Label>
+              <div className="flex justify-between items-center">
+                <Label htmlFor="password">Password</Label>
+                <button
+                  type="button"
+                  onClick={() => setShowResetForm(true)}
+                  className="text-sm text-blue-600 hover:text-blue-500"
+                >
+                  Forgot password?
+                </button>
+              </div>
               <Input
                 id="password"
                 name="password"
@@ -160,6 +206,40 @@ export const LoginForm = () => {
               </Button>
             </div>
           </form>
+
+          {/* Password Reset Modal */}
+          {showResetForm && (
+            <div className="mt-6 p-4 border rounded-lg bg-gray-50">
+              <h3 className="text-lg font-medium mb-4">Reset Password</h3>
+              <form onSubmit={handlePasswordReset} className="space-y-4">
+                <div>
+                  <Label htmlFor="resetEmail">Email address</Label>
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    required
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    className="mt-1"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button type="submit" size="sm">
+                    Send Reset Link
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setShowResetForm(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
         </Card>
         <div className="text-center">
           <Link
