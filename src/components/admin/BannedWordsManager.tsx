@@ -18,7 +18,9 @@ interface BannedWord {
   word_pattern: string;
   severity: 'warning' | 'moderate' | 'ban';
   category: 'profanity' | 'spam' | 'harassment' | 'general';
-  match_type: 'exact' | 'partial' | 'regex';
+  match_type: 'exact' | 'partial' | 'regex' | 'wildcard';
+  action: 'block' | 'replace' | 'warn';
+  replacement_text?: string;
   is_active: boolean;
   expires_at?: string;
   notes?: string;
@@ -99,7 +101,7 @@ export const BannedWordsManager = () => {
   // Test content against banned words
   const testContentMutation = useMutation({
     mutationFn: async (content: string) => {
-      const { data, error } = await supabase.rpc('check_banned_words', {
+      const { data, error } = await supabase.rpc('process_banned_words', {
         content_text: content
       });
       if (error) throw error;
@@ -113,6 +115,15 @@ export const BannedWordsManager = () => {
       toast({ title: 'Failed to test content', variant: 'destructive' });
     }
   });
+
+  const getActionBadge = (action: string) => {
+    switch (action) {
+      case 'block': return <Badge variant="destructive">Block</Badge>;
+      case 'replace': return <Badge variant="secondary">Replace</Badge>;
+      case 'warn': return <Badge variant="outline">Warn</Badge>;
+      default: return <Badge variant="outline">{action}</Badge>;
+    }
+  };
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
@@ -142,9 +153,21 @@ export const BannedWordsManager = () => {
       severity: word?.severity || 'moderate',
       category: word?.category || 'general',
       match_type: word?.match_type || 'exact',
+      action: word?.action || 'block',
+      replacement_text: word?.replacement_text || '*Not Allowed*',
       is_active: word?.is_active ?? true,
       notes: word?.notes || ''
     });
+
+    const getMatchTypeHelp = (type: string) => {
+      switch (type) {
+        case 'wildcard': return 'Use * for wildcards (e.g., "fuck*" matches fuck, fucking, fuckers)';
+        case 'regex': return 'Use regular expressions for complex patterns';
+        case 'partial': return 'Matches if the word appears anywhere in the content';
+        case 'exact': return 'Matches only complete words';
+        default: return '';
+      }
+    };
 
     return (
       <div className="space-y-4">
@@ -154,11 +177,30 @@ export const BannedWordsManager = () => {
             id="word_pattern"
             value={formData.word_pattern}
             onChange={(e) => setFormData(prev => ({ ...prev, word_pattern: e.target.value }))}
-            placeholder="Enter word or pattern"
+            placeholder="Enter word or pattern (e.g., fuck* for wildcards)"
           />
+          {formData.match_type && (
+            <p className="text-xs text-muted-foreground mt-1">
+              {getMatchTypeHelp(formData.match_type)}
+            </p>
+          )}
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="action">Action</Label>
+            <Select value={formData.action} onValueChange={(value) => setFormData(prev => ({ ...prev, action: value as any }))}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="block">Block Content</SelectItem>
+                <SelectItem value="replace">Replace Words</SelectItem>
+                <SelectItem value="warn">Warn Only</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div>
             <Label htmlFor="severity">Severity</Label>
             <Select value={formData.severity} onValueChange={(value) => setFormData(prev => ({ ...prev, severity: value as any }))}>
@@ -172,7 +214,21 @@ export const BannedWordsManager = () => {
               </SelectContent>
             </Select>
           </div>
+        </div>
 
+        {formData.action === 'replace' && (
+          <div>
+            <Label htmlFor="replacement_text">Replacement Text</Label>
+            <Input
+              id="replacement_text"
+              value={formData.replacement_text}
+              onChange={(e) => setFormData(prev => ({ ...prev, replacement_text: e.target.value }))}
+              placeholder="Text to replace banned words with"
+            />
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="category">Category</Label>
             <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value as any }))}>
@@ -197,6 +253,7 @@ export const BannedWordsManager = () => {
               <SelectContent>
                 <SelectItem value="exact">Exact Word</SelectItem>
                 <SelectItem value="partial">Contains</SelectItem>
+                <SelectItem value="wildcard">Wildcard (*)</SelectItem>
                 <SelectItem value="regex">Regex</SelectItem>
               </SelectContent>
             </Select>
@@ -256,28 +313,43 @@ export const BannedWordsManager = () => {
                 </Button>
                 
                 {testResult && (
-                  <div className="p-4 border rounded-lg">
+                  <div className="p-4 border rounded-lg space-y-3">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="font-medium">Result:</span>
                       {testResult.is_blocked ? (
                         <Badge variant="destructive">Blocked</Badge>
-                      ) : testResult.match_count > 0 ? (
-                        <Badge variant="secondary">Flagged</Badge>
+                      ) : testResult.replacements_count > 0 ? (
+                        <Badge variant="secondary">Words Replaced</Badge>
                       ) : (
                         <Badge variant="outline">Clean</Badge>
                       )}
                     </div>
                     
-                    {testResult.matches && testResult.matches.length > 0 && (
+                    {!testResult.is_blocked && testResult.processed_content !== testContent && (
                       <div>
-                        <p className="text-sm text-muted-foreground mb-2">Matched words:</p>
+                        <p className="text-sm font-medium mb-2">Processed Content:</p>
+                        <div className="p-3 bg-muted rounded-md">
+                          <p className="text-sm">{testResult.processed_content}</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {testResult.replacements_made && testResult.replacements_made.length > 0 && (
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-2">Replacements made:</p>
                         <div className="flex flex-wrap gap-1">
-                          {testResult.matches.map((match: any, index: number) => (
+                          {testResult.replacements_made.map((replacement: any, index: number) => (
                             <Badge key={index} variant="outline" className="text-xs">
-                              {match.word} ({match.severity})
+                              {replacement.pattern} → {replacement.replacement}
                             </Badge>
                           ))}
                         </div>
+                      </div>
+                    )}
+                    
+                    {testResult.is_blocked && (
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-2">Content blocked due to banned words with "ban" severity.</p>
                       </div>
                     )}
                   </div>
@@ -326,6 +398,7 @@ export const BannedWordsManager = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Word/Pattern</TableHead>
+                <TableHead>Action</TableHead>
                 <TableHead>Severity</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Match Type</TableHead>
@@ -337,6 +410,7 @@ export const BannedWordsManager = () => {
               {filteredWords?.map((word) => (
                 <TableRow key={word.id}>
                   <TableCell className="font-mono">{word.word_pattern}</TableCell>
+                  <TableCell>{getActionBadge(word.action)}</TableCell>
                   <TableCell>{getSeverityBadge(word.severity)}</TableCell>
                   <TableCell>{getCategoryBadge(word.category)}</TableCell>
                   <TableCell className="capitalize">{word.match_type}</TableCell>

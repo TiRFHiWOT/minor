@@ -275,6 +275,7 @@ export type Database = {
       }
       banned_words: {
         Row: {
+          action: string
           category: string
           created_at: string
           created_by: string | null
@@ -283,11 +284,13 @@ export type Database = {
           is_active: boolean
           match_type: string
           notes: string | null
+          replacement_text: string | null
           severity: string
           updated_at: string
           word_pattern: string
         }
         Insert: {
+          action?: string
           category?: string
           created_at?: string
           created_by?: string | null
@@ -296,11 +299,13 @@ export type Database = {
           is_active?: boolean
           match_type?: string
           notes?: string | null
+          replacement_text?: string | null
           severity?: string
           updated_at?: string
           word_pattern: string
         }
         Update: {
+          action?: string
           category?: string
           created_at?: string
           created_by?: string | null
@@ -309,6 +314,7 @@ export type Database = {
           is_active?: boolean
           match_type?: string
           notes?: string | null
+          replacement_text?: string | null
           severity?: string
           updated_at?: string
           word_pattern?: string
@@ -1708,6 +1714,10 @@ export type Database = {
           p_isp?: string
         }
         Returns: undefined
+      }
+      process_banned_words: {
+        Args: { content_text: string }
+        Returns: Json
       }
       record_anonymous_post: {
         Args: { user_ip: unknown; session_id: string }
