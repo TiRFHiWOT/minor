@@ -43,6 +43,27 @@ export const useCreateTopic = () => {
       const baseSlug = generateSlugFromTitle(data.title);
       const uniqueSlug = `${baseSlug}-${Date.now().toString(36)}`;
 
+      let isTemporaryUser = false;
+      let authorId: string;
+
+      if (user) {
+        // Check if this is a temporary user
+        const { data: tempUserCheck } = await supabase.rpc('is_temporary_user', { user_id: user.id });
+        isTemporaryUser = tempUserCheck || false;
+        authorId = user.id;
+        console.log('DEBUG TOPIC: Creating topic for user:', user.id, 'isTemporary:', isTemporaryUser);
+      } else {
+        // Anonymous user - use temporary user ID
+        const tempUserId = sessionManager.getTempUserId();
+        console.log('DEBUG TOPIC: Got temp user ID:', tempUserId);
+        if (!tempUserId) {
+          throw new Error('No temporary user session available');
+        }
+        authorId = tempUserId;
+        isTemporaryUser = true;
+        console.log('DEBUG TOPIC: Creating topic with temporary user ID:', tempUserId);
+      }
+
       const topicData: any = {
         title: data.title,
         content: data.content,
@@ -55,23 +76,9 @@ export const useCreateTopic = () => {
         last_reply_at: new Date().toISOString(),
         moderation_status: category.requires_moderation ? 'pending' : 'approved',
         ip_address: userIP,
-        is_anonymous: !user
+        is_anonymous: !user || isTemporaryUser, // Mark temporary users as anonymous
+        author_id: authorId
       };
-
-      if (user) {
-        // Authenticated user
-        console.log('DEBUG TOPIC: Creating topic for authenticated user:', user.id);
-        topicData.author_id = user.id;
-      } else {
-        // Anonymous user - use temporary user ID
-        const tempUserId = sessionManager.getTempUserId();
-        console.log('DEBUG TOPIC: Got temp user ID:', tempUserId);
-        if (!tempUserId) {
-          throw new Error('No temporary user session available');
-        }
-        topicData.author_id = tempUserId;
-        console.log('DEBUG TOPIC: Creating topic with temporary user ID:', tempUserId);
-      }
       
       console.log('DEBUG TOPIC: Final topicData before insert:', topicData);
 
