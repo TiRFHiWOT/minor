@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -48,6 +48,8 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [useFallback, setUseFallback] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const isProcessingInput = useRef(false);
 
   // Initialize editor with error handling and debugging
   useEffect(() => {
@@ -105,20 +107,135 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
     initializeEditor();
   }, [value, isInitialized]);
 
-  const handleInput = () => {
-    try {
-      if (editorRef.current) {
-        const content = editorRef.current.innerHTML;
-        
-        // Minimal cleaning - only remove truly empty elements
+  // Cursor position utilities
+  const saveCursorPosition = useCallback(() => {
+    const selection = window.getSelection();
+    if (!selection || !selection.rangeCount) return null;
+    
+    const range = selection.getRangeAt(0);
+    const preSelectionRange = range.cloneRange();
+    preSelectionRange.selectNodeContents(editorRef.current!);
+    preSelectionRange.setEnd(range.startContainer, range.startOffset);
+    
+    return {
+      start: preSelectionRange.toString().length,
+      end: preSelectionRange.toString().length + range.toString().length
+    };
+  }, []);
+
+  const restoreCursorPosition = useCallback((savedSelection: { start: number; end: number }) => {
+    const selection = window.getSelection();
+    if (!selection || !editorRef.current) return;
+
+    const textNodes: Text[] = [];
+    const walker = document.createTreeWalker(
+      editorRef.current,
+      NodeFilter.SHOW_TEXT,
+      null
+    );
+
+    let node;
+    while (node = walker.nextNode()) {
+      textNodes.push(node as Text);
+    }
+
+    let charIndex = 0;
+    let startNode = null;
+    let endNode = null;
+    let startOffset = 0;
+    let endOffset = 0;
+
+    for (const textNode of textNodes) {
+      const nodeLength = textNode.textContent?.length || 0;
+      
+      if (!startNode && charIndex + nodeLength >= savedSelection.start) {
+        startNode = textNode;
+        startOffset = savedSelection.start - charIndex;
+      }
+      
+      if (!endNode && charIndex + nodeLength >= savedSelection.end) {
+        endNode = textNode;
+        endOffset = savedSelection.end - charIndex;
+        break;
+      }
+      
+      charIndex += nodeLength;
+    }
+
+    if (startNode) {
+      const range = document.createRange();
+      range.setStart(startNode, Math.min(startOffset, startNode.textContent?.length || 0));
+      range.setEnd(endNode || startNode, Math.min(endOffset, (endNode || startNode).textContent?.length || 0));
+      
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }, []);
+
+  // Debounced content cleaning
+  const debouncedCleanContent = useCallback((content: string, cursorPosition: { start: number; end: number } | null) => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      try {
+        // More conservative cleaning - only remove truly problematic elements
         const cleanContent = content
           .replace(/<p><\/p>/g, '') // Remove empty paragraphs
-          .replace(/<div><\/div>/g, ''); // Remove empty divs
+          .replace(/<div><\/div>/g, '') // Remove empty divs
+          .replace(/<br\s*\/?>(\s*<br\s*\/?>)+/g, '<br>'); // Collapse multiple line breaks
         
-        // Check if content actually changed before calling onChange
-        if (cleanContent !== editorContent) {
+        // Only update if content actually changed and we're not in the middle of processing
+        if (cleanContent !== editorContent && !isProcessingInput.current) {
+          isProcessingInput.current = true;
+          
+          if (editorRef.current && cursorPosition) {
+            editorRef.current.innerHTML = cleanContent;
+            restoreCursorPosition(cursorPosition);
+          }
+          
           setEditorContent(cleanContent);
           onChange(cleanContent);
+          
+          // Reset processing flag after a short delay
+          setTimeout(() => {
+            isProcessingInput.current = false;
+          }, 50);
+        }
+      } catch (error) {
+        console.error('WysiwygEditor: Error in debouncedCleanContent:', error);
+        isProcessingInput.current = false;
+      }
+    }, 300); // 300ms debounce
+  }, [editorContent, onChange, restoreCursorPosition]);
+
+  const handleInput = useCallback(() => {
+    try {
+      if (editorRef.current && !isProcessingInput.current) {
+        const content = editorRef.current.innerHTML;
+        
+        // Immediate light cleaning for basic functionality
+        const lightCleanContent = content
+          .replace(/<div><br><\/div>/g, '<br>') // Convert div breaks to br
+          .replace(/<div>/g, '<br>') // Convert opening divs to br
+          .replace(/<\/div>/g, ''); // Remove closing divs
+        
+        // Update content immediately if light cleaning changed anything
+        if (lightCleanContent !== content) {
+          isProcessingInput.current = true;
+          editorRef.current.innerHTML = lightCleanContent;
+          isProcessingInput.current = false;
+        }
+        
+        // Only trigger onChange for significant changes
+        if (lightCleanContent !== editorContent) {
+          setEditorContent(lightCleanContent);
+          onChange(lightCleanContent);
+          
+          // Save cursor position and trigger debounced deep cleaning
+          const cursorPosition = saveCursorPosition();
+          debouncedCleanContent(lightCleanContent, cursorPosition);
         }
       }
     } catch (error) {
@@ -126,7 +243,7 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
       setHasError(true);
       setErrorMessage(`Input error: ${error.message}`);
     }
-  };
+  }, [editorContent, onChange, saveCursorPosition, debouncedCleanContent]);
 
   const handleFallbackChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -140,19 +257,26 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
     return;
   };
 
-  const execCommand = (command: string, value?: string) => {
+  const execCommand = useCallback((command: string, value?: string) => {
     try {
       if (useFallback) return; // Don't execute commands in fallback mode
       
+      const cursorPosition = saveCursorPosition();
       document.execCommand(command, false, value);
       editorRef.current?.focus();
+      
+      // Restore cursor position after command execution
+      if (cursorPosition) {
+        setTimeout(() => restoreCursorPosition(cursorPosition), 10);
+      }
+      
       handleInput();
     } catch (error) {
       console.error('WysiwygEditor: Error executing command:', command, error);
       setHasError(true);
       setErrorMessage(`Command error: ${error.message}`);
     }
-  };
+  }, [useFallback, saveCursorPosition, restoreCursorPosition, handleInput]);
 
   const retryInitialization = () => {
     setHasError(false);
@@ -162,7 +286,7 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
     console.log('WysiwygEditor: Retrying initialization...');
   };
 
-  const insertLink = () => {
+  const insertLink = useCallback(() => {
     if (!allowImages) return;
     
     const url = prompt('Enter URL:');
@@ -171,12 +295,12 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
       const text = selection?.toString() || url;
       execCommand('insertHTML', `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`);
     }
-  };
+  }, [allowImages, execCommand]);
 
-  const insertImage = () => {
+  const insertImage = useCallback(() => {
     if (!allowImages) return;
     fileInputRef.current?.click();
-  };
+  }, [allowImages]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -207,9 +331,9 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
     event.target.value = '';
   };
 
-  const formatText = (command: string) => {
+  const formatText = useCallback((command: string) => {
     execCommand(command);
-  };
+  }, [execCommand]);
 
   const toolbarButtons = [
     { icon: Bold, command: 'bold', title: 'Bold (Ctrl+B)' },
