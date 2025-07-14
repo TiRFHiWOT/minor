@@ -29,7 +29,10 @@ export const LoginForm = () => {
     windowMs: 15 * 60 * 1000, // 15 minutes
     blockDurationMs: 5 * 60 * 1000 // Block for 5 minutes
   });
-  const { siteKey } = useHCaptchaSiteKey();
+  const { siteKey, isLoading: siteKeyLoading, isTestKey } = useHCaptchaSiteKey();
+  
+  // Debug logging
+  console.log('LoginForm - hCaptcha siteKey:', siteKey, 'isTestKey:', isTestKey, 'loading:', siteKeyLoading);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
