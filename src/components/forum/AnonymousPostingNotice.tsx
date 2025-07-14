@@ -26,11 +26,7 @@ export const AnonymousPostingNotice: React.FC<AnonymousPostingNoticeProps> = ({
         </div>
         
         <div className="space-y-2 text-sm text-blue-800">
-          {canPost ? (
-            <div className="flex items-center space-x-2">
-              <span>You have {remainingPosts} posts remaining today</span>
-            </div>
-          ) : (
+          {!canPost && (
             <Alert className="border-orange-200 bg-orange-50">
               <Ban className="h-4 w-4 text-orange-600" />
               <AlertDescription className="text-orange-800">
