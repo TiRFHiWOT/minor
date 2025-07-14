@@ -1576,6 +1576,66 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      get_most_commented_topics: {
+        Args: { limit_count?: number; offset_count?: number }
+        Returns: {
+          id: string
+          title: string
+          content: string
+          author_id: string
+          category_id: string
+          is_pinned: boolean
+          is_locked: boolean
+          view_count: number
+          reply_count: number
+          last_reply_at: string
+          created_at: string
+          updated_at: string
+          username: string
+          avatar_url: string
+          category_name: string
+          category_color: string
+          category_slug: string
+          slug: string
+          last_post_id: string
+          parent_category_id: string
+          parent_category_slug: string
+        }[]
+      }
+      get_most_commented_topics_count: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      get_most_viewed_topics: {
+        Args: { limit_count?: number; offset_count?: number }
+        Returns: {
+          id: string
+          title: string
+          content: string
+          author_id: string
+          category_id: string
+          is_pinned: boolean
+          is_locked: boolean
+          view_count: number
+          reply_count: number
+          last_reply_at: string
+          created_at: string
+          updated_at: string
+          username: string
+          avatar_url: string
+          category_name: string
+          category_color: string
+          category_slug: string
+          slug: string
+          last_post_id: string
+          parent_category_id: string
+          parent_category_slug: string
+        }[]
+      }
+      get_most_viewed_topics_count: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       get_or_create_temp_user: {
         Args: { p_session_id: string }
         Returns: string

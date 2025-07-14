@@ -8,6 +8,8 @@ import { TrendingUp, Clock, Star, MessageSquare, User as UserIcon, Facebook, Ins
 import { useHotTopics } from '@/hooks/useHotTopics';
 import { useTopics } from '@/hooks/useTopics';
 import { useHotTopicsLegacy } from '@/hooks/useHotTopicsLegacy';
+import { useMostCommentedTopics } from '@/hooks/useMostCommentedTopics';
+import { useMostViewedTopics } from '@/hooks/useMostViewedTopics';
 import { useAuth } from '@/hooks/useAuth';
 import { useCategories } from '@/hooks/useCategories';
 import { useForumSettings } from '@/hooks/useForumSettings';
@@ -36,9 +38,9 @@ export const ForumHome = () => {
   const sortBy = searchParams.get('sort') || 'new';
   
   // Paginated data hooks
-  const { data: hotTopicsData, isLoading: hotTopicsLoading } = useHotTopics(hotPage, 10);
+  const { data: hotTopicsData, isLoading: hotTopicsLoading } = useMostCommentedTopics(hotPage, 10);
   const { data: newTopicsData, isLoading: newTopicsLoading } = useTopics(undefined, newPage, 10);
-  const { data: topTopicsData, isLoading: topTopicsLoading } = useHotTopicsLegacy(100); // Get more for sorting
+  const { data: topTopicsData, isLoading: topTopicsLoading } = useMostViewedTopics(topPage, 10);
   
   const { data: level1Forums } = useCategories(null, 1); // Only Level 1 forums
   const { data: level2Forums } = useCategories(undefined, 2); // Province/State forums
@@ -264,31 +266,26 @@ export const ForumHome = () => {
                 <div key={i} className="h-32 bg-muted rounded animate-pulse"></div>
               ))}
             </div>
-          ) : topTopicsData && topTopicsData.length > 0 ? (
-            <div className="space-y-4">
-              {[...topTopicsData]
-                .sort((a, b) => b.view_count - a.view_count)
-                .slice((topPage - 1) * 10, topPage * 10)
-                .map((topic) => (
+          ) : topTopicsData && topTopicsData.data.length > 0 ? (
+            <>
+              <div className="space-y-4">
+                {topTopicsData.data.map((topic) => (
                   <PostCard 
                     key={topic.id} 
-                    topic={{
-                      ...topic,
-                      parent_category_id: null, // Not available in legacy hot topics
-                      parent_category_slug: null // Not available in legacy hot topics
-                    }} 
+                    topic={topic} 
                     onReport={handleReport}
                   />
                 ))}
+              </div>
               <PaginationControls
                 currentPage={topPage}
-                totalPages={Math.ceil(topTopicsData.length / 10)}
-                totalItems={topTopicsData.length}
+                totalPages={topTopicsData.totalPages}
+                totalItems={topTopicsData.totalCount}
                 itemsPerPage={10}
                 onPageChange={setTopPage}
                 loading={topTopicsLoading}
               />
-            </div>
+            </>
           ) : (
             <Card className="p-8 text-center">
               <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
