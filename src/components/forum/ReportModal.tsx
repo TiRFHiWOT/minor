@@ -45,10 +45,12 @@ interface ReporterBehavior {
 
 interface ProtectionStatus {
   is_protected: boolean;
+  protection_type?: 'pinned' | 'moderator_approved';
   approved_at?: string;
   approved_by?: string;
   moderator_id?: string;
   reason?: string;
+  topic_title?: string;
 }
 
 const REPORT_REASONS = [
@@ -178,10 +180,13 @@ export const ReportModal = ({ isOpen, onClose, postId, topicId, contentType }: R
       } else {
         // Show different messages based on protection status
         const isProtected = protectionStatus?.is_protected;
+        const isPinned = protectionStatus?.protection_type === 'pinned';
         
         toast({
           title: "Report submitted",
-          description: isProtected 
+          description: isPinned 
+            ? "Your report has been submitted for review. The pinned topic will remain visible, but your feedback helps our moderation team maintain community standards."
+            : isProtected 
             ? "Your report has been submitted to the moderation team for review. Thank you for keeping our community safe."
             : "The content has been immediately hidden pending moderation review. Thank you for keeping our community safe.",
         });
@@ -268,27 +273,39 @@ export const ReportModal = ({ isOpen, onClose, postId, topicId, contentType }: R
             <>
               {/* Moderation Protection Warning */}
               {protectionStatus?.is_protected && (
-                <Alert className="border-green-200 bg-green-50">
-                  <Shield className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-800">
-                    <strong>Protected Content:</strong> This content was reviewed and approved by {protectionStatus.approved_by || 'a moderator'} 
-                    {protectionStatus.approved_at && (
-                      <span> on {new Date(protectionStatus.approved_at).toLocaleDateString()}</span>
-                    )}. 
-                    {!isAppealMode ? (
-                      <div className="mt-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => setIsAppealMode(true)}
-                          className="text-green-700 border-green-300 hover:bg-green-100"
-                        >
-                          <Mail className="h-3 w-3 mr-1" />
-                          Contact Admin About This Decision
-                        </Button>
-                      </div>
+                <Alert className={protectionStatus.protection_type === 'pinned' ? "border-blue-200 bg-blue-50" : "border-green-200 bg-green-50"}>
+                  <Shield className={`h-4 w-4 ${protectionStatus.protection_type === 'pinned' ? 'text-blue-600' : 'text-green-600'}`} />
+                  <AlertDescription className={protectionStatus.protection_type === 'pinned' ? 'text-blue-800' : 'text-green-800'}>
+                    {protectionStatus.protection_type === 'pinned' ? (
+                      <>
+                        <strong>Pinned Topic:</strong> This topic is pinned by moderators and will remain visible even if reported. 
+                        Your report is still valuable for moderation review and helping maintain community standards.
+                        {protectionStatus.topic_title && (
+                          <p className="mt-1 text-sm font-medium">"{protectionStatus.topic_title}"</p>
+                        )}
+                      </>
                     ) : (
-                      <p className="mt-2 text-sm">Please provide your contact details and explain your concerns below.</p>
+                      <>
+                        <strong>Protected Content:</strong> This content was reviewed and approved by {protectionStatus.approved_by || 'a moderator'} 
+                        {protectionStatus.approved_at && (
+                          <span> on {new Date(protectionStatus.approved_at).toLocaleDateString()}</span>
+                        )}. 
+                        {!isAppealMode ? (
+                          <div className="mt-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              onClick={() => setIsAppealMode(true)}
+                              className="text-green-700 border-green-300 hover:bg-green-100"
+                            >
+                              <Mail className="h-3 w-3 mr-1" />
+                              Contact Admin About This Decision
+                            </Button>
+                          </div>
+                        ) : (
+                          <p className="mt-2 text-sm">Please provide your contact details and explain your concerns below.</p>
+                        )}
+                      </>
                     )}
                   </AlertDescription>
                 </Alert>
@@ -378,51 +395,60 @@ export const ReportModal = ({ isOpen, onClose, postId, topicId, contentType }: R
                  </>
                ) : (
                  <>
-                   {/* Standard Report Form */}
-                   {!protectionStatus?.is_protected && (
-                     <div>
-                       <Label className="text-sm font-medium">Reason for reporting</Label>
-                       <RadioGroup value={reason} onValueChange={setReason} className="mt-2">
-                         {REPORT_REASONS.map((option) => (
-                           <div key={option.value} className="flex items-center space-x-2">
-                             <RadioGroupItem value={option.value} id={option.value} />
-                             <Label htmlFor={option.value} className="text-sm">
-                               {option.label}
-                             </Label>
-                           </div>
-                         ))}
-                       </RadioGroup>
-                     </div>
-                   )}
+                    {/* Standard Report Form */}
+                    {(!protectionStatus?.is_protected || protectionStatus.protection_type === 'pinned') && (
+                      <div>
+                        <Label className="text-sm font-medium">Reason for reporting</Label>
+                        <RadioGroup value={reason} onValueChange={setReason} className="mt-2">
+                          {REPORT_REASONS.map((option) => (
+                            <div key={option.value} className="flex items-center space-x-2">
+                              <RadioGroupItem value={option.value} id={option.value} />
+                              <Label htmlFor={option.value} className="text-sm">
+                                {option.label}
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </div>
+                    )}
 
-                   {!protectionStatus?.is_protected && (
-                     <div>
-                       <Label htmlFor="description" className="text-sm font-medium">
-                         {previousReportStatus?.was_previously_approved 
-                           ? "Detailed explanation (required)" 
-                           : "Additional details (optional)"
-                         }
-                       </Label>
-                       <Textarea
-                         id="description"
-                         placeholder={
-                           previousReportStatus?.was_previously_approved
-                             ? "Since this content was previously approved, please explain specifically why you believe it should be reconsidered..."
-                             : "Provide more context about why you're reporting this content..."
-                         }
-                         value={description}
-                         onChange={(e) => setDescription(e.target.value)}
-                         rows={previousReportStatus?.was_previously_approved ? 4 : 3}
-                         className="mt-1"
-                         required={previousReportStatus?.was_previously_approved}
-                       />
-                       {previousReportStatus?.was_previously_approved && (
-                         <p className="text-xs text-muted-foreground mt-1">
-                           Required: Please provide specific details about the policy violation.
-                         </p>
-                       )}
-                     </div>
-                   )}
+                    {(!protectionStatus?.is_protected || protectionStatus.protection_type === 'pinned') && (
+                      <div>
+                        <Label htmlFor="description" className="text-sm font-medium">
+                          {previousReportStatus?.was_previously_approved 
+                            ? "Detailed explanation (required)" 
+                            : protectionStatus?.protection_type === 'pinned'
+                            ? "Additional details about this pinned topic (optional)"
+                            : "Additional details (optional)"
+                          }
+                        </Label>
+                        <Textarea
+                          id="description"
+                          placeholder={
+                            previousReportStatus?.was_previously_approved
+                              ? "Since this content was previously approved, please explain specifically why you believe it should be reconsidered..."
+                              : protectionStatus?.protection_type === 'pinned'
+                              ? "Help moderators understand your concerns about this pinned topic..."
+                              : "Provide more context about why you're reporting this content..."
+                          }
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          rows={previousReportStatus?.was_previously_approved ? 4 : 3}
+                          className="mt-1"
+                          required={previousReportStatus?.was_previously_approved}
+                        />
+                        {previousReportStatus?.was_previously_approved && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Required: Please provide specific details about the policy violation.
+                          </p>
+                        )}
+                        {protectionStatus?.protection_type === 'pinned' && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Your feedback helps moderators understand community concerns about pinned content.
+                          </p>
+                        )}
+                      </div>
+                    )}
                  </>
                )}
 
@@ -446,9 +472,9 @@ export const ReportModal = ({ isOpen, onClose, postId, topicId, contentType }: R
                 <Mail className="h-4 w-4 mr-2" />
                 {isSubmitting ? 'Sending Appeal...' : 'Send Appeal to Admin'}
               </Button>
-            ) : !protectionStatus?.is_protected ? (
+            ) : (!protectionStatus?.is_protected || protectionStatus.protection_type === 'pinned') ? (
               <Button onClick={handleSubmit} disabled={isSubmitting || isLoading}>
-                {isSubmitting ? 'Submitting...' : 'Submit Report'}
+                {isSubmitting ? 'Submitting...' : protectionStatus?.protection_type === 'pinned' ? 'Submit Report (Topic Stays Visible)' : 'Submit Report'}
               </Button>
             ) : null}
           </div>
