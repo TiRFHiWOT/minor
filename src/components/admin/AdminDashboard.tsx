@@ -9,6 +9,7 @@ import { useAdminStats } from '@/hooks/useAdminStats';
 import { useAdminActivity } from '@/hooks/useAdminActivity';
 import { useActiveVisitors } from '@/hooks/useActiveVisitors';
 import { LiveVisitorMonitor } from './LiveVisitorMonitor';
+import IPTrackingMonitor from './IPTrackingMonitor';
 import { formatDistanceToNow } from 'date-fns';
 
 export const AdminDashboard = () => {
@@ -152,6 +153,9 @@ export const AdminDashboard = () => {
 
       {/* Live Visitor Monitor */}
       <LiveVisitorMonitor />
+
+      {/* IP Tracking Monitor */}
+      <IPTrackingMonitor />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

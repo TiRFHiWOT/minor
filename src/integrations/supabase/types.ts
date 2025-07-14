@@ -897,7 +897,7 @@ export type Database = {
           content: string
           created_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_anonymous: boolean | null
           moderation_status: string | null
           parent_post_id: string | null
@@ -909,7 +909,7 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address: unknown
           is_anonymous?: boolean | null
           moderation_status?: string | null
           parent_post_id?: string | null
@@ -921,7 +921,7 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_anonymous?: boolean | null
           moderation_status?: string | null
           parent_post_id?: string | null
@@ -1175,7 +1175,7 @@ export type Database = {
           content: string | null
           created_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_anonymous: boolean | null
           is_locked: boolean | null
           is_pinned: boolean | null
@@ -1200,7 +1200,7 @@ export type Database = {
           content?: string | null
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address: unknown
           is_anonymous?: boolean | null
           is_locked?: boolean | null
           is_pinned?: boolean | null
@@ -1225,7 +1225,7 @@ export type Database = {
           content?: string | null
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_anonymous?: boolean | null
           is_locked?: boolean | null
           is_pinned?: boolean | null
