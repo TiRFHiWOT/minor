@@ -107,135 +107,120 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
     initializeEditor();
   }, [value, isInitialized]);
 
-  // Cursor position utilities
+  // Improved cursor position utilities
   const saveCursorPosition = useCallback(() => {
-    const selection = window.getSelection();
-    if (!selection || !selection.rangeCount) return null;
-    
-    const range = selection.getRangeAt(0);
-    const preSelectionRange = range.cloneRange();
-    preSelectionRange.selectNodeContents(editorRef.current!);
-    preSelectionRange.setEnd(range.startContainer, range.startOffset);
-    
-    return {
-      start: preSelectionRange.toString().length,
-      end: preSelectionRange.toString().length + range.toString().length
-    };
+    try {
+      const selection = window.getSelection();
+      if (!selection || !selection.rangeCount || !editorRef.current) return null;
+      
+      const range = selection.getRangeAt(0);
+      const preSelectionRange = range.cloneRange();
+      preSelectionRange.selectNodeContents(editorRef.current);
+      preSelectionRange.setEnd(range.startContainer, range.startOffset);
+      
+      return {
+        start: preSelectionRange.toString().length,
+        end: preSelectionRange.toString().length + range.toString().length
+      };
+    } catch (error) {
+      console.warn('WysiwygEditor: Error saving cursor position:', error);
+      return null;
+    }
   }, []);
 
   const restoreCursorPosition = useCallback((savedSelection: { start: number; end: number }) => {
-    const selection = window.getSelection();
-    if (!selection || !editorRef.current) return;
+    try {
+      const selection = window.getSelection();
+      if (!selection || !editorRef.current || isProcessingInput.current) return;
 
-    const textNodes: Text[] = [];
-    const walker = document.createTreeWalker(
-      editorRef.current,
-      NodeFilter.SHOW_TEXT,
-      null
-    );
+      const textNodes: Text[] = [];
+      const walker = document.createTreeWalker(
+        editorRef.current,
+        NodeFilter.SHOW_TEXT,
+        null
+      );
 
-    let node;
-    while (node = walker.nextNode()) {
-      textNodes.push(node as Text);
-    }
-
-    let charIndex = 0;
-    let startNode = null;
-    let endNode = null;
-    let startOffset = 0;
-    let endOffset = 0;
-
-    for (const textNode of textNodes) {
-      const nodeLength = textNode.textContent?.length || 0;
-      
-      if (!startNode && charIndex + nodeLength >= savedSelection.start) {
-        startNode = textNode;
-        startOffset = savedSelection.start - charIndex;
+      let node;
+      while (node = walker.nextNode()) {
+        textNodes.push(node as Text);
       }
-      
-      if (!endNode && charIndex + nodeLength >= savedSelection.end) {
-        endNode = textNode;
-        endOffset = savedSelection.end - charIndex;
-        break;
-      }
-      
-      charIndex += nodeLength;
-    }
 
-    if (startNode) {
-      const range = document.createRange();
-      range.setStart(startNode, Math.min(startOffset, startNode.textContent?.length || 0));
-      range.setEnd(endNode || startNode, Math.min(endOffset, (endNode || startNode).textContent?.length || 0));
-      
-      selection.removeAllRanges();
-      selection.addRange(range);
+      let charIndex = 0;
+      let startNode = null;
+      let endNode = null;
+      let startOffset = 0;
+      let endOffset = 0;
+
+      for (const textNode of textNodes) {
+        const nodeLength = textNode.textContent?.length || 0;
+        
+        if (!startNode && charIndex + nodeLength >= savedSelection.start) {
+          startNode = textNode;
+          startOffset = savedSelection.start - charIndex;
+        }
+        
+        if (!endNode && charIndex + nodeLength >= savedSelection.end) {
+          endNode = textNode;
+          endOffset = savedSelection.end - charIndex;
+          break;
+        }
+        
+        charIndex += nodeLength;
+      }
+
+      if (startNode) {
+        const range = document.createRange();
+        range.setStart(startNode, Math.min(startOffset, startNode.textContent?.length || 0));
+        range.setEnd(endNode || startNode, Math.min(endOffset, (endNode || startNode).textContent?.length || 0));
+        
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    } catch (error) {
+      console.warn('WysiwygEditor: Error restoring cursor position:', error);
     }
   }, []);
 
-  // Debounced content cleaning
-  const debouncedCleanContent = useCallback((content: string, cursorPosition: { start: number; end: number } | null) => {
+  // Very conservative content cleaning - only clean on blur or submission
+  const debouncedCleanContent = useCallback((content: string) => {
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }
 
     debounceTimer.current = setTimeout(() => {
       try {
-        // More conservative cleaning - only remove truly problematic elements
+        if (isProcessingInput.current) return;
+        
+        // Only clean truly problematic elements and only when not actively typing
         const cleanContent = content
           .replace(/<p><\/p>/g, '') // Remove empty paragraphs
           .replace(/<div><\/div>/g, '') // Remove empty divs
           .replace(/<br\s*\/?>(\s*<br\s*\/?>)+/g, '<br>'); // Collapse multiple line breaks
         
-        // Only update if content actually changed and we're not in the middle of processing
-        if (cleanContent !== editorContent && !isProcessingInput.current) {
-          isProcessingInput.current = true;
-          
-          if (editorRef.current && cursorPosition) {
-            editorRef.current.innerHTML = cleanContent;
-            restoreCursorPosition(cursorPosition);
-          }
-          
+        // Only update if content has actually changed significantly
+        if (cleanContent !== content && cleanContent !== editorContent) {
           setEditorContent(cleanContent);
           onChange(cleanContent);
-          
-          // Reset processing flag after a short delay
-          setTimeout(() => {
-            isProcessingInput.current = false;
-          }, 50);
         }
       } catch (error) {
         console.error('WysiwygEditor: Error in debouncedCleanContent:', error);
-        isProcessingInput.current = false;
       }
-    }, 300); // 300ms debounce
-  }, [editorContent, onChange, restoreCursorPosition]);
+    }, 1000); // Longer debounce to avoid interrupting typing
+  }, [editorContent, onChange]);
 
+  // Simplified handleInput that avoids DOM manipulation during typing
   const handleInput = useCallback(() => {
     try {
       if (editorRef.current && !isProcessingInput.current) {
         const content = editorRef.current.innerHTML;
         
-        // Immediate light cleaning for basic functionality
-        const lightCleanContent = content
-          .replace(/<div><br><\/div>/g, '<br>') // Convert div breaks to br
-          .replace(/<div>/g, '<br>') // Convert opening divs to br
-          .replace(/<\/div>/g, ''); // Remove closing divs
-        
-        // Update content immediately if light cleaning changed anything
-        if (lightCleanContent !== content) {
-          isProcessingInput.current = true;
-          editorRef.current.innerHTML = lightCleanContent;
-          isProcessingInput.current = false;
-        }
-        
-        // Only trigger onChange for significant changes
-        if (lightCleanContent !== editorContent) {
-          setEditorContent(lightCleanContent);
-          onChange(lightCleanContent);
+        // Only update state if content has changed - NO DOM manipulation during typing
+        if (content !== editorContent) {
+          setEditorContent(content);
+          onChange(content);
           
-          // Save cursor position and trigger debounced deep cleaning
-          const cursorPosition = saveCursorPosition();
-          debouncedCleanContent(lightCleanContent, cursorPosition);
+          // Only trigger cleaning when user pauses typing
+          debouncedCleanContent(content);
         }
       }
     } catch (error) {
@@ -243,13 +228,54 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
       setHasError(true);
       setErrorMessage(`Input error: ${error.message}`);
     }
-  }, [editorContent, onChange, saveCursorPosition, debouncedCleanContent]);
+  }, [editorContent, onChange, debouncedCleanContent]);
 
   const handleFallbackChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setEditorContent(newValue);
     onChange(newValue);
   };
+
+  // Handle blur event to clean content when user finishes typing
+  const handleBlur = useCallback(() => {
+    try {
+      if (editorRef.current && !isProcessingInput.current) {
+        const content = editorRef.current.innerHTML;
+        
+        // Clean content more aggressively when user finishes typing
+        const cleanContent = content
+          .replace(/<p><\/p>/g, '') // Remove empty paragraphs
+          .replace(/<div><\/div>/g, '') // Remove empty divs  
+          .replace(/<div><br><\/div>/g, '<br>') // Convert div breaks to br
+          .replace(/<div>/g, '<br>') // Convert opening divs to br
+          .replace(/<\/div>/g, '') // Remove closing divs
+          .replace(/<br\s*\/?>(\s*<br\s*\/?>)+/g, '<br>') // Collapse multiple line breaks
+          .replace(/(<br\s*\/?>)+$/, ''); // Remove trailing line breaks
+        
+        // Update content if it changed
+        if (cleanContent !== content) {
+          isProcessingInput.current = true;
+          editorRef.current.innerHTML = cleanContent;
+          setEditorContent(cleanContent);
+          onChange(cleanContent);
+          
+          // Reset processing flag
+          setTimeout(() => {
+            isProcessingInput.current = false;
+          }, 50);
+        }
+      }
+    } catch (error) {
+      console.error('WysiwygEditor: Error in handleBlur:', error);
+    }
+  }, [onChange]);
+
+  const handleFocus = useCallback(() => {
+    // Clear any pending debounced operations when user starts typing
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     // Let the browser handle all keyboard events naturally
@@ -511,6 +537,8 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
             }}
             onInput={handleInput}
             onKeyDown={handleKeyDown}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             data-placeholder={placeholder}
             dir="ltr"
             suppressContentEditableWarning={true}
