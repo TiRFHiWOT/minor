@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Info, Trash2 } from 'lucide-react';
+import { Info, Trash2, Pin } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useAuth } from '@/hooks/useAuth';
@@ -8,6 +8,7 @@ import { AdminPostInfo } from './AdminPostInfo';
 import { AdminTopicInfo } from './AdminTopicInfo';
 import { useDeletePost } from '@/hooks/useDeletePost';
 import { useDeleteTopic } from '@/hooks/useDeleteTopic';
+import { usePinTopic } from '@/hooks/usePinTopic';
 
 interface AdminControlsProps {
   content: any;
@@ -23,6 +24,7 @@ export const AdminControls: React.FC<AdminControlsProps> = ({
   const { user } = useAuth();
   const { mutate: deletePost, isPending: isDeletingPost } = useDeletePost();
   const { mutate: deleteTopic, isPending: isDeletingTopic } = useDeleteTopic();
+  const { mutate: pinTopic, isPending: isPinningTopic } = usePinTopic();
 
   if (user?.role !== 'admin') return null;
 
@@ -34,6 +36,15 @@ export const AdminControls: React.FC<AdminControlsProps> = ({
     } else if (contentType === 'topic') {
       deleteTopic(content.id, {
         onSuccess: () => onDelete?.()
+      });
+    }
+  };
+
+  const handlePinToggle = () => {
+    if (contentType === 'topic') {
+      pinTopic({
+        topicId: content.id,
+        isPinned: !content.is_pinned
       });
     }
   };
@@ -50,6 +61,27 @@ export const AdminControls: React.FC<AdminControlsProps> = ({
           ) : (
             <AdminTopicInfo topic={content} />
           )
+        )}
+
+        {/* Pin/Unpin Button - only for topics */}
+        {contentType === 'topic' && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="h-6 w-6 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                onClick={handlePinToggle}
+                disabled={isPinningTopic}
+                title={content.is_pinned ? 'Unpin topic' : 'Pin topic'}
+              >
+                <Pin className={`h-3 w-3 ${content.is_pinned ? 'fill-current' : ''}`} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {content.is_pinned ? 'Unpin topic' : 'Pin topic'}
+            </TooltipContent>
+          </Tooltip>
         )}
 
         {/* Delete Button */}
