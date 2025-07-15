@@ -20,6 +20,9 @@ export const CreateTopic = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user, loading } = useAuth();
+  
+  // Debug auth state
+  console.log('CreateTopic auth state:', { user, loading, userExists: !!user });
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -190,6 +193,13 @@ export const CreateTopic = () => {
         <Button variant="outline" onClick={() => navigate('/')}>
           Cancel
         </Button>
+      </div>
+
+      {/* DEBUG: Show auth state */}
+      <div className="p-3 bg-yellow-100 border border-yellow-300 rounded-md">
+        <div className="text-sm">
+          <strong>Debug Auth State:</strong> {JSON.stringify({ user: !!user, loading, userId: user?.id })}
+        </div>
       </div>
 
       {/* Show temp user notice for non-authenticated users */}
