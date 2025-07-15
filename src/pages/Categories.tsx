@@ -109,7 +109,15 @@ export const Categories = () => {
               ).sort((a, b) => (a.region || '').localeCompare(b.region || ''));
 
               const tournamentForums = level2Categories.filter(category => 
+                category.parent_category_id === '44444444-4444-4444-4444-444444444444'
+              ).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+              
+              const generalForums = level2Categories.filter(category => 
                 category.parent_category_id === '33333333-3333-3333-3333-333333333333'
+              ).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+              
+              const importantForums = level2Categories.filter(category => 
+                category.parent_category_id === '234392cf-f9a4-4371-bba4-18a16d449f9f'
               ).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
               
               const countries = [];
@@ -120,7 +128,13 @@ export const Categories = () => {
                 countries.push({ name: 'USA', forums: usaForums });
               }
               if (tournamentForums.length > 0) {
-                countries.push({ name: 'Tournaments & General Discussion', forums: tournamentForums });
+                countries.push({ name: 'Tournaments', forums: tournamentForums });
+              }
+              if (generalForums.length > 0) {
+                countries.push({ name: 'General Discussion', forums: generalForums });
+              }
+              if (importantForums.length > 0) {
+                countries.push({ name: 'Important', forums: importantForums });
               }
               
               return countries.map(country => (
