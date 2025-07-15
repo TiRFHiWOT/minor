@@ -51,7 +51,7 @@ export const useCategoryBySlug = (categorySlug: string, subcategorySlug?: string
           console.log(`Fetching category with slug: ${slug}`);
           const { data, error } = await supabase
             .from('categories')
-            .select('*, parent_category:categories!parent_category_id(id, name, slug)')
+            .select('*')
             .eq('slug', slug)
             .single();
           
@@ -63,9 +63,24 @@ export const useCategoryBySlug = (categorySlug: string, subcategorySlug?: string
           console.log(`Category fetched for slug ${slug}:`, data);
           
           // If this category has a parent, recursively fetch the parent hierarchy
-          if (data.parent_category) {
-            console.log(`Found parent category ${data.parent_category.name} (${data.parent_category.slug}) for ${data.name}`);
-            const parentWithHierarchy = await buildCategoryHierarchy(data.parent_category.slug);
+          if (data.parent_category_id) {
+            console.log(`Found parent category ID ${data.parent_category_id} for ${data.name}`);
+            
+            // First get the parent category's slug
+            const { data: parentData, error: parentError } = await supabase
+              .from('categories')
+              .select('slug')
+              .eq('id', data.parent_category_id)
+              .single();
+            
+            if (parentError) {
+              console.error('Error fetching parent category slug:', parentError);
+              throw parentError;
+            }
+            
+            // Recursively build the parent hierarchy
+            const parentWithHierarchy = await buildCategoryHierarchy(parentData.slug);
+            
             const result = {
               ...data,
               parent_category: parentWithHierarchy
