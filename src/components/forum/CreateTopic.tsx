@@ -19,7 +19,7 @@ import { toast } from '@/hooks/use-toast';
 export const CreateTopic = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -162,6 +162,26 @@ export const CreateTopic = () => {
       });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900">Create New Topic</h1>
+          <Button variant="outline" onClick={() => navigate('/')}>
+            Cancel
+          </Button>
+        </div>
+        <Card className="p-6">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <div className="text-sm text-gray-600">Loading...</div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
