@@ -46,31 +46,34 @@ export const useCategoryBySlug = (categorySlug: string, subcategorySlug?: string
         console.log('Subcategory fetched by slug:', childCategory);
         return childCategory;
       } else {
-        // Single category with complete hierarchy
-        const { data, error } = await supabase
-          .from('categories')
-          .select(`
-            *,
-            parent_category:categories!parent_category_id(
-              id, name, slug,
-              parent_category:categories!parent_category_id(
-                id, name, slug,
-                parent_category:categories!parent_category_id(
-                  id, name, slug
-                )
-              )
-            )
-          `)
-          .eq('slug', categorySlug)
-          .single();
+        // Single category - build complete hierarchy recursively
+        const buildCategoryHierarchy = async (slug: string): Promise<any> => {
+          const { data, error } = await supabase
+            .from('categories')
+            .select('*, parent_category:categories!parent_category_id(id, name, slug)')
+            .eq('slug', slug)
+            .single();
+          
+          if (error) {
+            console.error('Error fetching category by slug:', error);
+            throw error;
+          }
+          
+          // If this category has a parent, recursively fetch the parent hierarchy
+          if (data.parent_category) {
+            const parentWithHierarchy = await buildCategoryHierarchy(data.parent_category.slug);
+            return {
+              ...data,
+              parent_category: parentWithHierarchy
+            };
+          }
+          
+          return data;
+        };
         
-        if (error) {
-          console.error('Error fetching category by slug:', error);
-          throw error;
-        }
-        
-        console.log('Category fetched by slug:', data);
-        return data;
+        const categoryWithHierarchy = await buildCategoryHierarchy(categorySlug);
+        console.log('Category fetched by slug with hierarchy:', categoryWithHierarchy);
+        return categoryWithHierarchy;
       }
     },
     enabled: !!categorySlug,

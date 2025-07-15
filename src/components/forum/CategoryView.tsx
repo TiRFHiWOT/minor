@@ -29,12 +29,15 @@ const buildBreadcrumbHierarchy = (category: any) => {
   const breadcrumbs = [];
   let current = category;
   
+  // Build breadcrumb hierarchy by traversing parent_category chain
   while (current) {
     breadcrumbs.unshift({
       name: current.name,
       slug: current.slug,
       id: current.id
     });
+    
+    // Move to parent category
     current = current.parent_category;
   }
   
@@ -114,6 +117,7 @@ export const CategoryView = () => {
     categoryLoading = categoryBySlugLoading;
     categoryError = slugError;
   }
+  
   const { data: subcategories, isLoading: subcategoriesLoading } = useCategoriesByActivity(category?.id, category?.level ? category.level + 1 : undefined);
   const { data: topics, isLoading: topicsLoading } = useTopics(category?.id);
 
