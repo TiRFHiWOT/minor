@@ -22,7 +22,18 @@ export const useCategoryBySlug = (categorySlug: string, subcategorySlug?: string
         
         const { data: childCategory, error: childError } = await supabase
           .from('categories')
-          .select('*, parent_category:categories!parent_category_id(slug, name)')
+          .select(`
+            *,
+            parent_category:categories!parent_category_id(
+              id, name, slug,
+              parent_category:categories!parent_category_id(
+                id, name, slug,
+                parent_category:categories!parent_category_id(
+                  id, name, slug
+                )
+              )
+            )
+          `)
           .eq('slug', subcategorySlug)
           .eq('parent_category_id', parentCategory.id)
           .single();
@@ -35,10 +46,21 @@ export const useCategoryBySlug = (categorySlug: string, subcategorySlug?: string
         console.log('Subcategory fetched by slug:', childCategory);
         return childCategory;
       } else {
-        // Single category
+        // Single category with complete hierarchy
         const { data, error } = await supabase
           .from('categories')
-          .select('*, parent_category:categories!parent_category_id(slug, name)')
+          .select(`
+            *,
+            parent_category:categories!parent_category_id(
+              id, name, slug,
+              parent_category:categories!parent_category_id(
+                id, name, slug,
+                parent_category:categories!parent_category_id(
+                  id, name, slug
+                )
+              )
+            )
+          `)
           .eq('slug', categorySlug)
           .single();
         

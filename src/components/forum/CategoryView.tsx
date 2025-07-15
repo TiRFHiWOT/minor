@@ -161,22 +161,20 @@ export const CategoryView = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
             
-            {buildBreadcrumbHierarchy(category).map((breadcrumb, index, array) => (
-              <React.Fragment key={breadcrumb.id}>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  {index === array.length - 1 ? (
-                    <BreadcrumbPage className="max-w-full truncate">{breadcrumb.name}</BreadcrumbPage>
-                  ) : (
-                    <BreadcrumbLink asChild>
-                      <Link to={`/${breadcrumb.slug}`} className="max-w-full truncate">
-                        {breadcrumb.name}
-                      </Link>
-                    </BreadcrumbLink>
-                  )}
-                </BreadcrumbItem>
-              </React.Fragment>
-            ))}
+            {buildBreadcrumbHierarchy(category).map((breadcrumb, index, array) => [
+              <BreadcrumbSeparator key={`sep-${breadcrumb.id}`} />,
+              <BreadcrumbItem key={breadcrumb.id}>
+                {index === array.length - 1 ? (
+                  <BreadcrumbPage className="max-w-full truncate">{breadcrumb.name}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild>
+                    <Link to={`/${breadcrumb.slug}`} className="max-w-full truncate">
+                      {breadcrumb.name}
+                    </Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+            ]).flat()}
           </BreadcrumbList>
         </Breadcrumb>
       )}
