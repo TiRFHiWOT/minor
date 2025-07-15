@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { WysiwygEditor } from '@/components/ui/wysiwyg-editor';
 import { useAuth } from '@/hooks/useAuth';
@@ -40,6 +40,11 @@ export const InlineReplyForm: React.FC<InlineReplyFormProps> = ({
     if (textareaRef.current) {
       textareaRef.current.focus();
     }
+  }, []);
+
+  // Stable callback to prevent WysiwygEditor re-renders
+  const handleContentChange = useCallback((newContent: string) => {
+    setContent(newContent);
   }, []);
 
   const handleSubmit = async () => {
@@ -153,7 +158,7 @@ export const InlineReplyForm: React.FC<InlineReplyFormProps> = ({
       <div className="space-y-3">
         <WysiwygEditor
           value={content}
-          onChange={setContent}
+          onChange={handleContentChange}
           placeholder={user ? "Write your reply..." : "Write your reply as an anonymous user (no images or links allowed)..."}
           height={120}
           allowImages={!!user}

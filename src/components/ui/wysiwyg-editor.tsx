@@ -30,7 +30,7 @@ interface WysiwygEditorProps {
   allowImages?: boolean;
 }
 
-export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
+export const WysiwygEditor: React.FC<WysiwygEditorProps> = React.memo(({
   value,
   onChange,
   placeholder = "Write your content here...",
@@ -50,6 +50,12 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
   const [errorMessage, setErrorMessage] = useState('');
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const isProcessingInput = useRef(false);
+  const onChangeRef = useRef(onChange);
+  
+  // Keep onChange ref updated without causing re-renders
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   // Initialize editor with error handling and debugging
   useEffect(() => {
@@ -200,13 +206,13 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
         // Only update if content has actually changed significantly
         if (cleanContent !== content && cleanContent !== editorContent) {
           setEditorContent(cleanContent);
-          onChange(cleanContent);
+          onChangeRef.current(cleanContent);
         }
       } catch (error) {
         console.error('WysiwygEditor: Error in debouncedCleanContent:', error);
       }
     }, 1000); // Longer debounce to avoid interrupting typing
-  }, [editorContent, onChange]);
+  }, [editorContent]);
 
   // Simplified handleInput that avoids DOM manipulation during typing
   const handleInput = useCallback(() => {
@@ -217,7 +223,7 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
         // Only update state if content has changed - NO DOM manipulation during typing
         if (content !== editorContent) {
           setEditorContent(content);
-          onChange(content);
+          onChangeRef.current(content);
           
           // Only trigger cleaning when user pauses typing
           debouncedCleanContent(content);
@@ -228,12 +234,12 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
       setHasError(true);
       setErrorMessage(`Input error: ${error.message}`);
     }
-  }, [editorContent, onChange, debouncedCleanContent]);
+  }, [editorContent, debouncedCleanContent]);
 
   const handleFallbackChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setEditorContent(newValue);
-    onChange(newValue);
+    onChangeRef.current(newValue);
   };
 
   // Handle blur event to clean content when user finishes typing
@@ -257,7 +263,7 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
           isProcessingInput.current = true;
           editorRef.current.innerHTML = cleanContent;
           setEditorContent(cleanContent);
-          onChange(cleanContent);
+          onChangeRef.current(cleanContent);
           
           // Reset processing flag
           setTimeout(() => {
@@ -268,7 +274,7 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
     } catch (error) {
       console.error('WysiwygEditor: Error in handleBlur:', error);
     }
-  }, [onChange]);
+  }, []);
 
   const handleFocus = useCallback(() => {
     // Clear any pending debounced operations when user starts typing
@@ -638,6 +644,6 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({
       `}</style>
     </div>
   );
-};
+});
 
 export default WysiwygEditor;

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,19 @@ export const CreateTopic = () => {
       setFormData(prev => ({ ...prev, category_id: categoryFromUrl }));
     }
   }, [searchParams]);
+
+  // Stable callback to prevent WysiwygEditor re-renders
+  const handleContentChange = useCallback((content: string) => {
+    setFormData(prev => ({ ...prev, content }));
+  }, []);
+
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, title: e.target.value }));
+  }, []);
+
+  const handleCategoryChange = useCallback((category_id: string) => {
+    setFormData(prev => ({ ...prev, category_id }));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,14 +148,14 @@ export const CreateTopic = () => {
               id="title"
               placeholder="Enter a descriptive title for your topic"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={handleTitleChange}
               required
             />
           </div>
 
           <SmartCategorySelector
             value={formData.category_id}
-            onChange={(value) => setFormData({ ...formData, category_id: value })}
+            onChange={handleCategoryChange}
             currentCategoryId={searchParams.get('category') || undefined}
             required
           />
@@ -151,7 +164,7 @@ export const CreateTopic = () => {
             <Label htmlFor="content">Content</Label>
             <WysiwygEditor
               value={formData.content}
-              onChange={(value) => setFormData({ ...formData, content: value })}
+              onChange={handleContentChange}
               placeholder={user ? "Write your topic content here..." : "Write your topic content here (no images or links allowed for anonymous users)..."}
               height={300}
               allowImages={!!user}
