@@ -69,9 +69,9 @@ export const useForumSettings = () => {
       console.log('Forum settings fetched and mapped:', settingsMap);
       return settingsMap;
     },
-    staleTime: 0, // Always refetch to ensure fresh data
-    refetchOnWindowFocus: true, // Refetch when window gains focus
-    refetchOnMount: true, // Always refetch on mount
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchOnMount: false, // Don't always refetch on mount
   });
 
   const updateSettingMutation = useMutation({
