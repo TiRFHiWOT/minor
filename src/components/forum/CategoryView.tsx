@@ -24,6 +24,23 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+// Helper function to build breadcrumb hierarchy
+const buildBreadcrumbHierarchy = (category: any) => {
+  const breadcrumbs = [];
+  let current = category;
+  
+  while (current) {
+    breadcrumbs.unshift({
+      name: current.name,
+      slug: current.slug,
+      id: current.id
+    });
+    current = current.parent_category;
+  }
+  
+  return breadcrumbs;
+};
+
 const SubcategoryCard = ({ subcat }: { subcat: any }) => {
   const { data: stats } = useCategoryStats(subcat.id);
   
@@ -143,10 +160,23 @@ export const CategoryView = () => {
                 </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="max-w-full truncate">{category.name}</BreadcrumbPage>
-            </BreadcrumbItem>
+            
+            {buildBreadcrumbHierarchy(category).map((breadcrumb, index, array) => (
+              <React.Fragment key={breadcrumb.id}>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  {index === array.length - 1 ? (
+                    <BreadcrumbPage className="max-w-full truncate">{breadcrumb.name}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink asChild>
+                      <Link to={`/${breadcrumb.slug}`} className="max-w-full truncate">
+                        {breadcrumb.name}
+                      </Link>
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+              </React.Fragment>
+            ))}
           </BreadcrumbList>
         </Breadcrumb>
       )}
