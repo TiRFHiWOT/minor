@@ -90,6 +90,8 @@ const SubcategoryCard = ({ subcat }: { subcat: any }) => {
 export const CategoryView = () => {
   const { categoryId, categorySlug, subcategorySlug } = useParams();
   
+  console.log('CategoryView params:', { categoryId, categorySlug, subcategorySlug });
+  
   // Handle both legacy UUID routing and new slug routing
   const isLegacyRoute = !!categoryId;
   const { user } = useAuth();
@@ -99,6 +101,8 @@ export const CategoryView = () => {
   
   // Determine which slug to use for the query
   const slugToLookup = subcategorySlug || categorySlug || (!isUUID ? categoryId : '');
+  
+  console.log('CategoryView logic:', { isUUID, slugToLookup, categoryId });
   
   // Only call hooks with valid parameters to prevent errors
   const { data: categoryBySlug, isLoading: categoryBySlugLoading, error: slugError } = useCategoryBySlug(
@@ -112,14 +116,18 @@ export const CategoryView = () => {
   let category, categoryLoading, categoryError;
   
   if (isUUID) {
+    console.log('Using categoryById result');
     category = categoryById;
     categoryLoading = categoryByIdLoading;
     categoryError = idError;
   } else {
+    console.log('Using categoryBySlug result');
     category = categoryBySlug;
     categoryLoading = categoryBySlugLoading;
     categoryError = slugError;
   }
+  
+  console.log('Final category data:', category);
   
   const { data: subcategories, isLoading: subcategoriesLoading } = useCategoriesByActivity(category?.id, category?.level ? category.level + 1 : undefined);
   const { data: topics, isLoading: topicsLoading } = useTopics(category?.id);
