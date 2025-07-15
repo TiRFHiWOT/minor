@@ -11,6 +11,7 @@ import { useEnhancedForumStats } from '@/hooks/useEnhancedForumStats';
 import { useForumSettings } from '@/hooks/useForumSettings';
 import { useVisitors24h } from '@/hooks/useVisitors24h';
 import { usePeakDailyVisitors } from '@/hooks/usePeakDailyVisitors';
+import { useAutoPeakUpdate } from '@/hooks/useAutoPeakUpdate';
 import { Facebook, Twitter, Instagram, Youtube, Users, Calendar } from 'lucide-react';
 
 const ContactFormModal = () => {
@@ -125,6 +126,9 @@ export const Footer = () => {
   const { getSetting } = useForumSettings();
   const { data: visitors24h } = useVisitors24h();
   const { data: peakData } = usePeakDailyVisitors();
+  
+  // Auto-update peak when current visitors exceed stored peak
+  useAutoPeakUpdate();
 
   return (
     <footer className="bg-card border-t mt-auto">
