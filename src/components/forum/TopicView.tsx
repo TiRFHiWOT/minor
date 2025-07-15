@@ -14,10 +14,12 @@ import { useTopicByPath } from '@/hooks/useTopicByPath';
 import { usePosts } from '@/hooks/usePosts';
 import { useEditTopic } from '@/hooks/useEditTopic';
 import { usePostPage } from '@/hooks/usePostPage';
+import { usePollsByTopic } from '@/hooks/usePollResults';
 import { ReportModal } from './ReportModal';
 import { PostComponent } from './PostComponent';
 import { InlineReplyForm } from './InlineReplyForm';
 import { AdminControls } from './AdminControls';
+import { PollDisplay } from './PollDisplay';
 import { AdBanner } from '@/components/ads/AdBanner';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
@@ -68,6 +70,7 @@ export const TopicView = () => {
   const posts = postsData?.posts || [];
   const totalPosts = postsData?.totalCount || 0;
   const { mutate: editTopic, isPending: isUpdatingTopic } = useEditTopic();
+  const { data: polls = [] } = usePollsByTopic(topic?.id || '');
 
   // Real-time subscription for topic moderation status changes
   useEffect(() => {
@@ -547,6 +550,15 @@ export const TopicView = () => {
           </div>
         )}
       </div>
+
+      {/* Polls */}
+      {polls.length > 0 && (
+        <div className="space-y-4">
+          {polls.map((poll) => (
+            <PollDisplay key={poll.id} poll={poll} />
+          ))}
+        </div>
+      )}
 
       {/* Comments */}
       <div className="bg-card">

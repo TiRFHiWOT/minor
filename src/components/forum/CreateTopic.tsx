@@ -5,12 +5,15 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { WysiwygEditor } from '@/components/ui/wysiwyg-editor';
 import { useAuth } from '@/hooks/useAuth';
 import { useCreateTopic } from '@/hooks/useCreateTopic';
+import { useCreatePoll } from '@/hooks/useCreatePoll';
 import { useTempUser } from '@/hooks/useTempUser';
 import { useEnhancedSpamDetection } from '@/hooks/useEnhancedSpamDetection';
 import { SmartCategorySelector } from './SmartCategorySelector';
+import { PollCreator } from './PollCreator';
 import { toast } from '@/hooks/use-toast';
 
 export const CreateTopic = () => {
@@ -23,8 +26,10 @@ export const CreateTopic = () => {
     category_id: ''
   });
   const [contentErrors, setContentErrors] = useState<string[]>([]);
+  const [showPollCreator, setShowPollCreator] = useState(false);
 
   const createTopicMutation = useCreateTopic();
+  const createPollMutation = useCreatePoll();
   const tempUser = useTempUser();
   const spamDetection = useEnhancedSpamDetection();
 
@@ -117,6 +122,47 @@ export const CreateTopic = () => {
     }
   };
 
+  const handleCreatePoll = async (pollData: any) => {
+    // First create the topic
+    if (!formData.title || !formData.content || !formData.category_id) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required topic fields first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const topic = await createTopicMutation.mutateAsync(formData);
+      
+      // Then create the poll
+      await createPollMutation.mutateAsync({
+        topicId: topic.id,
+        pollData
+      });
+
+      toast({
+        title: "Success",
+        description: "Topic and poll created successfully!",
+      });
+      
+      // Navigate to the topic
+      if (topic.slug && topic.categories?.slug) {
+        navigate(`/${topic.categories.slug}/${topic.slug}`);
+      } else {
+        navigate(`/topic/${topic.id}`);
+      }
+    } catch (error) {
+      console.error('Error creating topic with poll:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create topic with poll. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
@@ -181,6 +227,27 @@ export const CreateTopic = () => {
             )}
           </div>
 
+          {/* Poll creation section - only for registered users */}
+          {user && (
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="add-poll"
+                  checked={showPollCreator}
+                  onCheckedChange={setShowPollCreator}
+                />
+                <Label htmlFor="add-poll">Add a poll to this topic</Label>
+              </div>
+              {showPollCreator && (
+                <PollCreator
+                  onCreatePoll={handleCreatePoll}
+                  onCancel={() => setShowPollCreator(false)}
+                  isLoading={createTopicMutation.isPending || createPollMutation.isPending}
+                />
+              )}
+            </div>
+          )}
+
           <div className="flex justify-end space-x-2">
             <Button 
               type="button" 
@@ -189,12 +256,32 @@ export const CreateTopic = () => {
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              disabled={createTopicMutation.isPending}
-            >
-              {createTopicMutation.isPending ? 'Creating...' : 'Create Topic'}
-            </Button>
+            {showPollCreator ? (
+              <Button 
+                type="button" 
+                onClick={() => {
+                  if (formData.title && formData.content && formData.category_id) {
+                    // Poll creation is handled in PollCreator component
+                  } else {
+                    toast({
+                      title: "Error",
+                      description: "Please fill in all required fields",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+                disabled={createTopicMutation.isPending || createPollMutation.isPending}
+              >
+                {createTopicMutation.isPending || createPollMutation.isPending ? 'Creating...' : 'Create Topic with Poll'}
+              </Button>
+            ) : (
+              <Button 
+                type="submit" 
+                disabled={createTopicMutation.isPending}
+              >
+                {createTopicMutation.isPending ? 'Creating...' : 'Create Topic'}
+              </Button>
+            )}
           </div>
         </form>
       </Card>
