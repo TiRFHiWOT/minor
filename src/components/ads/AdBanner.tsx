@@ -17,18 +17,13 @@ export const AdBanner: React.FC<AdBannerProps> = ({ className = '' }) => {
   useEffect(() => {
     try {
       // Initialize AdSense ad
-      if (window.adsbygoogle && !isMobile) {
+      if (window.adsbygoogle) {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       }
     } catch (error) {
       console.error('AdSense error:', error);
     }
-  }, [isMobile]);
-
-  // Hide on mobile devices
-  if (isMobile) {
-    return null;
-  }
+  }, []);
 
   return (
     <div className={`w-full my-6 ${className}`}>
