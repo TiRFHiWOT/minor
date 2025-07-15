@@ -48,6 +48,7 @@ export const useCategoryBySlug = (categorySlug: string, subcategorySlug?: string
       } else {
         // Single category - build complete hierarchy recursively
         const buildCategoryHierarchy = async (slug: string): Promise<any> => {
+          console.log(`Fetching category with slug: ${slug}`);
           const { data, error } = await supabase
             .from('categories')
             .select('*, parent_category:categories!parent_category_id(id, name, slug)')
@@ -59,20 +60,26 @@ export const useCategoryBySlug = (categorySlug: string, subcategorySlug?: string
             throw error;
           }
           
+          console.log(`Category fetched for slug ${slug}:`, data);
+          
           // If this category has a parent, recursively fetch the parent hierarchy
           if (data.parent_category) {
+            console.log(`Found parent category ${data.parent_category.name} (${data.parent_category.slug}) for ${data.name}`);
             const parentWithHierarchy = await buildCategoryHierarchy(data.parent_category.slug);
-            return {
+            const result = {
               ...data,
               parent_category: parentWithHierarchy
             };
+            console.log(`Built hierarchy for ${data.name}:`, result);
+            return result;
           }
           
+          console.log(`No parent found for ${data.name}, returning as root`);
           return data;
         };
         
         const categoryWithHierarchy = await buildCategoryHierarchy(categorySlug);
-        console.log('Category fetched by slug with hierarchy:', categoryWithHierarchy);
+        console.log('Final category with complete hierarchy:', categoryWithHierarchy);
         return categoryWithHierarchy;
       }
     },

@@ -26,11 +26,13 @@ import {
 
 // Helper function to build breadcrumb hierarchy
 const buildBreadcrumbHierarchy = (category: any) => {
+  console.log('Building breadcrumb hierarchy for category:', category);
   const breadcrumbs = [];
   let current = category;
   
   // Build breadcrumb hierarchy by traversing parent_category chain
   while (current) {
+    console.log('Processing breadcrumb level:', current.name, 'with parent:', current.parent_category);
     breadcrumbs.unshift({
       name: current.name,
       slug: current.slug,
@@ -41,6 +43,7 @@ const buildBreadcrumbHierarchy = (category: any) => {
     current = current.parent_category;
   }
   
+  console.log('Final breadcrumbs array:', breadcrumbs);
   return breadcrumbs;
 };
 
