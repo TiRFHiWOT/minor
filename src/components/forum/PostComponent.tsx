@@ -15,6 +15,7 @@ import { useEditPost } from '@/hooks/useEditPost';
 import { useDeletePost } from '@/hooks/useDeletePost';
 import { AdminPostInfo } from './AdminPostInfo';
 import { AdminControls } from './AdminControls';
+import { AdminTempUserInfo } from '@/components/admin/AdminTempUserInfo';
 import { supabase } from '@/integrations/supabase/client';
 
 interface PostComponentProps {
@@ -195,13 +196,18 @@ export const PostComponent: React.FC<PostComponentProps> = React.memo(({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center flex-wrap gap-2">
             <span className="font-medium text-foreground text-sm">
-              {post.profiles?.username || 'Anonymous'}
+              {post.profiles?.username || 'Guest'}
             </span>
             <span className="text-xs text-muted-foreground">
               {formatDistanceToNow(new Date(post.created_at))} ago
             </span>
           </div>
         </div>
+        
+        {/* Admin tracking info for temporary users */}
+        {user?.role === 'admin' && !post.profiles?.username && (
+          <AdminTempUserInfo userId={post.author_id} className="mb-3" />
+        )}
         
         {/* Post content - Full width */}
         <div className="mb-4">
@@ -242,7 +248,7 @@ export const PostComponent: React.FC<PostComponentProps> = React.memo(({
                     <MessageCircle className="h-3 w-3" />
                     <span>Replying to</span>
                     <span className="font-medium text-foreground">
-                      {post.parent_post.profiles?.username || 'Anonymous'}
+                      {post.parent_post.profiles?.username || 'Guest'}
                     </span>
                     <span>•</span>
                     <span>{formatDistanceToNow(new Date(post.parent_post.created_at))} ago</span>

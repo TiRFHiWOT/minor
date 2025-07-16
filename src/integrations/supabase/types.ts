@@ -1275,6 +1275,7 @@ export type Database = {
           created_at: string
           display_name: string
           expires_at: string
+          guest_number: number
           id: string
           session_id: string
         }
@@ -1282,6 +1283,7 @@ export type Database = {
           created_at?: string
           display_name: string
           expires_at?: string
+          guest_number?: number
           id?: string
           session_id: string
         }
@@ -1289,6 +1291,7 @@ export type Database = {
           created_at?: string
           display_name?: string
           expires_at?: string
+          guest_number?: number
           id?: string
           session_id?: string
         }
@@ -1539,6 +1542,10 @@ export type Database = {
           total_pages: number
           is_vpn: boolean
         }[]
+      }
+      get_admin_display_name: {
+        Args: { temp_user_id: string }
+        Returns: string
       }
       get_categories_by_activity: {
         Args: { p_parent_category_id?: string; p_category_level?: number }

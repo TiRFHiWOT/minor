@@ -113,7 +113,7 @@ export const InlineReplyForm: React.FC<InlineReplyFormProps> = ({
               <span>Replying to</span>
               <span className="font-medium text-slate-700">
                 {isTopicReply ? 'Original Post' : 
-                 `${parentPost.is_anonymous ? 'Anonymous' : (parentPost.profiles?.username || 'Unknown')}`}
+                 `${parentPost.is_anonymous ? 'Guest' : (parentPost.profiles?.username || 'Unknown')}`}
               </span>
               {!isTopicReply && parentPost.created_at && (
                 <>
@@ -136,7 +136,7 @@ export const InlineReplyForm: React.FC<InlineReplyFormProps> = ({
       {!user && tempUser.tempUser && (
         <div className="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-md">
           <div className="text-sm text-amber-800">
-            <div className="font-medium">Posting as: {tempUser.tempUser.display_name}</div>
+            <div className="font-medium">Posting as: Guest</div>
             {!tempUser.canPost && (
               <div className="text-xs mt-1">
                 Daily rate limit reached

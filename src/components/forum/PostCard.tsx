@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { HotTopic } from '@/hooks/useHotTopics';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { AdminControls } from './AdminControls';
+import { AdminTempUserInfo } from '@/components/admin/AdminTempUserInfo';
 import { generateCategoryUrl } from '@/utils/urlHelpers';
 import { htmlToText } from '@/utils/htmlToText';
 
@@ -91,11 +92,16 @@ export const PostCard: React.FC<PostCardProps> = React.memo(({ topic, onReport }
               </p>
             )}
 
+            {/* Admin tracking info for temporary users */}
+            {user?.role === 'admin' && !topic.username && (
+              <AdminTempUserInfo userId={topic.author_id} className="mb-3" />
+            )}
+
             {/* Footer */}
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <div className="flex items-center space-x-3">
                 <span className="font-medium">
-                  {topic.username || 'Anonymous User'}
+                  {topic.username || 'Guest'}
                 </span>
                 <span>Created {formatDistanceToNow(new Date(topic.created_at))} ago</span>
                 {topic.last_reply_at && topic.reply_count > 0 && (
