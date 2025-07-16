@@ -89,7 +89,7 @@ export const useAdminActivity = () => {
         userMap.set(profile.id, profile.username);
       });
       temporaryUsersData.forEach(tempUser => {
-        userMap.set(tempUser.id, tempUser.display_name);
+        userMap.set(tempUser.id, "Guest");
       });
 
       // Combine and format activities

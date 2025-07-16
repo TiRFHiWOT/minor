@@ -92,7 +92,7 @@ export const useTopicByPath = (categorySlug: string, subcategorySlug?: string, t
             .maybeSingle();
           
           if (tempUser) {
-            authorInfo = { temporary_users: tempUser };
+            authorInfo = { temporary_users: { display_name: "Guest" } };
           }
         }
       }

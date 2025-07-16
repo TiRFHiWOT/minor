@@ -146,7 +146,7 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
         {!user && tempUser.tempUser && (
           <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
             <div className="text-sm text-blue-800">
-              <div className="font-medium">Posting as: {tempUser.tempUser.display_name}</div>
+              <div className="font-medium">Posting as: Guest</div>
               <div className="text-xs mt-1">
                 {tempUser.canPost 
                   ? `${tempUser.remainingPosts} posts remaining in the next 12 hours`

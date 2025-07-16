@@ -85,7 +85,7 @@ export const useTopicsLegacy = (categoryId?: string, limit = 25) => {
         userMap.set(profile.id, { username: profile.username, avatar_url: profile.avatar_url });
       });
       temporaryUsersData.forEach(tempUser => {
-        userMap.set(tempUser.id, { username: tempUser.display_name, avatar_url: null });
+        userMap.set(tempUser.id, { username: "Guest", avatar_url: null });
       });
 
       // Get last post IDs for topics that have replies

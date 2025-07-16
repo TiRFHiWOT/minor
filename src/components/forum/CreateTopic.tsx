@@ -206,7 +206,7 @@ export const CreateTopic = () => {
       {!user && tempUser.tempUser && (
         <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
           <div className="text-sm text-blue-800">
-            <div className="font-medium">Posting as: {tempUser.tempUser.display_name}</div>
+            <div className="font-medium">Posting as: Guest</div>
             <div className="text-xs mt-2 text-blue-600">
               <a href="/register" className="underline hover:no-underline">
                 Create account for additional features like images and links

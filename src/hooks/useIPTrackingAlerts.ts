@@ -81,7 +81,7 @@ export const useIPTrackingAlerts = () => {
                 .single();
               
               if (tempUser?.display_name) {
-                username = tempUser.display_name;
+                username = "Guest";
               }
             }
           }
@@ -123,7 +123,7 @@ export const useIPTrackingAlerts = () => {
                 .single();
               
               if (tempUser?.display_name) {
-                username = tempUser.display_name;
+                username = "Guest";
               }
             }
           }

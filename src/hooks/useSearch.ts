@@ -92,7 +92,7 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
           topicUserMap.set(profile.id, profile.username);
         });
         topicTempUsersData.forEach(tempUser => {
-          topicUserMap.set(tempUser.id, tempUser.display_name);
+          topicUserMap.set(tempUser.id, "Guest");
         });
 
         // Add topic results

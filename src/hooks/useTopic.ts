@@ -53,7 +53,7 @@ export const useTopic = (identifier: string) => {
             .maybeSingle();
           
           if (tempUser) {
-            authorInfo = { temporary_users: tempUser };
+            authorInfo = { temporary_users: { display_name: "Guest" } };
           }
         }
       }
