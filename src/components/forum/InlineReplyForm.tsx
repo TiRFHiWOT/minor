@@ -137,12 +137,11 @@ export const InlineReplyForm: React.FC<InlineReplyFormProps> = ({
         <div className="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-md">
           <div className="text-sm text-amber-800">
             <div className="font-medium">Posting as: {tempUser.tempUser.display_name}</div>
-            <div className="text-xs mt-1">
-              {tempUser.canPost 
-                ? `${tempUser.remainingPosts} posts remaining today`
-                : 'Daily rate limit reached'
-              }
-            </div>
+            {!tempUser.canPost && (
+              <div className="text-xs mt-1">
+                Daily rate limit reached
+              </div>
+            )}
             <div className="text-xs mt-1 text-amber-700">
               Posts appear immediately • No images or links allowed
             </div>
