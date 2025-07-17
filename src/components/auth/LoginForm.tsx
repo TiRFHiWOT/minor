@@ -112,7 +112,7 @@ export const LoginForm = () => {
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: 'https://minorhockeytalks.com/reset-password',
       });
 
       if (error) throw error;

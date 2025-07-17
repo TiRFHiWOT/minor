@@ -18,6 +18,7 @@ import { CategoryView } from "./components/forum/CategoryView";
 import { CreateTopic } from "./components/forum/CreateTopic";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Terms from "./pages/Terms";
@@ -85,6 +86,7 @@ const App = () => (
                         {/* Authentication routes - standalone pages */}
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
+                        <Route path="/reset-password" element={<ResetPassword />} />
                   
                   {/* Admin routes - wrapped in AdminLayout */}
                   <Route path="/admin" element={<AdminLayout />}>
