@@ -114,6 +114,7 @@ export const UserManagement = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Join Date</TableHead>
                 <TableHead>Posts</TableHead>
@@ -129,6 +130,11 @@ export const UserManagement = () => {
                       <div>
                         <div className="font-medium">{user.username}</div>
                         <div className="text-sm text-gray-500">{user.id}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-sm">
+                        {user.email || 'No email'}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -170,11 +176,11 @@ export const UserManagement = () => {
                   </TableRow>
                 ))
               ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
-                    {searchTerm ? 'No users found matching your search.' : 'No users found.'}
-                  </TableCell>
-                </TableRow>
+                 <TableRow>
+                   <TableCell colSpan={7} className="text-center py-8">
+                     {searchTerm ? 'No users found matching your search.' : 'No users found.'}
+                   </TableCell>
+                 </TableRow>
               )}
             </TableBody>
           </Table>

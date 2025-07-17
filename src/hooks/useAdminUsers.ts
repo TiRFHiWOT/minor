@@ -28,6 +28,12 @@ export const useAdminUsers = () => {
 
       if (profilesError) throw profilesError;
 
+      // Get user emails from auth schema (admin only)
+      const { data: emailData, error: emailError } = await supabase
+        .rpc('get_admin_users_with_emails');
+
+      if (emailError) throw emailError;
+
       // Get user roles
       const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
@@ -57,10 +63,17 @@ export const useAdminUsers = () => {
         roleMap.set(userRole.user_id, userRole.role);
       });
 
+      // Create email map
+      const emailMap = new Map<string, string>();
+      emailData?.forEach(userData => {
+        emailMap.set(userData.id, userData.email);
+      });
+
       // Combine data
       const users: AdminUser[] = profiles?.map(profile => ({
         id: profile.id,
         username: profile.username,
+        email: emailMap.get(profile.id),
         role: roleMap.get(profile.id) || 'user',
         created_at: profile.created_at || '',
         post_count: postCountMap.get(profile.id) || 0,

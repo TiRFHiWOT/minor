@@ -1547,6 +1547,14 @@ export type Database = {
         Args: { temp_user_id: string }
         Returns: string
       }
+      get_admin_users_with_emails: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          email: string
+          created_at: string
+        }[]
+      }
       get_categories_by_activity: {
         Args: { p_parent_category_id?: string; p_category_level?: number }
         Returns: {
