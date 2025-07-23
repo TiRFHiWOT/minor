@@ -36,16 +36,18 @@ const AdTest: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-4">AdMetricsPro Test Page</h1>
-        <p className="text-muted-foreground mb-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold mb-4">AdMetricsPro Test Page</h1>
+        <p className="text-xl text-muted-foreground mb-6">
           Testing ad integration and placement for minorhockeytalks.com
         </p>
         <Button onClick={handleRefreshAds} className="mb-8">
           Test Ad Refresh (amp_refreshAllSlots)
         </Button>
       </div>
+
+      <div className="w-full max-w-6xl mx-auto px-4 space-y-8">
 
       {/* Leaderboard Top Ad */}
       <Card className="p-4">
@@ -162,6 +164,7 @@ const AdTest: React.FC = () => {
           <p>7. Check that Connatix video unit script loads and logs to console</p>
         </div>
       </Card>
+      </div>
     </div>
   );
 };
