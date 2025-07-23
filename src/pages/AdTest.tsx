@@ -136,6 +136,19 @@ const AdTest: React.FC = () => {
         </div>
       </div>
 
+      {/* Video Unit */}
+      <Card className="p-4">
+        <h3 className="text-lg font-semibold mb-4">Video Unit</h3>
+        <div className="border border-dashed border-gray-300 p-4 bg-gray-50">
+          <p className="text-center text-sm text-muted-foreground mb-2">Connatix Video Unit</p>
+          {/* Video code for minorhockeytalks.com */}
+          <script id="c764d7beef4b4321984c2aaa46dd9689">
+            {`console.log("Connatix in-content script found.");`}
+          </script>
+          {/* Video code for minorhockeytalks.com */}
+        </div>
+      </Card>
+
       {/* Test Information */}
       <Card className="p-6 bg-blue-50">
         <h3 className="text-lg font-bold mb-4">Test Instructions</h3>
@@ -146,6 +159,7 @@ const AdTest: React.FC = () => {
           <p>4. Navigate to other pages and back to test route change refresh</p>
           <p>5. Check browser console for any errors</p>
           <p>6. Verify interstitial ads trigger during navigation</p>
+          <p>7. Check that Connatix video unit script loads and logs to console</p>
         </div>
       </Card>
     </div>
