@@ -30,6 +30,7 @@ import Topics from "./pages/Topics";
 import { Categories } from "./pages/Categories";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
+import AdTest from "./pages/AdTest";
 import AdminPage from "./pages/admin/AdminPage";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminContent from "./pages/admin/AdminContent";
@@ -122,6 +123,9 @@ const App = () => (
                     <Route path="rules" element={<ForumRules />} />
                     <Route path="blog" element={<Blog />} />
                   </Route>
+                  
+                  {/* Test page for ad integration */}
+                  <Route path="/test" element={<AdTest />} />
                   
                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
