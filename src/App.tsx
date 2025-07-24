@@ -1,15 +1,14 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from 'react-helmet-async';
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"; // Added useLocation
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { MetadataProvider } from "./components/seo/MetadataProvider";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { OnlineUsersProvider } from "./contexts/OnlineUsersContext";
-import { ForumLayout } from "./components/forum/ForumLayout";
+import { ForumLayout } from "./components/forum/ForumLayout"; // Corrected path based on tree.txt
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { RedirectHandler } from "./components/RedirectHandler";
 import { ForumHome } from "./components/forum/ForumHome";
@@ -30,7 +29,7 @@ import Topics from "./pages/Topics";
 import { Categories } from "./pages/Categories";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
-import AdTest from "./pages/AdTest";
+import AdTest from "./pages/AdTest"; // Ensure this component exists in src/pages/AdTest.tsx
 import AdminPage from "./pages/admin/AdminPage";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminContent from "./pages/admin/AdminContent";
@@ -41,8 +40,8 @@ import AdminAdvertising from "./pages/admin/AdminAdvertising";
 import AdminSettings from "./pages/admin/AdminSettings";
 
 import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
-import { HeaderCodeInjector } from "./components/analytics/HeaderCodeInjector";
-import { EnhancedHeaderCodeInjector } from "./components/analytics/EnhancedHeaderCodeInjector";
+import { HeaderCodeInjector } from "./components/analytics/HeaderCodeInjector"; // Consider if still needed with new ad script
+import { EnhancedHeaderCodeInjector } from "./components/analytics/EnhancedHeaderCodeInjector"; // Consider if still needed with new ad script
 import { CookieConsent } from "./components/cookies/CookieConsent";
 import { CookieDebugPanel } from "./components/cookies/CookieDebugPanel";
 import { MaintenanceWrapper } from "./components/MaintenanceWrapper";
@@ -55,6 +54,36 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
+// Declare the amp_refreshAllSlots function globally for TypeScript
+declare global {
+  interface Window {
+    amp_refreshAllSlots?: () => void;
+  }
+}
+
+// A wrapper component to handle ad refresh on route changes
+const AdRefreshWrapper = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation(); // Get current location object from react-router-dom
+
+  useEffect(() => {
+    // Check if the ad refresh function exists on the window object
+    // and if we are in a browser environment
+    if (typeof window !== "undefined" && window.amp_refreshAllSlots) {
+      console.log(
+        "AdMetricsPro: Calling amp_refreshAllSlots() on route change.",
+        location.pathname
+      );
+      window.amp_refreshAllSlots();
+    } else {
+      console.log(
+        "AdMetricsPro: amp_refreshAllSlots() not found or not in browser environment."
+      );
+    }
+  }, [location.pathname]); // Re-run this effect whenever the route's pathname changes
+
+  return <>{children}</>;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
@@ -62,82 +91,163 @@ const App = () => (
         <AuthProvider>
           <OnlineUsersProvider>
             <StickyBanner />
+            {/* Review if HeaderCodeInjector/EnhancedHeaderCodeInjector are still needed */}
+            {/* given the new AdMetricsPro script in index.html and potential overlap */}
             <EnhancedHeaderCodeInjector />
             <CookieConsent />
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <AnalyticsProvider>
-                <IPTrackingWrapper>
-                  <CookieDebugPanel />
-                  <ScrollToTop />
-                  <MetadataProvider>
-                  <MaintenanceWrapper>
-                <Routes>
-                  {/* VPN blocked page - outside VPN guard */}
-                  <Route path="/vpn-blocked" element={<VPNBlocked />} />
-                  
-                  {/* All other routes wrapped in VPN guard */}
-                  <Route path="/*" element={
-                    <ErrorBoundary>
-                      <VPNGuard>
-                      <Routes>
-                        {/* Special routes */}
-                        
-                        {/* Authentication routes - standalone pages */}
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/reset-password" element={<ResetPassword />} />
-                  
-                  {/* Admin routes - wrapped in AdminLayout */}
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route index element={<AdminPage />} />
-                    <Route path="users" element={<AdminUsers />} />
-                    <Route path="content" element={<AdminContent />} />
-                    <Route path="moderation" element={<AdminModeration />} />
-                    <Route path="spam" element={<AdminSpam />} />
-                    <Route path="advertising" element={<AdminAdvertising />} />
-                    <Route path="seo" element={<AdminSEO />} />
-                    <Route path="settings" element={<AdminSettings />} />
-                  </Route>
-                  
-                  {/* Forum routes - wrapped in ForumLayout */}
-                  <Route path="/" element={<ForumLayout />}>
-                    <Route index element={<ForumHome />} />
-                    {/* New hierarchical URL structure */}
-                    <Route path=":categorySlug/:topicSlug" element={<TopicView />} />
-                    <Route path=":categorySlug/:subcategorySlug/:topicSlug" element={<TopicView />} />
-                    <Route path=":categorySlug" element={<CategoryView />} />
-                    <Route path=":categorySlug/:subcategorySlug" element={<CategoryView />} />
-                    {/* Legacy UUID-based redirects */}
-                    <Route path="topic/:topicId" element={<TopicView />} />
-                    <Route path="category/:categoryId" element={<CategoryView />} />
-                    <Route path="create" element={<CreateTopic />} />
-                    <Route path="topics" element={<Topics />} />
-                    <Route path="categories" element={<Categories />} />
-                    <Route path="search" element={<Search />} />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="settings" element={<Settings />} />
-                    <Route path="terms" element={<Terms />} />
-                    <Route path="privacy" element={<Privacy />} />
-                    <Route path="rules" element={<ForumRules />} />
-                    <Route path="blog" element={<Blog />} />
-                  </Route>
-                  
-                  {/* Test page for ad integration */}
-                  <Route path="/test" element={<AdTest />} />
-                  
-                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </VPNGuard>
-                    </ErrorBoundary>
-                  } />
-                </Routes>
-                  </MaintenanceWrapper>
-                </MetadataProvider>
-                </IPTrackingWrapper>
-              </AnalyticsProvider>
+              {/* Wrap the entire routing logic with AdRefreshWrapper */}
+              <AdRefreshWrapper>
+                <AnalyticsProvider>
+                  <IPTrackingWrapper>
+                    <CookieDebugPanel />
+                    <ScrollToTop />
+                    <MetadataProvider>
+                      <MaintenanceWrapper>
+                        <Routes>
+                          {/* VPN blocked page - outside VPN guard */}
+                          <Route path="/vpn-blocked" element={<VPNBlocked />} />
+
+                          {/* All other routes wrapped in VPN guard */}
+                          <Route
+                            path="/*"
+                            element={
+                              <ErrorBoundary>
+                                <VPNGuard>
+                                  <Routes>
+                                    {" "}
+                                    {/* Nested Routes inside VPNGuard */}
+                                    {/* Special routes */}
+                                    {/* Authentication routes - standalone pages */}
+                                    <Route path="/login" element={<Login />} />
+                                    <Route
+                                      path="/register"
+                                      element={<Register />}
+                                    />
+                                    <Route
+                                      path="/reset-password"
+                                      element={<ResetPassword />}
+                                    />
+                                    {/* Admin routes - wrapped in AdminLayout */}
+                                    <Route
+                                      path="/admin"
+                                      element={<AdminLayout />}
+                                    >
+                                      <Route index element={<AdminPage />} />
+                                      <Route
+                                        path="users"
+                                        element={<AdminUsers />}
+                                      />
+                                      <Route
+                                        path="content"
+                                        element={<AdminContent />}
+                                      />
+                                      <Route
+                                        path="moderation"
+                                        element={<AdminModeration />}
+                                      />
+                                      <Route
+                                        path="spam"
+                                        element={<AdminSpam />}
+                                      />
+                                      <Route
+                                        path="advertising"
+                                        element={<AdminAdvertising />}
+                                      />
+                                      <Route
+                                        path="seo"
+                                        element={<AdminSEO />}
+                                      />
+                                      <Route
+                                        path="settings"
+                                        element={<AdminSettings />}
+                                      />
+                                    </Route>
+                                    {/* Forum routes - wrapped in ForumLayout */}
+                                    <Route path="/" element={<ForumLayout />}>
+                                      <Route index element={<ForumHome />} />
+                                      {/* New hierarchical URL structure */}
+                                      <Route
+                                        path=":categorySlug/:topicSlug"
+                                        element={<TopicView />}
+                                      />
+                                      <Route
+                                        path=":categorySlug/:subcategorySlug/:topicSlug"
+                                        element={<TopicView />}
+                                      />
+                                      <Route
+                                        path=":categorySlug"
+                                        element={<CategoryView />}
+                                      />
+                                      <Route
+                                        path=":categorySlug/:subcategorySlug"
+                                        element={<CategoryView />}
+                                      />
+                                      {/* Legacy UUID-based redirects */}
+                                      <Route
+                                        path="topic/:topicId"
+                                        element={<TopicView />}
+                                      />
+                                      <Route
+                                        path="category/:categoryId"
+                                        element={<CategoryView />}
+                                      />
+                                      <Route
+                                        path="create"
+                                        element={<CreateTopic />}
+                                      />
+                                      <Route
+                                        path="topics"
+                                        element={<Topics />}
+                                      />
+                                      <Route
+                                        path="categories"
+                                        element={<Categories />}
+                                      />
+                                      <Route
+                                        path="search"
+                                        element={<Search />}
+                                      />
+                                      <Route
+                                        path="profile"
+                                        element={<Profile />}
+                                      />
+                                      <Route
+                                        path="settings"
+                                        element={<Settings />}
+                                      />
+                                      <Route path="terms" element={<Terms />} />
+                                      <Route
+                                        path="privacy"
+                                        element={<Privacy />}
+                                      />
+                                      <Route
+                                        path="rules"
+                                        element={<ForumRules />}
+                                      />
+                                      <Route path="blog" element={<Blog />} />
+                                    </Route>
+                                    {/* Test page for ad integration */}
+                                    <Route
+                                      path="/test-ads"
+                                      element={<AdTest />}
+                                    />{" "}
+                                    {/* Changed path to /test-ads as per previous naming */}
+                                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                                    <Route path="*" element={<NotFound />} />
+                                  </Routes>
+                                </VPNGuard>
+                              </ErrorBoundary>
+                            }
+                          />
+                        </Routes>
+                      </MaintenanceWrapper>
+                    </MetadataProvider>
+                  </IPTrackingWrapper>
+                </AnalyticsProvider>
+              </AdRefreshWrapper>
             </BrowserRouter>
           </OnlineUsersProvider>
         </AuthProvider>
