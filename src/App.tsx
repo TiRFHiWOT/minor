@@ -1,16 +1,16 @@
+import React, { useEffect } from "react"; // Added useEffect for AdRefreshWrapper
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"; // Added useLocation
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { MetadataProvider } from "./components/seo/MetadataProvider";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { OnlineUsersProvider } from "./contexts/OnlineUsersContext";
-import { ForumLayout } from "./components/forum/ForumLayout"; // Corrected path based on tree.txt
+import { ForumLayout } from "./components/forum/ForumLayout";
 import { AdminLayout } from "./components/admin/AdminLayout";
-import { RedirectHandler } from "./components/RedirectHandler";
 import { ForumHome } from "./components/forum/ForumHome";
 import { TopicView } from "./components/forum/TopicView";
 import { CategoryView } from "./components/forum/CategoryView";
@@ -29,7 +29,7 @@ import Topics from "./pages/Topics";
 import { Categories } from "./pages/Categories";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
-import AdTest from "./pages/AdTest"; // Ensure this component exists in src/pages/AdTest.tsx
+import AdTest from "./pages/AdTest";
 import AdminPage from "./pages/admin/AdminPage";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminContent from "./pages/admin/AdminContent";
@@ -40,8 +40,7 @@ import AdminAdvertising from "./pages/admin/AdminAdvertising";
 import AdminSettings from "./pages/admin/AdminSettings";
 
 import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
-import { HeaderCodeInjector } from "./components/analytics/HeaderCodeInjector"; // Consider if still needed with new ad script
-import { EnhancedHeaderCodeInjector } from "./components/analytics/EnhancedHeaderCodeInjector"; // Consider if still needed with new ad script
+import { EnhancedHeaderCodeInjector } from "./components/analytics/EnhancedHeaderCodeInjector";
 import { CookieConsent } from "./components/cookies/CookieConsent";
 import { CookieDebugPanel } from "./components/cookies/CookieDebugPanel";
 import { MaintenanceWrapper } from "./components/MaintenanceWrapper";
@@ -91,14 +90,11 @@ const App = () => (
         <AuthProvider>
           <OnlineUsersProvider>
             <StickyBanner />
-            {/* Review if HeaderCodeInjector/EnhancedHeaderCodeInjector are still needed */}
-            {/* given the new AdMetricsPro script in index.html and potential overlap */}
             <EnhancedHeaderCodeInjector />
             <CookieConsent />
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              {/* Wrap the entire routing logic with AdRefreshWrapper */}
               <AdRefreshWrapper>
                 <AnalyticsProvider>
                   <IPTrackingWrapper>
@@ -116,10 +112,7 @@ const App = () => (
                             element={
                               <ErrorBoundary>
                                 <VPNGuard>
-                                  <Routes>
-                                    {" "}
-                                    {/* Nested Routes inside VPNGuard */}
-                                    {/* Special routes */}
+                                  <Routes> {/* THIS IS THE INNER ROUTES BLOCK */}
                                     {/* Authentication routes - standalone pages */}
                                     <Route path="/login" element={<Login />} />
                                     <Route
@@ -130,6 +123,7 @@ const App = () => (
                                       path="/reset-password"
                                       element={<ResetPassword />}
                                     />
+
                                     {/* Admin routes - wrapped in AdminLayout */}
                                     <Route
                                       path="/admin"
@@ -156,16 +150,21 @@ const App = () => (
                                         path="advertising"
                                         element={<AdminAdvertising />}
                                       />
-                                      <Route
-                                        path="seo"
-                                        element={<AdminSEO />}
-                                      />
+                                      <Route path="seo" element={<AdminSEO />} />
                                       <Route
                                         path="settings"
                                         element={<AdminSettings />}
                                       />
                                     </Route>
-                                    {/* Forum routes - wrapped in ForumLayout */}
+
+                                    {/* Test page for ad integration - MOVED HERE! */}
+                                    {/* This must be placed BEFORE the general ForumLayout route */}
+                                    <Route
+                                      path="/test-ads"
+                                      element={<AdTest />}
+                                    />
+
+                                    {/* Forum routes - wrapped in ForumLayout (MORE GENERAL ROUTE) */}
                                     <Route path="/" element={<ForumLayout />}>
                                       <Route index element={<ForumHome />} />
                                       {/* New hierarchical URL structure */}
@@ -194,48 +193,23 @@ const App = () => (
                                         path="category/:categoryId"
                                         element={<CategoryView />}
                                       />
-                                      <Route
-                                        path="create"
-                                        element={<CreateTopic />}
-                                      />
-                                      <Route
-                                        path="topics"
-                                        element={<Topics />}
-                                      />
+                                      <Route path="create" element={<CreateTopic />} />
+                                      <Route path="topics" element={<Topics />} />
                                       <Route
                                         path="categories"
                                         element={<Categories />}
                                       />
-                                      <Route
-                                        path="search"
-                                        element={<Search />}
-                                      />
-                                      <Route
-                                        path="profile"
-                                        element={<Profile />}
-                                      />
-                                      <Route
-                                        path="settings"
-                                        element={<Settings />}
-                                      />
+                                      <Route path="search" element={<Search />} />
+                                      <Route path="profile" element={<Profile />} />
+                                      <Route path="settings" element={<Settings />} />
                                       <Route path="terms" element={<Terms />} />
-                                      <Route
-                                        path="privacy"
-                                        element={<Privacy />}
-                                      />
-                                      <Route
-                                        path="rules"
-                                        element={<ForumRules />}
-                                      />
+                                      <Route path="privacy" element={<Privacy />} />
+                                      <Route path="rules" element={<ForumRules />} />
                                       <Route path="blog" element={<Blog />} />
                                     </Route>
-                                    {/* Test page for ad integration */}
-                                    <Route
-                                      path="/test-ads"
-                                      element={<AdTest />}
-                                    />{" "}
-                                    {/* Changed path to /test-ads as per previous naming */}
+
                                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                                    {/* The NotFound route should be the very last route in its Routes block */}
                                     <Route path="*" element={<NotFound />} />
                                   </Routes>
                                 </VPNGuard>
