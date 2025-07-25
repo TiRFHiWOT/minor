@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"; // Added useEffect for AdRefreshWrapper
+import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -62,11 +62,9 @@ declare global {
 
 // A wrapper component to handle ad refresh on route changes
 const AdRefreshWrapper = ({ children }: { children: React.ReactNode }) => {
-  const location = useLocation(); // Get current location object from react-router-dom
+  const location = useLocation();
 
   useEffect(() => {
-    // Check if the ad refresh function exists on the window object
-    // and if we are in a browser environment
     if (typeof window !== "undefined" && window.amp_refreshAllSlots) {
       console.log(
         "AdMetricsPro: Calling amp_refreshAllSlots() on route change.",
@@ -78,7 +76,7 @@ const AdRefreshWrapper = ({ children }: { children: React.ReactNode }) => {
         "AdMetricsPro: amp_refreshAllSlots() not found or not in browser environment."
       );
     }
-  }, [location.pathname]); // Re-run this effect whenever the route's pathname changes
+  }, [location.pathname]);
 
   return <>{children}</>;
 };
@@ -106,13 +104,16 @@ const App = () => (
                           {/* VPN blocked page - outside VPN guard */}
                           <Route path="/vpn-blocked" element={<VPNBlocked />} />
 
+                          {/* === CRITICAL CHANGE: Place /test-ads route here, outside the path="/*" route === */}
+                          <Route path="/test-ads" element={<AdTest />} />
+
                           {/* All other routes wrapped in VPN guard */}
                           <Route
                             path="/*"
                             element={
                               <ErrorBoundary>
                                 <VPNGuard>
-                                  <Routes> {/* THIS IS THE INNER ROUTES BLOCK */}
+                                  <Routes> {/* This is the INNER Routes block */}
                                     {/* Authentication routes - standalone pages */}
                                     <Route path="/login" element={<Login />} />
                                     <Route
@@ -157,14 +158,8 @@ const App = () => (
                                       />
                                     </Route>
 
-                                    {/* Test page for ad integration - MOVED HERE! */}
-                                    {/* This must be placed BEFORE the general ForumLayout route */}
-                                    <Route
-                                      path="/test-ads"
-                                      element={<AdTest />}
-                                    />
-
                                     {/* Forum routes - wrapped in ForumLayout (MORE GENERAL ROUTE) */}
+                                    {/* These routes will only match if /test-ads and /admin etc. don't match first */}
                                     <Route path="/" element={<ForumLayout />}>
                                       <Route index element={<ForumHome />} />
                                       {/* New hierarchical URL structure */}
@@ -208,7 +203,6 @@ const App = () => (
                                       <Route path="blog" element={<Blog />} />
                                     </Route>
 
-                                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                                     {/* The NotFound route should be the very last route in its Routes block */}
                                     <Route path="*" element={<NotFound />} />
                                   </Routes>
