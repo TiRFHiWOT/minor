@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Home, ChevronRight } from "lucide-react";
-import { useCategories } from "@/hooks/useCategories";
+import { useCategories, Category } from "@/hooks/useCategories";
 import { useCategoryStats } from "@/hooks/useCategoryStats";
 import {
   Breadcrumb,
@@ -14,21 +14,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-
-// Define the Category interface based on the actual data structure from your hooks
-// Assuming 'description' can be string or null, and other optional fields
-interface Category {
-  id: string;
-  name: string;
-  color: string;
-  description: string | null;
-  level: number;
-  parent_category_id?: string;
-  slug?: string;
-  region?: string;
-  birth_year?: string;
-  play_level?: string;
-}
 
 const CategoryCard = ({ category }: { category: Category }) => {
   const { data: stats } = useCategoryStats(category.id);
