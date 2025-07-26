@@ -129,6 +129,22 @@ export const CategoryView = () => {
   
   console.log('Final category data:', category);
   
+  // Handle errors gracefully - don't let them crash the app
+  if (categoryError) {
+    console.error('Category fetch error:', categoryError);
+    return (
+      <div className="text-center py-8">
+        <h2 className="text-xl font-semibold text-gray-900">Error loading category</h2>
+        <p className="text-gray-600 mt-2">
+          There was an error loading the category "{slugToLookup || categoryId}".
+        </p>
+        <Button asChild className="mt-4">
+          <Link to="/">Back to Home</Link>
+        </Button>
+      </div>
+    );
+  }
+
   const { data: subcategories, isLoading: subcategoriesLoading } = useCategoriesByActivity(category?.id, category?.level ? category.level + 1 : undefined);
   const { data: topics, isLoading: topicsLoading } = useTopics(category?.id);
 
@@ -146,6 +162,7 @@ export const CategoryView = () => {
     );
   }
 
+  // Handle when category is null (not found) - this is now the expected behavior
   if (!category && !categoryLoading) {
     return (
       <div className="text-center py-8">
