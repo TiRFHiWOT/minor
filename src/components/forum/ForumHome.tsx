@@ -30,7 +30,12 @@ import { QuickTopicModal } from "./QuickTopicModal"; // Assuming this is used el
 
 export const ForumHome = () => {
   const { user } = useAuth();
+  
+  console.log('ForumHome: Starting render');
+  
   const { getSetting } = useForumSettings();
+  
+  console.log('ForumHome: useForumSettings hook completed');
   const [searchParams, setSearchParams] = useSearchParams();
   const [reportModal, setReportModal] = useState<{
     isOpen: boolean;
