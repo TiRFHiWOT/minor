@@ -14,7 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { AlertTriangle, Ban, CheckCircle, Clock, UserX, Wifi, WifiOff, Eye, X, Trash2, Users, FileText } from 'lucide-react';
+import { AlertTriangle, Ban, CheckCircle, Clock, UserX, Wifi, WifiOff, Eye, X, Trash2, Users, FileText, Shield, ShieldCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { CategoryRequestsManager } from '@/components/admin/CategoryRequestsManager';
@@ -44,6 +44,93 @@ const ReportsTab = () => {
   const [selectedReport, setSelectedReport] = React.useState<any>(null);
   const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState('active');
+
+  // Quick action handlers for content moderation directly from reports
+  const handleApproveReportedContent = async (report: any) => {
+    try {
+      if (report.reported_post_id) {
+        const { error } = await supabase
+          .from('posts')
+          .update({ moderation_status: 'approved' })
+          .eq('id', report.reported_post_id);
+        if (error) throw error;
+      } else if (report.reported_topic_id) {
+        const { error } = await supabase
+          .from('topics')
+          .update({ moderation_status: 'approved' })
+          .eq('id', report.reported_topic_id);
+        if (error) throw error;
+      }
+
+      // Mark report as resolved
+      await supabase
+        .from('reports')
+        .update({
+          status: 'resolved',
+          reviewed_at: new Date().toISOString(),
+          admin_notes: 'Content approved - report dismissed'
+        })
+        .eq('id', report.id);
+
+      toast({
+        title: 'Content Approved',
+        description: 'Reported content has been approved and report resolved',
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['reports'] });
+      queryClient.invalidateQueries({ queryKey: ['moderation-queue'] });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to approve content',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleRejectReportedContent = async (report: any) => {
+    if (!confirm('Are you sure you want to reject this reported content?')) return;
+
+    try {
+      if (report.reported_post_id) {
+        const { error } = await supabase
+          .from('posts')
+          .update({ moderation_status: 'rejected' })
+          .eq('id', report.reported_post_id);
+        if (error) throw error;
+      } else if (report.reported_topic_id) {
+        const { error } = await supabase
+          .from('topics')
+          .update({ moderation_status: 'rejected' })
+          .eq('id', report.reported_topic_id);
+        if (error) throw error;
+      }
+
+      // Mark report as resolved
+      await supabase
+        .from('reports')
+        .update({
+          status: 'resolved',
+          reviewed_at: new Date().toISOString(),
+          admin_notes: 'Content rejected based on report'
+        })
+        .eq('id', report.id);
+
+      toast({
+        title: 'Content Rejected',
+        description: 'Reported content has been rejected and report resolved',
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['reports'] });
+      queryClient.invalidateQueries({ queryKey: ['moderation-queue'] });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to reject content',
+        variant: 'destructive',
+      });
+    }
+  };
 
   // Helper function to generate the correct URL for reported content
   const getReportedContentUrl = (report: any) => {
@@ -93,6 +180,7 @@ const ReportsTab = () => {
           topic_id,
           ip_address,
           created_at,
+          moderation_status,
           topics!inner (
             id,
             title,
@@ -115,6 +203,7 @@ const ReportsTab = () => {
           author_id, 
           slug,
           created_at,
+          moderation_status,
           categories!inner (
             slug
           )
@@ -178,6 +267,7 @@ const ReportsTab = () => {
           topic_id,
           ip_address,
           created_at,
+          moderation_status,
           topics!inner (
             id,
             title,
@@ -200,6 +290,7 @@ const ReportsTab = () => {
           author_id, 
           slug,
           created_at,
+          moderation_status,
           categories!inner (
             slug
           )
@@ -382,6 +473,7 @@ const ReportsTab = () => {
                   <TableHead>Author</TableHead>
                   <TableHead>Content IP</TableHead>
                   <TableHead>Reported</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -437,7 +529,16 @@ const ReportsTab = () => {
                       {formatDistanceToNow(new Date(report.created_at))} ago
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-1">
+                      {/* Check if content is pending moderation */}
+                      {(report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending') && (
+                        <Badge variant="outline" className="text-xs">
+                          <Clock className="h-3 w-3 mr-1" />
+                          Pending
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-1 flex-wrap">
                         <Button
                           size="sm"
                           variant="outline"
@@ -447,6 +548,32 @@ const ReportsTab = () => {
                         >
                           <FileText className="h-3 w-3" />
                         </Button>
+                        
+                        {/* Content moderation actions - only show if content is pending */}
+                        {(report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending') && (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleApproveReportedContent(report)}
+                              className="text-green-600 hover:text-green-700"
+                              title="Approve content & dismiss report"
+                            >
+                              <ShieldCheck className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleRejectReportedContent(report)}
+                              className="text-red-600 hover:text-red-700"
+                              title="Reject content & resolve report"
+                            >
+                              <Shield className="h-3 w-3" />
+                            </Button>
+                          </>
+                        )}
+                        
+                        {/* Standard report actions */}
                         <Button
                           size="sm"
                           variant="outline"
@@ -480,7 +607,7 @@ const ReportsTab = () => {
                 ))}
                 {(!currentReports || currentReports.length === 0) && (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center text-muted-foreground">
+                    <TableCell colSpan={10} className="text-center text-muted-foreground">
                       No active reports to display
                     </TableCell>
                   </TableRow>
@@ -637,12 +764,31 @@ const AdminModeration = () => {
     }
   };
 
-  // Enhanced query to get only pending moderation content
+  // State for filtering options
+  const [showReportedContent, setShowReportedContent] = React.useState(false);
+
+  // Enhanced query to get only pending moderation content (excludes reported content by default)
   const { data: moderationQueue, isLoading, refetch } = useQuery({
-    queryKey: ['moderation-queue'],
+    queryKey: ['moderation-queue', showReportedContent],
     queryFn: async () => {
+      // First get all pending reports to exclude reported content (unless showReportedContent is true)
+      let reportedContentIds: string[] = [];
+      if (!showReportedContent) {
+        const { data: reports } = await supabase
+          .from('reports')
+          .select('reported_post_id, reported_topic_id')
+          .eq('status', 'pending');
+        
+        if (reports) {
+          reportedContentIds = [
+            ...reports.map(r => r.reported_post_id).filter(Boolean),
+            ...reports.map(r => r.reported_topic_id).filter(Boolean)
+          ];
+        }
+      }
+
       // Get posts that require moderation (pending status from moderated categories)
-      const { data: posts, error: postsError } = await supabase
+      let postsQuery = supabase
         .from('posts')
         .select(`
           id,
@@ -666,10 +812,17 @@ const AdminModeration = () => {
         .eq('moderation_status', 'pending')
         .order('created_at', { ascending: false });
 
+      // Exclude reported posts unless showReportedContent is true
+      if (!showReportedContent && reportedContentIds.length > 0) {
+        postsQuery = postsQuery.not('id', 'in', `(${reportedContentIds.join(',')})`);
+      }
+
+      const { data: posts, error: postsError } = await postsQuery;
+
       if (postsError) throw postsError;
 
       // Get topics that require moderation (pending status from moderated categories)
-      const { data: topics, error: topicsError } = await supabase
+      let topicsQuery = supabase
         .from('topics')
         .select(`
           id,
@@ -686,6 +839,13 @@ const AdminModeration = () => {
         `)
         .eq('moderation_status', 'pending')
         .order('created_at', { ascending: false });
+
+      // Exclude reported topics unless showReportedContent is true
+      if (!showReportedContent && reportedContentIds.length > 0) {
+        topicsQuery = topicsQuery.not('id', 'in', `(${reportedContentIds.join(',')})`);
+      }
+
+      const { data: topics, error: topicsError } = await topicsQuery;
 
       if (topicsError) throw topicsError;
 
@@ -953,9 +1113,23 @@ const AdminModeration = () => {
           <Card>
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Pre-Approval Moderation Queue</h2>
-                <div className="text-sm text-muted-foreground">
-                  Content awaiting approval from moderated categories (Level 1 & 2)
+                <div>
+                  <h2 className="text-xl font-semibold">Pre-Approval Moderation Queue</h2>
+                  <div className="text-sm text-muted-foreground">
+                    Content awaiting approval from moderated categories (Level 1 & 2)
+                    {!showReportedContent && " • Reported content handled in Reports tab"}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm text-muted-foreground">
+                    Show reported content:
+                  </label>
+                  <input
+                    type="checkbox"
+                    checked={showReportedContent}
+                    onChange={(e) => setShowReportedContent(e.target.checked)}
+                    className="rounded border-input"
+                  />
                 </div>
               </div>
               <Table>
