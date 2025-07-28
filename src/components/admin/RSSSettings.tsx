@@ -19,7 +19,7 @@ export const RSSSettings = () => {
     rssTitle: getSetting('rss_title', getSetting('forum_name', 'Minor Hockey Talks')),
     rssDescription: getSetting('rss_description', 'Latest topics and discussions'),
     rssItemLimit: getSetting('rss_item_limit', 25),
-    siteUrl: getSetting('site_url', 'https://rscowwmoeycyxmfslhme.supabase.co')
+    siteUrl: getSetting('site_url', 'https://minorhockeytalks.com')
   });
 
   const handleSubmit = async (e: React.FormEvent) => {

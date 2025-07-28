@@ -58,7 +58,7 @@ const generateRSSFeed = async (options: RSSOptions = {}): Promise<string> => {
 
   const siteName = settings.forum_name || 'Minor Hockey Talks';
   const siteDescription = settings.forum_description || 'Join the leading online community for minor hockey players, parents, and coaches.';
-  const siteUrl = settings.site_url || 'https://rscowwmoeycyxmfslhme.supabase.co';
+  const siteUrl = settings.site_url || 'https://minorhockeytalks.com';
   const rssTitle = settings.rss_title || siteName;
   const rssDescription = settings.rss_description || siteDescription;
 
@@ -187,7 +187,7 @@ const handler = async (req: Request): Promise<Response> => {
   <channel>
     <title>RSS Feed Error</title>
     <description>RSS feed is temporarily unavailable</description>
-    <link>https://rscowwmoeycyxmfslhme.supabase.co</link>
+    <link>https://minorhockeytalks.com</link>
   </channel>
 </rss>`;
 
