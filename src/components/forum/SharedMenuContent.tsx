@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Shield, Rss } from 'lucide-react';
+import { Shield, Rss, Bookmark } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCategories } from '@/hooks/useCategories';
 import { useForumSettings } from '@/hooks/useForumSettings';
@@ -75,6 +75,12 @@ export const SharedMenuContent = ({ onNavigate }: SharedMenuContentProps) => {
             <div className="px-3 py-2 text-sm font-medium">{user.username}</div>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link to="/profile" onClick={onNavigate}>Profile</Link>
+            </Button>
+            <Button variant="ghost" className="w-full justify-start" asChild>
+              <Link to="/bookmarks" onClick={onNavigate}>
+                <Bookmark className="mr-2 h-4 w-4" />
+                Bookmarks
+              </Link>
             </Button>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link to="/settings" onClick={onNavigate}>Settings</Link>

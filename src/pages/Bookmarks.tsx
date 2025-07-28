@@ -17,8 +17,31 @@ export default function Bookmarks() {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Bookmark className="h-5 w-5" />
+              Your Bookmarked Topics
+            </CardTitle>
+          </CardHeader>
           <CardContent className="text-center py-8">
-            <p className="text-muted-foreground">Please sign in to view your bookmarks.</p>
+            <div className="space-y-6">
+              <Bookmark className="h-16 w-16 mx-auto text-muted-foreground" />
+              <div className="space-y-2">
+                <h2 className="text-xl font-semibold">Save Topics for Later</h2>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  Bookmark topics you want to follow and get notified when new replies are posted. 
+                  Never miss important conversations!
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button asChild>
+                  <Link to="/login">Sign In</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/register">Create Account</Link>
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

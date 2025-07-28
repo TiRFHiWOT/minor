@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Clock, Star, Plus, Home, Users } from 'lucide-react';
+import { TrendingUp, Clock, Star, Plus, Home, Users, Bookmark } from 'lucide-react';
 import { useCategories } from '@/hooks/useCategories';
 import { useCategoriesByActivity } from '@/hooks/useCategoriesByActivity';
 import { useCategoryStats } from '@/hooks/useCategoryStats';
@@ -49,6 +49,7 @@ export const ForumSidebarNav = () => {
     { label: 'Hot', path: '/?sort=hot', icon: TrendingUp },
     { label: 'New', path: '/?sort=new', icon: Clock },
     { label: 'Top', path: '/?sort=top', icon: Star },
+    { label: 'Bookmarks', path: '/bookmarks', icon: Bookmark },
   ];
 
   return (
