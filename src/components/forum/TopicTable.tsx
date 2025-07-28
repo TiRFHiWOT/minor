@@ -96,14 +96,12 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                         {showCategory && (topic.category_name || topic.categories?.name) && (
                           <>
                             <span>•</span>
-                            <Badge variant="outline" className="text-xs px-1.5 py-0 bg-primary/10 text-primary border-primary/20">
-                              <Link 
-                                to={`/category/${topic.category_slug || topic.categories?.slug}`}
-                                className="hover:text-primary transition-colors"
-                              >
-                                {topic.category_name || topic.categories?.name}
-                              </Link>
-                            </Badge>
+                            <Link 
+                              to={`/category/${topic.category_slug || topic.categories?.slug}`}
+                              className="hover:text-primary transition-colors"
+                            >
+                              {topic.category_name || topic.categories?.name}
+                            </Link>
                           </>
                         )}
                         <span>•</span>
