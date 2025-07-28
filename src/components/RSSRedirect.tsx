@@ -9,7 +9,7 @@ export const RSSRedirect = () => {
     const limit = searchParams.get('limit');
     
     // Build the RSS feed URL
-    const rssUrl = `https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/rss-feed${
+    const rssUrl = `https://minorhockeytalks.com/functions/v1/rss-feed${
       category || limit ? '?' : ''
     }${category ? `category=${category}` : ''}${
       category && limit ? '&' : ''
