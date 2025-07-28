@@ -281,13 +281,6 @@ export const ForumHome = () => {
                     {forum.description}
                   </p>
                 )}
-                <div className="flex items-center text-xs text-muted-foreground space-x-2">
-                  {forum.region && <span>{forum.region}</span>}
-                  {forum.birth_year && <span>•</span>}
-                  {forum.birth_year && <span>{forum.birth_year}</span>}
-                  {forum.play_level && <span>•</span>}
-                  {forum.play_level && <span>{forum.play_level}</span>}
-                </div>
               </Card>
             </Link>
           ))}
