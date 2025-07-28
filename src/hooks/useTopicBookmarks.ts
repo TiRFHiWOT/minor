@@ -47,7 +47,7 @@ export const useTopicBookmarks = (topicId?: string) => {
   });
 
   // Check if current topic is bookmarked
-  const isBookmarked = topicId && bookmarks?.some(b => b.topic_id === topicId);
+  const isBookmarked = topicId && bookmarks?.some(b => b.topic_id === topicId) || false;
 
   // Get bookmark count for a topic
   const { data: bookmarkCount } = useQuery({
@@ -68,10 +68,21 @@ export const useTopicBookmarks = (topicId?: string) => {
 
   // Toggle bookmark mutation
   const toggleBookmark = useMutation({
-    mutationFn: async ({ topicId, isCurrentlyBookmarked }: { topicId: string; isCurrentlyBookmarked: boolean }) => {
+    mutationFn: async (topicId: string) => {
       if (!user?.id) throw new Error('Must be logged in');
 
-      if (isCurrentlyBookmarked) {
+      // Check current state in database first
+      const { data: existingBookmark, error: checkError } = await supabase
+        .from('topic_bookmarks')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('topic_id', topicId)
+        .maybeSingle();
+
+      if (checkError) throw checkError;
+
+      if (existingBookmark) {
+        // Delete existing bookmark
         const { error } = await supabase
           .from('topic_bookmarks')
           .delete()
@@ -79,7 +90,9 @@ export const useTopicBookmarks = (topicId?: string) => {
           .eq('topic_id', topicId);
           
         if (error) throw error;
+        return { action: 'removed' };
       } else {
+        // Create new bookmark
         const { error } = await supabase
           .from('topic_bookmarks')
           .insert({
@@ -88,18 +101,26 @@ export const useTopicBookmarks = (topicId?: string) => {
             notification_enabled: true
           });
           
-        if (error) throw error;
+        if (error) {
+          // Handle duplicate key constraint specifically
+          if (error.code === '23505') {
+            console.warn('Bookmark already exists, ignoring duplicate insert');
+            return { action: 'exists' };
+          }
+          throw error;
+        }
+        return { action: 'added' };
       }
     },
-    onSuccess: (_, { isCurrentlyBookmarked }) => {
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ['topic-bookmarks', user?.id] });
       queryClient.invalidateQueries({ queryKey: ['topic-bookmark-count', topicId] });
       
-      toast.success(
-        isCurrentlyBookmarked 
-          ? 'Topic removed from bookmarks' 
-          : 'Topic bookmarked! You\'ll get notified of new posts.'
-      );
+      if (result.action === 'added') {
+        toast.success('Topic bookmarked! You\'ll get notified of new posts.');
+      } else if (result.action === 'removed') {
+        toast.success('Topic removed from bookmarks');
+      }
     },
     onError: (error) => {
       console.error('Error toggling bookmark:', error);
@@ -136,7 +157,7 @@ export const useTopicBookmarks = (topicId?: string) => {
     isBookmarked,
     bookmarkCount,
     toggleBookmark: (topicId: string) => 
-      toggleBookmark.mutate({ topicId, isCurrentlyBookmarked: !!isBookmarked }),
+      toggleBookmark.mutate(topicId),
     toggleNotifications,
     isToggling: toggleBookmark.isPending,
   };
