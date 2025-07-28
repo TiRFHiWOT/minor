@@ -20,6 +20,7 @@ import { PostComponent } from './PostComponent';
 import { InlineReplyForm } from './InlineReplyForm';
 import { AdminControls } from './AdminControls';
 import { PollDisplay } from './PollDisplay';
+import { BookmarkButton } from './BookmarkButton';
 import { AdBanner } from '@/components/ads/AdBanner';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
@@ -438,28 +439,29 @@ export const TopicView = () => {
             )}
 
             {/* Action bar - consistent with PostComponent */}
-            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-              {/* Edit button - only for authors and moderators */}
-              {canEditTopic && !isEditingTopic && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+                {/* Edit button - only for authors and moderators */}
+                {canEditTopic && !isEditingTopic && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-6 w-6 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    onClick={handleEditTopic}
+                  >
+                    <Edit className="h-3 w-3" />
+                  </Button>
+                )}
+
+                {/* Reply button */}
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   className="h-6 w-6 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                  onClick={handleEditTopic}
+                  onClick={() => setShowTopicReply(!showTopicReply)}
                 >
-                  <Edit className="h-3 w-3" />
+                  <MessageCircle className="h-3 w-3" />
                 </Button>
-              )}
-
-              {/* Reply button */}
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-6 w-6 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                onClick={() => setShowTopicReply(!showTopicReply)}
-              >
-                <MessageCircle className="h-3 w-3" />
-              </Button>
 
               {/* Reply count */}
               <div className="flex items-center space-x-1 text-xs text-muted-foreground">
@@ -523,15 +525,19 @@ export const TopicView = () => {
                 <Share className="h-3 w-3" />
               </Button>
 
-              {/* Report button */}
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                onClick={() => handleReport('topic', undefined, topic.id)}
-              >
-                <Flag className="h-3 w-3 fill-current" />
-              </Button>
+                {/* Report button */}
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  onClick={() => handleReport('topic', undefined, topic.id)}
+                >
+                  <Flag className="h-3 w-3 fill-current" />
+                </Button>
+              </div>
+              
+              {/* Bookmark button */}
+              <BookmarkButton topicId={topic.id || ''} variant="icon" />
             </div>
           </div>
         </div>

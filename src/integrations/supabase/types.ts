@@ -1297,6 +1297,60 @@ export type Database = {
         }
         Relationships: []
       }
+      topic_bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          notification_enabled: boolean
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notification_enabled?: boolean
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notification_enabled?: boolean
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      topic_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          notification_type: string
+          post_id: string | null
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          notification_type?: string
+          post_id?: string | null
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          notification_type?: string
+          post_id?: string | null
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       topics: {
         Row: {
           author_id: string | null
@@ -1823,6 +1877,10 @@ export type Database = {
         Args: { p_category_id?: string }
         Returns: number
       }
+      get_unread_notification_count: {
+        Args: { p_user_id: string }
+        Returns: number
+      }
       get_visitor_geographic_summary: {
         Args: { p_hours_back?: number }
         Returns: {
@@ -1943,14 +2001,22 @@ export type Database = {
         Returns: string
       }
       set_forum_setting: {
-        Args: {
-          key_name: string
-          value: Json
-          setting_type?: string
-          category?: string
-          description?: string
-          is_public?: boolean
-        }
+        Args:
+          | {
+              key_name: string
+              value: Json
+              setting_type?: string
+              category?: string
+              description?: string
+            }
+          | {
+              key_name: string
+              value: Json
+              setting_type?: string
+              category?: string
+              description?: string
+              is_public?: boolean
+            }
         Returns: undefined
       }
       sync_topic_reply_counts: {

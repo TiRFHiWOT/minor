@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Bell, User, Settings, Shield, Menu, Rss } from 'lucide-react';
+import { Search, Bell, User, Settings, Shield, Menu, Rss, Bookmark } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useForumSettings } from '@/hooks/useForumSettings';
 import { SharedMenuContent } from './SharedMenuContent';
+import { NotificationBell } from './NotificationBell';
 import {
   DropdownMenu,
   DropdownMenuContent,

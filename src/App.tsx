@@ -27,6 +27,7 @@ import ForumRules from "./pages/ForumRules";
 
 import Blog from "./pages/Blog";
 import Topics from "./pages/Topics";
+import Bookmarks from "./pages/Bookmarks";
 import { Categories } from "./pages/Categories";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
@@ -120,12 +121,13 @@ const App = () => (
                     <Route path="topics" element={<Topics />} />
                     <Route path="categories" element={<Categories />} />
                     <Route path="search" element={<Search />} />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="settings" element={<Settings />} />
-                    <Route path="terms" element={<Terms />} />
-                    <Route path="privacy" element={<Privacy />} />
-                    <Route path="rules" element={<ForumRules />} />
-                    <Route path="blog" element={<Blog />} />
+                     <Route path="profile" element={<Profile />} />
+                     <Route path="bookmarks" element={<Bookmarks />} />
+                     <Route path="settings" element={<Settings />} />
+                     <Route path="terms" element={<Terms />} />
+                     <Route path="privacy" element={<Privacy />} />
+                     <Route path="rules" element={<ForumRules />} />
+                     <Route path="blog" element={<Blog />} />
                   </Route>
                   
                   {/* Test page for ad integration */}
