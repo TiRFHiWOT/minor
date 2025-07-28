@@ -14,6 +14,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userRole, setUserRole] = useState<'admin' | 'moderator' | 'user'>('user');
 
   useEffect(() => {
+    let isMounted = true;
+
     // Initialize session manager for anonymous users
     const initializeApp = async () => {
       try {
@@ -27,7 +29,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
+        if (!isMounted) return;
+        
+        console.log('Auth state change:', event, session?.user?.id);
         
         setSession(session);
         setUser(session?.user ?? null);
@@ -38,6 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           
           // Fetch user role
           setTimeout(async () => {
+            if (!isMounted) return;
             try {
               const { data: roleData } = await supabase
                 .from('user_roles')
@@ -45,19 +51,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 .eq('user_id', session.user.id)
                 .single();
               
-              if (roleData) {
+              if (roleData && isMounted) {
                 setUserRole(roleData.role);
               }
             } catch (error) {
-              
+              console.error('Error fetching user role:', error);
             }
-          }, 0);
+          }, 100);
         } else {
           setUserRole('user');
           // Re-initialize temp session when user logs out
           setTimeout(() => {
-            sessionManager.initializeSession();
-          }, 0);
+            if (isMounted) {
+              sessionManager.initializeSession();
+            }
+          }, 100);
         }
         
         setLoading(false);
@@ -65,13 +73,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    const getInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Error getting initial session:', error);
+        }
+        
+        if (isMounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+          
+          if (session?.user) {
+            console.log('Initial session found for user:', session.user.id);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to get initial session:', error);
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
 
-    return () => subscription.unsubscribe();
+    getInitialSession();
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {

@@ -22,6 +22,13 @@ export const useTopicBookmarks = (topicId?: string) => {
         return [];
       }
       
+      // Ensure we have a valid session before making the query
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.log('No valid session available');
+        throw new Error('No valid session - please sign in again');
+      }
+      
       const { data, error } = await supabase
         .from('topic_bookmarks')
         .select(`
@@ -59,7 +66,7 @@ export const useTopicBookmarks = (topicId?: string) => {
     enabled: !!user?.id && !loading,
     retry: (failureCount, error) => {
       // Retry on auth-related errors
-      if (failureCount < 3 && error?.message?.includes('JWT')) {
+      if (failureCount < 3 && (error?.message?.includes('JWT') || error?.message?.includes('session'))) {
         return true;
       }
       return false;
@@ -96,6 +103,12 @@ export const useTopicBookmarks = (topicId?: string) => {
   const toggleBookmark = useMutation({
     mutationFn: async (topicId: string) => {
       if (!user?.id) throw new Error('Must be logged in');
+
+      // Ensure we have a valid session before making the mutation
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('No valid session - please sign in again');
+      }
 
       // Check current state in database first
       const { data: existingBookmark, error: checkError } = await supabase
@@ -158,6 +171,12 @@ export const useTopicBookmarks = (topicId?: string) => {
   const toggleNotifications = useMutation({
     mutationFn: async ({ topicId, enabled }: { topicId: string; enabled: boolean }) => {
       if (!user?.id) throw new Error('Must be logged in');
+
+      // Ensure we have a valid session before making the mutation
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('No valid session - please sign in again');
+      }
 
       const { error } = await supabase
         .from('topic_bookmarks')
