@@ -18,11 +18,11 @@ export const ForumLayout = () => {
       <ForumHeader />
       
 
-      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-6 overflow-x-hidden">
-        <div className="flex gap-6 w-full">
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-3 py-1 sm:py-2 overflow-x-hidden">
+        <div className="flex gap-3 w-full">
           {/* Sidebar - Left side on desktop, hidden on mobile */}
           {!isMobile && (
-            <aside className="w-80 flex-shrink-0 space-y-6 overflow-x-hidden">
+            <aside className="w-72 flex-shrink-0 forum-spacing overflow-x-hidden">
               <ForumSidebarNav />
               
             </aside>

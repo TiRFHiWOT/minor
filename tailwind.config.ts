@@ -70,7 +70,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Forum-specific colors
+				'forum-row-even': 'var(--forum-row-even)',
+				'forum-row-hover': 'var(--forum-row-hover)',
+				'forum-border-subtle': 'var(--forum-border-subtle)',
+				'forum-header-bg': 'var(--forum-header-bg)',
+				'forum-new': 'var(--forum-new)',
+				'forum-hot': 'var(--forum-hot)',
+				'forum-locked': 'var(--forum-locked)',
+				'forum-pinned': 'var(--forum-pinned)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

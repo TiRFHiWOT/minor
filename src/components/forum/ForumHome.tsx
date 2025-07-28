@@ -15,7 +15,7 @@ import { useCategories } from '@/hooks/useCategories';
 import { useForumSettings } from '@/hooks/useForumSettings';
 import { PaginationControls } from '@/components/ui/pagination-controls';
 
-import { PostCard } from './PostCard';
+import { TopicTable } from './TopicTable';
 import { ReportModal } from './ReportModal';
 import { QuickTopicModal } from './QuickTopicModal';
 
@@ -68,7 +68,7 @@ export const ForumHome = () => {
   const isLoading = hotTopicsLoading || newTopicsLoading || topTopicsLoading;
 
   return (
-    <div className="space-y-6 relative w-full overflow-x-hidden max-w-4xl mx-auto">
+    <div className="forum-spacing relative w-full overflow-x-hidden max-w-5xl mx-auto">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-foreground">
@@ -184,161 +184,109 @@ export const ForumHome = () => {
         </TabsList>
 
         {/* Hot Posts */}
-        <TabsContent value="hot" className="space-y-4">
-          {hotTopicsLoading ? (
-            <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-32 bg-muted rounded animate-pulse"></div>
-              ))}
-            </div>
-          ) : hotTopicsData && hotTopicsData.data.length > 0 ? (
-            <>
-              <div className="space-y-4">
-                {hotTopicsData.data.map((topic) => (
-                  <PostCard 
-                    key={topic.id} 
-                    topic={topic} 
-                    onReport={handleReport}
-                  />
-                ))}
-              </div>
-              <PaginationControls
-                currentPage={hotPage}
-                totalPages={hotTopicsData.totalPages}
-                totalItems={hotTopicsData.totalCount}
-                itemsPerPage={10}
-                onPageChange={setHotPage}
-                loading={hotTopicsLoading}
-              />
-            </>
-          ) : (
-            <Card className="p-8 text-center">
-              <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
-              <p className="text-muted-foreground">Be the first to start a discussion!</p>
-            </Card>
+        <TabsContent value="hot" className="forum-spacing">
+          <TopicTable 
+            topics={hotTopicsData?.data || []}
+            loading={hotTopicsLoading}
+            showCategory={true}
+          />
+          {hotTopicsData && hotTopicsData.data.length > 0 && (
+            <PaginationControls
+              currentPage={hotPage}
+              totalPages={hotTopicsData.totalPages}
+              totalItems={hotTopicsData.totalCount}
+              itemsPerPage={10}
+              onPageChange={setHotPage}
+              loading={hotTopicsLoading}
+            />
           )}
         </TabsContent>
 
         {/* New Posts */}
-        <TabsContent value="new" className="space-y-4">
-          {newTopicsLoading ? (
-            <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-32 bg-muted rounded animate-pulse"></div>
-              ))}
-            </div>
-          ) : newTopicsData && newTopicsData.data.length > 0 ? (
-            <>
-              <div className="space-y-4">
-                {newTopicsData.data.map((topic) => (
-                  <PostCard 
-                    key={topic.id} 
-                     topic={{
-                       ...topic,
-                       username: topic.profiles?.username || null,
-                       avatar_url: topic.profiles?.avatar_url || null,
-                       category_name: topic.categories?.name || 'General',
-                       category_color: topic.categories?.color || '#3b82f6',
-                       category_slug: topic.categories?.slug || '',
-                       slug: topic.slug,
-                       hot_score: 0,
-                       last_post_id: topic.last_post_id,
-                       parent_category_id: topic.categories?.parent_category_id || null,
-                       parent_category_slug: null // Not available in useTopics data
-                     }}
-                    onReport={handleReport}
-                  />
-                ))}
-              </div>
-              <PaginationControls
-                currentPage={newPage}
-                totalPages={newTopicsData.totalPages}
-                totalItems={newTopicsData.totalCount}
-                itemsPerPage={10}
-                onPageChange={setNewPage}
-                loading={newTopicsLoading}
-              />
-            </>
-          ) : (
-            <Card className="p-8 text-center">
-              <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
-              <p className="text-muted-foreground">Be the first to start a discussion!</p>
-            </Card>
+        <TabsContent value="new" className="forum-spacing">
+          <TopicTable 
+            topics={newTopicsData?.data?.map(topic => ({
+              ...topic,
+              username: topic.profiles?.username || null,
+              avatar_url: topic.profiles?.avatar_url || null,
+              category_name: topic.categories?.name || 'General',
+              category_color: topic.categories?.color || '#3b82f6',
+              category_slug: topic.categories?.slug || '',
+              slug: topic.slug,
+              hot_score: 0,
+              last_post_id: topic.last_post_id,
+              parent_category_id: topic.categories?.parent_category_id || null,
+              parent_category_slug: null
+            })) || []}
+            loading={newTopicsLoading}
+            showCategory={true}
+          />
+          {newTopicsData && newTopicsData.data.length > 0 && (
+            <PaginationControls
+              currentPage={newPage}
+              totalPages={newTopicsData.totalPages}
+              totalItems={newTopicsData.totalCount}
+              itemsPerPage={10}
+              onPageChange={setNewPage}
+              loading={newTopicsLoading}
+            />
           )}
         </TabsContent>
 
         {/* Top Posts */}
-        <TabsContent value="top" className="space-y-4">
-          {topTopicsLoading ? (
-            <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-32 bg-muted rounded animate-pulse"></div>
-              ))}
-            </div>
-          ) : topTopicsData && topTopicsData.data.length > 0 ? (
-            <>
-              <div className="space-y-4">
-                {topTopicsData.data.map((topic) => (
-                  <PostCard 
-                    key={topic.id} 
-                    topic={topic} 
-                    onReport={handleReport}
-                  />
-                ))}
-              </div>
-              <PaginationControls
-                currentPage={topPage}
-                totalPages={topTopicsData.totalPages}
-                totalItems={topTopicsData.totalCount}
-                itemsPerPage={10}
-                onPageChange={setTopPage}
-                loading={topTopicsLoading}
-              />
-            </>
-          ) : (
-            <Card className="p-8 text-center">
-              <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
-              <p className="text-muted-foreground">Be the first to start a discussion!</p>
-            </Card>
+        <TabsContent value="top" className="forum-spacing">
+          <TopicTable 
+            topics={topTopicsData?.data || []}
+            loading={topTopicsLoading}
+            showCategory={true}
+          />
+          {topTopicsData && topTopicsData.data.length > 0 && (
+            <PaginationControls
+              currentPage={topPage}
+              totalPages={topTopicsData.totalPages}
+              totalItems={topTopicsData.totalCount}
+              itemsPerPage={10}
+              onPageChange={setTopPage}
+              loading={topTopicsLoading}
+            />
           )}
         </TabsContent>
       </Tabs>
 
       {/* Forums Section */}
-      <div className="space-y-4">
+      <div className="forum-spacing">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">Browse Main Forums</h2>
+          <h2 className="text-lg font-bold text-foreground">Browse Main Forums</h2>
         </div>
         
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {level1Forums?.map((forum) => (
             <Link
               key={forum.id}
               to={`/category/${forum.slug}`}
               className="block"
             >
-              <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
-                <div className="flex items-center space-x-3 mb-3">
+              <Card className="p-3 hover:bg-forum-row-hover transition-colors cursor-pointer border border-forum-border-subtle">
+                <div className="flex items-center space-x-2 mb-2">
                   <div 
-                    className="w-4 h-4 rounded-full"
+                    className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: forum.color }}
                   />
-                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                  <h3 className="font-medium text-foreground group-hover:text-primary transition-colors text-sm">
                     {forum.name}
                   </h3>
                 </div>
                 {forum.description && (
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
                     {forum.description}
                   </p>
                 )}
-                <div className="flex items-center text-xs text-muted-foreground space-x-4">
-                  {forum.region && <span>Region: {forum.region}</span>}
-                  {forum.birth_year && <span>Birth Year: {forum.birth_year}</span>}
-                  {forum.play_level && <span>Level: {forum.play_level}</span>}
+                <div className="flex items-center text-xs text-muted-foreground space-x-2">
+                  {forum.region && <span>{forum.region}</span>}
+                  {forum.birth_year && <span>•</span>}
+                  {forum.birth_year && <span>{forum.birth_year}</span>}
+                  {forum.play_level && <span>•</span>}
+                  {forum.play_level && <span>{forum.play_level}</span>}
                 </div>
               </Card>
             </Link>
@@ -346,22 +294,22 @@ export const ForumHome = () => {
         </div>
         
         {(!level1Forums || level1Forums.length === 0) && (
-          <Card className="p-8 text-center">
-            <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No forums available</h3>
-            <p className="text-muted-foreground">Forums will appear here once they are created.</p>
+          <Card className="p-6 text-center">
+            <MessageSquare className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+            <h3 className="text-base font-semibold mb-2">No forums available</h3>
+            <p className="text-muted-foreground text-sm">Forums will appear here once they are created.</p>
           </Card>
         )}
       </div>
 
       {/* Province/State Forums Section */}
-      <div className="space-y-4">
+      <div className="forum-spacing">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">Browse Province / State Forums</h2>
+          <h2 className="text-lg font-bold text-foreground">Browse Province / State Forums</h2>
         </div>
         
         {level2Forums && level2Forums.length > 0 ? (
-          <div className="space-y-6">
+          <div className="forum-spacing">
             {(() => {
               // Filter out tournament forums and group by country using parent_category_id
               const canadianForums = level2Forums.filter(forum => 
@@ -381,11 +329,11 @@ export const ForumHome = () => {
               }
               
               return countries.map(country => (
-                <div key={country.name} className="space-y-3">
-                  <h3 className="text-lg font-semibold text-foreground border-b pb-2">
+                <div key={country.name} className="forum-spacing">
+                  <h3 className="text-base font-semibold text-foreground border-b pb-1 forum-header">
                     {country.name}
                   </h3>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {country.forums.map((forum) => (
                       <Link
                         key={forum.id}

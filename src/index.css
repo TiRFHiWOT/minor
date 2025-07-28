@@ -106,6 +106,26 @@ All colors MUST be HSL.
   }
 }
 
+/* Forum-specific design system additions */
+:root {
+  /* Forum density utilities */
+  --forum-row-height: 3rem;
+  --forum-compact-padding: 0.5rem;
+  --forum-normal-padding: 0.75rem;
+  
+  /* Forum colors for traditional look */
+  --forum-row-even: hsl(var(--muted) / 0.3);
+  --forum-row-hover: hsl(var(--accent) / 0.5);
+  --forum-border-subtle: hsl(var(--border) / 0.5);
+  --forum-header-bg: hsl(var(--muted) / 0.8);
+  
+  /* Category status colors */
+  --forum-new: hsl(142 76% 36%);
+  --forum-hot: hsl(25 95% 53%);
+  --forum-locked: hsl(var(--muted-foreground));
+  --forum-pinned: hsl(346 84% 61%);
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -153,5 +173,74 @@ All colors MUST be HSL.
   .line-clamp-3 {
     word-wrap: break-word;
     overflow-wrap: break-word;
+  }
+}
+
+@layer components {
+  /* Forum table-style layouts */
+  .forum-table {
+    @apply w-full border-collapse;
+  }
+  
+  .forum-row {
+    @apply border-b border-forum-border-subtle hover:bg-forum-row-hover transition-colors duration-150;
+    min-height: var(--forum-row-height);
+  }
+  
+  .forum-row:nth-child(even) {
+    @apply bg-forum-row-even;
+  }
+  
+  .forum-cell {
+    @apply px-3 py-2 align-middle;
+  }
+  
+  .forum-header {
+    @apply bg-forum-header-bg font-medium text-sm border-b-2 border-border;
+  }
+  
+  /* Density classes */
+  .forum-compact {
+    @apply space-y-1;
+  }
+  
+  .forum-dense {
+    @apply space-y-0.5;
+  }
+  
+  /* Forum status indicators */
+  .forum-status-new {
+    @apply text-forum-new;
+  }
+  
+  .forum-status-hot {
+    @apply text-forum-hot;
+  }
+  
+  .forum-status-locked {
+    @apply text-forum-locked;
+  }
+  
+  .forum-status-pinned {
+    @apply text-forum-pinned;
+  }
+  
+  /* Topic row styling */
+  .topic-row {
+    @apply border-b border-forum-border-subtle hover:bg-forum-row-hover transition-colors duration-150 cursor-pointer;
+  }
+  
+  .topic-row:nth-child(even) {
+    @apply bg-forum-row-even;
+  }
+  
+  /* Compact spacing utilities */
+  .forum-spacing {
+    @apply space-y-1;
+  }
+  
+  /* Post card compact style */
+  .post-card-compact {
+    @apply p-2 border-b border-forum-border-subtle hover:bg-forum-row-hover transition-colors;
   }
 }
