@@ -85,7 +85,7 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                     <div className="min-w-0 flex-1">
                       <Link
                         to={topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}
-                        className="font-medium text-foreground hover:text-primary transition-colors line-clamp-1 text-sm"
+                        className="font-medium text-foreground hover:text-primary transition-colors text-sm"
                         title={topic.title}
                       >
                         {topic.title}
