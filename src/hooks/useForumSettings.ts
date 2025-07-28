@@ -75,14 +75,15 @@ export const useForumSettings = () => {
   });
 
   const updateSettingMutation = useMutation({
-    mutationFn: async ({ key, value, type = 'string', category = 'general', description }: {
+    mutationFn: async ({ key, value, type = 'string', category = 'general', description, isPublic = false }: {
       key: string;
       value: any;
       type?: string;
       category?: string;
       description?: string;
+      isPublic?: boolean;
     }) => {
-      console.log('Updating forum setting:', { key, value, type, category });
+      console.log('Updating forum setting:', { key, value, type, category, isPublic });
       
       // Convert value to JSON format
       let jsonValue = value;
@@ -101,7 +102,8 @@ export const useForumSettings = () => {
         value: jsonValue,
         setting_type: type,
         category,
-        description
+        description,
+        is_public: isPublic
       });
       
       if (error) {

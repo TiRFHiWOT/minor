@@ -28,11 +28,11 @@ export const RSSSettings = () => {
 
     try {
       await Promise.all([
-        updateSetting({ key: 'rss_enabled', value: formData.rssEnabled, type: 'boolean', category: 'rss' }),
-        updateSetting({ key: 'rss_title', value: formData.rssTitle, type: 'string', category: 'rss' }),
-        updateSetting({ key: 'rss_description', value: formData.rssDescription, type: 'string', category: 'rss' }),
-        updateSetting({ key: 'rss_item_limit', value: formData.rssItemLimit, type: 'number', category: 'rss' }),
-        updateSetting({ key: 'site_url', value: formData.siteUrl, type: 'string', category: 'general' })
+        updateSetting({ key: 'rss_enabled', value: formData.rssEnabled, type: 'boolean', category: 'rss', isPublic: true }),
+        updateSetting({ key: 'rss_title', value: formData.rssTitle, type: 'string', category: 'rss', isPublic: true }),
+        updateSetting({ key: 'rss_description', value: formData.rssDescription, type: 'string', category: 'rss', isPublic: true }),
+        updateSetting({ key: 'rss_item_limit', value: formData.rssItemLimit, type: 'number', category: 'rss', isPublic: true }),
+        updateSetting({ key: 'site_url', value: formData.siteUrl, type: 'string', category: 'general', isPublic: true })
       ]);
 
       toast({
