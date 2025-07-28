@@ -4,7 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Clock, Star, MessageSquare, User as UserIcon, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import { TrendingUp, Clock, Star, MessageSquare, User as UserIcon, Facebook, Instagram, Twitter, Youtube, Rss } from 'lucide-react';
 import { useHotTopics } from '@/hooks/useHotTopics';
 import { useTopics } from '@/hooks/useTopics';
 import { useHotTopicsLegacy } from '@/hooks/useHotTopicsLegacy';
@@ -90,6 +90,7 @@ export const ForumHome = () => {
           const twitterUrl = cleanUrl(getSetting('social_twitter', ''));
           const instagramUrl = cleanUrl(getSetting('social_instagram', ''));
           const youtubeUrl = cleanUrl(getSetting('social_youtube', ''));
+          const isRssEnabled = getSetting('rss_enabled', false);
 
           // Validate URLs start with http/https
           const isValidUrl = (url: string) => {
@@ -101,8 +102,8 @@ export const ForumHome = () => {
           const validInstagram = isValidUrl(instagramUrl);
           const validYoutube = isValidUrl(youtubeUrl);
 
-          // Only show if at least one valid social link exists
-          const hasValidSocialLinks = validFacebook || validTwitter || validInstagram || validYoutube;
+          // Only show if at least one valid social link exists or RSS is enabled
+          const hasValidSocialLinks = validFacebook || validTwitter || validInstagram || validYoutube || isRssEnabled;
 
           if (!hasValidSocialLinks) return null;
 
@@ -147,6 +148,16 @@ export const ForumHome = () => {
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Youtube className="h-5 w-5" />
+                </a>
+              )}
+              {isRssEnabled && (
+                <a
+                  href="/rss"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Rss className="h-5 w-5" />
                 </a>
               )}
             </div>

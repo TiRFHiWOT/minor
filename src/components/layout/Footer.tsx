@@ -235,6 +235,16 @@ export const Footer = () => {
                   </a>
                 );
               })()}
+              {isRssEnabled && (
+                <a
+                  href="/rss"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Rss className="h-5 w-5" />
+                </a>
+              )}
             </div>
           </div>
 
