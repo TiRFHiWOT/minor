@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, AlertTriangle, Flag, FileX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNotifications } from '@/hooks/useNotifications';
@@ -21,13 +21,56 @@ export const NotificationBell: React.FC = () => {
 
   if (!user) return null;
 
-  const handleNotificationClick = (notificationId: string, topicSlug: string) => {
+  const handleNotificationClick = (notificationId: string) => {
     markAsRead.mutate(notificationId);
-    // Navigation will be handled by the Link component
   };
 
   const handleMarkAllRead = () => {
     markAllAsRead.mutate();
+  };
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'new_report':
+        return <Flag className="h-4 w-4 text-orange-500" />;
+      case 'content_pending':
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      case 'new_appeal':
+        return <FileX className="h-4 w-4 text-purple-500" />;
+      default:
+        return <Bell className="h-4 w-4 text-blue-500" />;
+    }
+  };
+
+  const getNotificationContent = (notification: any) => {
+    switch (notification.notification_type) {
+      case 'new_report':
+        return {
+          title: 'New Report Submitted',
+          description: `Reason: ${notification.report?.reason || 'Unknown'}`,
+          link: '/admin/moderation'
+        };
+      case 'content_pending':
+        return {
+          title: 'Content Pending Review',
+          description: notification.topic?.title || 'Content requires moderation',
+          link: '/admin/moderation'
+        };
+      case 'new_appeal':
+        return {
+          title: 'New Appeal Submitted',
+          description: 'A user has submitted a moderation appeal',
+          link: '/admin/moderation'
+        };
+      default:
+        return {
+          title: notification.topic?.title || 'Notification',
+          description: 'New activity in a topic you follow',
+          link: notification.topic?.categories?.slug && notification.topic?.slug 
+            ? `/${notification.topic.categories.slug}/${notification.topic.slug}` 
+            : '/'
+        };
+    }
   };
 
   return (
@@ -64,9 +107,7 @@ export const NotificationBell: React.FC = () => {
         {notifications && notifications.length > 0 ? (
           <div className="max-h-96 overflow-y-auto">
             {notifications.slice(0, 10).map((notification) => {
-              const topic = notification.topics as any;
-              const post = notification.posts as any;
-              const authorName = post?.profiles?.username || post?.temporary_users?.display_name || 'Unknown User';
+              const content = getNotificationContent(notification);
               
               return (
                 <DropdownMenuItem
@@ -75,24 +116,27 @@ export const NotificationBell: React.FC = () => {
                   className={`p-3 cursor-pointer ${!notification.is_read ? 'bg-muted/50' : ''}`}
                 >
                   <Link
-                    to={`/${topic?.categories?.slug}/${topic?.slug}`}
-                    onClick={() => handleNotificationClick(notification.id, topic?.slug || '')}
+                    to={content.link}
+                    onClick={() => handleNotificationClick(notification.id)}
                   >
-                    <div className="flex flex-col gap-1 w-full">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-sm truncate">
-                          {topic?.title}
-                        </span>
-                        {!notification.is_read && (
-                          <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
-                        )}
+                    <div className="flex items-start gap-3 w-full">
+                      {getNotificationIcon(notification.notification_type)}
+                      <div className="flex flex-col gap-1 flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-sm truncate">
+                            {content.title}
+                          </span>
+                          {!notification.is_read && (
+                            <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {content.description}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+                        </p>
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        New post by {authorName}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
-                      </p>
                     </div>
                   </Link>
                 </DropdownMenuItem>

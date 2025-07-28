@@ -1338,38 +1338,58 @@ export type Database = {
       }
       topic_notifications: {
         Row: {
+          appeal_id: string | null
           created_at: string
           id: string
           is_read: boolean
-          notification_type: string
+          notification_type: Database["public"]["Enums"]["notification_type"]
           post_id: string | null
+          report_id: string | null
           topic_id: string
           user_id: string
         }
         Insert: {
+          appeal_id?: string | null
           created_at?: string
           id?: string
           is_read?: boolean
-          notification_type?: string
+          notification_type?: Database["public"]["Enums"]["notification_type"]
           post_id?: string | null
+          report_id?: string | null
           topic_id: string
           user_id: string
         }
         Update: {
+          appeal_id?: string | null
           created_at?: string
           id?: string
           is_read?: boolean
-          notification_type?: string
+          notification_type?: Database["public"]["Enums"]["notification_type"]
           post_id?: string | null
+          report_id?: string | null
           topic_id?: string
           user_id?: string
         }
         Relationships: [
           {
+            foreignKeyName: "topic_notifications_appeal_id_fkey"
+            columns: ["appeal_id"]
+            isOneToOne: false
+            referencedRelation: "moderation_appeals"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "topic_notifications_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topic_notifications_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
             referencedColumns: ["id"]
           },
           {
@@ -2016,6 +2036,16 @@ export type Database = {
         }
         Returns: undefined
       }
+      notify_all_admins: {
+        Args: {
+          p_notification_type: Database["public"]["Enums"]["notification_type"]
+          p_topic_id?: string
+          p_post_id?: string
+          p_report_id?: string
+          p_appeal_id?: string
+        }
+        Returns: undefined
+      }
       process_banned_words: {
         Args: { content_text: string }
         Returns: Json
@@ -2078,6 +2108,11 @@ export type Database = {
       }
     }
     Enums: {
+      notification_type:
+        | "new_post"
+        | "new_report"
+        | "content_pending"
+        | "new_appeal"
       user_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
@@ -2206,6 +2241,12 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      notification_type: [
+        "new_post",
+        "new_report",
+        "content_pending",
+        "new_appeal",
+      ],
       user_role: ["admin", "moderator", "user"],
     },
   },

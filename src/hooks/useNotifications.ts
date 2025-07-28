@@ -7,8 +7,8 @@ export const useNotifications = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Get notifications
-  const { data: notifications, isLoading } = useQuery({
+  // Get notifications - simplified query to avoid complex joins
+  const { data: rawNotifications, isLoading } = useQuery({
     queryKey: ['notifications', user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
@@ -20,41 +20,113 @@ export const useNotifications = () => {
           user_id,
           topic_id,
           post_id,
+          report_id,
+          appeal_id,
           notification_type,
           is_read,
-          created_at,
-          topics:topic_id (
-            id,
-            title,
-            slug,
-            category_id,
-            categories:category_id (
-              name,
-              color,
-              slug
-            )
-          ),
-          posts:post_id (
-            id,
-            content,
-            author_id,
-            profiles:author_id (
-              username
-            ),
-            temporary_users:author_id (
-              display_name
-            )
-          )
+          created_at
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(50);
         
       if (error) throw error;
-      return data;
+      return data || [];
     },
     enabled: !!user?.id,
   });
+
+  // Get related topic details
+  const { data: topics } = useQuery({
+    queryKey: ['notification-topics', rawNotifications?.map(n => n.topic_id).filter(Boolean)],
+    queryFn: async () => {
+      const topicIds = rawNotifications?.map(n => n.topic_id).filter(Boolean) || [];
+      if (topicIds.length === 0) return [];
+      
+      const { data, error } = await supabase
+        .from('topics')
+        .select(`
+          id,
+          title,
+          slug,
+          category_id,
+          categories:category_id (
+            name,
+            color,
+            slug
+          )
+        `)
+        .in('id', topicIds);
+        
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: (rawNotifications?.length || 0) > 0,
+  });
+
+  // Get related report details for admin notifications
+  const { data: reports } = useQuery({
+    queryKey: ['notification-reports', rawNotifications?.map(n => n.report_id).filter(Boolean)],
+    queryFn: async () => {
+      const reportIds = rawNotifications?.map(n => n.report_id).filter(Boolean) || [];
+      if (reportIds.length === 0) return [];
+      
+      const { data, error } = await supabase
+        .from('reports')
+        .select(`
+          id,
+          reason,
+          description,
+          status,
+          created_at,
+          reported_topic_id,
+          reported_post_id
+        `)
+        .in('id', reportIds);
+        
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: (rawNotifications?.length || 0) > 0,
+  });
+
+  // Get related appeal details for admin notifications
+  const { data: appeals } = useQuery({
+    queryKey: ['notification-appeals', rawNotifications?.map(n => n.appeal_id).filter(Boolean)],
+    queryFn: async () => {
+      const appealIds = rawNotifications?.map(n => n.appeal_id).filter(Boolean) || [];
+      if (appealIds.length === 0) return [];
+      
+      const { data, error } = await supabase
+        .from('moderation_appeals')
+        .select(`
+          id,
+          appeal_reason,
+          status,
+          content_type,
+          created_at
+        `)
+        .in('id', appealIds);
+        
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: (rawNotifications?.length || 0) > 0,
+  });
+
+  // Combine all data
+  const notifications = rawNotifications?.map(notification => {
+    const topic = topics?.find(t => t.id === notification.topic_id);
+    const report = reports?.find(r => r.id === notification.report_id);
+    const appeal = appeals?.find(a => a.id === notification.appeal_id);
+    
+    return {
+      ...notification,
+      topic,
+      report,
+      appeal
+    };
+  }) || [];
 
   // Get unread count
   const { data: unreadCount = 0 } = useQuery({
@@ -117,6 +189,22 @@ export const useNotifications = () => {
         'postgres_changes',
         {
           event: 'INSERT',
+          schema: 'public',
+          table: 'topic_notifications',
+          filter: `user_id=eq.${user.id}`
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['notifications', user.id] });
+          queryClient.invalidateQueries({ queryKey: ['notifications-unread-count', user.id] });
+          queryClient.invalidateQueries({ queryKey: ['notification-topics'] });
+          queryClient.invalidateQueries({ queryKey: ['notification-reports'] });
+          queryClient.invalidateQueries({ queryKey: ['notification-appeals'] });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
           schema: 'public',
           table: 'topic_notifications',
           filter: `user_id=eq.${user.id}`
