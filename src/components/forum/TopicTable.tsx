@@ -91,20 +91,16 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                         {topic.title}
                       </Link>
                       
-                      <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                        <span>by {topic.username || topic.profiles?.username || 'Anonymous'}</span>
-                        {showCategory && (topic.category_name || topic.categories?.name) && (
-                          <>
-                            <span>•</span>
-                            <Link 
-                              to={`/category/${topic.category_slug || topic.categories?.slug}`}
-                              className="hover:text-primary transition-colors"
-                            >
-                              {topic.category_name || topic.categories?.name}
-                            </Link>
-                          </>
-                        )}
-                      </div>
+                      {showCategory && (topic.category_name || topic.categories?.name) && (
+                        <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                          <Link 
+                            to={`/category/${topic.category_slug || topic.categories?.slug}`}
+                            className="hover:text-primary transition-colors"
+                          >
+                            {topic.category_name || topic.categories?.name}
+                          </Link>
+                        </div>
+                      )}
                     </div>
 
                     {/* Admin Controls */}
