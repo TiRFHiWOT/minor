@@ -12,6 +12,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AlertTriangle, Ban, CheckCircle, Clock, UserX, Wifi, WifiOff, Eye, X, Trash2, Users, FileText, Shield, ShieldCheck } from 'lucide-react';
@@ -462,258 +463,274 @@ const ReportsTab = () => {
             <div className="text-sm text-muted-foreground">
               Reports requiring attention from community members
             </div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Reporter</TableHead>
-                  <TableHead>Reporter IP</TableHead>
-                  <TableHead>Content Type</TableHead>
-                  <TableHead>Reason</TableHead>
-                  <TableHead>Content Preview</TableHead>
-                  <TableHead>Author</TableHead>
-                  <TableHead>Content IP</TableHead>
-                  <TableHead>Reported</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {currentReports?.map((report) => (
-                  <TableRow key={report.id}>
-                    <TableCell>{report.reporter?.username || 'Anonymous'}</TableCell>
-                    <TableCell>
-                      <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                        {String(report.reporter_ip_address || 'N/A')}
-                      </code>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={report.reported_post_id ? 'secondary' : 'default'}>
-                        {report.reported_post_id ? 'Post' : 'Topic'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{report.reason}</div>
-                        {report.description && (
-                          <div className="text-sm text-muted-foreground">{report.description}</div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="max-w-md">
-                      <Link 
-                        to={getReportedContentUrl(report)}
-                        className="text-primary hover:text-primary/80 hover:underline block"
-                      >
-                        <div className="truncate text-sm font-medium">
-                          {report.post?.content || report.topic?.content || report.topic?.title}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Click to view content
-                        </div>
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        {report.contentAuthor?.username || 'Anonymous User'}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {report.post ? 'Post author' : 'Topic author'}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                        {String(report.post?.ip_address || 'N/A')}
-                      </code>
-                    </TableCell>
-                    <TableCell>
-                      {formatDistanceToNow(new Date(report.created_at))} ago
-                    </TableCell>
-                    <TableCell>
-                      {/* Check if content is pending moderation */}
-                      {(report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending') && (
-                        <Badge variant="outline" className="text-xs">
-                          <Clock className="h-3 w-3 mr-1" />
-                          Pending
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1 flex-wrap">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleViewReportDetails(report)}
-                          className="text-blue-600 hover:text-blue-700"
-                          title="View details"
-                        >
-                          <FileText className="h-3 w-3" />
-                        </Button>
-                        
-                        {/* Content moderation actions - only show if content is pending */}
-                        {(report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending') && (
-                          <>
+            <ScrollArea className="w-full">
+              <div className="min-w-[1200px]">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="min-w-[120px]">Reporter</TableHead>
+                      <TableHead className="min-w-[130px]">Reporter IP</TableHead>
+                      <TableHead className="min-w-[100px]">Content Type</TableHead>
+                      <TableHead className="min-w-[150px]">Reason</TableHead>
+                      <TableHead className="min-w-[200px]">Content Preview</TableHead>
+                      <TableHead className="min-w-[120px]">Author</TableHead>
+                      <TableHead className="min-w-[130px]">Content IP</TableHead>
+                      <TableHead className="min-w-[100px]">Reported</TableHead>
+                      <TableHead className="min-w-[80px]">Status</TableHead>
+                      <TableHead className="min-w-[200px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {currentReports?.map((report) => (
+                      <TableRow key={report.id}>
+                        <TableCell className="min-w-[120px]">{report.reporter?.username || 'Anonymous'}</TableCell>
+                        <TableCell className="min-w-[130px]">
+                          <code className="text-xs bg-muted px-1 py-0.5 rounded">
+                            {String(report.reporter_ip_address || 'N/A')}
+                          </code>
+                        </TableCell>
+                        <TableCell className="min-w-[100px]">
+                          <Badge variant={report.reported_post_id ? 'secondary' : 'default'}>
+                            {report.reported_post_id ? 'Post' : 'Topic'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="min-w-[150px]">
+                          <div>
+                            <div className="font-medium">{report.reason}</div>
+                            {report.description && (
+                              <div className="text-sm text-muted-foreground truncate max-w-[140px]" title={report.description}>
+                                {report.description}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="min-w-[200px] max-w-[200px]">
+                          <Link 
+                            to={getReportedContentUrl(report)}
+                            className="text-primary hover:text-primary/80 hover:underline block"
+                          >
+                            <div className="truncate text-sm font-medium">
+                              {report.post?.content || report.topic?.content || report.topic?.title}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Click to view content
+                            </div>
+                          </Link>
+                        </TableCell>
+                        <TableCell className="min-w-[120px]">
+                          <div className="text-sm">
+                            {report.contentAuthor?.username || 'Anonymous User'}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {report.post ? 'Post author' : 'Topic author'}
+                          </div>
+                        </TableCell>
+                        <TableCell className="min-w-[130px]">
+                          <code className="text-xs bg-muted px-1 py-0.5 rounded">
+                            {String(report.post?.ip_address || 'N/A')}
+                          </code>
+                        </TableCell>
+                        <TableCell className="min-w-[100px]">
+                          <div className="text-sm">
+                            {formatDistanceToNow(new Date(report.created_at))} ago
+                          </div>
+                        </TableCell>
+                        <TableCell className="min-w-[80px]">
+                          {/* Check if content is pending moderation */}
+                          {(report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending') && (
+                            <Badge variant="outline" className="text-xs">
+                              <Clock className="h-3 w-3 mr-1" />
+                              Pending
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="min-w-[200px]">
+                          <div className="flex gap-1 flex-wrap">
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleApproveReportedContent(report)}
+                              onClick={() => handleViewReportDetails(report)}
+                              className="text-blue-600 hover:text-blue-700"
+                              title="View details"
+                            >
+                              <FileText className="h-3 w-3" />
+                            </Button>
+                            
+                            {/* Content moderation actions - only show if content is pending */}
+                            {(report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending') && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleApproveReportedContent(report)}
+                                  className="text-green-600 hover:text-green-700"
+                                  title="Approve content & dismiss report"
+                                >
+                                  <ShieldCheck className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleRejectReportedContent(report)}
+                                  className="text-red-600 hover:text-red-700"
+                                  title="Reject content & resolve report"
+                                >
+                                  <Shield className="h-3 w-3" />
+                                </Button>
+                              </>
+                            )}
+                            
+                            {/* Standard report actions */}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleResolveReport(report.id, 'resolved')}
                               className="text-green-600 hover:text-green-700"
-                              title="Approve content & dismiss report"
+                              title="Mark as resolved"
                             >
-                              <ShieldCheck className="h-3 w-3" />
+                              <CheckCircle className="h-3 w-3" />
                             </Button>
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleRejectReportedContent(report)}
-                              className="text-red-600 hover:text-red-700"
-                              title="Reject content & resolve report"
+                              onClick={() => handleResolveReport(report.id, 'dismissed')}
+                              className="text-gray-600 hover:text-gray-700"
+                              title="Dismiss report"
                             >
-                              <Shield className="h-3 w-3" />
+                              <Eye className="h-3 w-3" />
                             </Button>
-                          </>
-                        )}
-                        
-                        {/* Standard report actions */}
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleResolveReport(report.id, 'resolved')}
-                          className="text-green-600 hover:text-green-700"
-                          title="Mark as resolved"
-                        >
-                          <CheckCircle className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleResolveReport(report.id, 'dismissed')}
-                          className="text-gray-600 hover:text-gray-700"
-                          title="Dismiss report"
-                        >
-                          <Eye className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDeleteReport(report.id)}
-                          className="text-red-600 hover:text-red-700"
-                          title="Delete report permanently"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {(!currentReports || currentReports.length === 0) && (
-                  <TableRow>
-                    <TableCell colSpan={10} className="text-center text-muted-foreground">
-                      No active reports to display
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteReport(report.id)}
+                              className="text-red-600 hover:text-red-700"
+                              title="Delete report permanently"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {(!currentReports || currentReports.length === 0) && (
+                      <TableRow>
+                        <TableCell colSpan={10} className="text-center text-muted-foreground">
+                          No active reports to display
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </ScrollArea>
           </TabsContent>
 
           <TabsContent value="resolved" className="space-y-4">
             <div className="text-sm text-muted-foreground">
               Previously handled reports (resolved, dismissed, or closed)
             </div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Reporter</TableHead>
-                  <TableHead>Content Type</TableHead>
-                  <TableHead>Reason</TableHead>
-                  <TableHead>Content Preview</TableHead>
-                  <TableHead>Author</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Resolved</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {currentReports?.map((report) => (
-                  <TableRow key={report.id}>
-                    <TableCell>{report.reporter?.username || 'Anonymous'}</TableCell>
-                    <TableCell>
-                      <Badge variant={report.reported_post_id ? 'secondary' : 'default'}>
-                        {report.reported_post_id ? 'Post' : 'Topic'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{report.reason}</div>
-                        {report.description && (
-                          <div className="text-sm text-muted-foreground">{report.description}</div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="max-w-md">
-                      <Link 
-                        to={getReportedContentUrl(report)}
-                        className="text-primary hover:text-primary/80 hover:underline block"
-                      >
-                        <div className="truncate text-sm font-medium">
-                          {report.post?.content || report.topic?.content || report.topic?.title}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Click to view content
-                        </div>
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        {report.contentAuthor?.username || 'Anonymous User'}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={
-                          report.status === 'resolved' ? 'default' : 
-                          report.status === 'dismissed' ? 'secondary' : 'outline'
-                        }
-                      >
-                        {report.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {report.reviewed_at ? formatDistanceToNow(new Date(report.reviewed_at)) + ' ago' : 'N/A'}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleViewReportDetails(report)}
-                          className="text-blue-600 hover:text-blue-700"
-                          title="View details"
-                        >
-                          <FileText className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDeleteReport(report.id)}
-                          className="text-red-600 hover:text-red-700"
-                          title="Delete report permanently"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {(!currentReports || currentReports.length === 0) && (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground">
-                      No resolved reports to display
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+            <ScrollArea className="w-full">
+              <div className="min-w-[1000px]">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="min-w-[120px]">Reporter</TableHead>
+                      <TableHead className="min-w-[100px]">Content Type</TableHead>
+                      <TableHead className="min-w-[150px]">Reason</TableHead>
+                      <TableHead className="min-w-[200px]">Content Preview</TableHead>
+                      <TableHead className="min-w-[120px]">Author</TableHead>
+                      <TableHead className="min-w-[80px]">Status</TableHead>
+                      <TableHead className="min-w-[100px]">Resolved</TableHead>
+                      <TableHead className="min-w-[150px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {currentReports?.map((report) => (
+                      <TableRow key={report.id}>
+                        <TableCell className="min-w-[120px]">{report.reporter?.username || 'Anonymous'}</TableCell>
+                        <TableCell className="min-w-[100px]">
+                          <Badge variant={report.reported_post_id ? 'secondary' : 'default'}>
+                            {report.reported_post_id ? 'Post' : 'Topic'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="min-w-[150px]">
+                          <div>
+                            <div className="font-medium">{report.reason}</div>
+                            {report.description && (
+                              <div className="text-sm text-muted-foreground truncate max-w-[140px]" title={report.description}>
+                                {report.description}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="min-w-[200px] max-w-[200px]">
+                          <Link 
+                            to={getReportedContentUrl(report)}
+                            className="text-primary hover:text-primary/80 hover:underline block"
+                          >
+                            <div className="truncate text-sm font-medium">
+                              {report.post?.content || report.topic?.content || report.topic?.title}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Click to view content
+                            </div>
+                          </Link>
+                        </TableCell>
+                        <TableCell className="min-w-[120px]">
+                          <div className="text-sm">
+                            {report.contentAuthor?.username || 'Anonymous User'}
+                          </div>
+                        </TableCell>
+                        <TableCell className="min-w-[80px]">
+                          <Badge 
+                            variant={
+                              report.status === 'resolved' ? 'default' : 
+                              report.status === 'dismissed' ? 'secondary' : 'outline'
+                            }
+                          >
+                            {report.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="min-w-[100px]">
+                          <div className="text-sm">
+                            {report.reviewed_at ? formatDistanceToNow(new Date(report.reviewed_at)) + ' ago' : 'N/A'}
+                          </div>
+                        </TableCell>
+                        <TableCell className="min-w-[150px]">
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleViewReportDetails(report)}
+                              className="text-blue-600 hover:text-blue-700"
+                              title="View details"
+                            >
+                              <FileText className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteReport(report.id)}
+                              className="text-red-600 hover:text-red-700"
+                              title="Delete report permanently"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {(!currentReports || currentReports.length === 0) && (
+                      <TableRow>
+                        <TableCell colSpan={8} className="text-center text-muted-foreground">
+                          No resolved reports to display
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </ScrollArea>
           </TabsContent>
         </Tabs>
       </div>
