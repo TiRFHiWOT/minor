@@ -44,10 +44,9 @@ export const TopicTable: React.FC<TopicTableProps> = ({
       {/* Table Header */}
       <div className="forum-header px-3 py-2 border-b">
         <div className="grid grid-cols-12 gap-2 text-xs font-medium text-muted-foreground">
-          <div className="col-span-6 md:col-span-7">Topic</div>
+          <div className="col-span-8 md:col-span-10">Topic</div>
           <div className="col-span-2 md:col-span-1 text-center">Replies</div>
           <div className="col-span-2 md:col-span-1 text-center">Views</div>
-          <div className="col-span-2 md:col-span-3">Last Activity</div>
         </div>
       </div>
 
@@ -59,9 +58,9 @@ export const TopicTable: React.FC<TopicTableProps> = ({
           
           return (
             <div key={topic.id} className="topic-row px-3 py-2">
-              <div className="grid grid-cols-12 gap-2 items-center">
+              <div className="grid grid-cols-12 gap-2 items-start">
                 {/* Topic Info */}
-                <div className="col-span-6 md:col-span-7 min-w-0">
+                <div className="col-span-8 md:col-span-10 min-w-0">
                   <div className="flex items-start gap-2">
                     {/* Status Icons */}
                     <div className="flex items-center gap-1 mt-0.5 flex-shrink-0">
@@ -91,16 +90,36 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                         {topic.title}
                       </Link>
                       
-                      {showCategory && (topic.category_name || topic.categories?.name) && (
-                        <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                          <Link 
-                            to={`/category/${topic.category_slug || topic.categories?.slug}`}
-                            className="hover:text-primary transition-colors"
-                          >
-                            {topic.category_name || topic.categories?.name}
-                          </Link>
-                        </div>
-                      )}
+                      {/* Category and Last Activity */}
+                      <div className="mt-1 space-y-1">
+                        {showCategory && (topic.category_name || topic.categories?.name) && (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Link 
+                              to={`/category/${topic.category_slug || topic.categories?.slug}`}
+                              className="hover:text-primary transition-colors"
+                            >
+                              {topic.category_name || topic.categories?.name}
+                            </Link>
+                          </div>
+                        )}
+                        
+                        {/* Last Activity */}
+                        {topic.last_reply_at ? (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Avatar className="h-4 w-4 flex-shrink-0">
+                              <AvatarImage src={topic.last_reply_avatar} />
+                              <AvatarFallback className="text-xs">
+                                {(topic.last_reply_username || 'A').charAt(0).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span>
+                              {topic.last_reply_username || 'Anonymous'} • {formatDistanceToNow(new Date(topic.last_reply_at))} ago
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="text-xs text-muted-foreground">No replies yet</div>
+                        )}
+                      </div>
                     </div>
 
                     {/* Admin Controls */}
@@ -119,30 +138,6 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                 {/* Views */}
                 <div className="col-span-2 md:col-span-1 text-center">
                   <div className="text-sm text-muted-foreground">{topic.view_count || 0}</div>
-                </div>
-
-                {/* Last Activity */}
-                <div className="col-span-2 md:col-span-3 min-w-0">
-                  {topic.last_reply_at ? (
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-5 w-5 flex-shrink-0">
-                        <AvatarImage src={topic.last_reply_avatar} />
-                        <AvatarFallback className="text-xs">
-                          {(topic.last_reply_username || 'A').charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-xs font-medium line-clamp-1">
-                          {topic.last_reply_username || 'Anonymous'}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(new Date(topic.last_reply_at))} ago
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-xs text-muted-foreground">No replies yet</div>
-                  )}
                 </div>
               </div>
             </div>
