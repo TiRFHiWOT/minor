@@ -71,7 +71,11 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Forum-specific colors
+				// Hockey Forum Ice Theme Colors
+				'forum-ice-bg': 'hsl(var(--forum-ice-bg))',
+				'forum-rink-blue': 'hsl(var(--forum-rink-blue))',
+				'forum-ice-accent': 'hsl(var(--forum-ice-accent))',
+				'forum-steel': 'hsl(var(--forum-steel))',
 				'forum-row-even': 'var(--forum-row-even)',
 				'forum-row-hover': 'var(--forum-row-hover)',
 				'forum-border-subtle': 'var(--forum-border-subtle)',

@@ -8,26 +8,27 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Hockey Ice Theme - Light Mode */
+    --background: 210 50% 98%;
+    --foreground: 215 25% 20%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 210 40% 99%;
+    --card-foreground: 215 25% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 210 40% 99%;
+    --popover-foreground: 215 25% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 210 100% 40%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 60% 94%;
+    --secondary-foreground: 215 25% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 50% 96%;
+    --muted-foreground: 215 15% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 65% 92%;
+    --accent-foreground: 215 25% 25%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -38,9 +39,9 @@ All colors MUST be HSL.
     --success: 142 76% 36%;
     --success-foreground: 355 100% 97%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 210 35% 88%;
+    --input: 210 35% 88%;
+    --ring: 210 100% 40%;
 
     --radius: 0.5rem;
 
@@ -106,24 +107,30 @@ All colors MUST be HSL.
   }
 }
 
-/* Forum-specific design system additions */
+/* Hockey Forum-specific design system additions */
 :root {
   /* Forum density utilities */
   --forum-row-height: 3rem;
   --forum-compact-padding: 0.5rem;
   --forum-normal-padding: 0.75rem;
   
-  /* Forum colors for traditional look */
-  --forum-row-even: hsl(var(--muted) / 0.3);
-  --forum-row-hover: hsl(var(--accent) / 0.5);
-  --forum-border-subtle: hsl(var(--border) / 0.5);
-  --forum-header-bg: hsl(var(--muted) / 0.8);
+  /* Hockey Ice Theme Forum Colors */
+  --forum-ice-bg: 210 50% 98%;
+  --forum-rink-blue: 210 100% 40%;
+  --forum-ice-accent: 210 60% 95%;
+  --forum-steel: 215 20% 45%;
   
-  /* Category status colors */
-  --forum-new: hsl(142 76% 36%);
-  --forum-hot: hsl(25 95% 53%);
-  --forum-locked: hsl(var(--muted-foreground));
-  --forum-pinned: hsl(346 84% 61%);
+  /* Forum row styling with ice theme */
+  --forum-row-even: hsl(210 40% 97%);
+  --forum-row-hover: hsl(210 60% 94%);
+  --forum-border-subtle: hsl(210 30% 85%);
+  --forum-header-bg: hsl(210 50% 92%);
+  
+  /* Hockey-themed status colors */
+  --forum-new: hsl(142 76% 36%);        /* Ice green for new */
+  --forum-hot: hsl(25 95% 53%);         /* Hot orange */
+  --forum-locked: hsl(215 15% 50%);     /* Steel gray for locked */
+  --forum-pinned: hsl(210 100% 45%);    /* Hockey blue for pinned */
 }
 
 @layer base {
