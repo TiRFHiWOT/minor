@@ -12,7 +12,7 @@ import { useForumSettings } from '@/hooks/useForumSettings';
 import { useVisitors24h } from '@/hooks/useVisitors24h';
 import { usePeakDailyVisitors } from '@/hooks/usePeakDailyVisitors';
 import { useAutoPeakUpdate } from '@/hooks/useAutoPeakUpdate';
-import { Facebook, Twitter, Instagram, Youtube, Users, Calendar } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube, Users, Calendar, Rss } from 'lucide-react';
 
 const ContactFormModal = () => {
   const [open, setOpen] = useState(false);
@@ -129,6 +129,8 @@ export const Footer = () => {
   
   // Auto-update peak when current visitors exceed stored peak
   useAutoPeakUpdate();
+  
+  const isRssEnabled = getSetting('rss_enabled', false);
 
   return (
     <footer className="bg-card border-t mt-auto">
@@ -159,14 +161,17 @@ export const Footer = () => {
               <Link to="/blog" className="hover:text-primary transition-colors">
                 Blog
               </Link>
-              <a 
-                href="/rss" 
-                className="hover:text-primary transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                RSS Feed
-              </a>
+              {isRssEnabled && (
+                <a 
+                  href="/rss" 
+                  className="hover:text-primary transition-colors flex items-center space-x-1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Rss className="h-4 w-4" />
+                  <span>RSS Feed</span>
+                </a>
+              )}
             </div>
           </div>
 

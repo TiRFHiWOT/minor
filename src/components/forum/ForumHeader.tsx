@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Bell, User, Settings, Shield, Menu } from 'lucide-react';
+import { Search, Bell, User, Settings, Shield, Menu, Rss } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useForumSettings } from '@/hooks/useForumSettings';
 import { SharedMenuContent } from './SharedMenuContent';
 import {
   DropdownMenu,
@@ -26,6 +27,9 @@ export const ForumHeader = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [searchTerm, setSearchTerm] = useState('');
+  const { getSetting } = useForumSettings();
+  
+  const isRssEnabled = getSetting('rss_enabled', false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -112,6 +116,13 @@ export const ForumHeader = () => {
           {/* Desktop User Actions */}
           {!isMobile ? (
             <div className="flex items-center space-x-4">
+              {isRssEnabled && (
+                <Button variant="ghost" size="icon" asChild>
+                  <a href="/rss" target="_blank" rel="noopener noreferrer" aria-label="RSS Feed">
+                    <Rss className="h-5 w-5" />
+                  </a>
+                </Button>
+              )}
               {user ? (
                 <>
                   <Button variant="ghost" size="icon">

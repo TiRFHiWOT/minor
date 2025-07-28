@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Shield } from 'lucide-react';
+import { Shield, Rss } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCategories } from '@/hooks/useCategories';
+import { useForumSettings } from '@/hooks/useForumSettings';
 
 interface SharedMenuContentProps {
   onNavigate: () => void;
@@ -12,6 +13,9 @@ interface SharedMenuContentProps {
 export const SharedMenuContent = ({ onNavigate }: SharedMenuContentProps) => {
   const { user, signOut, isAdmin } = useAuth();
   const { data: mainForums } = useCategories(null, 1);
+  const { getSetting } = useForumSettings();
+  
+  const isRssEnabled = getSetting('rss_enabled', false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -53,6 +57,14 @@ export const SharedMenuContent = ({ onNavigate }: SharedMenuContentProps) => {
           <Button variant="ghost" className="w-full justify-start" asChild>
             <Link to="/rules" onClick={onNavigate}>Forum Rules</Link>
           </Button>
+          {isRssEnabled && (
+            <Button variant="ghost" className="w-full justify-start" asChild>
+              <a href="/rss" target="_blank" rel="noopener noreferrer" onClick={onNavigate}>
+                <Rss className="mr-2 h-4 w-4" />
+                RSS Feed
+              </a>
+            </Button>
+          )}
         </div>
       </div>
 
