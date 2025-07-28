@@ -1345,7 +1345,7 @@ export type Database = {
           notification_type: Database["public"]["Enums"]["notification_type"]
           post_id: string | null
           report_id: string | null
-          topic_id: string
+          topic_id: string | null
           user_id: string
         }
         Insert: {
@@ -1356,7 +1356,7 @@ export type Database = {
           notification_type?: Database["public"]["Enums"]["notification_type"]
           post_id?: string | null
           report_id?: string | null
-          topic_id: string
+          topic_id?: string | null
           user_id: string
         }
         Update: {
@@ -1367,7 +1367,7 @@ export type Database = {
           notification_type?: Database["public"]["Enums"]["notification_type"]
           post_id?: string | null
           report_id?: string | null
-          topic_id?: string
+          topic_id?: string | null
           user_id?: string
         }
         Relationships: [
