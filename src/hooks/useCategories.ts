@@ -71,7 +71,7 @@ export const useCategoryById = (categoryId: string) => {
         .select('*')
         .eq('id', categoryId)
         .eq('is_active', true)
-        .maybeSingle(); // Use maybeSingle() instead of single() to handle 0 rows gracefully
+        .single();
       
       if (error) {
         console.error('Error fetching category:', error);
@@ -79,7 +79,7 @@ export const useCategoryById = (categoryId: string) => {
       }
       
       console.log('Category fetched:', data);
-      return data as Category | null; // Allow null return
+      return data as Category;
     },
     enabled: isValidId, // Only run query if ID is valid
     staleTime: 10 * 60 * 1000, // 10 minutes - categories rarely change
@@ -100,7 +100,7 @@ export const useCategoryBySlug = (slug: string) => {
         .select('*')
         .eq('slug', slug)
         .eq('is_active', true)
-        .maybeSingle(); // Use maybeSingle() instead of single() to handle 0 rows gracefully
+        .single();
       
       if (error) {
         console.error('Error fetching category by slug:', error);
@@ -108,7 +108,7 @@ export const useCategoryBySlug = (slug: string) => {
       }
       
       console.log('Category by slug fetched:', data);
-      return data as Category | null; // Allow null return
+      return data as Category;
     },
     enabled: isValidSlug, // Only run query if slug is valid
     staleTime: 10 * 60 * 1000, // 10 minutes - categories rarely change

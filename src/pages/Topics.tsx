@@ -1,20 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { MessageSquare, User, Clock, Pin, Search } from "lucide-react";
 
-import { useTopicsLegacy as useTopics } from "@/hooks/useTopicsLegacy";
-import { formatDistanceToNow } from "date-fns";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MessageSquare, User, Clock, Pin, Search } from 'lucide-react';
+
+import { useTopicsLegacy as useTopics } from '@/hooks/useTopicsLegacy';
+import { formatDistanceToNow } from 'date-fns';
 
 const Topics = () => {
   const { data: topics, isLoading } = useTopics();
@@ -38,7 +33,10 @@ const Topics = () => {
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input placeholder="Search topics..." className="pl-10" />
+              <Input
+                placeholder="Search topics..."
+                className="pl-10"
+              />
             </div>
           </div>
           <Select>
@@ -67,129 +65,72 @@ const Topics = () => {
         </div>
       </Card>
 
+
       {/* Topics List */}
       <Card className="p-6">
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                className="h-20 bg-gray-200 rounded animate-pulse"
-              ></div>
+              <div key={i} className="h-20 bg-gray-200 rounded animate-pulse"></div>
             ))}
           </div>
         ) : topics && topics.length > 0 ? (
           <div className="space-y-4">
-            {topics.map((topic, index) => (
-              <React.Fragment key={topic.id}>
-                {" "}
-                {/* Use React.Fragment to group items */}
-                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="flex items-start space-x-4 flex-1">
-                    <div className="flex items-center space-x-2">
-                      {topic.is_pinned && (
-                        <Pin className="h-4 w-4 text-red-500" />
-                      )}
-                      <MessageSquare className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <div className="flex-1">
-                      <Link
-                        to={
-                          topic.slug && topic.categories?.slug
-                            ? `/${topic.categories.slug}/${topic.slug}`
-                            : `/topic/${topic.id}`
-                        }
-                        className="font-medium text-gray-900 hover:text-blue-600"
-                      >
-                        {topic.title}
-                      </Link>
-                      <div className="flex items-center space-x-2 mt-1 text-sm text-gray-500">
-                        <span>by {topic.profiles?.username || "Unknown"}</span>
-                        <Badge variant="outline" className="text-xs">
-                          {topic.categories?.name || "General"}
-                        </Badge>
-                      </div>
-                    </div>
+            {topics.map((topic) => (
+              <div key={topic.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <div className="flex items-start space-x-4 flex-1">
+                  <div className="flex items-center space-x-2">
+                    {topic.is_pinned && <Pin className="h-4 w-4 text-red-500" />}
+                    <MessageSquare className="h-5 w-5 text-gray-400" />
                   </div>
-
-                  <div className="flex items-center space-x-6 text-sm text-gray-500">
-                    <div className="text-center">
-                      <div className="flex items-center space-x-1">
-                        <MessageSquare className="h-4 w-4" />
-                        <span>{topic.reply_count || 0}</span>
-                      </div>
-                      <span className="text-xs">replies</span>
-                    </div>
-                    <div className="text-center">
-                      <div className="flex items-center space-x-1">
-                        <User className="h-4 w-4" />
-                        <span>{topic.view_count || 0}</span>
-                      </div>
-                      <span className="text-xs">views</span>
-                    </div>
-                    <div className="text-center">
-                      <div className="flex items-center space-x-1">
-                        <Clock className="h-4 w-4" />
-                        <span className="whitespace-nowrap">
-                          {formatDistanceToNow(
-                            new Date(topic.last_reply_at || topic.created_at)
-                          )}{" "}
-                          ago
-                        </span>
-                      </div>
+                  <div className="flex-1">
+                    <Link 
+                      to={topic.slug && topic.categories?.slug ? `/${topic.categories.slug}/${topic.slug}` : `/topic/${topic.id}`}
+                      className="font-medium text-gray-900 hover:text-blue-600"
+                    >
+                      {topic.title}
+                    </Link>
+                    <div className="flex items-center space-x-2 mt-1 text-sm text-gray-500">
+                      <span>by {topic.profiles?.username || 'Unknown'}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {topic.categories?.name || 'General'}
+                      </Badge>
                     </div>
                   </div>
                 </div>
-                {/* AdMetricsPro Content One Ad - Display after the 3rd topic */}
-                {index === 2 && ( // Adjust index as needed for desired placement
-                  <div className="my-6 flex justify-center">
-                    <div
-                      id="div-gpt-ad-1715358598569-0"
-                      style={{
-                        minWidth: "300px",
-                        minHeight: "50px",
-                        border: "1px dashed #e0e0e0",
-                        backgroundColor: "#f5f5f5",
-                      }}
-                      className="rounded-lg shadow-sm"
-                    >
-                      <p className="text-center text-xs text-muted-foreground p-2">
-                        Advertisement
-                      </p>
+                
+                <div className="flex items-center space-x-6 text-sm text-gray-500">
+                  <div className="text-center">
+                    <div className="flex items-center space-x-1">
+                      <MessageSquare className="h-4 w-4" />
+                      <span>{topic.reply_count || 0}</span>
+                    </div>
+                    <span className="text-xs">replies</span>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center space-x-1">
+                      <User className="h-4 w-4" />
+                      <span>{topic.view_count || 0}</span>
+                    </div>
+                    <span className="text-xs">views</span>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center space-x-1">
+                      <Clock className="h-4 w-4" />
+                      <span className="whitespace-nowrap">
+                        {formatDistanceToNow(new Date(topic.last_reply_at || topic.created_at))} ago
+                      </span>
                     </div>
                   </div>
-                )}
-                {/* AdMetricsPro Content Two Ad - Display after the 7th topic */}
-                {index === 6 && ( // Adjust index as needed for desired placement
-                  <div className="my-6 flex justify-center">
-                    <div
-                      id="div-gpt-ad-1715358620345-0"
-                      style={{
-                        minWidth: "300px",
-                        minHeight: "50px",
-                        border: "1px dashed #e0e0e0",
-                        backgroundColor: "#f5f5f5",
-                      }}
-                      className="rounded-lg shadow-sm"
-                    >
-                      <p className="text-center text-xs text-muted-foreground p-2">
-                        Advertisement
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </React.Fragment>
+                </div>
+              </div>
             ))}
           </div>
         ) : (
           <div className="text-center py-8">
             <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No topics found
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Be the first to start a discussion!
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No topics found</h3>
+            <p className="text-gray-600 mb-4">Be the first to start a discussion!</p>
             <Button asChild>
               <Link to="/create">Create First Topic</Link>
             </Button>

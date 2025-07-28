@@ -1943,22 +1943,14 @@ export type Database = {
         Returns: string
       }
       set_forum_setting: {
-        Args:
-          | {
-              key_name: string
-              value: Json
-              setting_type?: string
-              category?: string
-              description?: string
-            }
-          | {
-              key_name: string
-              value: Json
-              setting_type?: string
-              category?: string
-              description?: string
-              is_public?: boolean
-            }
+        Args: {
+          key_name: string
+          value: Json
+          setting_type?: string
+          category?: string
+          description?: string
+          is_public?: boolean
+        }
         Returns: undefined
       }
       sync_topic_reply_counts: {

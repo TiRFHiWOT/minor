@@ -1,32 +1,23 @@
-import React, { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  TrendingUp,
-  Clock,
-  Star,
-  MessageSquare,
-  User as UserIcon,
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
-} from "lucide-react";
-import { useHotTopics } from "@/hooks/useHotTopics"; // Consider if this is still needed if useMostCommentedTopics is used
-import { useTopics } from "@/hooks/useTopics";
-import { useHotTopicsLegacy } from "@/hooks/useHotTopicsLegacy"; // Consider if this is still needed
-import { useMostCommentedTopics } from "@/hooks/useMostCommentedTopics";
-import { useMostViewedTopics } from "@/hooks/useMostViewedTopics";
-import { useAuth } from "@/hooks/useAuth";
-import { useCategories } from "@/hooks/useCategories";
-import { useForumSettings } from "@/hooks/useForumSettings";
-import { PaginationControls } from "@/components/ui/pagination-controls";
 
-import { PostCard } from "./PostCard";
-import { ReportModal } from "./ReportModal";
-import { QuickTopicModal } from "./QuickTopicModal"; // Assuming this is used elsewhere
+import React, { useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TrendingUp, Clock, Star, MessageSquare, User as UserIcon, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import { useHotTopics } from '@/hooks/useHotTopics';
+import { useTopics } from '@/hooks/useTopics';
+import { useHotTopicsLegacy } from '@/hooks/useHotTopicsLegacy';
+import { useMostCommentedTopics } from '@/hooks/useMostCommentedTopics';
+import { useMostViewedTopics } from '@/hooks/useMostViewedTopics';
+import { useAuth } from '@/hooks/useAuth';
+import { useCategories } from '@/hooks/useCategories';
+import { useForumSettings } from '@/hooks/useForumSettings';
+import { PaginationControls } from '@/components/ui/pagination-controls';
+
+import { PostCard } from './PostCard';
+import { ReportModal } from './ReportModal';
+import { QuickTopicModal } from './QuickTopicModal';
 
 export const ForumHome = () => {
   const { user } = useAuth();
@@ -38,30 +29,25 @@ export const ForumHome = () => {
   }>({
     isOpen: false,
   });
-
+  
   // Pagination state for each tab
   const [hotPage, setHotPage] = useState(1);
   const [newPage, setNewPage] = useState(1);
   const [topPage, setTopPage] = useState(1);
-
-  const sortBy = searchParams.get("sort") || "new";
-
+  
+  const sortBy = searchParams.get('sort') || 'new';
+  
   // Paginated data hooks
-  const { data: hotTopicsData, isLoading: hotTopicsLoading } =
-    useMostCommentedTopics(hotPage, 10);
-  const { data: newTopicsData, isLoading: newTopicsLoading } = useTopics(
-    undefined,
-    newPage,
-    10
-  );
-  const { data: topTopicsData, isLoading: topTopicsLoading } =
-    useMostViewedTopics(topPage, 10);
-
+  const { data: hotTopicsData, isLoading: hotTopicsLoading } = useMostCommentedTopics(hotPage, 10);
+  const { data: newTopicsData, isLoading: newTopicsLoading } = useTopics(undefined, newPage, 10);
+  const { data: topTopicsData, isLoading: topTopicsLoading } = useMostViewedTopics(topPage, 10);
+  
   const { data: level1Forums } = useCategories(null, 1); // Only Level 1 forums
   const { data: level2Forums } = useCategories(undefined, 2); // Province/State forums
+  
 
   const handleSortChange = (value: string) => {
-    if (value === "new") {
+    if (value === 'new') {
       setSearchParams({});
     } else {
       setSearchParams({ sort: value });
@@ -86,33 +72,28 @@ export const ForumHome = () => {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-foreground">
-          {getSetting("forum_name", "Minor Hockey Talks")}
+          {getSetting('forum_name', 'Minor Hockey Talks')}
         </h1>
         <p className="text-muted-foreground">
-          {getSetting(
-            "forum_description",
-            "A community forum for minor hockey discussions"
-          )}
+          {getSetting('forum_description', 'A community forum for minor hockey discussions')}
         </p>
-
+        
         {/* Social Media Links */}
         {(() => {
           // Clean URLs by removing JSON encoding quotes
           const cleanUrl = (url: string) => {
-            if (!url || typeof url !== "string") return "";
-            return url.replace(/^"(.*)"$/, "$1").trim();
+            if (!url || typeof url !== 'string') return '';
+            return url.replace(/^"(.*)"$/, '$1').trim();
           };
 
-          const facebookUrl = cleanUrl(getSetting("social_facebook", ""));
-          const twitterUrl = cleanUrl(getSetting("social_twitter", ""));
-          const instagramUrl = cleanUrl(getSetting("social_instagram", ""));
-          const youtubeUrl = cleanUrl(getSetting("social_youtube", ""));
+          const facebookUrl = cleanUrl(getSetting('social_facebook', ''));
+          const twitterUrl = cleanUrl(getSetting('social_twitter', ''));
+          const instagramUrl = cleanUrl(getSetting('social_instagram', ''));
+          const youtubeUrl = cleanUrl(getSetting('social_youtube', ''));
 
           // Validate URLs start with http/https
           const isValidUrl = (url: string) => {
-            return (
-              url && (url.startsWith("http://") || url.startsWith("https://"))
-            );
+            return url && (url.startsWith('http://') || url.startsWith('https://'));
           };
 
           const validFacebook = isValidUrl(facebookUrl);
@@ -121,8 +102,7 @@ export const ForumHome = () => {
           const validYoutube = isValidUrl(youtubeUrl);
 
           // Only show if at least one valid social link exists
-          const hasValidSocialLinks =
-            validFacebook || validTwitter || validInstagram || validYoutube;
+          const hasValidSocialLinks = validFacebook || validTwitter || validInstagram || validYoutube;
 
           if (!hasValidSocialLinks) return null;
 
@@ -174,23 +154,6 @@ export const ForumHome = () => {
         })()}
       </div>
 
-      {/* AdMetricsPro Leaderboard Top Ad */}
-      <div className="my-6 flex justify-center">
-        <div
-          id="div-gpt-ad-1715358540790-0"
-          style={{
-            minWidth: "300px",
-            minHeight: "50px",
-            border: "1px dashed #e0e0e0",
-            backgroundColor: "#f5f5f5",
-          }}
-          className="rounded-lg shadow-sm w-full max-w-2xl" // Added max-w for better centering
-        >
-          <p className="text-center text-xs text-muted-foreground p-2">
-            Advertisement
-          </p>
-        </div>
-      </div>
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
@@ -214,61 +177,18 @@ export const ForumHome = () => {
           {hotTopicsLoading ? (
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="h-32 bg-muted rounded animate-pulse"
-                ></div>
+                <div key={i} className="h-32 bg-muted rounded animate-pulse"></div>
               ))}
             </div>
           ) : hotTopicsData && hotTopicsData.data.length > 0 ? (
             <>
               <div className="space-y-4">
-                {hotTopicsData.data.map((topic, index) => (
-                  <React.Fragment key={topic.id}>
-                    <PostCard
-                      key={topic.id}
-                      topic={topic}
-                      onReport={handleReport}
-                    />
-                    {/* AdMetricsPro Content One Ad - Display after 3rd hot topic */}
-                    {index === 2 && (
-                      <div className="my-6 flex justify-center">
-                        <div
-                          id="div-gpt-ad-1715358598569-0"
-                          style={{
-                            minWidth: "300px",
-                            minHeight: "50px",
-                            border: "1px dashed #e0e0e0",
-                            backgroundColor: "#f5f5f5",
-                          }}
-                          className="rounded-lg shadow-sm w-full max-w-md"
-                        >
-                          <p className="text-center text-xs text-muted-foreground p-2">
-                            Advertisement
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    {/* AdMetricsPro Content Two Ad - Display after 7th hot topic */}
-                    {index === 6 && (
-                      <div className="my-6 flex justify-center">
-                        <div
-                          id="div-gpt-ad-1715358620345-0"
-                          style={{
-                            minWidth: "300px",
-                            minHeight: "50px",
-                            border: "1px dashed #e0e0e0",
-                            backgroundColor: "#f5f5f5",
-                          }}
-                          className="rounded-lg shadow-sm w-full max-w-md"
-                        >
-                          <p className="text-center text-xs text-muted-foreground p-2">
-                            Advertisement
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </React.Fragment>
+                {hotTopicsData.data.map((topic) => (
+                  <PostCard 
+                    key={topic.id} 
+                    topic={topic} 
+                    onReport={handleReport}
+                  />
                 ))}
               </div>
               <PaginationControls
@@ -284,9 +204,7 @@ export const ForumHome = () => {
             <Card className="p-8 text-center">
               <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
-              <p className="text-muted-foreground">
-                Be the first to start a discussion!
-              </p>
+              <p className="text-muted-foreground">Be the first to start a discussion!</p>
             </Card>
           )}
         </TabsContent>
@@ -296,74 +214,30 @@ export const ForumHome = () => {
           {newTopicsLoading ? (
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="h-32 bg-muted rounded animate-pulse"
-                ></div>
+                <div key={i} className="h-32 bg-muted rounded animate-pulse"></div>
               ))}
             </div>
           ) : newTopicsData && newTopicsData.data.length > 0 ? (
             <>
               <div className="space-y-4">
-                {newTopicsData.data.map((topic, index) => (
-                  <React.Fragment key={topic.id}>
-                    <PostCard
-                      key={topic.id}
-                      topic={{
-                        ...topic,
-                        username: topic.profiles?.username || null,
-                        avatar_url: topic.profiles?.avatar_url || null,
-                        category_name: topic.categories?.name || "General",
-                        category_color: topic.categories?.color || "#3b82f6",
-                        category_slug: topic.categories?.slug || "",
-                        slug: topic.slug,
-                        hot_score: 0,
-                        last_post_id: topic.last_post_id,
-                        parent_category_id:
-                          topic.categories?.parent_category_id || null,
-                        parent_category_slug: null, // Not available in useTopics data
-                      }}
-                      onReport={handleReport}
-                    />
-                    {/* AdMetricsPro Content One Ad - Display after 3rd new topic */}
-                    {index === 2 && (
-                      <div className="my-6 flex justify-center">
-                        <div
-                          id="div-gpt-ad-1715358598569-0"
-                          style={{
-                            minWidth: "300px",
-                            minHeight: "50px",
-                            border: "1px dashed #e0e0e0",
-                            backgroundColor: "#f5f5f5",
-                          }}
-                          className="rounded-lg shadow-sm w-full max-w-md"
-                        >
-                          <p className="text-center text-xs text-muted-foreground p-2">
-                            Advertisement
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    {/* AdMetricsPro Content Two Ad - Display after 7th new topic */}
-                    {index === 6 && (
-                      <div className="my-6 flex justify-center">
-                        <div
-                          id="div-gpt-ad-1715358620345-0"
-                          style={{
-                            minWidth: "300px",
-                            minHeight: "50px",
-                            border: "1px dashed #e0e0e0",
-                            backgroundColor: "#f5f5f5",
-                          }}
-                          className="rounded-lg shadow-sm w-full max-w-md"
-                        >
-                          <p className="text-center text-xs text-muted-foreground p-2">
-                            Advertisement
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </React.Fragment>
+                {newTopicsData.data.map((topic) => (
+                  <PostCard 
+                    key={topic.id} 
+                     topic={{
+                       ...topic,
+                       username: topic.profiles?.username || null,
+                       avatar_url: topic.profiles?.avatar_url || null,
+                       category_name: topic.categories?.name || 'General',
+                       category_color: topic.categories?.color || '#3b82f6',
+                       category_slug: topic.categories?.slug || '',
+                       slug: topic.slug,
+                       hot_score: 0,
+                       last_post_id: topic.last_post_id,
+                       parent_category_id: topic.categories?.parent_category_id || null,
+                       parent_category_slug: null // Not available in useTopics data
+                     }}
+                    onReport={handleReport}
+                  />
                 ))}
               </div>
               <PaginationControls
@@ -379,9 +253,7 @@ export const ForumHome = () => {
             <Card className="p-8 text-center">
               <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
-              <p className="text-muted-foreground">
-                Be the first to start a discussion!
-              </p>
+              <p className="text-muted-foreground">Be the first to start a discussion!</p>
             </Card>
           )}
         </TabsContent>
@@ -391,61 +263,18 @@ export const ForumHome = () => {
           {topTopicsLoading ? (
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="h-32 bg-muted rounded animate-pulse"
-                ></div>
+                <div key={i} className="h-32 bg-muted rounded animate-pulse"></div>
               ))}
             </div>
           ) : topTopicsData && topTopicsData.data.length > 0 ? (
             <>
               <div className="space-y-4">
-                {topTopicsData.data.map((topic, index) => (
-                  <React.Fragment key={topic.id}>
-                    <PostCard
-                      key={topic.id}
-                      topic={topic}
-                      onReport={handleReport}
-                    />
-                    {/* AdMetricsPro Content One Ad - Display after 3rd top topic */}
-                    {index === 2 && (
-                      <div className="my-6 flex justify-center">
-                        <div
-                          id="div-gpt-ad-1715358598569-0"
-                          style={{
-                            minWidth: "300px",
-                            minHeight: "50px",
-                            border: "1px dashed #e0e0e0",
-                            backgroundColor: "#f5f5f5",
-                          }}
-                          className="rounded-lg shadow-sm w-full max-w-md"
-                        >
-                          <p className="text-center text-xs text-muted-foreground p-2">
-                            Advertisement
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    {/* AdMetricsPro Content Two Ad - Display after 7th top topic */}
-                    {index === 6 && (
-                      <div className="my-6 flex justify-center">
-                        <div
-                          id="div-gpt-ad-1715358620345-0"
-                          style={{
-                            minWidth: "300px",
-                            minHeight: "50px",
-                            border: "1px dashed #e0e0e0",
-                            backgroundColor: "#f5f5f5",
-                          }}
-                          className="rounded-lg shadow-sm w-full max-w-md"
-                        >
-                          <p className="text-center text-xs text-muted-foreground p-2">
-                            Advertisement
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </React.Fragment>
+                {topTopicsData.data.map((topic) => (
+                  <PostCard 
+                    key={topic.id} 
+                    topic={topic} 
+                    onReport={handleReport}
+                  />
                 ))}
               </div>
               <PaginationControls
@@ -461,9 +290,7 @@ export const ForumHome = () => {
             <Card className="p-8 text-center">
               <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
-              <p className="text-muted-foreground">
-                Be the first to start a discussion!
-              </p>
+              <p className="text-muted-foreground">Be the first to start a discussion!</p>
             </Card>
           )}
         </TabsContent>
@@ -472,11 +299,9 @@ export const ForumHome = () => {
       {/* Forums Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">
-            Browse Main Forums
-          </h2>
+          <h2 className="text-xl font-bold text-foreground">Browse Main Forums</h2>
         </div>
-
+        
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {level1Forums?.map((forum) => (
             <Link
@@ -486,7 +311,7 @@ export const ForumHome = () => {
             >
               <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
                 <div className="flex items-center space-x-3 mb-3">
-                  <div
+                  <div 
                     className="w-4 h-4 rounded-full"
                     style={{ backgroundColor: forum.color }}
                   />
@@ -501,23 +326,19 @@ export const ForumHome = () => {
                 )}
                 <div className="flex items-center text-xs text-muted-foreground space-x-4">
                   {forum.region && <span>Region: {forum.region}</span>}
-                  {forum.birth_year && (
-                    <span>Birth Year: {forum.birth_year}</span>
-                  )}
+                  {forum.birth_year && <span>Birth Year: {forum.birth_year}</span>}
                   {forum.play_level && <span>Level: {forum.play_level}</span>}
                 </div>
               </Card>
             </Link>
           ))}
         </div>
-
+        
         {(!level1Forums || level1Forums.length === 0) && (
           <Card className="p-8 text-center">
             <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">No forums available</h3>
-            <p className="text-muted-foreground">
-              Forums will appear here once they are created.
-            </p>
+            <p className="text-muted-foreground">Forums will appear here once they are created.</p>
           </Card>
         )}
       </div>
@@ -525,40 +346,30 @@ export const ForumHome = () => {
       {/* Province/State Forums Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">
-            Browse Province / State Forums
-          </h2>
+          <h2 className="text-xl font-bold text-foreground">Browse Province / State Forums</h2>
         </div>
-
+        
         {level2Forums && level2Forums.length > 0 ? (
           <div className="space-y-6">
             {(() => {
               // Filter out tournament forums and group by country using parent_category_id
-              const canadianForums = level2Forums
-                .filter(
-                  (forum) =>
-                    forum.parent_category_id ===
-                    "11111111-1111-1111-1111-111111111111"
-                )
-                .sort((a, b) => (a.region || "").localeCompare(b.region || ""));
-
-              const usaForums = level2Forums
-                .filter(
-                  (forum) =>
-                    forum.parent_category_id ===
-                    "22222222-2222-2222-2222-222222222222"
-                )
-                .sort((a, b) => (a.region || "").localeCompare(b.region || ""));
-
+              const canadianForums = level2Forums.filter(forum => 
+                forum.parent_category_id === '11111111-1111-1111-1111-111111111111'
+              ).sort((a, b) => (a.region || '').localeCompare(b.region || ''));
+              
+              const usaForums = level2Forums.filter(forum => 
+                forum.parent_category_id === '22222222-2222-2222-2222-222222222222'
+              ).sort((a, b) => (a.region || '').localeCompare(b.region || ''));
+              
               const countries = [];
               if (canadianForums.length > 0) {
-                countries.push({ name: "Canada", forums: canadianForums });
+                countries.push({ name: 'Canada', forums: canadianForums });
               }
               if (usaForums.length > 0) {
-                countries.push({ name: "USA", forums: usaForums });
+                countries.push({ name: 'USA', forums: usaForums });
               }
-
-              return countries.map((country) => (
+              
+              return countries.map(country => (
                 <div key={country.name} className="space-y-3">
                   <h3 className="text-lg font-semibold text-foreground border-b pb-2">
                     {country.name}
@@ -572,7 +383,7 @@ export const ForumHome = () => {
                       >
                         <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer">
                           <div className="flex items-center space-x-2 mb-2">
-                            <div
+                            <div 
                               className="w-3 h-3 rounded-full"
                               style={{ backgroundColor: forum.color }}
                             />
@@ -596,12 +407,8 @@ export const ForumHome = () => {
         ) : (
           <Card className="p-8 text-center">
             <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
-              No province/state forums available
-            </h3>
-            <p className="text-muted-foreground">
-              Province and state forums will appear here once they are created.
-            </p>
+            <h3 className="text-lg font-semibold mb-2">No province/state forums available</h3>
+            <p className="text-muted-foreground">Province and state forums will appear here once they are created.</p>
           </Card>
         )}
       </div>
