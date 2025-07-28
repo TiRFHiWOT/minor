@@ -22,7 +22,7 @@ export const useTopicBookmarks = (topicId?: string) => {
           topic_id,
           notification_enabled,
           created_at,
-          topics:topic_id (
+          topics (
             id,
             title,
             slug,
@@ -30,7 +30,7 @@ export const useTopicBookmarks = (topicId?: string) => {
             reply_count,
             view_count,
             category_id,
-            categories:category_id (
+            categories (
               name,
               color,
               slug
