@@ -11,7 +11,7 @@ export const useTopicBookmarks = (topicId?: string) => {
   // Debug logging
   console.log('useTopicBookmarks - User:', user?.id, 'Loading:', loading);
 
-  // Get user's bookmarks
+  // Get user's bookmarks with simplified two-step approach
   const { data: bookmarks, isLoading, error } = useQuery({
     queryKey: ['topic-bookmarks', user?.id],
     queryFn: async () => {
@@ -29,39 +29,59 @@ export const useTopicBookmarks = (topicId?: string) => {
         throw new Error('No valid session - please sign in again');
       }
       
-      const { data, error } = await supabase
+      // Step 1: Get bookmarks
+      const { data: bookmarkData, error: bookmarkError } = await supabase
         .from('topic_bookmarks')
-        .select(`
-          id,
-          user_id,
-          topic_id,
-          notification_enabled,
-          created_at,
-          topics (
-            id,
-            title,
-            slug,
-            last_reply_at,
-            reply_count,
-            view_count,
-            category_id,
-            categories (
-              name,
-              color,
-              slug
-            )
-          )
-        `)
+        .select('id, user_id, topic_id, notification_enabled, created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
         
-      if (error) {
-        console.error('Error fetching bookmarks:', error);
-        throw error;
+      if (bookmarkError) {
+        console.error('Error fetching bookmarks:', bookmarkError);
+        throw bookmarkError;
       }
       
-      console.log('Bookmarks fetched:', data?.length || 0, 'items');
-      return data || [];
+      if (!bookmarkData || bookmarkData.length === 0) {
+        console.log('No bookmarks found');
+        return [];
+      }
+      
+      // Step 2: Get topic details for bookmarked topics
+      const topicIds = bookmarkData.map(b => b.topic_id);
+      const { data: topicsData, error: topicsError } = await supabase
+        .from('topics')
+        .select(`
+          id,
+          title,
+          slug,
+          last_reply_at,
+          reply_count,
+          view_count,
+          category_id,
+          categories (
+            name,
+            color,
+            slug
+          )
+        `)
+        .in('id', topicIds);
+        
+      if (topicsError) {
+        console.error('Error fetching topics:', topicsError);
+        throw topicsError;
+      }
+      
+      // Step 3: Combine the data
+      const enrichedBookmarks = bookmarkData.map(bookmark => {
+        const topic = topicsData?.find(t => t.id === bookmark.topic_id);
+        return {
+          ...bookmark,
+          topics: topic
+        };
+      }).filter(bookmark => bookmark.topics); // Filter out bookmarks where topic was not found
+      
+      console.log('Bookmarks fetched and enriched:', enrichedBookmarks.length, 'items');
+      return enrichedBookmarks;
     },
     enabled: !!user?.id && !loading,
     retry: (failureCount, error) => {

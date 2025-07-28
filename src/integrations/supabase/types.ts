@@ -1319,7 +1319,22 @@ export type Database = {
           topic_id?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_topic_bookmarks_topic_id"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_topic_bookmarks_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       topic_notifications: {
         Row: {
