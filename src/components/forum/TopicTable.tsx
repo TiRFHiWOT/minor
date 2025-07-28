@@ -104,8 +104,6 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                             </Link>
                           </>
                         )}
-                        <span>•</span>
-                        <span>{formatDistanceToNow(new Date(topic.created_at))} ago</span>
                       </div>
                     </div>
 
