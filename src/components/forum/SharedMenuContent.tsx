@@ -57,6 +57,12 @@ export const SharedMenuContent = ({ onNavigate }: SharedMenuContentProps) => {
           <Button variant="ghost" className="w-full justify-start" asChild>
             <Link to="/rules" onClick={onNavigate}>Forum Rules</Link>
           </Button>
+          <Button variant="ghost" className="w-full justify-start" asChild>
+            <Link to="/bookmarks" onClick={onNavigate}>
+              <Bookmark className="mr-2 h-4 w-4" />
+              Bookmarks
+            </Link>
+          </Button>
           {isRssEnabled && (
             <Button variant="ghost" className="w-full justify-start" asChild>
               <a href="/rss" target="_blank" rel="noopener noreferrer" onClick={onNavigate}>
@@ -75,12 +81,6 @@ export const SharedMenuContent = ({ onNavigate }: SharedMenuContentProps) => {
             <div className="px-3 py-2 text-sm font-medium">{user.username}</div>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link to="/profile" onClick={onNavigate}>Profile</Link>
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link to="/bookmarks" onClick={onNavigate}>
-                <Bookmark className="mr-2 h-4 w-4" />
-                Bookmarks
-              </Link>
             </Button>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link to="/settings" onClick={onNavigate}>Settings</Link>
