@@ -10,8 +10,35 @@ import { Eye, MessageSquare, Bell, BellOff, Bookmark } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Bookmarks() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { bookmarks, isLoading, toggleNotifications } = useTopicBookmarks();
+  
+  // Debug logging
+  console.log('Bookmarks Page - User:', user?.id, 'Auth Loading:', authLoading, 'Bookmarks Loading:', isLoading, 'Bookmarks:', bookmarks?.length || 0);
+
+  if (authLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Bookmark className="h-5 w-5" />
+              Your Bookmarked Topics
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="space-y-2">
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (!user) {
     return (

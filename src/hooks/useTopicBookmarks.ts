@@ -5,14 +5,22 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 export const useTopicBookmarks = (topicId?: string) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const queryClient = useQueryClient();
 
+  // Debug logging
+  console.log('useTopicBookmarks - User:', user?.id, 'Loading:', loading);
+
   // Get user's bookmarks
-  const { data: bookmarks, isLoading } = useQuery({
+  const { data: bookmarks, isLoading, error } = useQuery({
     queryKey: ['topic-bookmarks', user?.id],
     queryFn: async () => {
-      if (!user?.id) return [];
+      console.log('Fetching bookmarks for user:', user?.id);
+      
+      if (!user?.id) {
+        console.log('No user ID available');
+        return [];
+      }
       
       const { data, error } = await supabase
         .from('topic_bookmarks')
@@ -40,14 +48,32 @@ export const useTopicBookmarks = (topicId?: string) => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
         
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error('Error fetching bookmarks:', error);
+        throw error;
+      }
+      
+      console.log('Bookmarks fetched:', data?.length || 0, 'items');
+      return data || [];
     },
-    enabled: !!user?.id,
+    enabled: !!user?.id && !loading,
+    retry: (failureCount, error) => {
+      // Retry on auth-related errors
+      if (failureCount < 3 && error?.message?.includes('JWT')) {
+        return true;
+      }
+      return false;
+    },
+    staleTime: 30000, // Consider data fresh for 30 seconds
   });
 
   // Check if current topic is bookmarked
-  const isBookmarked = topicId && bookmarks?.some(b => b.topic_id === topicId) || false;
+  const isBookmarked = Boolean(topicId && bookmarks?.some(b => b.topic_id === topicId));
+  
+  // Debug logging for bookmark state
+  if (topicId) {
+    console.log(`Topic ${topicId} bookmarked:`, isBookmarked, 'Total bookmarks:', bookmarks?.length || 0);
+  }
 
   // Get bookmark count for a topic
   const { data: bookmarkCount } = useQuery({
