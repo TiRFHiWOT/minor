@@ -347,7 +347,7 @@ export const ForumHome = () => {
                               style={{ backgroundColor: forum.color }}
                             />
                             <h4 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">
-                              {forum.region}
+                              {forum.name}
                             </h4>
                           </div>
                           {forum.description && (
