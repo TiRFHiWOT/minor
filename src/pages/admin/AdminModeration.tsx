@@ -16,6 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AlertTriangle, Ban, CheckCircle, Clock, UserX, Wifi, WifiOff, Eye, X, Trash2, Users, FileText, Shield, ShieldCheck } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { CategoryRequestsManager } from '@/components/admin/CategoryRequestsManager';
@@ -45,6 +46,64 @@ const ReportsTab = () => {
   const [selectedReport, setSelectedReport] = React.useState<any>(null);
   const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState('active');
+  const [selectedReports, setSelectedReports] = React.useState<Set<string>>(new Set());
+
+  // Bulk delete functionality
+  const handleBulkDelete = async () => {
+    if (selectedReports.size === 0) {
+      toast({
+        title: 'No Reports Selected',
+        description: 'Please select reports to delete',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to permanently delete ${selectedReports.size} selected reports?`)) return;
+
+    try {
+      const { error } = await supabase
+        .from('reports')
+        .delete()
+        .in('id', Array.from(selectedReports));
+
+      if (error) throw error;
+
+      toast({
+        title: 'Reports Deleted',
+        description: `${selectedReports.size} reports have been permanently deleted`,
+      });
+
+      setSelectedReports(new Set());
+      queryClient.invalidateQueries({ queryKey: ['reports'] });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to delete reports',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleSelectReport = (reportId: string) => {
+    const newSelected = new Set(selectedReports);
+    if (newSelected.has(reportId)) {
+      newSelected.delete(reportId);
+    } else {
+      newSelected.add(reportId);
+    }
+    setSelectedReports(newSelected);
+  };
+
+  const handleSelectAll = () => {
+    if (!currentReports) return;
+    
+    if (selectedReports.size === currentReports.length) {
+      setSelectedReports(new Set());
+    } else {
+      setSelectedReports(new Set(currentReports.map(r => r.id)));
+    }
+  };
 
   // Quick action handlers for content moderation directly from reports
   const handleApproveReportedContent = async (report: any) => {
@@ -432,8 +491,26 @@ const ReportsTab = () => {
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">User Reports</h2>
-          <div className="text-sm text-muted-foreground">
-            Reports on live content from community members
+          <div className="flex items-center gap-2">
+            {selectedReports.size > 0 && (
+              <>
+                <span className="text-sm text-muted-foreground">
+                  {selectedReports.size} selected
+                </span>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleBulkDelete}
+                  className="flex items-center gap-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete Selected ({selectedReports.size})
+                </Button>
+              </>
+            )}
+            <div className="text-sm text-muted-foreground">
+              Reports on live content from community members
+            </div>
           </div>
         </div>
         
@@ -468,6 +545,13 @@ const ReportsTab = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-12">
+                        <Checkbox
+                          checked={currentReports && selectedReports.size === currentReports.length && currentReports.length > 0}
+                          onCheckedChange={handleSelectAll}
+                          aria-label="Select all reports"
+                        />
+                      </TableHead>
                       <TableHead className="min-w-[120px]">Reporter</TableHead>
                       <TableHead className="min-w-[130px]">Reporter IP</TableHead>
                       <TableHead className="min-w-[100px]">Content Type</TableHead>
@@ -601,12 +685,13 @@ const ReportsTab = () => {
                             </Button>
                             <Button
                               size="sm"
-                              variant="outline"
+                              variant="destructive"
                               onClick={() => handleDeleteReport(report.id)}
-                              className="text-red-600 hover:text-red-700"
+                              className="text-white"
                               title="Delete report permanently"
                             >
                               <Trash2 className="h-3 w-3" />
+                              Remove
                             </Button>
                           </div>
                         </TableCell>
@@ -614,7 +699,7 @@ const ReportsTab = () => {
                     ))}
                     {(!currentReports || currentReports.length === 0) && (
                       <TableRow>
-                        <TableCell colSpan={10} className="text-center text-muted-foreground">
+                        <TableCell colSpan={11} className="text-center text-muted-foreground">
                           No active reports to display
                         </TableCell>
                       </TableRow>
@@ -634,6 +719,13 @@ const ReportsTab = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-12">
+                        <Checkbox
+                          checked={currentReports && selectedReports.size === currentReports.length && currentReports.length > 0}
+                          onCheckedChange={handleSelectAll}
+                          aria-label="Select all reports"
+                        />
+                      </TableHead>
                       <TableHead className="min-w-[120px]">Reporter</TableHead>
                       <TableHead className="min-w-[100px]">Content Type</TableHead>
                       <TableHead className="min-w-[150px]">Reason</TableHead>
@@ -647,6 +739,20 @@ const ReportsTab = () => {
                   <TableBody>
                     {currentReports?.map((report) => (
                       <TableRow key={report.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedReports.has(report.id)}
+                            onCheckedChange={() => handleSelectReport(report.id)}
+                            aria-label={`Select report ${report.id}`}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedReports.has(report.id)}
+                            onCheckedChange={() => handleSelectReport(report.id)}
+                            aria-label={`Select report ${report.id}`}
+                          />
+                        </TableCell>
                         <TableCell className="min-w-[120px]">{report.reporter?.username || 'Anonymous'}</TableCell>
                         <TableCell className="min-w-[100px]">
                           <Badge variant={report.reported_post_id ? 'secondary' : 'default'}>
@@ -709,12 +815,13 @@ const ReportsTab = () => {
                             </Button>
                             <Button
                               size="sm"
-                              variant="outline"
+                              variant="destructive"
                               onClick={() => handleDeleteReport(report.id)}
-                              className="text-red-600 hover:text-red-700"
+                              className="text-white"
                               title="Delete report permanently"
                             >
                               <Trash2 className="h-3 w-3" />
+                              Remove
                             </Button>
                           </div>
                         </TableCell>
@@ -722,7 +829,7 @@ const ReportsTab = () => {
                     ))}
                     {(!currentReports || currentReports.length === 0) && (
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center text-muted-foreground">
+                        <TableCell colSpan={9} className="text-center text-muted-foreground">
                           No resolved reports to display
                         </TableCell>
                       </TableRow>
