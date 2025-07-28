@@ -159,6 +159,14 @@ export const Footer = () => {
               <Link to="/blog" className="hover:text-primary transition-colors">
                 Blog
               </Link>
+              <a 
+                href="/rss" 
+                className="hover:text-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                RSS Feed
+              </a>
             </div>
           </div>
 

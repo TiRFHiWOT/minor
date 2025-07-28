@@ -52,6 +52,7 @@ import { IPTrackingWrapper } from "./components/IPTrackingWrapper";
 import { VPNBlocked } from "./pages/VPNBlocked";
 import { VPNGuard } from "./components/VPNGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { RSSRedirect } from "./components/RSSRedirect";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +101,9 @@ const App = () => (
                     <Route path="seo" element={<AdminSEO />} />
                     <Route path="settings" element={<AdminSettings />} />
                   </Route>
+                  
+                   {/* RSS Feed Route */}
+                  <Route path="/rss" element={<RSSRedirect />} />
                   
                   {/* Forum routes - wrapped in ForumLayout */}
                   <Route path="/" element={<ForumLayout />}>

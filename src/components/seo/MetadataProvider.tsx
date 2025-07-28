@@ -315,6 +315,22 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         {metadata.keywords && <meta name="keywords" content={metadata.keywords} />}
         {metadata.canonical && <link rel="canonical" href={metadata.canonical} />}
         
+        {/* RSS Feed Discovery */}
+        <link 
+          rel="alternate" 
+          type="application/rss+xml" 
+          title={`${getSetting('forum_name', 'Minor Hockey Talks')} RSS Feed`}
+          href="/rss" 
+        />
+        {params.categorySlug && (
+          <link 
+            rel="alternate" 
+            type="application/rss+xml" 
+            title={`${getSetting('forum_name', 'Minor Hockey Talks')} - ${params.categorySlug} RSS Feed`}
+            href={`/rss?category=${params.categorySlug}`}
+          />
+        )}
+        
         {/* Open Graph tags */}
         {metadata.ogTitle && <meta property="og:title" content={metadata.ogTitle} />}
         {metadata.ogDescription && <meta property="og:description" content={metadata.ogDescription} />}
