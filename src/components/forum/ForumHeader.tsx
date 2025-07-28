@@ -88,8 +88,8 @@ export const ForumHeader = () => {
         <div className="flex items-center justify-between h-12 sm:h-14">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-md flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xs sm:text-sm">MHT</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-black rounded-md flex items-center justify-center">
+              <span className="text-white font-bold text-xs sm:text-sm">MHT</span>
             </div>
             <span className="font-bold text-base sm:text-lg text-foreground hidden xs:block">
               Minor Hockey Talks
