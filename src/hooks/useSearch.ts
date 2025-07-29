@@ -11,6 +11,8 @@ export interface SearchResult {
   category_color: string;
   category_slug?: string;
   slug?: string;
+  topic_title?: string;
+  topic_slug?: string;
   reply_count: number;
   view_count: number;
   created_at: string;
@@ -117,7 +119,7 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
 
       // Search in posts (if filter allows)
       if (filter === 'all' || filter === 'posts') {
-        // For posts, search in content field
+        // For posts, search in content field with topic and category joins
         const searchConditions = searchWords.map(word => 
           `content.ilike.%${word}%`
         ).join(',');
@@ -128,12 +130,18 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
             id,
             content,
             created_at,
-            author_id
+            author_id,
+            topics (
+              id,
+              title,
+              slug,
+              categories (name, color, slug)
+            )
           `)
           .eq('moderation_status', 'approved')
           .or(searchConditions)
           .order('created_at', { ascending: false })
-          .limit(200); // Increased limit for client-side filtering
+          .limit(200);
 
         if (postError) {
           console.error('Error searching posts:', postError);
@@ -148,16 +156,47 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
           );
         }) || [];
 
-        // Add post results (simplified for now)
+        // Get author data for posts
+        const postAuthorIds = [...new Set(filteredPosts.map(post => post.author_id).filter(Boolean))];
+        const [postProfilesData, postTempUsersData] = await Promise.all([
+          postAuthorIds.length > 0 ? supabase
+            .from('profiles')
+            .select('id, username')
+            .in('id', postAuthorIds)
+            .then(({ data }) => data || []) : Promise.resolve([]),
+          
+          postAuthorIds.length > 0 ? supabase
+            .from('temporary_users')
+            .select('id, display_name')
+            .in('id', postAuthorIds)
+            .then(({ data }) => data || []) : Promise.resolve([])
+        ]);
+
+        // Create user map for posts
+        const postUserMap = new Map();
+        postProfilesData.forEach(profile => {
+          postUserMap.set(profile.id, profile.username);
+        });
+        postTempUsersData.forEach(tempUser => {
+          postUserMap.set(tempUser.id, "Guest");
+        });
+
+        // Add post results with topic context
         filteredPosts.forEach((post) => {
+          const authorUsername = post.author_id ? postUserMap.get(post.author_id) || 'Anonymous User' : 'Anonymous User';
+          const topicTitle = post.topics?.title || 'Unknown Topic';
+          
           results.push({
             id: post.id,
-            title: 'Post',
+            title: `Post in "${topicTitle}"`,
             content: post.content,
             type: 'post',
-            author_username: 'Anonymous User',
-            category_name: 'Unknown',
-            category_color: '#3b82f6',
+            author_username: authorUsername,
+            category_name: post.topics?.categories?.name || 'Unknown',
+            category_color: post.topics?.categories?.color || '#3b82f6',
+            category_slug: post.topics?.categories?.slug,
+            topic_title: topicTitle,
+            topic_slug: post.topics?.slug,
             reply_count: 0,
             view_count: 0,
             created_at: post.created_at,

@@ -136,7 +136,7 @@ const SearchPage = () => {
                 <div key={`${result.type}-${result.id}`} className="border-b border-border pb-4 last:border-b-0 last:pb-0">
                       <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
+                       <div className="flex items-center space-x-2 mb-2">
                         {result.type === 'post' ? (
                           <FileText className="h-4 w-4 text-muted-foreground" />
                         ) : result.type === 'category' ? (
@@ -147,10 +147,17 @@ const SearchPage = () => {
                         <Badge variant="outline" className="text-xs">
                           {result.type === 'post' ? 'Post' : result.type === 'category' ? 'Category' : 'Topic'}
                         </Badge>
+                        {result.type === 'post' && result.topic_title && (
+                          <span className="text-xs text-muted-foreground">
+                            in {result.category_name} › {result.topic_title}
+                          </span>
+                        )}
                       </div>
                       <Link 
                         to={result.type === 'category' 
                           ? `/category/${result.category_slug || result.id}` 
+                          : result.type === 'post' && result.topic_slug
+                          ? `/${result.category_slug}/${result.topic_slug}#post-${result.id}`
                           : (result.category_slug && result.slug 
                             ? `/${result.category_slug}/${result.slug}` 
                             : `/topic/${result.id}`)
