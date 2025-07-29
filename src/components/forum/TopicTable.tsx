@@ -74,22 +74,24 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                       {isHot && (
                         <TrendingUp className="h-3 w-3 forum-status-hot" />
                       )}
-                      {isNew && (
-                        <Badge variant="secondary" className="text-xs px-1 py-0 forum-status-new">
-                          NEW
-                        </Badge>
-                      )}
                     </div>
 
                     {/* Topic Details */}
                     <div className="min-w-0 flex-1">
-                      <Link
-                        to={topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}
-                        className="font-medium text-foreground hover:text-primary transition-colors text-sm"
-                        title={topic.title}
-                      >
-                        {topic.title}
-                      </Link>
+                      <div className="flex items-center justify-between gap-2">
+                        <Link
+                          to={topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}
+                          className="font-medium text-foreground hover:text-primary transition-colors text-sm min-w-0 flex-1"
+                          title={topic.title}
+                        >
+                          {topic.title}
+                        </Link>
+                        {isNew && (
+                          <Badge variant="secondary" className="text-xs px-1 py-0 forum-status-new flex-shrink-0">
+                            NEW
+                          </Badge>
+                        )}
+                      </div>
                       
                       {/* Category and Last Activity */}
                       <div className="mt-1 space-y-1">
