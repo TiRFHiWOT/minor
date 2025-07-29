@@ -124,6 +124,8 @@ const AdTest: React.FC = () => {
             id='div-gpt-ad-1715358540790-0' 
             className="overflow-visible"
             style={{ 
+              minWidth: '300px',
+              minHeight: '50px',
               transition: 'all 0.3s ease',
               backgroundColor: 'transparent'
             }}
@@ -151,6 +153,8 @@ const AdTest: React.FC = () => {
                 id='div-gpt-ad-1752247623844-0' 
                 className="overflow-visible"
                 style={{ 
+                  minWidth: '300px',
+                  minHeight: '250px',
                   transition: 'all 0.3s ease',
                   backgroundColor: 'transparent'
                 }}
@@ -174,6 +178,8 @@ const AdTest: React.FC = () => {
                 id='div-gpt-ad-1752247724892-0' 
                 className="overflow-visible"
                 style={{ 
+                  minWidth: '300px',
+                  minHeight: '250px',
                   transition: 'all 0.3s ease',
                   backgroundColor: 'transparent'
                 }}
@@ -218,6 +224,8 @@ const AdTest: React.FC = () => {
                 id='div-gpt-ad-1715358598569-0' 
                 className="overflow-visible"
                 style={{ 
+                  minWidth: '300px',
+                  minHeight: '50px',
                   transition: 'all 0.3s ease',
                   backgroundColor: 'transparent'
                 }}
@@ -252,6 +260,8 @@ const AdTest: React.FC = () => {
                 id='div-gpt-ad-1715358620345-0' 
                 className="overflow-visible"
                 style={{ 
+                  minWidth: '300px',
+                  minHeight: '50px',
                   transition: 'all 0.3s ease',
                   backgroundColor: 'transparent'
                 }}
