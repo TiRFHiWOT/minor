@@ -1,26 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface LeaderboardTopAdProps {
   className?: string;
 }
 
-declare global {
-  interface Window {
-    adsbygoogle: any[];
-  }
-}
-
 export const LeaderboardTopAd: React.FC<LeaderboardTopAdProps> = ({ className = '' }) => {
-  useEffect(() => {
-    try {
-      // Initialize AdSense ad
-      if (window.adsbygoogle) {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      }
-    } catch (error) {
-      console.error('Error loading ad:', error);
-    }
-  }, []);
 
   return (
     <div className={`w-full bg-background border-b border-border ${className}`}>
