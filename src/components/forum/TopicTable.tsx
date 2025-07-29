@@ -145,25 +145,24 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                 </div>
               </div>
 
-              {/* Latest Post Button Row - Below replies/views, visible on all devices */}
+              {/* Latest Post Button - Under replies/views */}
               {topic.last_reply_at && (
-                <div className="mt-1">
-                  <div className="text-center">
-                    <div>
-                      <Button
-                        asChild
-                        variant="ghost"
-                        size="sm"
-                        className="text-xs px-2 py-1 h-6 w-full"
+                <div className="grid grid-cols-12 gap-2 mt-1">
+                  <div className="col-span-8 md:col-span-10"></div>
+                  <div className="col-span-4 md:col-span-2">
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs px-2 py-1 h-6 w-full"
+                    >
+                      <Link 
+                        to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
                       >
-                        <Link 
-                          to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
-                        >
-                          Latest Post
-                          <ChevronRight className="h-3 w-3" />
-                        </Link>
-                      </Button>
-                    </div>
+                        Latest Post
+                        <ChevronRight className="h-3 w-3" />
+                      </Link>
+                    </Button>
                   </div>
                 </div>
               )}
