@@ -52,11 +52,11 @@ const AdTest: React.FC = () => {
       {/* Leaderboard Top Ad */}
       <Card className="p-4">
         <h3 className="text-lg font-semibold mb-4">Leaderboard Top Ad</h3>
+        {/* /22404337467,423899568/minorhockeytalks-Leaderboard-Top */}
         <div 
           id='div-gpt-ad-1715358540790-0' 
-          style={{ minWidth: '300px', minHeight: '50px', border: '1px dashed #ccc', backgroundColor: '#f9f9f9' }}
+          style={{ minWidth: '300px', minHeight: '50px' }}
         >
-          <p className="text-center text-sm text-muted-foreground p-4">Ad slot placeholder</p>
         </div>
       </Card>
 
