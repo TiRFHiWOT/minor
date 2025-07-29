@@ -109,8 +109,8 @@ const AdTest: React.FC = () => {
       <div className="w-full max-w-6xl mx-auto px-4 space-y-8">
 
       {/* Leaderboard Top Ad */}
-      <div ref={leaderboardObserver.containerRef}>
-        <Card className="p-4 transition-all duration-300">
+      <div ref={leaderboardObserver.containerRef} className="overflow-visible">
+        <Card className="p-4 transition-all duration-300 w-fit h-fit">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Leaderboard Top Ad</h3>
             <span className={`text-xs px-2 py-1 rounded ${
@@ -122,9 +122,8 @@ const AdTest: React.FC = () => {
           {/* /22404337467,423899568/minorhockeytalks-Leaderboard-Top */}
           <div 
             id='div-gpt-ad-1715358540790-0' 
+            className="overflow-visible"
             style={{ 
-              minWidth: '300px',
-              minHeight: '50px',
               transition: 'all 0.3s ease',
               backgroundColor: 'transparent'
             }}
@@ -137,8 +136,8 @@ const AdTest: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar with Ads */}
         <div className="space-y-6">
-          <div ref={sidebarLeft1Observer.containerRef}>
-            <Card className="p-4 transition-all duration-300">
+          <div ref={sidebarLeft1Observer.containerRef} className="overflow-visible">
+            <Card className="p-4 transition-all duration-300 w-fit h-fit">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Sidebar Left Ad</h3>
                 <span className={`text-xs px-2 py-1 rounded ${
@@ -150,9 +149,8 @@ const AdTest: React.FC = () => {
               {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left */}
               <div 
                 id='div-gpt-ad-1752247623844-0' 
+                className="overflow-visible"
                 style={{ 
-                  minWidth: '300px', 
-                  minHeight: '250px',
                   transition: 'all 0.3s ease',
                   backgroundColor: 'transparent'
                 }}
@@ -161,8 +159,8 @@ const AdTest: React.FC = () => {
             </Card>
           </div>
 
-          <div ref={sidebarLeft2Observer.containerRef}>
-            <Card className="p-4 transition-all duration-300">
+          <div ref={sidebarLeft2Observer.containerRef} className="overflow-visible">
+            <Card className="p-4 transition-all duration-300 w-fit h-fit">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Sidebar Left2 Ad</h3>
                 <span className={`text-xs px-2 py-1 rounded ${
@@ -174,9 +172,8 @@ const AdTest: React.FC = () => {
               {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left2 */}
               <div 
                 id='div-gpt-ad-1752247724892-0' 
+                className="overflow-visible"
                 style={{ 
-                  minWidth: '300px', 
-                  minHeight: '250px',
                   transition: 'all 0.3s ease',
                   backgroundColor: 'transparent'
                 }}
@@ -206,8 +203,8 @@ const AdTest: React.FC = () => {
           </Card>
 
           {/* Content One Ad */}
-          <div ref={contentOneObserver.containerRef}>
-            <Card className="p-4 transition-all duration-300">
+          <div ref={contentOneObserver.containerRef} className="overflow-visible">
+            <Card className="p-4 transition-all duration-300 w-fit h-fit">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Content One Ad</h3>
                 <span className={`text-xs px-2 py-1 rounded ${
@@ -219,9 +216,8 @@ const AdTest: React.FC = () => {
               {/* /22404337467,423899568/minorhockeytalks-Content-One */}
               <div 
                 id='div-gpt-ad-1715358598569-0' 
+                className="overflow-visible"
                 style={{ 
-                  minWidth: '300px', 
-                  minHeight: '50px',
                   transition: 'all 0.3s ease',
                   backgroundColor: 'transparent'
                 }}
@@ -241,8 +237,8 @@ const AdTest: React.FC = () => {
           </Card>
 
           {/* Content Two Ad */}
-          <div ref={contentTwoObserver.containerRef}>
-            <Card className="p-4 transition-all duration-300">
+          <div ref={contentTwoObserver.containerRef} className="overflow-visible">
+            <Card className="p-4 transition-all duration-300 w-fit h-fit">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Content Two Ad</h3>
                 <span className={`text-xs px-2 py-1 rounded ${
@@ -254,9 +250,8 @@ const AdTest: React.FC = () => {
               {/* /22404337467,423899568/minorhockeytalks-Content-Two */}
               <div 
                 id='div-gpt-ad-1715358620345-0' 
+                className="overflow-visible"
                 style={{ 
-                  minWidth: '300px', 
-                  minHeight: '50px',
                   transition: 'all 0.3s ease',
                   backgroundColor: 'transparent'
                 }}

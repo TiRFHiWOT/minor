@@ -14,7 +14,7 @@ export const useAdObserver = (adId: string, options: AdObserverOptions = {}) => 
     const container = containerRef.current;
     if (!container) return;
 
-    // ResizeObserver to detect content changes with delay
+    // ResizeObserver to detect content changes
     const resizeObserver = new ResizeObserver((entries) => {
       entries.forEach((entry) => {
         const element = entry.target as HTMLElement;
@@ -27,9 +27,8 @@ export const useAdObserver = (adId: string, options: AdObserverOptions = {}) => 
                            element.querySelector('iframe, img, canvas');
           
           if (hasContent && height > 10) {
-            // Ad has loaded with content
+            // Ad has loaded with content - no size manipulation, let it be natural
             element.style.display = 'block';
-            element.style.minHeight = `${height}px`;
             onAdLoaded?.(element, { width, height });
           } else {
             // Only hide if we're confident it's empty and enough time has passed
