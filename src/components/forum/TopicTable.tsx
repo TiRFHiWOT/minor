@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Pin, Lock, TrendingUp, MessageSquare, Eye, User, Clock } from 'lucide-react';
+import { Pin, Lock, TrendingUp, MessageSquare, Eye, User, Clock, ChevronRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AdminControls } from './AdminControls';
 
@@ -143,6 +144,30 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                   <div className="text-sm text-muted-foreground">{topic.view_count || 0}</div>
                 </div>
               </div>
+
+              {/* Latest Post Button - Only show on md and up, and only if there's a last reply */}
+              {topic.last_reply_at && (
+                <div className="hidden md:block mt-2">
+                  <div className="grid grid-cols-12 gap-2">
+                    <div className="col-span-10"></div>
+                    <div className="col-span-2 text-center">
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs px-2 py-1 h-6"
+                      >
+                        <Link 
+                          to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
+                        >
+                          Latest Post
+                          <ChevronRight className="h-3 w-3" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
