@@ -1774,6 +1774,8 @@ export type Database = {
           category_color: string
           category_slug: string
           parent_category_id: string
+          last_reply_username: string
+          last_reply_avatar: string
         }[]
       }
       get_enriched_topics_count: {
