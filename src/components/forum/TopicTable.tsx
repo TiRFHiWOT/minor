@@ -134,29 +134,36 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                   </div>
                 </div>
 
-                {/* Replies and Latest Post Button */}
-                <div className="col-span-2 md:col-span-1 text-center">
-                  <div className="text-sm font-medium">{topic.reply_count || 0}</div>
+                {/* Replies and Views with Latest Post Button */}
+                <div className="col-span-4 md:col-span-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* Replies */}
+                    <div className="text-center">
+                      <div className="text-sm font-medium">{topic.reply_count || 0}</div>
+                    </div>
+                    
+                    {/* Views */}
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground">{topic.view_count || 0}</div>
+                    </div>
+                  </div>
+                  
+                  {/* Latest Post Button spanning both columns */}
                   {topic.last_reply_at && (
                     <Button
                       asChild
                       variant="ghost"
                       size="sm"
-                      className="text-xs px-1 py-1 h-5 w-full mt-1"
+                      className="text-xs px-2 py-1 h-6 w-full mt-1"
                     >
                       <Link 
                         to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
                       >
-                        Latest
+                        Latest Post
                         <ChevronRight className="h-3 w-3" />
                       </Link>
                     </Button>
                   )}
-                </div>
-
-                {/* Views */}
-                <div className="col-span-2 md:col-span-1 text-center">
-                  <div className="text-sm text-muted-foreground">{topic.view_count || 0}</div>
                 </div>
               </div>
             </div>
