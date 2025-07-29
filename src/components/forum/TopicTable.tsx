@@ -54,6 +54,16 @@ export const TopicTable: React.FC<TopicTableProps> = ({
       {/* Topic Rows */}
       <div className="forum-spacing">
         {topics.map((topic, index) => {
+          // Debug: Log topic data to see what we're getting
+          if (index === 0) {
+            console.log('TopicTable - First topic data:', {
+              title: topic.title,
+              last_reply_username: topic.last_reply_username,
+              last_reply_avatar: topic.last_reply_avatar,
+              last_reply_at: topic.last_reply_at,
+              fullTopic: topic
+            });
+          }
           const isHot = topic.hot_score > 10;
           const isNew = new Date(topic.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000);
           
