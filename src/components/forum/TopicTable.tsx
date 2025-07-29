@@ -45,10 +45,9 @@ export const TopicTable: React.FC<TopicTableProps> = ({
       {/* Table Header */}
       <div className="forum-header px-3 py-2 border-b">
         <div className="grid grid-cols-12 gap-2 text-xs font-medium text-muted-foreground">
-          <div className="col-span-8 md:col-span-8">Topic</div>
+          <div className="col-span-8 md:col-span-10">Topic</div>
           <div className="col-span-2 md:col-span-1 text-center">Replies</div>
           <div className="col-span-2 md:col-span-1 text-center">Views</div>
-          <div className="hidden md:block md:col-span-2 text-center">Latest Post</div>
         </div>
       </div>
 
@@ -62,7 +61,7 @@ export const TopicTable: React.FC<TopicTableProps> = ({
             <div key={topic.id} className="topic-row px-3 py-2">
               <div className="grid grid-cols-12 gap-2 items-start">
                 {/* Topic Info */}
-                <div className="col-span-8 md:col-span-8 min-w-0">
+                <div className="col-span-8 md:col-span-10 min-w-0">
                   <div className="flex items-start gap-2">
                     {/* Status Icons */}
                     <div className="flex items-center gap-1 mt-0.5 flex-shrink-0">
@@ -144,28 +143,31 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                 <div className="col-span-2 md:col-span-1 text-center">
                   <div className="text-sm text-muted-foreground">{topic.view_count || 0}</div>
                 </div>
-
-                {/* Latest Post Button */}
-                <div className="hidden md:block md:col-span-2 text-center">
-                  {topic.last_reply_at ? (
-                    <Button
-                      asChild
-                      variant="ghost"
-                      size="sm"
-                      className="text-xs px-2 py-1 h-6"
-                    >
-                      <Link 
-                        to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
-                      >
-                        Latest Post
-                        <ChevronRight className="h-3 w-3" />
-                      </Link>
-                    </Button>
-                  ) : (
-                    <div className="text-xs text-muted-foreground">-</div>
-                  )}
-                </div>
               </div>
+
+              {/* Latest Post Button Row - Below replies/views, visible on all devices */}
+              {topic.last_reply_at && (
+                <div className="mt-2">
+                  <div className="grid grid-cols-12 gap-2">
+                    <div className="col-span-8 md:col-span-10"></div>
+                    <div className="col-span-4 md:col-span-2 text-center">
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs px-2 py-1 h-6 w-full"
+                      >
+                        <Link 
+                          to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
+                        >
+                          Latest Post
+                          <ChevronRight className="h-3 w-3" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
