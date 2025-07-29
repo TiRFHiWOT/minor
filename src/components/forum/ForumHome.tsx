@@ -165,6 +165,14 @@ export const ForumHome = () => {
         })()}
       </div>
 
+      {/* Leaderboard Ad */}
+      <div className="ad-container overflow-visible my-6">
+        <div className="flex justify-center">
+          {/* /22404337467,423899568/minorhockeytalks-Leaderboard-Top */}
+          <div id='div-gpt-ad-1715358540790-0' className="ad-slot" style={{minWidth: '300px', minHeight: '50px'}}>
+          </div>
+        </div>
+      </div>
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
