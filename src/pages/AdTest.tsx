@@ -14,17 +14,6 @@ const AdTest: React.FC = () => {
   const [adStates, setAdStates] = useState<Record<string, { loaded: boolean; size?: { width: number; height: number } }>>({});
 
   // Ad observers for each ad slot
-  const leaderboardObserver = useAdObserver('div-gpt-ad-1715358540790-0', {
-    onAdLoaded: (element, size) => {
-      console.log('Leaderboard ad loaded with element:', element, 'size:', size);
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358540790-0': { loaded: true, size } }));
-    },
-    onAdEmpty: (element) => {
-      console.log('Leaderboard ad empty, element:', element);
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358540790-0': { loaded: false } }));
-    }
-  });
-
   const sidebarLeft1Observer = useAdObserver('div-gpt-ad-1752247623844-0', {
     onAdLoaded: (element, size) => {
       setAdStates(prev => ({ ...prev, 'div-gpt-ad-1752247623844-0': { loaded: true, size } }));
@@ -82,7 +71,6 @@ const AdTest: React.FC = () => {
     console.log('Attempting to refresh ads...');
     console.log('Current ad states:', adStates);
     console.log('Available ad elements:', {
-      leaderboard: document.getElementById('div-gpt-ad-1715358540790-0'),
       sidebar1: document.getElementById('div-gpt-ad-1752247623844-0'),
       sidebar2: document.getElementById('div-gpt-ad-1752247724892-0'),
       content1: document.getElementById('div-gpt-ad-1715358598569-0'),
@@ -110,32 +98,6 @@ const AdTest: React.FC = () => {
       </div>
 
       <div className="w-full max-w-6xl mx-auto px-4 space-y-8">
-
-      {/* Leaderboard Top Ad */}
-      <div ref={leaderboardObserver.containerRef} className="ad-container overflow-visible">
-        <Card className="p-4 transition-all duration-300 w-fit h-fit">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Leaderboard Top Ad</h3>
-            <span className={`text-xs px-2 py-1 rounded ${
-              adStates['div-gpt-ad-1715358540790-0']?.loaded ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-            }`}>
-              {adStates['div-gpt-ad-1715358540790-0']?.loaded ? 'Loaded' : 'Empty'}
-            </span>
-          </div>
-          {/* /22404337467,423899568/minorhockeytalks-Leaderboard-Top */}
-          <div 
-            id='div-gpt-ad-1715358540790-0' 
-            className="ad-slot overflow-visible"
-            style={{ 
-              minWidth: '300px',
-              minHeight: '50px',
-              transition: 'all 0.3s ease',
-              backgroundColor: 'transparent'
-            }}
-          >
-          </div>
-        </Card>
-      </div>
 
       {/* Content Area with Ads */}
       <div className="grid grid-cols-1 gap-6 lg:gap-6" style={{ gridTemplateColumns: window.innerWidth >= 1024 ? 'minmax(350px, auto) 1fr' : '1fr' }}>
@@ -295,7 +257,6 @@ const AdTest: React.FC = () => {
           {Object.entries(adStates).map(([adId, state]) => {
             const getAdName = (id: string) => {
               switch (id) {
-                case 'div-gpt-ad-1715358540790-0': return 'Leaderboard Top';
                 case 'div-gpt-ad-1752247623844-0': return 'Sidebar Left';
                 case 'div-gpt-ad-1752247724892-0': return 'Sidebar Left2';
                 case 'div-gpt-ad-1715358598569-0': return 'Content One';
