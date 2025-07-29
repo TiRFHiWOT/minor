@@ -70,33 +70,12 @@ const AdTest: React.FC = () => {
   });
 
   useEffect(() => {
-    // Add the AdMetricsPro head script
-    const script = document.createElement('script');
-    script.src = 'https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js';
-    script.async = true;
-    
-    script.onload = () => {
-      console.log('AdMetricsPro script loaded successfully');
-      // Check if the script created any global functions
-      console.log('Available global functions:', {
-        amp_refreshAllSlots: typeof window.amp_refreshAllSlots,
-        googletag: typeof window.googletag
-      });
-    };
-    
-    script.onerror = () => {
-      console.error('Failed to load AdMetricsPro script');
-    };
-    
-    document.head.appendChild(script);
-
-    return () => {
-      // Cleanup: remove script when component unmounts
-      const existingScript = document.querySelector(`script[src="https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js"]`);
-      if (existingScript) {
-        document.head.removeChild(existingScript);
-      }
-    };
+    // Script is now loaded globally in index.html, just log the availability
+    console.log('AdTest component mounted. Checking script availability...');
+    console.log('Available global functions:', {
+      amp_refreshAllSlots: typeof window.amp_refreshAllSlots,
+      googletag: typeof window.googletag
+    });
   }, []);
 
   const handleRefreshAds = () => {
