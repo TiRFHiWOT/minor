@@ -381,10 +381,10 @@ export const TopicView = () => {
                       to={`#post-${topic.last_post_id}`}
                       className="hover:text-primary transition-colors"
                     >
-                      Last reply {formatDistanceToNow(new Date(topic.last_reply_at))} ago
+                      Last reply by {topic.last_post_author?.profiles?.username || topic.last_post_author?.temporary_users?.display_name || 'Guest'} {formatDistanceToNow(new Date(topic.last_reply_at))} ago
                     </Link>
                   ) : (
-                    <span>Last reply {formatDistanceToNow(new Date(topic.last_reply_at))} ago</span>
+                    <span>Last reply by {topic.last_post_author?.profiles?.username || topic.last_post_author?.temporary_users?.display_name || 'Guest'} {formatDistanceToNow(new Date(topic.last_reply_at))} ago</span>
                   )}
                 </>
               )}

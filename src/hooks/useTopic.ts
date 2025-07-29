@@ -58,24 +58,61 @@ export const useTopic = (identifier: string) => {
         }
       }
       
-      // Get last post ID if topic has replies
+      // Get last post ID and author if topic has replies
       let lastPostId = null;
+      let lastPostAuthor = null;
       if (topicData.reply_count > 0) {
         const { data: lastPost } = await supabase
           .from('posts')
-          .select('id')
+          .select(`
+            id,
+            author_id,
+            is_anonymous
+          `)
           .eq('topic_id', topicData.id)
           .eq('moderation_status', 'approved')
           .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle();
-        lastPostId = lastPost?.id || null;
+        
+        if (lastPost) {
+          lastPostId = lastPost.id;
+          
+          // Get author info for last post
+          if (lastPost.author_id && !lastPost.is_anonymous) {
+            // Try to get from profiles first
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('username, avatar_url')
+              .eq('id', lastPost.author_id)
+              .maybeSingle();
+            
+            if (profile) {
+              lastPostAuthor = { profiles: profile };
+            } else {
+              // Try temporary users
+              const { data: tempUser } = await supabase
+                .from('temporary_users')
+                .select('display_name')
+                .eq('id', lastPost.author_id)
+                .maybeSingle();
+              
+              if (tempUser) {
+                lastPostAuthor = { temporary_users: { display_name: "Guest" } };
+              }
+            }
+          } else {
+            // Anonymous post
+            lastPostAuthor = { temporary_users: { display_name: "Guest" } };
+          }
+        }
       }
 
       // Combine the data
       const data = {
         ...topicData,
         last_post_id: lastPostId,
+        last_post_author: lastPostAuthor,
         ...authorInfo
       };
       
