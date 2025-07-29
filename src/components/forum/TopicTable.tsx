@@ -148,9 +148,8 @@ export const TopicTable: React.FC<TopicTableProps> = ({
               {/* Latest Post Button Row - Below replies/views, visible on all devices */}
               {topic.last_reply_at && (
                 <div className="mt-1">
-                  <div className="grid grid-cols-12 gap-2">
-                    <div className="col-span-8 md:col-span-10"></div>
-                    <div className="col-span-4 md:col-span-2 text-center">
+                  <div className="text-center">
+                    <div>
                       <Button
                         asChild
                         variant="ghost"
