@@ -289,19 +289,33 @@ const AdTest: React.FC = () => {
       <Card className="p-6 bg-blue-50">
         <h3 className="text-lg font-bold mb-4">Ad Loading Status & Debug Info</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {Object.entries(adStates).map(([adId, state]) => (
-            <div key={adId} className="bg-white p-3 rounded border">
-              <div className="font-mono text-xs text-gray-600 mb-1">{adId}</div>
-              <div className={`text-sm font-semibold ${state.loaded ? 'text-green-600' : 'text-gray-500'}`}>
-                {state.loaded ? 'Loaded' : 'Empty/Not Loaded'}
-              </div>
-              {state.size && (
-                <div className="text-xs text-gray-500">
-                  Size: {state.size.width}x{state.size.height}
+          {Object.entries(adStates).map(([adId, state]) => {
+            const getAdName = (id: string) => {
+              switch (id) {
+                case 'div-gpt-ad-1715358540790-0': return 'Leaderboard Top';
+                case 'div-gpt-ad-1752247623844-0': return 'Sidebar Left';
+                case 'div-gpt-ad-1752247724892-0': return 'Sidebar Left2';
+                case 'div-gpt-ad-1715358598569-0': return 'Content One';
+                case 'div-gpt-ad-1715358620345-0': return 'Content Two';
+                default: return id;
+              }
+            };
+            
+            return (
+              <div key={adId} className="bg-white p-3 rounded border">
+                <div className="font-semibold text-sm mb-1">{getAdName(adId)}</div>
+                <div className="font-mono text-xs text-gray-600 mb-1">{adId}</div>
+                <div className={`text-sm font-semibold ${state.loaded ? 'text-green-600' : 'text-gray-500'}`}>
+                  {state.loaded ? 'Loaded' : 'Empty/Not Loaded'}
                 </div>
-              )}
-            </div>
-          ))}
+                {state.size && (
+                  <div className="text-xs text-gray-500">
+                    Size: {state.size.width}x{state.size.height}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
         
         <h4 className="font-semibold mb-2">Test Instructions</h4>
