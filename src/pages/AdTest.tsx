@@ -16,12 +16,12 @@ const AdTest: React.FC = () => {
   // Ad observers for each ad slot
   const leaderboardObserver = useAdObserver('div-gpt-ad-1715358540790-0', {
     onAdLoaded: (element, size) => {
+      console.log('Leaderboard ad loaded with element:', element, 'size:', size);
       setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358540790-0': { loaded: true, size } }));
-      console.log('Leaderboard ad loaded:', size);
     },
     onAdEmpty: (element) => {
+      console.log('Leaderboard ad empty, element:', element);
       setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358540790-0': { loaded: false } }));
-      console.log('Leaderboard ad empty');
     }
   });
 
@@ -74,6 +74,20 @@ const AdTest: React.FC = () => {
     const script = document.createElement('script');
     script.src = 'https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js';
     script.async = true;
+    
+    script.onload = () => {
+      console.log('AdMetricsPro script loaded successfully');
+      // Check if the script created any global functions
+      console.log('Available global functions:', {
+        amp_refreshAllSlots: typeof window.amp_refreshAllSlots,
+        googletag: typeof window.googletag
+      });
+    };
+    
+    script.onerror = () => {
+      console.error('Failed to load AdMetricsPro script');
+    };
+    
     document.head.appendChild(script);
 
     return () => {
@@ -86,9 +100,19 @@ const AdTest: React.FC = () => {
   }, []);
 
   const handleRefreshAds = () => {
+    console.log('Attempting to refresh ads...');
+    console.log('Current ad states:', adStates);
+    console.log('Available ad elements:', {
+      leaderboard: document.getElementById('div-gpt-ad-1715358540790-0'),
+      sidebar1: document.getElementById('div-gpt-ad-1752247623844-0'),
+      sidebar2: document.getElementById('div-gpt-ad-1752247724892-0'),
+      content1: document.getElementById('div-gpt-ad-1715358598569-0'),
+      content2: document.getElementById('div-gpt-ad-1715358620345-0')
+    });
+    
     if (window.amp_refreshAllSlots) {
       window.amp_refreshAllSlots();
-      console.log('Ads refreshed!');
+      console.log('amp_refreshAllSlots called successfully');
     } else {
       console.log('amp_refreshAllSlots function not yet available');
     }
