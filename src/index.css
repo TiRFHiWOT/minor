@@ -147,7 +147,22 @@ All colors MUST be HSL.
   /* Prevent horizontal overflow on all elements */
   * {
     box-sizing: border-box;
+  }
+  
+  /* Prevent overflow for most elements but allow ads to expand */
+  *:not(.ad-container):not(.ad-slot):not(.ad-container *) {
     max-width: 100%;
+  }
+  
+  /* Ad-specific containers that can overflow their parent */
+  .ad-container {
+    overflow: visible;
+    max-width: none;
+  }
+  
+  .ad-slot {
+    max-width: none;
+    width: auto;
   }
 
   /* Ensure all containers respect viewport width */

@@ -109,7 +109,7 @@ const AdTest: React.FC = () => {
       <div className="w-full max-w-6xl mx-auto px-4 space-y-8">
 
       {/* Leaderboard Top Ad */}
-      <div ref={leaderboardObserver.containerRef} className="overflow-visible">
+      <div ref={leaderboardObserver.containerRef} className="ad-container overflow-visible">
         <Card className="p-4 transition-all duration-300 w-fit h-fit">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Leaderboard Top Ad</h3>
@@ -122,7 +122,7 @@ const AdTest: React.FC = () => {
           {/* /22404337467,423899568/minorhockeytalks-Leaderboard-Top */}
           <div 
             id='div-gpt-ad-1715358540790-0' 
-            className="overflow-visible"
+            className="ad-slot overflow-visible"
             style={{ 
               minWidth: '300px',
               minHeight: '50px',
@@ -138,7 +138,7 @@ const AdTest: React.FC = () => {
       <div className="grid grid-cols-1 gap-6 lg:gap-6" style={{ gridTemplateColumns: window.innerWidth >= 1024 ? 'minmax(350px, auto) 1fr' : '1fr' }}>
         {/* Sidebar with Ads */}
         <div className="space-y-6 lg:order-1">
-          <div ref={sidebarLeft1Observer.containerRef} className="overflow-visible">
+          <div ref={sidebarLeft1Observer.containerRef} className="ad-container overflow-visible">
             <Card className="p-4 transition-all duration-300 w-fit h-fit">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Sidebar Left Ad</h3>
@@ -151,7 +151,7 @@ const AdTest: React.FC = () => {
               {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left */}
               <div 
                 id='div-gpt-ad-1752247623844-0' 
-                className="overflow-visible"
+                className="ad-slot overflow-visible"
                 style={{ 
                   minWidth: '300px',
                   minHeight: '250px',
@@ -163,7 +163,7 @@ const AdTest: React.FC = () => {
             </Card>
           </div>
 
-          <div ref={sidebarLeft2Observer.containerRef} className="overflow-visible">
+          <div ref={sidebarLeft2Observer.containerRef} className="ad-container overflow-visible">
             <Card className="p-4 transition-all duration-300 w-fit h-fit">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Sidebar Left2 Ad</h3>
@@ -176,7 +176,7 @@ const AdTest: React.FC = () => {
               {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left2 */}
               <div 
                 id='div-gpt-ad-1752247724892-0' 
-                className="overflow-visible"
+                className="ad-slot overflow-visible"
                 style={{ 
                   minWidth: '300px',
                   minHeight: '250px',
@@ -209,7 +209,7 @@ const AdTest: React.FC = () => {
           </Card>
 
           {/* Content One Ad */}
-          <div ref={contentOneObserver.containerRef} className="overflow-visible">
+          <div ref={contentOneObserver.containerRef} className="ad-container overflow-visible">
             <Card className="p-4 transition-all duration-300 w-fit h-fit">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Content One Ad</h3>
@@ -222,7 +222,7 @@ const AdTest: React.FC = () => {
               {/* /22404337467,423899568/minorhockeytalks-Content-One */}
               <div 
                 id='div-gpt-ad-1715358598569-0' 
-                className="overflow-visible"
+                className="ad-slot overflow-visible"
                 style={{ 
                   minWidth: '300px',
                   minHeight: '50px',
@@ -245,7 +245,7 @@ const AdTest: React.FC = () => {
           </Card>
 
           {/* Content Two Ad */}
-          <div ref={contentTwoObserver.containerRef} className="overflow-visible">
+          <div ref={contentTwoObserver.containerRef} className="ad-container overflow-visible">
             <Card className="p-4 transition-all duration-300 w-fit h-fit">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Content Two Ad</h3>
@@ -258,7 +258,7 @@ const AdTest: React.FC = () => {
               {/* /22404337467,423899568/minorhockeytalks-Content-Two */}
               <div 
                 id='div-gpt-ad-1715358620345-0' 
-                className="overflow-visible"
+                className="ad-slot overflow-visible"
                 style={{ 
                   minWidth: '300px',
                   minHeight: '50px',
