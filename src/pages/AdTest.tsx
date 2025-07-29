@@ -77,11 +77,11 @@ const AdTest: React.FC = () => {
           {/* Content One Ad */}
           <Card className="p-4">
             <h3 className="text-lg font-semibold mb-4">Content One Ad</h3>
+            {/* /22404337467,423899568/minorhockeytalks-Content-One */}
             <div 
               id='div-gpt-ad-1715358598569-0' 
-              style={{ minWidth: '300px', minHeight: '50px', border: '1px dashed #ccc', backgroundColor: '#f9f9f9' }}
+              style={{ minWidth: '300px', minHeight: '50px' }}
             >
-              <p className="text-center text-sm text-muted-foreground p-4">Ad slot placeholder</p>
             </div>
           </Card>
 
