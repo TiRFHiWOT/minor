@@ -105,7 +105,10 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                         
                         {/* Last Activity */}
                         {topic.last_reply_at ? (
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Link 
+                            to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
+                            className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors"
+                          >
                             <Avatar className="h-4 w-4 flex-shrink-0">
                               <AvatarImage src={topic.last_reply_avatar} />
                               <AvatarFallback className="text-xs">
@@ -115,7 +118,7 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                             <span>
                               {topic.last_reply_username || 'Anonymous'} • {formatDistanceToNow(new Date(topic.last_reply_at))} ago
                             </span>
-                          </div>
+                          </Link>
                         ) : (
                           <div className="text-xs text-muted-foreground">No replies yet</div>
                         )}
