@@ -14,31 +14,40 @@ export const useAdObserver = (adId: string, options: AdObserverOptions = {}) => 
     const container = containerRef.current;
     if (!container) return;
 
-    // ResizeObserver to detect content changes
+    // ResizeObserver to detect content changes with delay
     const resizeObserver = new ResizeObserver((entries) => {
       entries.forEach((entry) => {
         const element = entry.target as HTMLElement;
         const { width, height } = entry.contentRect;
         
-        // Check if the ad has actual content
-        const hasContent = element.children.length > 0 || element.textContent?.trim();
-        
-        if (hasContent && height > 0) {
-          // Ad has loaded with content
-          element.style.display = 'block';
-          element.style.minHeight = `${height}px`;
-          onAdLoaded?.(element, { width, height });
-        } else if (hideEmptySlots) {
-          // Ad is empty, hide container
-          element.style.display = 'none';
-          onAdEmpty?.(element);
-        }
+        // Give ads time to load before checking content
+        setTimeout(() => {
+          const hasContent = element.children.length > 0 || 
+                           (element.textContent?.trim() && element.textContent.trim().length > 0) ||
+                           element.querySelector('iframe, img, canvas');
+          
+          if (hasContent && height > 10) {
+            // Ad has loaded with content
+            element.style.display = 'block';
+            element.style.minHeight = `${height}px`;
+            onAdLoaded?.(element, { width, height });
+          } else {
+            // Only hide if we're confident it's empty and enough time has passed
+            const timeSinceCreation = Date.now() - (element.dataset.createdAt ? parseInt(element.dataset.createdAt) : Date.now());
+            if (hideEmptySlots && timeSinceCreation > 5000) {
+              element.style.display = 'none';
+              onAdEmpty?.(element);
+            }
+          }
+        }, 1000);
       });
     });
 
     // Observe the ad container
     const adElement = container.querySelector(`#${adId}`) as HTMLElement;
     if (adElement) {
+      // Mark creation time for delay logic
+      adElement.dataset.createdAt = Date.now().toString();
       resizeObserver.observe(adElement);
     }
 
