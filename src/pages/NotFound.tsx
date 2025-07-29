@@ -7,6 +7,7 @@ import { Search, Home, MessageSquare, Users, ArrowLeft, ExternalLink } from "luc
 import { useState } from "react";
 import { useSearch } from "@/hooks/useSearch";
 import { useCategories } from "@/hooks/useCategories";
+import { LeaderboardTopAd } from "@/components/ads/LeaderboardTopAd";
 
 const NotFound = () => {
   const location = useLocation();
@@ -31,9 +32,11 @@ const NotFound = () => {
   const popularCategories = categories?.slice(0, 6) || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
+    <>
+      <LeaderboardTopAd />
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-24 h-24 bg-primary/10 rounded-full mb-6">
@@ -199,9 +202,10 @@ const NotFound = () => {
               <Link to="/create" className="underline ml-1">ask our community for help</Link>.
             </p>
           </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

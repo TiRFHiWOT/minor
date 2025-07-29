@@ -7,6 +7,7 @@ import { ForumSidebarNav } from './ForumSidebarNav';
 import { ForumStats } from './ForumStats';
 import { Footer } from '@/components/layout/Footer';
 import { MobileBottomNav } from './MobileBottomNav';
+import { LeaderboardTopAd } from '@/components/ads/LeaderboardTopAd';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export const ForumLayout = () => {
@@ -17,6 +18,8 @@ export const ForumLayout = () => {
       <RedirectHandler />
       <ForumHeader />
       
+      {/* Leaderboard Top Ad - Appears on every page */}
+      <LeaderboardTopAd />
 
       <div className="w-full max-w-7xl mx-auto px-2 sm:px-3 py-1 sm:py-2 overflow-x-hidden">
         <div className="flex gap-3 w-full">
