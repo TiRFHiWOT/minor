@@ -18,6 +18,8 @@ export interface Topic {
   updated_at: string;
   slug: string;
   last_post_id?: string;
+  last_reply_username?: string | null;
+  last_reply_avatar?: string | null;
   profiles?: {
     username: string;
     avatar_url: string | null;
@@ -88,7 +90,10 @@ export const useTopics = (categoryId?: string, page = 1, limit = 10) => {
           color: topic.category_color,
           slug: topic.category_slug,
           parent_category_id: topic.parent_category_id
-        } : null
+        } : null,
+        // Add last reply author fields for TopicTable
+        last_reply_username: topic.last_reply_username || null,
+        last_reply_avatar: topic.last_reply_avatar || null
       }));
       
       console.log('Optimized topics fetched:', enrichedTopics.length, 'topics in single query');

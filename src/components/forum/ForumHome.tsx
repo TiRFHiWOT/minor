@@ -224,7 +224,9 @@ export const ForumHome = () => {
               hot_score: 0,
               last_post_id: topic.last_post_id,
               parent_category_id: topic.categories?.parent_category_id || null,
-              parent_category_slug: null
+              parent_category_slug: null,
+              last_reply_username: topic.last_reply_username,
+              last_reply_avatar: topic.last_reply_avatar
             })) || []}
             loading={newTopicsLoading}
             showCategory={true}
