@@ -53,7 +53,7 @@ export const useTopics = (categoryId?: string, page = 1, limit = 10) => {
           p_category_id: categoryId || null,
           p_limit: limit,
           p_offset: offset
-        }),
+        }) as any, // Type assertion needed for new fields
         supabase.rpc('get_enriched_topics_count', {
           p_category_id: categoryId || null
         })
