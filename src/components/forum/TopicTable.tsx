@@ -134,9 +134,24 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                   </div>
                 </div>
 
-                {/* Replies */}
+                {/* Replies and Latest Post Button */}
                 <div className="col-span-2 md:col-span-1 text-center">
                   <div className="text-sm font-medium">{topic.reply_count || 0}</div>
+                  {topic.last_reply_at && (
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs px-1 py-1 h-5 w-full mt-1"
+                    >
+                      <Link 
+                        to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
+                      >
+                        Latest
+                        <ChevronRight className="h-3 w-3" />
+                      </Link>
+                    </Button>
+                  )}
                 </div>
 
                 {/* Views */}
@@ -144,28 +159,6 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                   <div className="text-sm text-muted-foreground">{topic.view_count || 0}</div>
                 </div>
               </div>
-
-              {/* Latest Post Button - Under replies/views */}
-              {topic.last_reply_at && (
-                <div className="grid grid-cols-12 gap-2 mt-1">
-                  <div className="col-span-8 md:col-span-10"></div>
-                  <div className="col-span-4 md:col-span-2">
-                    <Button
-                      asChild
-                      variant="ghost"
-                      size="sm"
-                      className="text-xs px-2 py-1 h-6 w-full"
-                    >
-                      <Link 
-                        to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
-                      >
-                        Latest Post
-                        <ChevronRight className="h-3 w-3" />
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              )}
             </div>
           );
         })}
