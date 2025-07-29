@@ -62,6 +62,36 @@ const AdTest: React.FC = () => {
 
       {/* Content Area with Ads */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Sidebar with Ads */}
+        <div className="space-y-6">
+          <Card className="p-4">
+            <h3 className="text-lg font-semibold mb-4">Sidebar Left Ad</h3>
+            <div 
+              id='div-gpt-ad-1752247623844-0' 
+              style={{ minWidth: '300px', minHeight: '250px', border: '1px dashed #ccc', backgroundColor: '#f9f9f9' }}
+            >
+              <p className="text-center text-sm text-muted-foreground p-4">Sidebar ad placeholder</p>
+            </div>
+          </Card>
+
+          <Card className="p-4">
+            <h3 className="text-lg font-semibold mb-4">Sidebar Left2 Ad</h3>
+            <div 
+              id='div-gpt-ad-1752247724892-0' 
+              style={{ minWidth: '300px', minHeight: '250px', border: '1px dashed #ccc', backgroundColor: '#f9f9f9' }}
+            >
+              <p className="text-center text-sm text-muted-foreground p-4">Sidebar ad placeholder</p>
+            </div>
+          </Card>
+
+          <Card className="p-4">
+            <h3 className="text-lg font-semibold mb-4">Interstitial Note</h3>
+            <p className="text-sm text-muted-foreground">
+              Interstitial ads are enabled and don't require a body tag. They should display automatically during navigation.
+            </p>
+          </Card>
+        </div>
+
         {/* Main Content */}
         <div className="lg:col-span-3 space-y-6">
           <Card className="p-6">
@@ -104,36 +134,6 @@ const AdTest: React.FC = () => {
               style={{ minWidth: '300px', minHeight: '50px' }}
             >
             </div>
-          </Card>
-        </div>
-
-        {/* Sidebar with Ads */}
-        <div className="space-y-6">
-          <Card className="p-4">
-            <h3 className="text-lg font-semibold mb-4">Sidebar Left Ad</h3>
-            <div 
-              id='div-gpt-ad-1752247623844-0' 
-              style={{ minWidth: '300px', minHeight: '250px', border: '1px dashed #ccc', backgroundColor: '#f9f9f9' }}
-            >
-              <p className="text-center text-sm text-muted-foreground p-4">Sidebar ad placeholder</p>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <h3 className="text-lg font-semibold mb-4">Sidebar Left2 Ad</h3>
-            <div 
-              id='div-gpt-ad-1752247724892-0' 
-              style={{ minWidth: '300px', minHeight: '250px', border: '1px dashed #ccc', backgroundColor: '#f9f9f9' }}
-            >
-              <p className="text-center text-sm text-muted-foreground p-4">Sidebar ad placeholder</p>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <h3 className="text-lg font-semibold mb-4">Interstitial Note</h3>
-            <p className="text-sm text-muted-foreground">
-              Interstitial ads are enabled and don't require a body tag. They should display automatically during navigation.
-            </p>
           </Card>
         </div>
       </div>
