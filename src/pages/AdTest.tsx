@@ -135,9 +135,9 @@ const AdTest: React.FC = () => {
       </div>
 
       {/* Content Area with Ads */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:gap-6" style={{ gridTemplateColumns: window.innerWidth >= 1024 ? 'minmax(350px, auto) 1fr' : '1fr' }}>
         {/* Sidebar with Ads */}
-        <div className="space-y-6">
+        <div className="space-y-6 lg:order-1">
           <div ref={sidebarLeft1Observer.containerRef} className="overflow-visible">
             <Card className="p-4 transition-all duration-300 w-fit h-fit">
               <div className="flex items-center justify-between mb-4">
@@ -197,7 +197,7 @@ const AdTest: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="space-y-6 lg:order-2">
           <Card className="p-6">
             <h2 className="text-2xl font-bold mb-4">Main Content Area</h2>
             <p className="mb-4">
