@@ -601,6 +601,17 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = React.memo(({
         [contenteditable] ol { 
           margin: 0.5em 0; 
           padding-left: 1.5em;
+          list-style-position: outside;
+        }
+        [contenteditable] ul {
+          list-style-type: disc;
+        }
+        [contenteditable] ol {
+          list-style-type: decimal;
+        }
+        [contenteditable] li {
+          margin: 0.25em 0;
+          display: list-item;
         }
         [contenteditable] blockquote {
           border-left: 4px solid hsl(var(--border));

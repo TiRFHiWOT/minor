@@ -62,7 +62,7 @@ export const HTMLRenderer: React.FC<HTMLRendererProps> = ({
 
   return (
     <div 
-      className={cn("prose prose-sm max-w-none", className)}
+      className={cn("prose prose-sm max-w-none [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6 [&_li]:mb-1", className)}
       style={{
         direction: 'ltr',
         textAlign: 'left',
