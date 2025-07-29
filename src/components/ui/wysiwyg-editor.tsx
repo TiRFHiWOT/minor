@@ -57,63 +57,7 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = React.memo(({
     onChangeRef.current = onChange;
   }, [onChange]);
 
-  // Initialize editor with error handling and debugging
-  useEffect(() => {
-    const initializeEditor = async () => {
-      try {
-        setIsLoading(true);
-        console.log('WysiwygEditor: Initializing editor...', { value, disabled, hideToolbar });
-        
-        // Check if contentEditable is supported
-        if (typeof document.execCommand !== 'function') {
-          console.warn('WysiwygEditor: execCommand not supported, falling back to textarea');
-          setUseFallback(true);
-          setErrorMessage('Rich text editing not supported in this browser');
-          return;
-        }
-
-        // Check if we're in a problematic environment
-        if (typeof window === 'undefined' || !window.getSelection) {
-          console.warn('WysiwygEditor: Window/Selection API not available');
-          setUseFallback(true);
-          setErrorMessage('Rich text editing not available');
-          return;
-        }
-
-        if (editorRef.current && !isInitialized) {
-          try {
-            // Test contentEditable functionality
-            editorRef.current.contentEditable = 'true';
-            editorRef.current.innerHTML = value || '';
-            
-            // Test if we can focus the editor
-            editorRef.current.focus();
-            editorRef.current.blur();
-            
-            setIsInitialized(true);
-            setHasError(false);
-            console.log('WysiwygEditor: Successfully initialized');
-          } catch (error) {
-            console.error('WysiwygEditor: Error initializing contentEditable:', error);
-            setHasError(true);
-            setUseFallback(true);
-            setErrorMessage(`Editor initialization failed: ${error.message}`);
-          }
-        }
-      } catch (error) {
-        console.error('WysiwygEditor: Unexpected error during initialization:', error);
-        setHasError(true);
-        setUseFallback(true);
-        setErrorMessage(`Unexpected error: ${error.message}`);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeEditor();
-  }, [value, isInitialized]);
-
-  // Improved cursor position utilities
+  // Improved cursor position utilities - DECLARE FIRST
   const saveCursorPosition = useCallback(() => {
     try {
       const selection = window.getSelection();
@@ -187,46 +131,103 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = React.memo(({
     }
   }, []);
 
-  // Very conservative content cleaning - only clean on blur or submission
-  const debouncedCleanContent = useCallback((content: string) => {
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-
-    debounceTimer.current = setTimeout(() => {
+  // Initialize editor once on mount - NOT on value changes
+  useEffect(() => {
+    const initializeEditor = async () => {
       try {
-        if (isProcessingInput.current) return;
+        setIsLoading(true);
+        console.log('WysiwygEditor: Initializing editor...');
         
-        // Only clean truly problematic elements and only when not actively typing
-        const cleanContent = content
-          .replace(/<p><\/p>/g, '') // Remove empty paragraphs
-          .replace(/<div><\/div>/g, '') // Remove empty divs
-          .replace(/<br\s*\/?>(\s*<br\s*\/?>)+/g, '<br>'); // Collapse multiple line breaks
-        
-        // Only update if content has actually changed significantly
-        if (cleanContent !== content && cleanContent !== editorContent) {
-          setEditorContent(cleanContent);
-          onChangeRef.current(cleanContent);
+        // Check if contentEditable is supported
+        if (typeof document.execCommand !== 'function') {
+          console.warn('WysiwygEditor: execCommand not supported, falling back to textarea');
+          setUseFallback(true);
+          setErrorMessage('Rich text editing not supported in this browser');
+          return;
+        }
+
+        // Check if we're in a problematic environment
+        if (typeof window === 'undefined' || !window.getSelection) {
+          console.warn('WysiwygEditor: Window/Selection API not available');
+          setUseFallback(true);
+          setErrorMessage('Rich text editing not available');
+          return;
+        }
+
+        if (editorRef.current && !isInitialized) {
+          try {
+            // Test contentEditable functionality
+            editorRef.current.contentEditable = 'true';
+            editorRef.current.innerHTML = value || '';
+            
+            setIsInitialized(true);
+            setHasError(false);
+            console.log('WysiwygEditor: Successfully initialized');
+          } catch (error) {
+            console.error('WysiwygEditor: Error initializing contentEditable:', error);
+            setHasError(true);
+            setUseFallback(true);
+            setErrorMessage(`Editor initialization failed: ${error.message}`);
+          }
         }
       } catch (error) {
-        console.error('WysiwygEditor: Error in debouncedCleanContent:', error);
+        console.error('WysiwygEditor: Unexpected error during initialization:', error);
+        setHasError(true);
+        setUseFallback(true);
+        setErrorMessage(`Unexpected error: ${error.message}`);
+      } finally {
+        setIsLoading(false);
       }
-    }, 1000); // Longer debounce to avoid interrupting typing
-  }, [editorContent]);
+    };
 
-  // Simplified handleInput that avoids DOM manipulation during typing
+    initializeEditor();
+  }, [isInitialized]); // REMOVED value from dependencies
+
+  // Handle external value changes WITHOUT re-initialization
+  useEffect(() => {
+    if (isInitialized && editorRef.current && !isProcessingInput.current) {
+      // Only update if the external value is different from current content
+      const currentContent = editorRef.current.innerHTML;
+      if (value !== currentContent && value !== editorContent) {
+        const savedCursor = saveCursorPosition();
+        editorRef.current.innerHTML = value || '';
+        setEditorContent(value || '');
+        
+        // Restore cursor position if it was saved
+        if (savedCursor) {
+          setTimeout(() => restoreCursorPosition(savedCursor), 10);
+        }
+      }
+    }
+  }, [value, isInitialized, editorContent, saveCursorPosition, restoreCursorPosition]);
+
+
+  // Content cleaning that NEVER runs during active typing
+  const cleanContentSafely = useCallback((content: string) => {
+    try {
+      // Only clean truly problematic elements
+      const cleanContent = content
+        .replace(/<p><\/p>/g, '') // Remove empty paragraphs
+        .replace(/<div><\/div>/g, '') // Remove empty divs
+        .replace(/<br\s*\/?>(\s*<br\s*\/?>)+/g, '<br>'); // Collapse multiple line breaks
+      
+      return cleanContent;
+    } catch (error) {
+      console.error('WysiwygEditor: Error in cleanContentSafely:', error);
+      return content;
+    }
+  }, []);
+
+  // Super simplified handleInput - NO DOM manipulation during typing
   const handleInput = useCallback(() => {
     try {
       if (editorRef.current && !isProcessingInput.current) {
         const content = editorRef.current.innerHTML;
         
-        // Only update state if content has changed - NO DOM manipulation during typing
+        // ONLY update state - NO DOM manipulation during typing
         if (content !== editorContent) {
           setEditorContent(content);
           onChangeRef.current(content);
-          
-          // Only trigger cleaning when user pauses typing
-          debouncedCleanContent(content);
         }
       }
     } catch (error) {
@@ -234,7 +235,7 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = React.memo(({
       setHasError(true);
       setErrorMessage(`Input error: ${error.message}`);
     }
-  }, [editorContent, debouncedCleanContent]);
+  }, [editorContent]);
 
   const handleFallbackChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -247,40 +248,33 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = React.memo(({
     try {
       if (editorRef.current && !isProcessingInput.current) {
         const content = editorRef.current.innerHTML;
+        const cleanContent = cleanContentSafely(content);
         
-        // Clean content more aggressively when user finishes typing
-        const cleanContent = content
-          .replace(/<p><\/p>/g, '') // Remove empty paragraphs
-          .replace(/<div><\/div>/g, '') // Remove empty divs  
-          .replace(/<div><br><\/div>/g, '<br>') // Convert div breaks to br
-          .replace(/<div>/g, '<br>') // Convert opening divs to br
-          .replace(/<\/div>/g, '') // Remove closing divs
-          .replace(/<br\s*\/?>(\s*<br\s*\/?>)+/g, '<br>') // Collapse multiple line breaks
-          .replace(/(<br\s*\/?>)+$/, ''); // Remove trailing line breaks
-        
-        // Update content if it changed
+        // Update content if it changed, but do it safely
         if (cleanContent !== content) {
           isProcessingInput.current = true;
           editorRef.current.innerHTML = cleanContent;
           setEditorContent(cleanContent);
           onChangeRef.current(cleanContent);
           
-          // Reset processing flag
+          // Reset processing flag quickly
           setTimeout(() => {
             isProcessingInput.current = false;
-          }, 50);
+          }, 10);
         }
       }
     } catch (error) {
       console.error('WysiwygEditor: Error in handleBlur:', error);
     }
-  }, []);
+  }, [cleanContentSafely]);
 
   const handleFocus = useCallback(() => {
-    // Clear any pending debounced operations when user starts typing
+    // Clear any pending operations when user starts typing
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }
+    // Mark as actively typing to prevent unwanted DOM updates
+    isProcessingInput.current = false;
   }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
