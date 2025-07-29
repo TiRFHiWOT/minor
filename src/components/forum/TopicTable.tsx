@@ -154,7 +154,7 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                       asChild
                       variant="ghost"
                       size="sm"
-                      className="text-xs px-2 py-1 h-6 w-full mt-1"
+                      className="text-xs px-2 py-1 h-6 w-full mt-2"
                     >
                       <Link 
                         to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
