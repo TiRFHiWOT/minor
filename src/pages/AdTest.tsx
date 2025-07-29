@@ -66,11 +66,11 @@ const AdTest: React.FC = () => {
         <div className="space-y-6">
           <Card className="p-4">
             <h3 className="text-lg font-semibold mb-4">Sidebar Left Ad</h3>
+            {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left */}
             <div 
               id='div-gpt-ad-1752247623844-0' 
-              style={{ minWidth: '300px', minHeight: '250px', border: '1px dashed #ccc', backgroundColor: '#f9f9f9' }}
+              style={{ minWidth: '300px', minHeight: '250px' }}
             >
-              <p className="text-center text-sm text-muted-foreground p-4">Sidebar ad placeholder</p>
             </div>
           </Card>
 
