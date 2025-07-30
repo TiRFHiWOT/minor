@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAdObserver } from '@/hooks/useAdObserver';
 
-// Declare the global amp_refreshAllSlots function
+// Declare the global functions
 declare global {
   interface Window {
     amp_refreshAllSlots?: () => void;
@@ -103,62 +103,93 @@ const AdTest: React.FC = () => {
   });
 
   useEffect(() => {
-    // Script is now loaded globally in index.html, just log the availability
     console.log('AdTest component mounted. Checking script availability...');
     console.log('Current domain:', window.location.hostname);
     console.log('Current URL:', window.location.href);
     
-    // Add a delay to allow AdMetricsPro to fully initialize
+    // Initialize Google Tag Manager properly for React using type assertions
+    const initializeGoogleAds = () => {
+      const gtag = (window as any).googletag;
+      if (gtag && gtag.cmd) {
+        console.log('Initializing Google Ads for React...');
+        
+        gtag.cmd.push(() => {
+          console.log('Google Tag Manager command queue executing...');
+          
+          // Destroy existing ad slots if they exist to prevent conflicts
+          const existingSlots = gtag.pubads().getSlots();
+          if (existingSlots.length > 0) {
+            console.log('Destroying existing ad slots:', existingSlots.length);
+            gtag.destroySlots();
+          }
+          
+          // Define all ad slots properly
+          const adSlots = [
+            { id: 'div-gpt-ad-1715358540790-0', sizes: [[728, 90], [320, 50]], path: '/22404337467,423899568/minorhockeytalks-Leaderboard-Top' },
+            { id: 'div-gpt-ad-1715358598569-0', sizes: [[728, 90], [320, 50]], path: '/22404337467,423899568/minorhockeytalks-Content-One' },
+            { id: 'div-gpt-ad-1715358620345-0', sizes: [[300, 250], [320, 50]], path: '/22404337467,423899568/minorhockeytalks-Sidebar-Left' },
+            { id: 'div-gpt-ad-1752247623844-0', sizes: [[300, 250], [320, 50]], path: '/22404337467,423899568/minorhockeytalks-Sidebar-Left2' },
+            { id: 'div-gpt-ad-1752247724892-0', sizes: [[300, 250], [320, 50]], path: '/22404337467,423899568/minorhockeytalks-Sidebar-Right' },
+            { id: 'div-gpt-ad-1753889678213-0', sizes: [[300, 250], [320, 50]], path: '/22404337467,423899568/minorhockeytalks-Sidebar-Right2' },
+            { id: 'div-gpt-ad-1753889948554-0', sizes: [[728, 90], [320, 50]], path: '/22404337467,423899568/minorhockeytalks-Content-Two' },
+            { id: 'div-gpt-ad-1753890381531-0', sizes: [[640, 360], [320, 180]], path: '/22404337467,423899568/minorhockeytalks-Video-Unit' }
+          ];
+          
+          adSlots.forEach(({ id, sizes, path }) => {
+            const element = document.getElementById(id);
+            if (element) {
+              console.log(`Defining ad slot: ${id} with path: ${path}`);
+              const slot = gtag.defineSlot(path, sizes, id);
+              if (slot) {
+                slot.addService(gtag.pubads());
+                console.log(`Ad slot ${id} defined successfully`);
+              } else {
+                console.error(`Failed to define ad slot: ${id}`);
+              }
+            } else {
+              console.warn(`Ad element not found: ${id}`);
+            }
+          });
+          
+          // Configure publisher ads service
+          gtag.pubads().enableSingleRequest();
+          gtag.pubads().collapseEmptyDivs();
+          gtag.pubads().setCentering(true);
+          gtag.enableServices();
+          
+          console.log('Google Ads initialization complete. Displaying ads...');
+          
+          // Display all ads
+          adSlots.forEach(({ id }) => {
+            const element = document.getElementById(id);
+            if (element) {
+              gtag.display(id);
+              console.log(`Displaying ad: ${id}`);
+            }
+          });
+        });
+      } else {
+        console.error('Google Tag Manager not available');
+      }
+    };
+    
+    // Check for AdMetricsPro and log status
     const checkAndInitialize = () => {
       console.log('Available global functions:', {
         amp_refreshAllSlots: typeof window.amp_refreshAllSlots,
         googletag: typeof window.googletag
       });
       
-      // Check if googletag is properly loaded
-      if (window.googletag) {
-        console.log('Google Tag Manager loaded:', !!window.googletag);
-        if (window.googletag.pubads) {
-          console.log('Google Publisher Ads service loaded:', !!window.googletag.pubads());
-        }
-      }
+      // Initialize Google Ads properly for React
+      initializeGoogleAds();
       
-      // Log ad element states
-      const adElements = [
-        'div-gpt-ad-1715358540790-0',
-        'div-gpt-ad-1715358598569-0', 
-        'div-gpt-ad-1715358620345-0',
-        'div-gpt-ad-1752247623844-0',
-        'div-gpt-ad-1752247724892-0',
-        'div-gpt-ad-1753889678213-0',
-        'div-gpt-ad-1753889948554-0',
-        'div-gpt-ad-1753890381531-0'
-      ];
-      
-      adElements.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-          console.log(`Ad element ${id}:`, {
-            exists: true,
-            children: element.children.length,
-            innerHTML: element.innerHTML.slice(0, 100),
-            offsetHeight: element.offsetHeight,
-            offsetWidth: element.offsetWidth
-          });
-        } else {
-          console.log(`Ad element ${id}: not found`);
-        }
-      });
-      
-      // Try to trigger ad loading after components mount
+      // Also try AdMetricsPro method
       setTimeout(() => {
         if (window.amp_refreshAllSlots) {
-          console.log('Auto-triggering amp_refreshAllSlots after component mount');
+          console.log('Triggering amp_refreshAllSlots...');
           window.amp_refreshAllSlots();
-        } else {
-          console.log('amp_refreshAllSlots not available - this suggests AdMetricsPro may not be properly loaded');
         }
-      }, 1000);
+      }, 2000);
     };
     
     // Check immediately and also after a delay
