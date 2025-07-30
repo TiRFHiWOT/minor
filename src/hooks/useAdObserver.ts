@@ -20,34 +20,33 @@ export const useAdObserver = (adId: string, options: AdObserverOptions = {}) => 
         const element = entry.target as HTMLElement;
         const { width, height } = entry.contentRect;
         
-        // Give ads more time to load before checking content - AdMetricsPro needs extra time
+        // Give AdMetricsPro time to load - DO NOT HIDE ADS automatically
         setTimeout(() => {
           const hasContent = element.children.length > 0 || 
                            (element.textContent?.trim() && element.textContent.trim().length > 0) ||
                            element.querySelector('iframe, img, canvas, ins') ||
                            element.innerHTML.includes('googletag') ||
-                           element.innerHTML.includes('adsbygoogle');
+                           element.innerHTML.includes('adsbygoogle') ||
+                           element.innerHTML.includes('admetrics');
           
           console.log(`Ad Observer [${element.id}]: Content check - hasContent: ${hasContent}, height: ${height}, children: ${element.children.length}, innerHTML length: ${element.innerHTML.length}`);
           
           if (hasContent && height > 5) {
-            // Ad has loaded with content - no size manipulation, let it be natural
+            // Ad has loaded with content
             element.style.display = 'block';
             element.style.visibility = 'visible';
             console.log(`Ad Observer [${element.id}]: Ad loaded successfully`);
             onAdLoaded?.(element, { width, height });
           } else {
-            // Only hide if we're confident it's empty and enough time has passed
-            const timeSinceCreation = Date.now() - (element.dataset.createdAt ? parseInt(element.dataset.createdAt) : Date.now());
-            if (hideEmptySlots && timeSinceCreation > 3000) {
-              element.style.display = 'none';
-              console.log(`Ad Observer [${element.id}]: Ad marked as empty after ${timeSinceCreation}ms`);
-              onAdEmpty?.(element);
-            } else {
-              console.log(`Ad Observer [${element.id}]: Still waiting for content (${timeSinceCreation}ms elapsed)`);
-            }
+            // TEMPORARILY DISABLED: Do not hide ads to let AdMetricsPro fill them
+            // Keep ads visible for AdMetricsPro to populate
+            element.style.display = 'block';
+            element.style.visibility = 'visible';
+            console.log(`Ad Observer [${element.id}]: Keeping ad visible for AdMetricsPro (${height}px height)`);
+            // Still call onAdEmpty for state tracking but don't hide
+            onAdEmpty?.(element);
           }
-        }, 3000);
+        }, 1000);
       });
     });
 

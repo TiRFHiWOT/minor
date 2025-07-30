@@ -107,46 +107,49 @@ const AdTest: React.FC = () => {
     console.log('Current domain:', window.location.hostname);
     console.log('Current URL:', window.location.href);
     
-    // Check for AdMetricsPro and log status
-    const checkAdMetricsPro = () => {
-      console.log('Available global functions:', {
-        amp_refreshAllSlots: typeof window.amp_refreshAllSlots,
-        googletag: typeof window.googletag
+    // Enhanced AdMetricsPro status checking with retry mechanism
+    const checkAndRefresh = () => {
+      console.log('Checking AdMetricsPro status...', {
+        amp_refreshAllSlots: !!window.amp_refreshAllSlots,
+        googletag: !!window.googletag,
+        adMetricsReady: !!(window as any).adMetricsReady
       });
       
-      // Let AdMetricsPro handle all initialization - just trigger refresh
-      setTimeout(() => {
-        if (window.amp_refreshAllSlots) {
-          console.log('Auto-triggering amp_refreshAllSlots after component mount');
-          window.amp_refreshAllSlots();
-          
-          // Log all ad containers for debugging
-          const adIds = [
-            'div-gpt-ad-1715358540790-0', 'div-gpt-ad-1752247623844-0', 'div-gpt-ad-1752247724892-0',
-            'div-gpt-ad-1715358598569-0', 'div-gpt-ad-1715358620345-0', 'div-gpt-ad-1753889678213-0',
-            'div-gpt-ad-1753889948554-0', 'div-gpt-ad-1753890381531-0'
-          ];
-          
-          adIds.forEach(id => {
-            const element = document.getElementById(id);
-            console.log(`Ad Container [${id}]:`, {
-              exists: !!element,
-              innerHTML: element?.innerHTML || 'N/A',
-              children: element?.children.length || 0,
-              display: element?.style.display || 'default'
-            });
+      if (window.amp_refreshAllSlots) {
+        console.log('AdMetricsPro ready - triggering amp_refreshAllSlots');
+        window.amp_refreshAllSlots();
+        
+        // Log all ad containers for debugging
+        const adIds = [
+          'div-gpt-ad-1715358540790-0', 'div-gpt-ad-1752247623844-0', 'div-gpt-ad-1752247724892-0',
+          'div-gpt-ad-1715358598569-0', 'div-gpt-ad-1715358620345-0', 'div-gpt-ad-1753889678213-0',
+          'div-gpt-ad-1753889948554-0', 'div-gpt-ad-1753890381531-0'
+        ];
+        
+        adIds.forEach(id => {
+          const element = document.getElementById(id);
+          console.log(`Ad Container [${id}]:`, {
+            exists: !!element,
+            innerHTML: element?.innerHTML || 'N/A',
+            children: element?.children.length || 0,
+            display: element?.style.display || 'default'
           });
-        } else {
-          console.log('amp_refreshAllSlots not yet available, retrying...');
-        }
-      }, 5000);
+        });
+        
+        // Set up retry mechanism - try again after 15 seconds if ads still empty
+        setTimeout(() => {
+          console.log('Retry mechanism: Checking ads after 15 seconds');
+          window.amp_refreshAllSlots?.();
+        }, 15000);
+        
+      } else {
+        console.log('AdMetricsPro not ready yet, retrying in 2 seconds...');
+        setTimeout(checkAndRefresh, 2000);
+      }
     };
     
-    // Check immediately and also after a delay
-    checkAdMetricsPro();
-    const timer = setTimeout(checkAdMetricsPro, 5000);
-    
-    return () => clearTimeout(timer);
+    // Initial delay increased to give AdMetricsPro more time to initialize
+    setTimeout(checkAndRefresh, 8000);
   }, []);
 
   const handleRefreshAds = () => {
