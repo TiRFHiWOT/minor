@@ -105,6 +105,8 @@ const AdTest: React.FC = () => {
   useEffect(() => {
     // Script is now loaded globally in index.html, just log the availability
     console.log('AdTest component mounted. Checking script availability...');
+    console.log('Current domain:', window.location.hostname);
+    console.log('Current URL:', window.location.href);
     
     // Add a delay to allow AdMetricsPro to fully initialize
     const checkAndInitialize = () => {
@@ -113,11 +115,48 @@ const AdTest: React.FC = () => {
         googletag: typeof window.googletag
       });
       
+      // Check if googletag is properly loaded
+      if (window.googletag) {
+        console.log('Google Tag Manager loaded:', !!window.googletag);
+        if (window.googletag.pubads) {
+          console.log('Google Publisher Ads service loaded:', !!window.googletag.pubads());
+        }
+      }
+      
+      // Log ad element states
+      const adElements = [
+        'div-gpt-ad-1715358540790-0',
+        'div-gpt-ad-1715358598569-0', 
+        'div-gpt-ad-1715358620345-0',
+        'div-gpt-ad-1752247623844-0',
+        'div-gpt-ad-1752247724892-0',
+        'div-gpt-ad-1753889678213-0',
+        'div-gpt-ad-1753889948554-0',
+        'div-gpt-ad-1753890381531-0'
+      ];
+      
+      adElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          console.log(`Ad element ${id}:`, {
+            exists: true,
+            children: element.children.length,
+            innerHTML: element.innerHTML.slice(0, 100),
+            offsetHeight: element.offsetHeight,
+            offsetWidth: element.offsetWidth
+          });
+        } else {
+          console.log(`Ad element ${id}: not found`);
+        }
+      });
+      
       // Try to trigger ad loading after components mount
       setTimeout(() => {
         if (window.amp_refreshAllSlots) {
           console.log('Auto-triggering amp_refreshAllSlots after component mount');
           window.amp_refreshAllSlots();
+        } else {
+          console.log('amp_refreshAllSlots not available - this suggests AdMetricsPro may not be properly loaded');
         }
       }, 1000);
     };
