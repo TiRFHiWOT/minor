@@ -28,15 +28,22 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
   const { data: adSpaces, isLoading } = useActiveAdSpaces(location, deviceType);
 
   useEffect(() => {
-    // Initialize AdSense ads if any exist
-    if (adSpaces && adSpaces.length > 0 && window.adsbygoogle) {
-      adSpaces.forEach(() => {
+    // Initialize AdSense ads after content is rendered
+    if (adSpaces && adSpaces.length > 0) {
+      const timer = setTimeout(() => {
         try {
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          // Ensure adsbygoogle is available
+          if (typeof window !== 'undefined' && window.adsbygoogle) {
+            adSpaces.forEach(() => {
+              (window.adsbygoogle = window.adsbygoogle || []).push({});
+            });
+          }
         } catch (error) {
-          console.error('AdSense error:', error);
+          console.error('AdSense initialization error:', error);
         }
-      });
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [adSpaces]);
 
@@ -62,10 +69,12 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
           <div
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(adSpace.ad_code || '', {
-                ALLOWED_TAGS: ['script', 'ins', 'div', 'span'],
-                ALLOWED_ATTR: ['class', 'style', 'data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive', 'async', 'crossorigin', 'src'],
+                ALLOWED_TAGS: ['script', 'ins', 'div', 'span', 'noscript'],
+                ALLOWED_ATTR: ['class', 'style', 'data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive', 'async', 'crossorigin', 'src', 'type', 'id'],
                 ALLOW_DATA_ATTR: true,
-                ALLOW_UNKNOWN_PROTOCOLS: false
+                ALLOW_UNKNOWN_PROTOCOLS: false,
+                ADD_TAGS: ['script', 'ins'],
+                ADD_ATTR: ['data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive']
               })
             }}
           />

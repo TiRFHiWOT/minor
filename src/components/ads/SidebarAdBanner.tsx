@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { DynamicAdSpace } from './DynamicAdSpace';
 
 interface SidebarAdBannerProps {
   className?: string;
@@ -14,17 +15,6 @@ declare global {
 export const SidebarAdBanner: React.FC<SidebarAdBannerProps> = ({ className = '' }) => {
   const isMobile = useIsMobile();
 
-  useEffect(() => {
-    // Initialize AdSense ad when script is loaded via header scripts
-    try {
-      if (window.adsbygoogle && !isMobile) {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      }
-    } catch (error) {
-      console.error('AdSense error:', error);
-    }
-  }, [isMobile]);
-
   // Hide on mobile devices
   if (isMobile) {
     return null;
@@ -32,17 +22,7 @@ export const SidebarAdBanner: React.FC<SidebarAdBannerProps> = ({ className = ''
 
   return (
     <div className={`w-full ${className}`}>
-      <div className="w-full">
-        <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
-        <ins 
-          className="adsbygoogle"
-          style={{ display: 'block', width: '100%', minHeight: '250px' }}
-          data-ad-client="ca-pub-5447109336224364"
-          data-ad-slot="4012372906"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
-      </div>
+      <DynamicAdSpace location="sidebar" />
     </div>
   );
 };
