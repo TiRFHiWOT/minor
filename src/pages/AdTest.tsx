@@ -61,10 +61,28 @@ const AdTest: React.FC = () => {
   useEffect(() => {
     // Script is now loaded globally in index.html, just log the availability
     console.log('AdTest component mounted. Checking script availability...');
-    console.log('Available global functions:', {
-      amp_refreshAllSlots: typeof window.amp_refreshAllSlots,
-      googletag: typeof window.googletag
-    });
+    
+    // Add a delay to allow AdMetricsPro to fully initialize
+    const checkAndInitialize = () => {
+      console.log('Available global functions:', {
+        amp_refreshAllSlots: typeof window.amp_refreshAllSlots,
+        googletag: typeof window.googletag
+      });
+      
+      // Try to trigger ad loading after components mount
+      setTimeout(() => {
+        if (window.amp_refreshAllSlots) {
+          console.log('Auto-triggering amp_refreshAllSlots after component mount');
+          window.amp_refreshAllSlots();
+        }
+      }, 1000);
+    };
+    
+    // Check immediately and also after a delay
+    checkAndInitialize();
+    const timer = setTimeout(checkAndInitialize, 2000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const handleRefreshAds = () => {
