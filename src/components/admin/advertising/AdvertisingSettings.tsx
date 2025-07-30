@@ -139,30 +139,6 @@ export const AdvertisingSettings = () => {
           </CardContent>
         </Card>
 
-        {/* Legacy Header Code */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Legacy Header Code</CardTitle>
-            <CardDescription>
-              Manage the original header code setting (consider migrating to Header Scripts)
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="header_code">Header Code</Label>
-              <Textarea
-                id="header_code"
-                value={getSetting('header_code', '')}
-                onChange={(e) => handleSettingChange('header_code', e.target.value, 'string')}
-                placeholder="HTML/JavaScript code to inject into the page header"
-                rows={6}
-              />
-              <p className="text-sm text-muted-foreground">
-                This is the legacy header code. Consider using the Header Scripts manager for better organization.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       <div className="flex justify-end">

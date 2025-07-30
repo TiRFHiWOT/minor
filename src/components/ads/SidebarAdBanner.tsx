@@ -15,8 +15,8 @@ export const SidebarAdBanner: React.FC<SidebarAdBannerProps> = ({ className = ''
   const isMobile = useIsMobile();
 
   useEffect(() => {
+    // Initialize AdSense ad when script is loaded via header scripts
     try {
-      // Initialize AdSense ad
       if (window.adsbygoogle && !isMobile) {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       }

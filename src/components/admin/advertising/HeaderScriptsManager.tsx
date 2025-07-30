@@ -31,28 +31,11 @@ export const HeaderScriptsManager = () => {
 
   // Get current header scripts from settings with safe parsing
   const getHeaderScripts = (): HeaderScript[] => {
-    try {
-      const rawSetting = getSetting('header_scripts', '[]');
-      
-      // If it's already an array (parsed), return it
-      if (Array.isArray(rawSetting)) {
-        return rawSetting;
-      }
-      
-      // If it's a string, try to parse it
-      if (typeof rawSetting === 'string') {
-        if (rawSetting === '' || rawSetting === 'null' || rawSetting === 'undefined') {
-          return [];
-        }
-        return JSON.parse(rawSetting);
-      }
-      
-      // Fallback to empty array
-      return [];
-    } catch (error) {
-      console.error('Error parsing header scripts:', error);
-      return [];
-    }
+    const scriptsData = getSetting('header_scripts', []);
+    console.log('Header scripts data:', scriptsData);
+    
+    // Since useForumSettings already parses the JSON, just return the array
+    return Array.isArray(scriptsData) ? scriptsData : [];
   };
   
   const headerScripts: HeaderScript[] = getHeaderScripts();
