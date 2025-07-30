@@ -119,10 +119,27 @@ const AdTest: React.FC = () => {
         if (window.amp_refreshAllSlots) {
           console.log('Auto-triggering amp_refreshAllSlots after component mount');
           window.amp_refreshAllSlots();
+          
+          // Log all ad containers for debugging
+          const adIds = [
+            'div-gpt-ad-1715358540790-0', 'div-gpt-ad-1752247623844-0', 'div-gpt-ad-1752247724892-0',
+            'div-gpt-ad-1715358598569-0', 'div-gpt-ad-1715358620345-0', 'div-gpt-ad-1753889678213-0',
+            'div-gpt-ad-1753889948554-0', 'div-gpt-ad-1753890381531-0'
+          ];
+          
+          adIds.forEach(id => {
+            const element = document.getElementById(id);
+            console.log(`Ad Container [${id}]:`, {
+              exists: !!element,
+              innerHTML: element?.innerHTML || 'N/A',
+              children: element?.children.length || 0,
+              display: element?.style.display || 'default'
+            });
+          });
         } else {
           console.log('amp_refreshAllSlots not yet available, retrying...');
         }
-      }, 3000);
+      }, 5000);
     };
     
     // Check immediately and also after a delay

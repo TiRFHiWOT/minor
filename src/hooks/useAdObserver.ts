@@ -20,25 +20,34 @@ export const useAdObserver = (adId: string, options: AdObserverOptions = {}) => 
         const element = entry.target as HTMLElement;
         const { width, height } = entry.contentRect;
         
-        // Give ads time to load before checking content
+        // Give ads more time to load before checking content - AdMetricsPro needs extra time
         setTimeout(() => {
           const hasContent = element.children.length > 0 || 
                            (element.textContent?.trim() && element.textContent.trim().length > 0) ||
-                           element.querySelector('iframe, img, canvas');
+                           element.querySelector('iframe, img, canvas, ins') ||
+                           element.innerHTML.includes('googletag') ||
+                           element.innerHTML.includes('adsbygoogle');
           
-          if (hasContent && height > 10) {
+          console.log(`Ad Observer [${element.id}]: Content check - hasContent: ${hasContent}, height: ${height}, children: ${element.children.length}, innerHTML length: ${element.innerHTML.length}`);
+          
+          if (hasContent && height > 5) {
             // Ad has loaded with content - no size manipulation, let it be natural
             element.style.display = 'block';
+            element.style.visibility = 'visible';
+            console.log(`Ad Observer [${element.id}]: Ad loaded successfully`);
             onAdLoaded?.(element, { width, height });
           } else {
             // Only hide if we're confident it's empty and enough time has passed
             const timeSinceCreation = Date.now() - (element.dataset.createdAt ? parseInt(element.dataset.createdAt) : Date.now());
-            if (hideEmptySlots && timeSinceCreation > 5000) {
+            if (hideEmptySlots && timeSinceCreation > 3000) {
               element.style.display = 'none';
+              console.log(`Ad Observer [${element.id}]: Ad marked as empty after ${timeSinceCreation}ms`);
               onAdEmpty?.(element);
+            } else {
+              console.log(`Ad Observer [${element.id}]: Still waiting for content (${timeSinceCreation}ms elapsed)`);
             }
           }
-        }, 1000);
+        }, 3000);
       });
     });
 
