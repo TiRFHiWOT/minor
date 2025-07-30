@@ -98,11 +98,6 @@ export const useAdObserver = (adId: string, options: AdObserverOptions = {}) => 
 // Extend Window interface for googletag
 declare global {
   interface Window {
-    googletag?: {
-      pubads: () => {
-        addEventListener: (event: string, callback: (event: any) => void) => void;
-        removeEventListener: (event: string, callback: (event: any) => void) => void;
-      };
-    };
+    googletag?: any;
   }
 }

@@ -1,176 +1,135 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { useAdObserver } from '@/hooks/useAdObserver';
 
 // Declare the global functions
 declare global {
   interface Window {
     amp_refreshAllSlots?: () => void;
+    googletag?: any;
+    adMetricsReady?: boolean;
   }
 }
 
 const AdTest: React.FC = () => {
-  const [adStates, setAdStates] = useState<Record<string, { loaded: boolean; size?: { width: number; height: number } }>>({});
+  const [refreshCount, setRefreshCount] = useState(0);
+  const [adMetricsStatus, setAdMetricsStatus] = useState('loading');
 
-  // Ad observers for each ad slot
-  const leaderboardTopObserver = useAdObserver('div-gpt-ad-1715358540790-0', {
-    onAdLoaded: (element, size) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358540790-0': { loaded: true, size } }));
-      console.log('Leaderboard Top ad loaded:', size);
-    },
-    onAdEmpty: (element) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358540790-0': { loaded: false } }));
-      console.log('Leaderboard Top ad empty');
-    }
-  });
-
-  const sidebarLeft1Observer = useAdObserver('div-gpt-ad-1752247623844-0', {
-    onAdLoaded: (element, size) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1752247623844-0': { loaded: true, size } }));
-      console.log('Sidebar Left ad loaded:', size);
-    },
-    onAdEmpty: (element) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1752247623844-0': { loaded: false } }));
-      console.log('Sidebar Left ad empty');
-    }
-  });
-
-  const sidebarLeft2Observer = useAdObserver('div-gpt-ad-1752247724892-0', {
-    onAdLoaded: (element, size) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1752247724892-0': { loaded: true, size } }));
-      console.log('Sidebar Left2 ad loaded:', size);
-    },
-    onAdEmpty: (element) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1752247724892-0': { loaded: false } }));
-      console.log('Sidebar Left2 ad empty');
-    }
-  });
-
-  const contentOneObserver = useAdObserver('div-gpt-ad-1715358598569-0', {
-    onAdLoaded: (element, size) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358598569-0': { loaded: true, size } }));
-      console.log('Content One ad loaded:', size);
-    },
-    onAdEmpty: (element) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358598569-0': { loaded: false } }));
-      console.log('Content One ad empty');
-    }
-  });
-
-  const contentTwoObserver = useAdObserver('div-gpt-ad-1715358620345-0', {
-    onAdLoaded: (element, size) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358620345-0': { loaded: true, size } }));
-      console.log('Content Two ad loaded:', size);
-    },
-    onAdEmpty: (element) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1715358620345-0': { loaded: false } }));
-      console.log('Content Two ad empty');
-    }
-  });
-
-  const contentThreeObserver = useAdObserver('div-gpt-ad-1753889678213-0', {
-    onAdLoaded: (element, size) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1753889678213-0': { loaded: true, size } }));
-      console.log('Content Three ad loaded:', size);
-    },
-    onAdEmpty: (element) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1753889678213-0': { loaded: false } }));
-      console.log('Content Three ad empty');
-    }
-  });
-
-  const contentFourObserver = useAdObserver('div-gpt-ad-1753889948554-0', {
-    onAdLoaded: (element, size) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1753889948554-0': { loaded: true, size } }));
-      console.log('Content Four ad loaded:', size);
-    },
-    onAdEmpty: (element) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1753889948554-0': { loaded: false } }));
-      console.log('Content Four ad empty');
-    }
-  });
-
-  const contentFiveObserver = useAdObserver('div-gpt-ad-1753890381531-0', {
-    onAdLoaded: (element, size) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1753890381531-0': { loaded: true, size } }));
-      console.log('Content Five ad loaded:', size);
-    },
-    onAdEmpty: (element) => {
-      setAdStates(prev => ({ ...prev, 'div-gpt-ad-1753890381531-0': { loaded: false } }));
-      console.log('Content Five ad empty');
-    }
-  });
+  // Simple ad container refs without complex observers
+  const adIds = [
+    'div-gpt-ad-1715358540790-0', // Leaderboard Top
+    'div-gpt-ad-1752247623844-0', // Sidebar Left
+    'div-gpt-ad-1752247724892-0', // Sidebar Left2
+    'div-gpt-ad-1715358598569-0', // Content One
+    'div-gpt-ad-1715358620345-0', // Content Two
+    'div-gpt-ad-1753889678213-0', // Content Three
+    'div-gpt-ad-1753889948554-0', // Content Four
+    'div-gpt-ad-1753890381531-0'  // Content Five
+  ];
 
   useEffect(() => {
-    console.log('AdTest component mounted. Checking script availability...');
-    console.log('Current domain:', window.location.hostname);
-    console.log('Current URL:', window.location.href);
+    console.log('=== AdTest Component Mounted ===');
+    console.log('Domain:', window.location.hostname);
+    console.log('URL:', window.location.href);
     
-    // Enhanced AdMetricsPro status checking with retry mechanism
-    const checkAndRefresh = () => {
-      console.log('Checking AdMetricsPro status...', {
+    let retryCount = 0;
+    const maxRetries = 10;
+    
+    const checkAdMetricsStatus = () => {
+      const status = {
         amp_refreshAllSlots: !!window.amp_refreshAllSlots,
         googletag: !!window.googletag,
-        adMetricsReady: !!(window as any).adMetricsReady
-      });
+        adMetricsReady: !!(window as any).adMetricsReady,
+        retryCount
+      };
+      
+      console.log('AdMetrics Status Check:', status);
       
       if (window.amp_refreshAllSlots) {
-        console.log('AdMetricsPro ready - triggering amp_refreshAllSlots');
-        window.amp_refreshAllSlots();
+        setAdMetricsStatus('ready');
+        console.log('✅ AdMetricsPro is ready!');
         
-        // Log all ad containers for debugging
-        const adIds = [
-          'div-gpt-ad-1715358540790-0', 'div-gpt-ad-1752247623844-0', 'div-gpt-ad-1752247724892-0',
-          'div-gpt-ad-1715358598569-0', 'div-gpt-ad-1715358620345-0', 'div-gpt-ad-1753889678213-0',
-          'div-gpt-ad-1753889948554-0', 'div-gpt-ad-1753890381531-0'
-        ];
-        
-        adIds.forEach(id => {
-          const element = document.getElementById(id);
-          console.log(`Ad Container [${id}]:`, {
-            exists: !!element,
-            innerHTML: element?.innerHTML || 'N/A',
-            children: element?.children.length || 0,
-            display: element?.style.display || 'default'
-          });
-        });
-        
-        // Set up retry mechanism - try again after 15 seconds if ads still empty
+        // Initial refresh with longer delay
         setTimeout(() => {
-          console.log('Retry mechanism: Checking ads after 15 seconds');
+          console.log('🔄 First amp_refreshAllSlots call');
           window.amp_refreshAllSlots?.();
-        }, 15000);
+          logAdContainers();
+        }, 12000); // Increased delay
         
+        // Second attempt after 25 seconds
+        setTimeout(() => {
+          console.log('🔄 Second amp_refreshAllSlots call');
+          window.amp_refreshAllSlots?.();
+          logAdContainers();
+        }, 25000);
+        
+        // Third attempt after 40 seconds
+        setTimeout(() => {
+          console.log('🔄 Third amp_refreshAllSlots call');
+          window.amp_refreshAllSlots?.();
+          logAdContainers();
+        }, 40000);
+        
+      } else if (retryCount < maxRetries) {
+        setAdMetricsStatus('checking');
+        retryCount++;
+        console.log(`❌ AdMetricsPro not ready, retry ${retryCount}/${maxRetries}`);
+        setTimeout(checkAdMetricsStatus, 3000);
       } else {
-        console.log('AdMetricsPro not ready yet, retrying in 2 seconds...');
-        setTimeout(checkAndRefresh, 2000);
+        setAdMetricsStatus('failed');
+        console.log('❌ AdMetricsPro failed to load after maximum retries');
       }
     };
     
-    // Initial delay increased to give AdMetricsPro more time to initialize
-    setTimeout(checkAndRefresh, 8000);
+    const logAdContainers = () => {
+      console.log('=== Ad Container Status ===');
+      adIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          console.log(`[${id}]:`, {
+            exists: true,
+            innerHTML: element.innerHTML.substring(0, 100) + (element.innerHTML.length > 100 ? '...' : ''),
+            children: element.children.length,
+            clientHeight: element.clientHeight,
+            clientWidth: element.clientWidth,
+            display: getComputedStyle(element).display,
+            visibility: getComputedStyle(element).visibility
+          });
+        } else {
+          console.log(`[${id}]: NOT FOUND`);
+        }
+      });
+    };
+    
+    // Start checking after 5 seconds
+    setTimeout(checkAdMetricsStatus, 5000);
+    
+    // Log containers immediately to see initial state
+    setTimeout(logAdContainers, 1000);
   }, []);
 
   const handleRefreshAds = () => {
-    console.log('Attempting to refresh ads...');
-    console.log('Current ad states:', adStates);
-    console.log('Available ad elements:', {
-      leaderboard: document.getElementById('div-gpt-ad-1715358540790-0'),
-      sidebar1: document.getElementById('div-gpt-ad-1752247623844-0'),
-      sidebar2: document.getElementById('div-gpt-ad-1752247724892-0'),
-      content1: document.getElementById('div-gpt-ad-1715358598569-0'),
-      content2: document.getElementById('div-gpt-ad-1715358620345-0'),
-      content3: document.getElementById('div-gpt-ad-1753889678213-0'),
-      content4: document.getElementById('div-gpt-ad-1753889948554-0'),
-      content5: document.getElementById('div-gpt-ad-1753890381531-0')
-    });
+    console.log('=== Manual Ad Refresh Triggered ===');
+    setRefreshCount(prev => prev + 1);
     
     if (window.amp_refreshAllSlots) {
       window.amp_refreshAllSlots();
-      console.log('amp_refreshAllSlots called successfully');
+      console.log('✅ amp_refreshAllSlots called successfully');
+      
+      // Log container status after refresh
+      setTimeout(() => {
+        console.log('=== Post-Refresh Container Status ===');
+        adIds.forEach(id => {
+          const element = document.getElementById(id);
+          console.log(`[${id}]:`, {
+            height: element?.clientHeight || 0,
+            hasContent: (element?.innerHTML.length || 0) > 0,
+            children: element?.children.length || 0
+          });
+        });
+      }, 3000);
     } else {
-      console.log('amp_refreshAllSlots function not yet available');
+      console.log('❌ amp_refreshAllSlots not available');
     }
   };
 
@@ -181,92 +140,92 @@ const AdTest: React.FC = () => {
         <p className="text-xl text-muted-foreground mb-6">
           Testing ad integration and placement for minorhockeytalks.com
         </p>
-        <Button onClick={handleRefreshAds} className="mb-8">
-          Test Ad Refresh (amp_refreshAllSlots)
-        </Button>
+        <div className="space-y-4 mb-8">
+          <div className="flex items-center justify-center gap-4">
+            <Button onClick={handleRefreshAds}>
+              Manual Refresh (Count: {refreshCount})
+            </Button>
+            <span className={`px-3 py-1 rounded text-sm ${
+              adMetricsStatus === 'ready' ? 'bg-green-100 text-green-800' :
+              adMetricsStatus === 'checking' ? 'bg-yellow-100 text-yellow-800' :
+              adMetricsStatus === 'failed' ? 'bg-red-100 text-red-800' :
+              'bg-gray-100 text-gray-800'
+            }`}>
+              AdMetrics: {adMetricsStatus}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            All ads kept visible - no automatic hiding. Check console for detailed logs.
+          </p>
+        </div>
       </div>
 
       <div className="w-full max-w-6xl mx-auto px-4 space-y-8">
         
-        {/* Leaderboard Top Ad */}
-        <div ref={leaderboardTopObserver.containerRef} className="ad-container overflow-visible">
-          <Card className="p-4 transition-all duration-300 w-fit h-fit">
+        {/* Leaderboard Top Ad - Simplified */}
+        <Card className="p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Leaderboard Top Ad</h3>
+            <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+              Always Visible
+            </span>
+          </div>
+          {/* /22404337467,423899568/minorhockeytalks-Leaderboard-Top */}
+          <div 
+            id='div-gpt-ad-1715358540790-0' 
+            style={{ 
+              minWidth: '300px',
+              minHeight: '50px',
+              backgroundColor: 'rgba(0,0,0,0.02)',
+              border: '1px dashed #ccc'
+            }}
+          >
+          </div>
+        </Card>
+
+      {/* Content Area with Ads */}
+      <div className="grid grid-cols-1 gap-6 lg:gap-6" style={{ gridTemplateColumns: window.innerWidth >= 1024 ? 'minmax(350px, auto) 1fr' : '1fr' }}>
+        {/* Sidebar with Ads - Simplified */}
+        <div className="space-y-6 lg:order-1">
+          <Card className="p-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Leaderboard Top Ad</h3>
-              <span className={`text-xs px-2 py-1 rounded ${
-                adStates['div-gpt-ad-1715358540790-0']?.loaded ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-              }`}>
-                {adStates['div-gpt-ad-1715358540790-0']?.loaded ? 'Loaded' : 'Empty'}
+              <h3 className="text-lg font-semibold">Sidebar Left Ad</h3>
+              <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+                Always Visible
               </span>
             </div>
-            {/* /22404337467,423899568/minorhockeytalks-Leaderboard-Top */}
+            {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left */}
             <div 
-              id='div-gpt-ad-1715358540790-0' 
-              className="ad-slot overflow-visible"
+              id='div-gpt-ad-1752247623844-0' 
               style={{ 
                 minWidth: '300px',
-                minHeight: '50px',
-                transition: 'all 0.3s ease',
-                backgroundColor: 'transparent'
+                minHeight: '250px',
+                backgroundColor: 'rgba(0,0,0,0.02)',
+                border: '1px dashed #ccc'
               }}
             >
             </div>
           </Card>
-        </div>
 
-      {/* Content Area with Ads */}
-      <div className="grid grid-cols-1 gap-6 lg:gap-6" style={{ gridTemplateColumns: window.innerWidth >= 1024 ? 'minmax(350px, auto) 1fr' : '1fr' }}>
-        {/* Sidebar with Ads */}
-        <div className="space-y-6 lg:order-1">
-          <div ref={sidebarLeft1Observer.containerRef} className="ad-container overflow-visible">
-            <Card className="p-4 transition-all duration-300 w-fit h-fit">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Sidebar Left Ad</h3>
-                <span className={`text-xs px-2 py-1 rounded ${
-                  adStates['div-gpt-ad-1752247623844-0']?.loaded ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {adStates['div-gpt-ad-1752247623844-0']?.loaded ? 'Loaded' : 'Empty'}
-                </span>
-              </div>
-              {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left */}
-              <div 
-                id='div-gpt-ad-1752247623844-0' 
-                className="ad-slot overflow-visible"
-                style={{ 
-                  minWidth: '300px',
-                  minHeight: '250px',
-                  transition: 'all 0.3s ease',
-                  backgroundColor: 'transparent'
-                }}
-              >
-              </div>
-            </Card>
-          </div>
-
-          <div ref={sidebarLeft2Observer.containerRef} className="ad-container overflow-visible">
-            <Card className="p-4 transition-all duration-300 w-fit h-fit">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Sidebar Left2 Ad</h3>
-                <span className={`text-xs px-2 py-1 rounded ${
-                  adStates['div-gpt-ad-1752247724892-0']?.loaded ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {adStates['div-gpt-ad-1752247724892-0']?.loaded ? 'Loaded' : 'Empty'}
-                </span>
-              </div>
-              {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left2 */}
-              <div 
-                id='div-gpt-ad-1752247724892-0' 
-                className="ad-slot overflow-visible"
-                style={{ 
-                  minWidth: '300px',
-                  minHeight: '250px',
-                  transition: 'all 0.3s ease',
-                  backgroundColor: 'transparent'
-                }}
-              >
-              </div>
-            </Card>
-          </div>
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Sidebar Left2 Ad</h3>
+              <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+                Always Visible
+              </span>
+            </div>
+            {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left2 */}
+            <div 
+              id='div-gpt-ad-1752247724892-0' 
+              style={{ 
+                minWidth: '300px',
+                minHeight: '250px',
+                backgroundColor: 'rgba(0,0,0,0.02)',
+                border: '1px dashed #ccc'
+              }}
+            >
+            </div>
+          </Card>
 
           <Card className="p-4">
             <h3 className="text-lg font-semibold mb-4">Interstitial Note</h3>
@@ -288,31 +247,26 @@ const AdTest: React.FC = () => {
             </p>
           </Card>
 
-          {/* Content One Ad */}
-          <div ref={contentOneObserver.containerRef} className="ad-container overflow-visible">
-            <Card className="p-4 transition-all duration-300 w-fit h-fit">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Content One Ad</h3>
-                <span className={`text-xs px-2 py-1 rounded ${
-                  adStates['div-gpt-ad-1715358598569-0']?.loaded ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {adStates['div-gpt-ad-1715358598569-0']?.loaded ? 'Loaded' : 'Empty'}
-                </span>
-              </div>
-              {/* /22404337467,423899568/minorhockeytalks-Content-One */}
-              <div 
-                id='div-gpt-ad-1715358598569-0' 
-                className="ad-slot overflow-visible"
-                style={{ 
-                  minWidth: '300px',
-                  minHeight: '50px',
-                  transition: 'all 0.3s ease',
-                  backgroundColor: 'transparent'
-                }}
-              >
-              </div>
-            </Card>
-          </div>
+          {/* Content One Ad - Simplified */}
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Content One Ad</h3>
+              <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+                Always Visible
+              </span>
+            </div>
+            {/* /22404337467,423899568/minorhockeytalks-Content-One */}
+            <div 
+              id='div-gpt-ad-1715358598569-0' 
+              style={{ 
+                minWidth: '300px',
+                minHeight: '50px',
+                backgroundColor: 'rgba(0,0,0,0.02)',
+                border: '1px dashed #ccc'
+              }}
+            >
+            </div>
+          </Card>
 
           <Card className="p-6">
             <h3 className="text-xl font-bold mb-4">More Content</h3>
@@ -324,109 +278,89 @@ const AdTest: React.FC = () => {
             </p>
           </Card>
 
-          {/* Content Two Ad */}
-          <div ref={contentTwoObserver.containerRef} className="ad-container overflow-visible">
-            <Card className="p-4 transition-all duration-300 w-fit h-fit">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Content Two Ad</h3>
-                <span className={`text-xs px-2 py-1 rounded ${
-                  adStates['div-gpt-ad-1715358620345-0']?.loaded ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {adStates['div-gpt-ad-1715358620345-0']?.loaded ? 'Loaded' : 'Empty'}
-                </span>
-              </div>
-              {/* /22404337467,423899568/minorhockeytalks-Content-Two */}
-              <div 
-                id='div-gpt-ad-1715358620345-0' 
-                className="ad-slot overflow-visible"
-                style={{ 
-                  minWidth: '300px',
-                  minHeight: '50px',
-                  transition: 'all 0.3s ease',
-                  backgroundColor: 'transparent'
-                }}
-              >
-              </div>
-            </Card>
-          </div>
+          {/* Content Two Ad - Simplified */}
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Content Two Ad</h3>
+              <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+                Always Visible
+              </span>
+            </div>
+            {/* /22404337467,423899568/minorhockeytalks-Content-Two */}
+            <div 
+              id='div-gpt-ad-1715358620345-0' 
+              style={{ 
+                minWidth: '300px',
+                minHeight: '50px',
+                backgroundColor: 'rgba(0,0,0,0.02)',
+                border: '1px dashed #ccc'
+              }}
+            >
+            </div>
+          </Card>
 
-          {/* Content Three Ad */}
-          <div ref={contentThreeObserver.containerRef} className="ad-container overflow-visible">
-            <Card className="p-4 transition-all duration-300 w-fit h-fit">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Content Three Ad</h3>
-                <span className={`text-xs px-2 py-1 rounded ${
-                  adStates['div-gpt-ad-1753889678213-0']?.loaded ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {adStates['div-gpt-ad-1753889678213-0']?.loaded ? 'Loaded' : 'Empty'}
-                </span>
-              </div>
-              {/* /22404337467,423899568/minorhockeytalks-Content-Three */}
-              <div 
-                id='div-gpt-ad-1753889678213-0' 
-                className="ad-slot overflow-visible"
-                style={{ 
-                  minWidth: '300px',
-                  minHeight: '50px',
-                  transition: 'all 0.3s ease',
-                  backgroundColor: 'transparent'
-                }}
-              >
-              </div>
-            </Card>
-          </div>
+          {/* Content Three Ad - Simplified */}
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Content Three Ad</h3>
+              <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+                Always Visible
+              </span>
+            </div>
+            {/* /22404337467,423899568/minorhockeytalks-Content-Three */}
+            <div 
+              id='div-gpt-ad-1753889678213-0' 
+              style={{ 
+                minWidth: '300px',
+                minHeight: '50px',
+                backgroundColor: 'rgba(0,0,0,0.02)',
+                border: '1px dashed #ccc'
+              }}
+            >
+            </div>
+          </Card>
 
-          {/* Content Four Ad */}
-          <div ref={contentFourObserver.containerRef} className="ad-container overflow-visible">
-            <Card className="p-4 transition-all duration-300 w-fit h-fit">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Content Four Ad</h3>
-                <span className={`text-xs px-2 py-1 rounded ${
-                  adStates['div-gpt-ad-1753889948554-0']?.loaded ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {adStates['div-gpt-ad-1753889948554-0']?.loaded ? 'Loaded' : 'Empty'}
-                </span>
-              </div>
-              {/* /22404337467,423899568/minorhockeytalks-Content-Four */}
-              <div 
-                id='div-gpt-ad-1753889948554-0' 
-                className="ad-slot overflow-visible"
-                style={{ 
-                  minWidth: '300px',
-                  minHeight: '50px',
-                  transition: 'all 0.3s ease',
-                  backgroundColor: 'transparent'
-                }}
-              >
-              </div>
-            </Card>
-          </div>
+          {/* Content Four Ad - Simplified */}
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Content Four Ad</h3>
+              <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+                Always Visible
+              </span>
+            </div>
+            {/* /22404337467,423899568/minorhockeytalks-Content-Four */}
+            <div 
+              id='div-gpt-ad-1753889948554-0' 
+              style={{ 
+                minWidth: '300px',
+                minHeight: '50px',
+                backgroundColor: 'rgba(0,0,0,0.02)',
+                border: '1px dashed #ccc'
+              }}
+            >
+            </div>
+          </Card>
 
-          {/* Content Five Ad */}
-          <div ref={contentFiveObserver.containerRef} className="ad-container overflow-visible">
-            <Card className="p-4 transition-all duration-300 w-fit h-fit">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Content Five Ad</h3>
-                <span className={`text-xs px-2 py-1 rounded ${
-                  adStates['div-gpt-ad-1753890381531-0']?.loaded ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {adStates['div-gpt-ad-1753890381531-0']?.loaded ? 'Loaded' : 'Empty'}
-                </span>
-              </div>
-              {/* /22404337467,423899568/minorhockeytalks-Content-Five */}
-              <div 
-                id='div-gpt-ad-1753890381531-0' 
-                className="ad-slot overflow-visible"
-                style={{ 
-                  minWidth: '300px',
-                  minHeight: '50px',
-                  transition: 'all 0.3s ease',
-                  backgroundColor: 'transparent'
-                }}
-              >
-              </div>
-            </Card>
-          </div>
+          {/* Content Five Ad - Simplified */}
+          <Card className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Content Five Ad</h3>
+              <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+                Always Visible
+              </span>
+            </div>
+            {/* /22404337467,423899568/minorhockeytalks-Content-Five */}
+            <div 
+              id='div-gpt-ad-1753890381531-0' 
+              style={{ 
+                minWidth: '300px',
+                minHeight: '50px',
+                backgroundColor: 'rgba(0,0,0,0.02)',
+                border: '1px dashed #ccc'
+              }}
+            >
+            </div>
+          </Card>
         </div>
       </div>
 
@@ -435,62 +369,29 @@ const AdTest: React.FC = () => {
         <h3 className="text-lg font-semibold mb-4">Video Unit</h3>
         <div className="border border-dashed border-gray-300 p-4 bg-gray-50">
           <p className="text-center text-sm text-muted-foreground mb-2">Connatix Video Unit</p>
-          {/* Video code for minorhockeytalks.com */}
-          <script id="c764d7beef4b4321984c2aaa46dd9689">
-            {`console.log("Connatix in-content script found.");`}
-          </script>
-          {/* Video code for minorhockeytalks.com */}
+          <p className="text-center text-xs text-gray-500">Video ads are handled separately by Connatix</p>
         </div>
       </Card>
 
-      {/* Ad States Debug Info */}
+      {/* Debug Info */}
       <Card className="p-6 bg-blue-50">
-        <h3 className="text-lg font-bold mb-4">Ad Loading Status & Debug Info</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {Object.entries(adStates).map(([adId, state]) => {
-            const getAdName = (id: string) => {
-              switch (id) {
-                case 'div-gpt-ad-1715358540790-0': return 'Leaderboard Top';
-                case 'div-gpt-ad-1752247623844-0': return 'Sidebar Left';
-                case 'div-gpt-ad-1752247724892-0': return 'Sidebar Left2';
-                case 'div-gpt-ad-1715358598569-0': return 'Content One';
-                case 'div-gpt-ad-1715358620345-0': return 'Content Two';
-                case 'div-gpt-ad-1753889678213-0': return 'Content Three';
-                case 'div-gpt-ad-1753889948554-0': return 'Content Four';
-                case 'div-gpt-ad-1753890381531-0': return 'Content Five';
-                default: return id;
-              }
-            };
-            
-            return (
-              <div key={adId} className="bg-white p-3 rounded border">
-                <div className="font-semibold text-sm mb-1">{getAdName(adId)}</div>
-                <div className="font-mono text-xs text-gray-600 mb-1">{adId}</div>
-                <div className={`text-sm font-semibold ${state.loaded ? 'text-green-600' : 'text-gray-500'}`}>
-                  {state.loaded ? 'Loaded' : 'Empty/Not Loaded'}
-                </div>
-                {state.size && (
-                  <div className="text-xs text-gray-500">
-                    Size: {state.size.width}x{state.size.height}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        <h3 className="text-lg font-bold mb-4">Debug Info</h3>
+        <div className="space-y-2 text-sm">
+          <p><strong>AdMetrics Status:</strong> {adMetricsStatus}</p>
+          <p><strong>Manual Refresh Count:</strong> {refreshCount}</p>
+          <p><strong>All ads are kept visible</strong> - no automatic hiding</p>
         </div>
         
-        <h4 className="font-semibold mb-2">Test Instructions</h4>
+        <h4 className="font-semibold mb-2 mt-4">Test Instructions</h4>
         <div className="space-y-2 text-sm">
-          <p>1. Check that the AdMetricsPro script loads successfully</p>
-          <p>2. Watch ad status indicators turn green when ads load</p>
-          <p>3. Empty ad slots will be automatically hidden</p>
-          <p>4. Test the "Test Ad Refresh" button to ensure amp_refreshAllSlots() works</p>
-          <p>5. Ad containers dynamically resize based on actual ad content</p>
-          <p>6. Check browser console for ad loading logs</p>
-          <p>7. Navigate to other pages and back to test route change refresh</p>
+          <p>1. Check console logs for detailed AdMetricsPro status</p>
+          <p>2. AdMetricsPro will automatically try 3 refresh attempts</p>
+          <p>3. Use Manual Refresh button to trigger additional attempts</p>
+          <p>4. All ad containers remain visible for AdMetricsPro to fill</p>
+          <p>5. Check network tab for ad request activity</p>
         </div>
       </Card>
-      </div>
+    </div>
     </div>
   );
 };
