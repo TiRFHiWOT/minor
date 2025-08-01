@@ -23,7 +23,12 @@ export const useIPTracker = () => {
         const isWhitelistedBot = shouldWhitelistFromVPN(userAgent);
         
         // Get geolocation data (needed for both bots and users for tracking)
-        const geoData = await getIPGeolocation(ip);
+        let geoData = null;
+        try {
+          geoData = await getIPGeolocation(ip);
+        } catch (error) {
+          console.error('Failed to get geolocation data:', error);
+        }
         
         if (isWhitelistedBot) {
           const botInfo = getBotInfo(userAgent);
