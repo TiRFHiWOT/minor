@@ -335,6 +335,34 @@ const AdminSettings = () => {
                   />
                 </div>
 
+                {/* Security Section */}
+                <div className="space-y-4 border-t pt-4">
+                  <div>
+                    <h3 className="font-medium mb-3">Security & Access Control</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Configure security features and access restrictions
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>VPN Detection</Label>
+                      <div className="text-sm text-muted-foreground">
+                        Block users accessing via VPN or proxy services
+                      </div>
+                    </div>
+                    <Switch
+                      checked={getSetting('vpn_detection_enabled', true)}
+                      onCheckedChange={(checked) => updateSetting({
+                        key: 'vpn_detection_enabled',
+                        value: checked,
+                        type: 'boolean',
+                        category: 'security'
+                      })}
+                    />
+                  </div>
+                </div>
+
                 {/* Social Media Section */}
                 <div className="space-y-4 border-t pt-4">
                   <div>

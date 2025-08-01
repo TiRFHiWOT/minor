@@ -1,16 +1,31 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getUserIP, getIPGeolocation } from '@/utils/ipUtils';
+import { useForumSettings } from '@/hooks/useForumSettings';
 
 export const useVPNDetection = () => {
   console.log('🔧 useVPNDetection hook initialized');
   const [isVPN, setIsVPN] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { getSetting } = useForumSettings();
 
   console.log('🔧 useVPNDetection hook state:', { isVPN, isLoading, error });
 
   const checkVPNStatus = useCallback(async () => {
     console.log('🔧 checkVPNStatus called');
+    
+    // Check if VPN detection is enabled
+    const vpnDetectionEnabled = getSetting('vpn_detection_enabled', true);
+    console.log('🔧 VPN detection enabled:', vpnDetectionEnabled);
+    
+    if (!vpnDetectionEnabled) {
+      console.log('🔧 VPN detection disabled - allowing access');
+      setIsVPN(false);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+    
     try {
       setIsLoading(true);
       setError(null);
@@ -58,7 +73,7 @@ export const useVPNDetection = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [getSetting]);
 
   useEffect(() => {
     console.log('🔧 useVPNDetection useEffect triggered');
