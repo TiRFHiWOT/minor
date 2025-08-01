@@ -8,6 +8,7 @@ import { ForumStats } from './ForumStats';
 import { Footer } from '@/components/layout/Footer';
 import { MobileBottomNav } from './MobileBottomNav';
 import { LeaderboardTopAd } from '@/components/ads/LeaderboardTopAd';
+import { SidebarAdBanner } from '@/components/ads/SidebarAdBanner';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export const ForumLayout = () => {
@@ -27,7 +28,7 @@ export const ForumLayout = () => {
           {!isMobile && (
             <aside className="w-72 flex-shrink-0 forum-spacing overflow-x-hidden">
               <ForumSidebarNav />
-              
+              <SidebarAdBanner className="mt-4" />
             </aside>
           )}
 
