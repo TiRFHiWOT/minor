@@ -19,7 +19,7 @@ const LoadingSpinner = ({ message }: { message: string }) => (
 
 export const VPNGuard = ({ children }: VPNGuardProps) => {
   console.log('🛡️ VPNGuard component mounted');
-  const { isBlocked, isLoading, error } = useVPNDetection();
+  const { isBlocked, isLoading, error, isVPN } = useVPNDetection();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -27,14 +27,17 @@ export const VPNGuard = ({ children }: VPNGuardProps) => {
     isBlocked, 
     isLoading, 
     error,
+    isVPN,
     pathname: location.pathname 
   });
 
   // Memoize navigation logic to prevent unnecessary re-renders
-  const shouldRedirect = useMemo(() => 
-    isBlocked && location.pathname !== '/vpn-blocked',
-    [isBlocked, location.pathname]
-  );
+  // Only redirect if VPN is actually detected (not just when blocked state is true)
+  const shouldRedirect = useMemo(() => {
+    const result = isVPN === true && location.pathname !== '/vpn-blocked' && !isLoading;
+    console.log('🛡️ VPNGuard shouldRedirect logic:', { isVPN, pathname: location.pathname, isLoading, result });
+    return result;
+  }, [isVPN, location.pathname, isLoading]);
 
   useEffect(() => {
     // Only redirect if VPN is detected and user is not already on the VPN blocked page

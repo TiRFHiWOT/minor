@@ -11,13 +11,19 @@ export const VPNBlocked = () => {
   const navigate = useNavigate();
   const { isVPN, isLoading, recheckVPN, isBlocked } = useVPNDetection();
 
-  // Auto-redirect if VPN is no longer detected
+  console.log('🚫 VPNBlocked page state:', { isVPN, isLoading, isBlocked });
+
+  // Auto-redirect if VPN is no longer detected - with additional safeguards
   useEffect(() => {
-    if (!isLoading && !isBlocked) {
+    // Only redirect if we're certain VPN detection is working and no VPN is detected
+    if (!isLoading && isVPN === false && !isBlocked) {
       console.log('🛡️ VPN no longer detected, redirecting to home');
-      navigate('/', { replace: true });
+      // Add a small delay to prevent rapid redirects
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 500);
     }
-  }, [isBlocked, isLoading, navigate]);
+  }, [isVPN, isBlocked, isLoading, navigate]);
 
   const handleRefresh = async () => {
     try {
