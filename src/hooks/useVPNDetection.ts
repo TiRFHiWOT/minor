@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getUserIP, getIPGeolocation } from '@/utils/ipUtils';
 import { useForumSettings } from '@/hooks/useForumSettings';
 
@@ -126,31 +126,18 @@ export const useVPNDetection = () => {
       setIsLoading(false);
       isCheckingRef.current = false;
     }
-  }, [getSetting]);
-
-  // Cleanup effect to cancel ongoing requests when component unmounts
-  useEffect(() => {
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      isCheckingRef.current = false;
-    };
   }, []);
 
   useEffect(() => {
     console.log('🔧 useVPNDetection useEffect triggered');
     checkVPNStatus();
-  }, [checkVPNStatus]);
+  }, []);
 
-  // Memoize the return object to prevent unnecessary re-renders
-  const returnValue = useMemo(() => ({
+  return {
     isVPN,
     isLoading,
     error,
     isBlocked: isVPN === true,
     recheckVPN: checkVPNStatus
-  }), [isVPN, isLoading, error, checkVPNStatus]);
-
-  return returnValue;
+  };
 };
