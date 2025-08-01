@@ -3,9 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { getUserIP, getIPGeolocation } from '@/utils/ipUtils';
 import { sessionManager } from '@/utils/sessionManager';
+import { useForumSettings } from '@/hooks/useForumSettings';
 
 export const useIPTracker = () => {
   const location = useLocation();
+  const { getSetting } = useForumSettings();
 
   useEffect(() => {
     const trackPageVisit = async () => {
@@ -18,11 +20,16 @@ export const useIPTracker = () => {
         // Get geolocation data
         const geoData = await getIPGeolocation(ip);
 
-        // BACKUP VPN PROTECTION: Block VPN users immediately at tracking level
-        if (geoData?.is_vpn && location.pathname !== '/vpn-blocked') {
+        // Check if VPN detection is enabled in forum settings
+        const vpnDetectionEnabled = getSetting('vpn_detection_enabled', false);
+
+        // BACKUP VPN PROTECTION: Only block VPN users if detection is enabled
+        if (geoData?.is_vpn && vpnDetectionEnabled && location.pathname !== '/vpn-blocked') {
           console.log('🚨 BACKUP VPN DETECTION: Blocking VPN user at IP tracking level');
           window.location.href = '/vpn-blocked';
           return;
+        } else if (geoData?.is_vpn && !vpnDetectionEnabled) {
+          console.log('🔧 VPN detected but blocking disabled - allowing access');
         }
 
         // Extract category and topic IDs from the path
