@@ -13,6 +13,9 @@ export const useVPNDetection = () => {
   const [error, setError] = useState<string | null>(null);
   const { getSetting } = useForumSettings();
   
+  // Get the current VPN detection setting to watch for changes
+  const vpnDetectionEnabled = getSetting('vpn_detection_enabled', true);
+  
   // Refs to prevent multiple simultaneous checks
   const isCheckingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -27,7 +30,7 @@ export const useVPNDetection = () => {
       return;
     }
 
-    console.log('🔧 checkVPNStatus called');
+    console.log('🔧 checkVPNStatus called with VPN detection enabled:', vpnDetectionEnabled);
     isCheckingRef.current = true;
 
     // Cancel any previous request
@@ -37,10 +40,6 @@ export const useVPNDetection = () => {
     abortControllerRef.current = new AbortController();
 
     try {
-      // Check if VPN detection is enabled first
-      const vpnDetectionEnabled = getSetting('vpn_detection_enabled', true);
-      console.log('🔧 VPN detection enabled:', vpnDetectionEnabled);
-      
       if (!vpnDetectionEnabled) {
         console.log('🔧 VPN detection disabled - allowing access');
         setIsVPN(false);
@@ -126,11 +125,29 @@ export const useVPNDetection = () => {
       setIsLoading(false);
       isCheckingRef.current = false;
     }
-  }, []);
+  }, [vpnDetectionEnabled]);
 
+  // Effect to run VPN check when component mounts or VPN detection setting changes
   useEffect(() => {
-    console.log('🔧 useVPNDetection useEffect triggered');
+    console.log('🔧 useVPNDetection useEffect triggered, VPN detection enabled:', vpnDetectionEnabled);
+    
+    // Clear cache when VPN detection is disabled to ensure fresh check when re-enabled
+    if (!vpnDetectionEnabled) {
+      console.log('🔧 Clearing VPN cache due to disabled detection');
+      vpnCache.clear();
+    }
+    
     checkVPNStatus();
+  }, [checkVPNStatus, vpnDetectionEnabled]);
+
+  // Cleanup effect to cancel ongoing requests when component unmounts
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      isCheckingRef.current = false;
+    };
   }, []);
 
   return {
