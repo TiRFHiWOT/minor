@@ -50,7 +50,7 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
         if (adSpace.ad_code) {
           // Create container for this ad
           const adDiv = document.createElement('div');
-          adDiv.className = 'ad-space-item mb-4';
+          adDiv.className = 'ad-space-item mb-4 flex flex-col items-center justify-center text-center';
           
           // Add "Advertisement" label
           const label = document.createElement('div');
