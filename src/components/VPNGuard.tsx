@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useVPNDetection } from '@/hooks/useVPNDetection';
+import { shouldWhitelistFromVPN, getBotInfo } from '@/utils/botDetection';
+import { useForumSettings } from '@/hooks/useForumSettings';
 import { Loader } from 'lucide-react';
 
 interface VPNGuardProps {
@@ -19,9 +21,27 @@ const LoadingSpinner = ({ message }: { message: string }) => (
 
 export const VPNGuard = ({ children }: VPNGuardProps) => {
   console.log('🛡️ VPNGuard component mounted');
+  const { getSetting } = useForumSettings();
+  const vpnDetectionEnabled = getSetting('vpn_detection_enabled', true);
   const { isBlocked, isLoading, error, isVPN } = useVPNDetection();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // CRITICAL: Check for bots first - never block legitimate crawlers
+  const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+  const isWhitelistedBot = shouldWhitelistFromVPN(userAgent);
+  
+  if (isWhitelistedBot) {
+    const botInfo = getBotInfo(userAgent);
+    console.log(`🤖 Bot whitelisted from VPN guard: ${botInfo.botName} - ${botInfo.botType}`);
+    return <>{children}</>;
+  }
+
+  // CRITICAL: If VPN detection is disabled, bypass all VPN logic immediately
+  if (!vpnDetectionEnabled) {
+    console.log('🛡️ VPN detection disabled - bypassing all VPN checks');
+    return <>{children}</>;
+  }
 
   console.log('🛡️ VPNGuard state:', { 
     isBlocked, 

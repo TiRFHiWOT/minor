@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getUserIP, getIPGeolocation } from '@/utils/ipUtils';
 import { useForumSettings } from '@/hooks/useForumSettings';
+import { shouldWhitelistFromVPN, getBotInfo } from '@/utils/botDetection';
 
 // Cache for VPN detection results to prevent repeated checks
 const vpnCache = new Map<string, { isVPN: boolean; timestamp: number }>();
@@ -35,6 +36,19 @@ export const useVPNDetection = () => {
 
   // Memoized VPN detection function with debouncing and caching
   const checkVPNStatus = useCallback(async () => {
+    // CRITICAL: Check for bots first - never run VPN detection on crawlers
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+    const isWhitelistedBot = shouldWhitelistFromVPN(userAgent);
+    
+    if (isWhitelistedBot) {
+      const botInfo = getBotInfo(userAgent);
+      console.log(`🤖 Bot detected in VPN check - skipping: ${botInfo.botName}`);
+      setIsVPN(false);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     // Don't check if VPN detection is disabled - return early
     if (!vpnDetectionEnabled) {
       console.log('🔧 VPN detection disabled, skipping check entirely');

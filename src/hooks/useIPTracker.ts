@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { getUserIP, getIPGeolocation } from '@/utils/ipUtils';
 import { sessionManager } from '@/utils/sessionManager';
 import { useForumSettings } from '@/hooks/useForumSettings';
+import { shouldWhitelistFromVPN, getBotInfo } from '@/utils/botDetection';
 
 export const useIPTracker = () => {
   const location = useLocation();
@@ -17,19 +18,29 @@ export const useIPTracker = () => {
         
         if (!ip || !sessionId) return;
 
-        // Get geolocation data
+        // CRITICAL: Check for bots first - never block legitimate crawlers
+        const userAgent = navigator.userAgent;
+        const isWhitelistedBot = shouldWhitelistFromVPN(userAgent);
+        
+        // Get geolocation data (needed for both bots and users for tracking)
         const geoData = await getIPGeolocation(ip);
+        
+        if (isWhitelistedBot) {
+          const botInfo = getBotInfo(userAgent);
+          console.log(`🤖 Bot detected in IP tracker - allowing access: ${botInfo.botName} (${botInfo.botType})`);
+          // Continue with tracking but skip VPN blocking logic entirely
+        } else {
+          // Check if VPN detection is enabled in forum settings
+          const vpnDetectionEnabled = getSetting('vpn_detection_enabled', false);
 
-        // Check if VPN detection is enabled in forum settings
-        const vpnDetectionEnabled = getSetting('vpn_detection_enabled', false);
-
-        // BACKUP VPN PROTECTION: Only block VPN users if detection is enabled
-        if (geoData?.is_vpn && vpnDetectionEnabled && location.pathname !== '/vpn-blocked') {
-          console.log('🚨 BACKUP VPN DETECTION: Blocking VPN user at IP tracking level');
-          window.location.href = '/vpn-blocked';
-          return;
-        } else if (geoData?.is_vpn && !vpnDetectionEnabled) {
-          console.log('🔧 VPN detected but blocking disabled - allowing access');
+          // REMOVED: Backup VPN protection that was causing the blocking issue
+          // This was the source of the race condition blocking legitimate traffic
+          if (geoData?.is_vpn && vpnDetectionEnabled && location.pathname !== '/vpn-blocked') {
+            console.log('🔧 VPN detected but handled by VPNGuard component - not blocking here');
+            // Let VPNGuard handle the blocking logic properly
+          } else if (geoData?.is_vpn && !vpnDetectionEnabled) {
+            console.log('🔧 VPN detected but blocking disabled - allowing access');
+          }
         }
 
         // Extract category and topic IDs from the path
