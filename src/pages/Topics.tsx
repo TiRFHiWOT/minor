@@ -10,6 +10,7 @@ import { MessageSquare, User, Clock, Pin, Search } from 'lucide-react';
 
 import { useTopicsLegacy as useTopics } from '@/hooks/useTopicsLegacy';
 import { formatDistanceToNow } from 'date-fns';
+import { ContentAdSpace } from '@/components/ads/ContentAdSpace';
 
 const Topics = () => {
   const { data: topics, isLoading } = useTopics();
@@ -65,6 +66,8 @@ const Topics = () => {
         </div>
       </Card>
 
+      {/* Content Ad 1 - After filters */}
+      <ContentAdSpace contentId={1} />
 
       {/* Topics List */}
       <Card className="p-6">
@@ -137,6 +140,9 @@ const Topics = () => {
           </div>
         )}
       </Card>
+
+      {/* Content Ad 2 - Above pagination */}
+      <ContentAdSpace contentId={2} />
     </div>
   );
 };

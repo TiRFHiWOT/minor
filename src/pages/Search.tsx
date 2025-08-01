@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search, MessageSquare, User, Clock, FileText, FolderOpen } from 'lucide-react';
 import { useSearch, SearchFilter } from '@/hooks/useSearch';
 import { formatDistanceToNow } from 'date-fns';
+import { ContentAdSpace } from '@/components/ads/ContentAdSpace';
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -113,6 +114,9 @@ const SearchPage = () => {
         </form>
       </Card>
 
+      {/* Content Ad 1 - After search form */}
+      <ContentAdSpace contentId={1} />
+
       {/* Search Results */}
       {query && (
         <Card className="p-6">
@@ -214,6 +218,9 @@ const SearchPage = () => {
           )}
         </Card>
       )}
+
+      {/* Content Ad 2 - After search results */}
+      {query && <ContentAdSpace contentId={2} />}
 
       {/* No Search Query */}
       {!query && (

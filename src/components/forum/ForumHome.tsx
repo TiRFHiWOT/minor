@@ -18,6 +18,7 @@ import { PaginationControls } from '@/components/ui/pagination-controls';
 import { TopicTable } from './TopicTable';
 import { ReportModal } from './ReportModal';
 import { QuickTopicModal } from './QuickTopicModal';
+import { ContentAdSpace } from '@/components/ads/ContentAdSpace';
 
 export const ForumHome = () => {
   const { user } = useAuth();
@@ -165,14 +166,8 @@ export const ForumHome = () => {
         })()}
       </div>
 
-      {/* Leaderboard Ad */}
-      <div className="ad-container overflow-visible my-6">
-        <div className="flex justify-center">
-          {/* /22404337467,423899568/minorhockeytalks-Leaderboard-Top */}
-          <div id='div-gpt-ad-1715358540790-0' className="ad-slot" style={{minWidth: '300px', minHeight: '50px'}}>
-          </div>
-        </div>
-      </div>
+      {/* Content Ad 1 - After header */}
+      <ContentAdSpace contentId={1} />
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
@@ -263,6 +258,9 @@ export const ForumHome = () => {
         </TabsContent>
       </Tabs>
 
+      {/* Content Ad 2 - After tabs content */}
+      <ContentAdSpace contentId={2} />
+
       {/* Forums Section */}
       <div className="forum-spacing">
         <div className="flex items-center justify-between">
@@ -304,6 +302,9 @@ export const ForumHome = () => {
           </Card>
         )}
       </div>
+
+      {/* Content Ad 3 - Between forum sections */}
+      <ContentAdSpace contentId={3} />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
