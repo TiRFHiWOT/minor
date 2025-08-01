@@ -81,21 +81,21 @@ export const HeaderScriptsManager = () => {
       updatedScripts.push(newScript);
     }
     
-    await updateSetting({ key: 'header_scripts', value: JSON.stringify(updatedScripts), type: 'json', category: 'advertising' });
+    await updateSetting({ key: 'header_scripts', value: updatedScripts, type: 'json', category: 'advertising' });
     setIsDialogOpen(false);
     resetForm();
   };
 
   const handleDelete = async (id: string) => {
     const updatedScripts = headerScripts.filter(script => script.id !== id);
-    await updateSetting({ key: 'header_scripts', value: JSON.stringify(updatedScripts), type: 'json', category: 'advertising' });
+    await updateSetting({ key: 'header_scripts', value: updatedScripts, type: 'json', category: 'advertising' });
   };
 
   const handleToggleActive = async (id: string) => {
     const updatedScripts = headerScripts.map(script =>
       script.id === id ? { ...script, is_active: !script.is_active } : script
     );
-    await updateSetting({ key: 'header_scripts', value: JSON.stringify(updatedScripts), type: 'json', category: 'advertising' });
+    await updateSetting({ key: 'header_scripts', value: updatedScripts, type: 'json', category: 'advertising' });
   };
 
   return (
