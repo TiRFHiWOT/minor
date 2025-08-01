@@ -23,15 +23,24 @@ export const useVPNDetection = () => {
   console.log('🔧 useVPNDetection hook state:', { isVPN, isLoading, error, vpnDetectionEnabled });
 
   // Immediately set safe defaults when VPN detection is disabled
-  if (!vpnDetectionEnabled && (isVPN !== false || isLoading !== false)) {
-    console.log('🔧 VPN detection disabled - setting safe defaults immediately');
-    setIsVPN(false);
-    setIsLoading(false);
-    setError(null);
-  }
+  useEffect(() => {
+    if (!vpnDetectionEnabled) {
+      console.log('🔧 VPN detection disabled - setting safe defaults immediately');
+      setIsVPN(false);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+  }, [vpnDetectionEnabled]);
 
   // Memoized VPN detection function with debouncing and caching
   const checkVPNStatus = useCallback(async () => {
+    // Don't check if VPN detection is disabled - return early
+    if (!vpnDetectionEnabled) {
+      console.log('🔧 VPN detection disabled, skipping check entirely');
+      return;
+    }
+    
     // Prevent multiple simultaneous checks
     if (isCheckingRef.current) {
       console.log('🔧 VPN check already in progress, skipping...');
@@ -48,13 +57,6 @@ export const useVPNDetection = () => {
     abortControllerRef.current = new AbortController();
 
     try {
-      if (!vpnDetectionEnabled) {
-        console.log('🔧 VPN detection disabled - allowing access');
-        setIsVPN(false);
-        setIsLoading(false);
-        setError(null);
-        return;
-      }
 
       setIsLoading(true);
       setError(null);

@@ -13,17 +13,20 @@ export const VPNBlocked = () => {
 
   console.log('🚫 VPNBlocked page state:', { isVPN, isLoading, isBlocked });
 
-  // Auto-redirect if VPN is no longer detected - with additional safeguards
+  // Auto-redirect logic - CRITICAL fix for infinite loop
   useEffect(() => {
-    // Only redirect if we're certain VPN detection is working and no VPN is detected
-    if (!isLoading && isVPN === false && !isBlocked) {
-      console.log('🛡️ VPN no longer detected, redirecting to home');
-      // Add a small delay to prevent rapid redirects
-      setTimeout(() => {
+    // IMPORTANT: When VPN detection is disabled, this page should immediately redirect
+    // because the user should never see this page when VPN detection is off
+    if (!isLoading && isVPN === false) {
+      console.log('🛡️ VPN not detected (or detection disabled), redirecting to home');
+      // Immediate redirect when VPN detection is disabled or no VPN detected
+      const timer = setTimeout(() => {
         navigate('/', { replace: true });
-      }, 500);
+      }, 100); // Very short delay to prevent rapid redirects during state changes
+      
+      return () => clearTimeout(timer);
     }
-  }, [isVPN, isBlocked, isLoading, navigate]);
+  }, [isVPN, isLoading, navigate]);
 
   const handleRefresh = async () => {
     try {

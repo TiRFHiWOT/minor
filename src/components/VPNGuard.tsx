@@ -32,8 +32,10 @@ export const VPNGuard = ({ children }: VPNGuardProps) => {
   });
 
   // Memoize navigation logic to prevent unnecessary re-renders
-  // Only redirect if VPN is actually detected (not just when blocked state is true)
+  // CRITICAL: Never redirect to VPN blocked page if VPN detection would be disabled
+  // This prevents the infinite loop when VPN detection is turned off
   const shouldRedirect = useMemo(() => {
+    // Only redirect if VPN is explicitly detected as true (not null or false)
     const result = isVPN === true && location.pathname !== '/vpn-blocked' && !isLoading;
     console.log('🛡️ VPNGuard shouldRedirect logic:', { isVPN, pathname: location.pathname, isLoading, result });
     return result;
