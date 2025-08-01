@@ -1,5 +1,6 @@
 import { Shield, AlertTriangle, Loader, Smartphone, Settings } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -8,13 +9,22 @@ import { LeaderboardTopAd } from "@/components/ads/LeaderboardTopAd";
 
 export const VPNBlocked = () => {
   const navigate = useNavigate();
-  const { isVPN, isLoading, recheckVPN } = useVPNDetection();
+  const { isVPN, isLoading, recheckVPN, isBlocked } = useVPNDetection();
+
+  // Auto-redirect if VPN is no longer detected
+  useEffect(() => {
+    if (!isLoading && !isBlocked) {
+      console.log('🛡️ VPN no longer detected, redirecting to home');
+      navigate('/', { replace: true });
+    }
+  }, [isBlocked, isLoading, navigate]);
 
   const handleRefresh = async () => {
-    await recheckVPN();
-    // If VPN is no longer detected, redirect to home
-    if (!isVPN) {
-      navigate('/', { replace: true });
+    try {
+      console.log('🛡️ User requested VPN recheck');
+      await recheckVPN();
+    } catch (error) {
+      console.error('Error rechecking VPN status:', error);
     }
   };
 
