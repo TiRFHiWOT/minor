@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { WysiwygEditor } from '@/components/ui/wysiwyg-editor';
 import { useCreateBlogPost, useUpdateBlogPost } from '@/hooks/useBlogPosts';
 import { useAuth } from '@/hooks/useAuth';
+import { useBlogImageUpload } from '@/hooks/useBlogImageUpload';
+import { ImageUpload } from '@/components/ui/image-upload';
 import { useToast } from '@/components/ui/use-toast';
 
 interface BlogPostEditorProps {
@@ -38,6 +40,7 @@ export const BlogPostEditor: React.FC<BlogPostEditorProps> = ({
 
   const { user } = useAuth();
   const { toast } = useToast();
+  const { uploadImage } = useBlogImageUpload();
   const createMutation = useCreateBlogPost();
   const updateMutation = useUpdateBlogPost();
 
@@ -248,30 +251,13 @@ export const BlogPostEditor: React.FC<BlogPostEditorProps> = ({
 
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">Featured Image</h3>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="featured_image">Image URL</Label>
-                  <Input
-                    id="featured_image"
-                    value={formData.featured_image}
-                    onChange={(e) => handleInputChange('featured_image', e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
-                
-                {formData.featured_image && (
-                  <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-                    <img
-                      src={formData.featured_image}
-                      alt="Featured"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
+              <ImageUpload
+                value={formData.featured_image || undefined}
+                onChange={(url) => handleInputChange('featured_image', url || '')}
+                onUpload={uploadImage}
+                placeholder="Upload featured image or enter URL"
+                acceptExternalUrl={true}
+              />
             </Card>
 
             {/* Action Buttons */}
