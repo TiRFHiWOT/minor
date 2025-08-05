@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAdminBlogPosts, useDeleteBlogPost } from '@/hooks/useBlogPosts';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { BlogPostEditor } from './BlogPostEditor';
 import {
   AlertDialog,
