@@ -41,7 +41,7 @@ import AdminSpam from "./pages/admin/AdminSpam";
 import AdminSEO from "./pages/admin/AdminSEO";
 import AdminAdvertising from "./pages/admin/AdminAdvertising";
 import AdminSettings from "./pages/admin/AdminSettings";
-import AdminBlog from "./pages/admin/AdminBlog";
+import AdminBlogPage from "./pages/admin/AdminBlog";
 
 import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
 import { HeaderCodeInjector } from "./components/analytics/HeaderCodeInjector";
@@ -100,7 +100,7 @@ const App = () => (
                     <Route index element={<AdminPage />} />
                     <Route path="users" element={<AdminUsers />} />
                     <Route path="content" element={<AdminContent />} />
-                    <Route path="blog" element={<AdminBlog />} />
+                    <Route path="blog" element={<AdminBlogPage />} />
                     <Route path="moderation" element={<AdminModeration />} />
                     <Route path="spam" element={<AdminSpam />} />
                     <Route path="advertising" element={<AdminAdvertising />} />
