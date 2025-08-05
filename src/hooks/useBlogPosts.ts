@@ -178,13 +178,7 @@ export const useAdminBlogPosts = (options?: {
       
       let query = supabase
         .from('blog_posts')
-        .select(`
-          *,
-          profiles:author_id (
-            username,
-            avatar_url
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       // Don't filter by status if it's 'All' or undefined - show all posts for admin
