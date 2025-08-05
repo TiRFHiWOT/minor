@@ -71,85 +71,113 @@ const AdminContent = () => {
   const { data: content, isLoading, refetch } = useQuery({
     queryKey: ['admin-content'],
     queryFn: async () => {
-      // Get topics with category info
-      const { data: topics, error: topicsError } = await supabase
-        .from('topics')
-        .select(`
-          id,
-          title,
-          slug,
-          created_at,
-          view_count,
-          reply_count,
-          is_pinned,
-          is_locked,
-          author_id,
-          category_id,
-          categories!inner (
+      console.log('Fetching admin content...');
+      
+      try {
+        // Get topics with category info using LEFT JOIN
+        const { data: topics, error: topicsError } = await supabase
+          .from('topics')
+          .select(`
             id,
+            title,
             slug,
-            name
-          )
-        `)
-        .order('created_at', { ascending: false })
-        .limit(20);
+            created_at,
+            view_count,
+            reply_count,
+            is_pinned,
+            is_locked,
+            author_id,
+            category_id,
+            categories (
+              id,
+              slug,
+              name
+            )
+          `)
+          .order('created_at', { ascending: false })
+          .limit(20);
 
-      if (topicsError) throw topicsError;
+        console.log('Topics query result:', { topics, topicsError });
+        
+        if (topicsError) {
+          console.error('Topics error:', topicsError);
+          throw topicsError;
+        }
 
-      // Get posts with topic and category info
-      const { data: posts, error: postsError } = await supabase
-        .from('posts')
-        .select(`
-          id,
-          content,
-          created_at,
-          author_id,
-          topic_id,
-            topics!inner (
+        // Get posts with topic and category info
+        const { data: posts, error: postsError } = await supabase
+          .from('posts')
+          .select(`
+            id,
+            content,
+            created_at,
+            author_id,
+            topic_id,
+            topics (
               id,
               title,
               slug,
-              categories!inner (
+              categories (
                 slug,
                 name
               )
             )
-        `)
-        .order('created_at', { ascending: false })
-        .limit(20);
+          `)
+          .order('created_at', { ascending: false })
+          .limit(20);
 
-      if (postsError) throw postsError;
+        console.log('Posts query result:', { posts, postsError });
 
-      const contentItems: ContentItem[] = [
-        ...(topics?.map(topic => ({
-          id: topic.id,
-          title: topic.title,
-          author: 'Anonymous User', // Simplified for admin content
-          type: 'topic' as const,
-          created_at: topic.created_at || '',
-          view_count: topic.view_count || 0,
-          reply_count: topic.reply_count || 0,
-          is_pinned: topic.is_pinned,
-          is_locked: topic.is_locked,
-          slug: topic.slug,
-          category_slug: topic.categories?.slug,
-          category_name: topic.categories?.name,
-          category_id: topic.category_id,
-        })) || []),
-        ...(posts?.map(post => ({
-          id: post.id,
-          title: `Reply in: ${post.topics?.title || 'Unknown Topic'}`,
-          author: 'Anonymous User', // Simplified for admin content
-          type: 'post' as const,
-          created_at: post.created_at || '',
-          topic_id: post.topic_id,
-          topic_slug: post.topics?.slug,
-          category_slug: post.topics?.categories?.slug,
-          category_name: post.topics?.categories?.name,
-        })) || []),
-      ];
+        if (postsError) {
+          console.error('Posts error:', postsError);
+          throw postsError;
+        }
 
-      return contentItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        // Process topics
+        const topicItems: ContentItem[] = (topics || []).map(topic => {
+          console.log('Processing topic:', topic);
+          return {
+            id: topic.id,
+            title: topic.title,
+            author: 'Anonymous User', // Simplified for admin content
+            type: 'topic' as const,
+            created_at: topic.created_at || '',
+            view_count: topic.view_count || 0,
+            reply_count: topic.reply_count || 0,
+            is_pinned: topic.is_pinned,
+            is_locked: topic.is_locked,
+            slug: topic.slug,
+            category_slug: topic.categories?.slug,
+            category_name: topic.categories?.name,
+            category_id: topic.category_id,
+          };
+        });
+
+        // Process posts
+        const postItems: ContentItem[] = (posts || []).map(post => {
+          console.log('Processing post:', post);
+          return {
+            id: post.id,
+            title: `Reply in: ${post.topics?.title || 'Unknown Topic'}`,
+            author: 'Anonymous User', // Simplified for admin content
+            type: 'post' as const,
+            created_at: post.created_at || '',
+            topic_id: post.topic_id,
+            topic_slug: post.topics?.slug,
+            category_slug: post.topics?.categories?.slug,
+            category_name: post.topics?.categories?.name,
+          };
+        });
+
+        const contentItems = [...topicItems, ...postItems];
+        console.log('Final content items:', contentItems);
+        console.log('Topics count:', topicItems.length, 'Posts count:', postItems.length);
+
+        return contentItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      } catch (error) {
+        console.error('Error in admin content query:', error);
+        throw error;
+      }
     },
   });
 
