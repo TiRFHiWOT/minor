@@ -22,13 +22,7 @@ export const useBlogPosts = (options?: {
     queryFn: async () => {
       let query = supabase
         .from('blog_posts')
-        .select(`
-          *,
-          profiles:author_id (
-            username,
-            avatar_url
-          )
-        `)
+        .select('*')
         .order('published_at', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false });
 
@@ -57,8 +51,8 @@ export const useBlogPosts = (options?: {
 
       return (data as any[]).map((post): BlogPostWithAuthor => ({
         ...post,
-        author_username: post.profiles?.username,
-        author_avatar_url: post.profiles?.avatar_url,
+        author_username: undefined,
+        author_avatar_url: undefined,
       }));
     },
   });
@@ -70,13 +64,7 @@ export const useBlogPost = (slug: string) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('blog_posts')
-        .select(`
-          *,
-          profiles:author_id (
-            username,
-            avatar_url
-          )
-        `)
+        .select('*')
         .eq('slug', slug)
         .eq('published_status', 'published')
         .single();
@@ -86,8 +74,8 @@ export const useBlogPost = (slug: string) => {
       const blogPost = data as any;
       return {
         ...blogPost,
-        author_username: blogPost.profiles?.username,
-        author_avatar_url: blogPost.profiles?.avatar_url,
+        author_username: undefined,
+        author_avatar_url: undefined,
       } as BlogPostWithAuthor;
     },
   });
@@ -214,8 +202,8 @@ export const useAdminBlogPosts = (options?: {
 
       const processedData = (data as any[]).map((post): BlogPostWithAuthor => ({
         ...post,
-        author_username: post.profiles?.username,
-        author_avatar_url: post.profiles?.avatar_url,
+        author_username: undefined,
+        author_avatar_url: undefined,
       }));
 
       console.log('Processed admin blog data:', processedData);
