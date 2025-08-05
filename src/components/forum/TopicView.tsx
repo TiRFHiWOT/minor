@@ -502,11 +502,14 @@ export const TopicView = () => {
                   <MessageCircle className="h-3 w-3" />
                 </Button>
 
-              {/* Reply count */}
-              <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                <MessageSquare className="h-3 w-3" />
-                <span>{topic.reply_count || 0}</span>
+                {/* Reply count */}
+                <div className="flex items-center space-x-1 text-xs text-muted-foreground">
+                  <MessageSquare className="h-3 w-3" />
+                  <span>{topic.reply_count || 0}</span>
+                </div>
               </div>
+
+              <div className="flex items-center gap-2">
 
               {/* Share button */}
               <Button 
