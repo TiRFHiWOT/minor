@@ -33,6 +33,7 @@ interface ContentItem {
   topic_id?: string;
   topic_slug?: string;
   category_name?: string;
+  category_id?: string;
 }
 
 const AdminContent = () => {
@@ -83,7 +84,9 @@ const AdminContent = () => {
           is_pinned,
           is_locked,
           author_id,
+          category_id,
           categories!inner (
+            id,
             slug,
             name
           )
@@ -131,6 +134,7 @@ const AdminContent = () => {
           slug: topic.slug,
           category_slug: topic.categories?.slug,
           category_name: topic.categories?.name,
+          category_id: topic.category_id,
         })) || []),
         ...(posts?.map(post => ({
           id: post.id,
@@ -231,7 +235,7 @@ const AdminContent = () => {
       topic: {
         id: topic.id,
         title: topic.title,
-        currentCategoryId: '', // We'll need to get this from the query
+        currentCategoryId: topic.category_id || '',
         currentCategoryName: topic.category_name || 'Unknown Category',
       },
     });
