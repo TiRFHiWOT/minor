@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { WysiwygEditor } from '@/components/ui/wysiwyg-editor';
 import { HTMLRenderer } from '@/components/ui/html-renderer';
 import { PaginationControls } from '@/components/ui/pagination-controls';
-import { MessageSquare, User, Clock, ArrowLeft, ThumbsUp, Flag, Reply, ArrowUp, ArrowDown, MessageCircle, Share, Edit } from 'lucide-react';
+import { MessageSquare, User, Clock, ArrowLeft, ThumbsUp, Flag, Reply, ArrowUp, ArrowDown, MessageCircle, Share, Edit, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTopic } from '@/hooks/useTopic';
 import { useTopicByPath } from '@/hooks/useTopicByPath';
@@ -26,6 +26,8 @@ import { useForumSettings } from '@/hooks/useForumSettings';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { MoveTopicModal } from '@/components/admin/MoveTopicModal';
+import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
 
 export const TopicView = () => {
   const { getSetting } = useForumSettings();
@@ -40,6 +42,10 @@ export const TopicView = () => {
   const [isEditingTopic, setIsEditingTopic] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
+  const { canMoveTopic } = useCanMoveTopic();
+  const [moveTopicModal, setMoveTopicModal] = useState({
+    isOpen: false,
+  });
   
   // Pagination state
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
@@ -473,6 +479,19 @@ export const TopicView = () => {
                   </Button>
                 )}
 
+                {/* Move Topic button - only for authors and moderators */}
+                {canMoveTopic(topic) && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-6 w-6 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    onClick={() => setMoveTopicModal({ isOpen: true })}
+                    title="Move topic"
+                  >
+                    <ArrowRight className="h-3 w-3" />
+                  </Button>
+                )}
+
                 {/* Reply button */}
                 <Button 
                   variant="ghost" 
@@ -647,6 +666,18 @@ export const TopicView = () => {
         postId={reportModal.postId}
         topicId={reportModal.topicId}
         contentType={reportModal.contentType}
+      />
+
+      {/* Move Topic Modal */}
+      <MoveTopicModal
+        topic={topic ? {
+          id: topic.id,
+          title: topic.title,
+          currentCategoryId: topic.category_id,
+          currentCategoryName: topic.categories?.name
+        } : null}
+        isOpen={moveTopicModal.isOpen}
+        onClose={() => setMoveTopicModal({ isOpen: false })}
       />
     </div>
   );

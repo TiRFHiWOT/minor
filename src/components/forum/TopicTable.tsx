@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Pin, Lock, TrendingUp, MessageSquare, Eye, User, Clock, ChevronRight } from 'lucide-react';
+import { Pin, Lock, TrendingUp, MessageSquare, Eye, User, Clock, ChevronRight, ArrowRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AdminControls } from './AdminControls';
+import { MoveTopicModal } from '@/components/admin/MoveTopicModal';
+import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
 
 interface TopicTableProps {
   topics: any[];
@@ -20,6 +22,14 @@ export const TopicTable: React.FC<TopicTableProps> = ({
   showCategory = false,
   loading 
 }) => {
+  const { canMoveTopic } = useCanMoveTopic();
+  const [moveTopicModal, setMoveTopicModal] = useState<{
+    isOpen: boolean;
+    topic: any;
+  }>({
+    isOpen: false,
+    topic: null,
+  });
   if (loading) {
     return (
       <div className="forum-spacing">
@@ -128,6 +138,27 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                       </div>
                     </div>
 
+                    {/* Move Topic Button */}
+                    {canMoveTopic(topic) && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setMoveTopicModal({
+                          isOpen: true,
+                          topic: {
+                            id: topic.id,
+                            title: topic.title,
+                            currentCategoryId: topic.category_id,
+                            currentCategoryName: topic.category_name || topic.categories?.name
+                          }
+                        })}
+                        className="h-6 w-6 p-0 flex-shrink-0"
+                        title="Move topic"
+                      >
+                        <ArrowRight className="h-3 w-3" />
+                      </Button>
+                    )}
+
                     {/* Admin Controls */}
                     <AdminControls 
                       content={topic} 
@@ -172,6 +203,13 @@ export const TopicTable: React.FC<TopicTableProps> = ({
           );
         })}
       </div>
+
+      {/* Move Topic Modal */}
+      <MoveTopicModal
+        topic={moveTopicModal.topic}
+        isOpen={moveTopicModal.isOpen}
+        onClose={() => setMoveTopicModal({ isOpen: false, topic: null })}
+      />
     </div>
   );
 };
