@@ -65,20 +65,23 @@ Deno.serve(async (req) => {
     const url = new URL(req.url);
     const type = url.searchParams.get('type') || 'index';
     
-    // Check if we have a custom domain from referrer or origin
+    // Check if we have a custom domain from headers
     const origin = req.headers.get('origin');
     const referer = req.headers.get('referer');
+    const customDomain = req.headers.get('x-custom-domain');
     let baseUrl = `https://${url.host}`;
     
-    // If called from a different domain (custom domain), use that instead
-    if (origin && !origin.includes('supabase.co')) {
+    // Priority: custom domain header > origin > referer > default
+    if (customDomain && !customDomain.includes('supabase.co')) {
+      baseUrl = `https://${customDomain}`;
+    } else if (origin && !origin.includes('supabase.co')) {
       baseUrl = origin;
     } else if (referer && !referer.includes('supabase.co')) {
       const refererUrl = new URL(referer);
       baseUrl = `${refererUrl.protocol}//${refererUrl.host}`;
     }
 
-    console.log(`Generating sitemap type: ${type}, baseUrl: ${baseUrl}, host: ${url.host}`);
+    console.log(`Generating sitemap type: ${type}, baseUrl: ${baseUrl}, host: ${url.host}, custom-domain: ${customDomain}`);
 
     let xmlContent = '';
 

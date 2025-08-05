@@ -90,7 +90,8 @@ const App = () => (
                     <ErrorBoundary>
                       <VPNGuard>
                       <Routes>
-                          {/* Sitemap route - handled by Vite for proper XML serving */}
+                          {/* Special routes */}
+                          <Route path="/sitemap.xml" element={<SitemapRedirect />} />
                          
                          {/* Authentication routes - standalone pages */}
                         <Route path="/login" element={<Login />} />
