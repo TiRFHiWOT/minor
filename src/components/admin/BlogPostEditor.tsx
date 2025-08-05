@@ -11,7 +11,7 @@ import { useCreateBlogPost, useUpdateBlogPost } from '@/hooks/useBlogPosts';
 import { useAuth } from '@/hooks/useAuth';
 import { useBlogImageUpload } from '@/hooks/useBlogImageUpload';
 import { ImageUpload } from '@/components/ui/image-upload';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 interface BlogPostEditorProps {
   post?: any;
