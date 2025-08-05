@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useBlogPosts } from '@/hooks/useBlogPosts';
 
-const categories = ["All", "Training", "Equipment", "Team Building", "Health", "Safety"];
+const categories = ["All", "Training", "Equipment", "Team Building", "Health", "Safety", "Hockey News"];
 
 const Blog = () => {
   const [selectedCategory, setSelectedCategory] = React.useState("All");
