@@ -27,6 +27,7 @@ import Privacy from "./pages/Privacy";
 import ForumRules from "./pages/ForumRules";
 
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Topics from "./pages/Topics";
 import Bookmarks from "./pages/Bookmarks";
 import { Categories } from "./pages/Categories";
@@ -133,6 +134,7 @@ const App = () => (
                      <Route path="privacy" element={<Privacy />} />
                      <Route path="rules" element={<ForumRules />} />
                      <Route path="blog" element={<Blog />} />
+                     <Route path="blog/:slug" element={<BlogPost />} />
                   </Route>
                   
                   {/* Test page for ad integration */}

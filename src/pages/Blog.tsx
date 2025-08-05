@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calendar, User, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -108,9 +109,11 @@ const Blog = () => {
                   </div>
                 </div>
                 
-                <Button variant="ghost" size="sm" className="w-full group">
-                  Read More
-                  <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                <Button variant="ghost" size="sm" className="w-full group" asChild>
+                  <Link to={`/blog/${post.slug}`}>
+                    Read More
+                    <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </Button>
               </div>
             </Card>
