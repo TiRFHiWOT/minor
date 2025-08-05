@@ -166,7 +166,7 @@ export const useDeleteBlogPost = () => {
 // Admin-specific hook for all blog posts regardless of status
 export const useAdminBlogPosts = (options?: {
   category?: string;
-  status?: 'draft' | 'published' | 'archived';
+  status?: 'draft' | 'published' | 'archived' | 'All';
   search?: string;
   limit?: number;
   offset?: number;
@@ -174,6 +174,8 @@ export const useAdminBlogPosts = (options?: {
   return useQuery({
     queryKey: ['admin-blog-posts', options],
     queryFn: async () => {
+      console.log('Admin blog posts query running with options:', options);
+      
       let query = supabase
         .from('blog_posts')
         .select(`
@@ -185,11 +187,12 @@ export const useAdminBlogPosts = (options?: {
         `)
         .order('created_at', { ascending: false });
 
+      // Don't filter by status if it's 'All' or undefined - show all posts for admin
       if (options?.category && options.category !== 'All') {
         query = query.eq('category', options.category);
       }
 
-      if (options?.status) {
+      if (options?.status && options.status !== 'All') {
         query = query.eq('published_status', options.status);
       }
 
@@ -205,15 +208,26 @@ export const useAdminBlogPosts = (options?: {
         query = query.range(options.offset, options.offset + (options.limit || 10) - 1);
       }
 
+      console.log('Executing admin blog query...');
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error('Admin blog query error:', error);
+        throw error;
+      }
 
-      return (data as any[]).map((post): BlogPostWithAuthor => ({
+      console.log('Admin blog query result:', data);
+
+      const processedData = (data as any[]).map((post): BlogPostWithAuthor => ({
         ...post,
         author_username: post.profiles?.username,
         author_avatar_url: post.profiles?.avatar_url,
       }));
+
+      console.log('Processed admin blog data:', processedData);
+      return processedData;
     },
+    enabled: true, // Always enable for admin
+    staleTime: 0, // Always refetch for admin to get latest data
   });
 };

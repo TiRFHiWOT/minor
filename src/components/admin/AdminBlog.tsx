@@ -31,10 +31,20 @@ export const AdminBlog = () => {
   const [editingPost, setEditingPost] = useState<any>(null);
   const { toast } = useToast();
 
-  const { data: blogPosts = [], isLoading, refetch } = useAdminBlogPosts({
+  const { data: blogPosts = [], isLoading, error, refetch } = useAdminBlogPosts({
     category: selectedCategory !== 'All' ? selectedCategory : undefined,
-    status: selectedStatus !== 'All' ? selectedStatus as any : undefined,
+    status: selectedStatus as any,
     search: search || undefined,
+  });
+
+  // Debug logging
+  console.log('AdminBlog Debug:', {
+    blogPosts,
+    isLoading,
+    error,
+    selectedCategory,
+    selectedStatus,
+    search
   });
 
   const deletePostMutation = useDeleteBlogPost();
