@@ -64,9 +64,21 @@ Deno.serve(async (req) => {
 
     const url = new URL(req.url);
     const type = url.searchParams.get('type') || 'index';
-    const baseUrl = `https://${url.host}`;
+    
+    // Check if we have a custom domain from referrer or origin
+    const origin = req.headers.get('origin');
+    const referer = req.headers.get('referer');
+    let baseUrl = `https://${url.host}`;
+    
+    // If called from a different domain (custom domain), use that instead
+    if (origin && !origin.includes('supabase.co')) {
+      baseUrl = origin;
+    } else if (referer && !referer.includes('supabase.co')) {
+      const refererUrl = new URL(referer);
+      baseUrl = `${refererUrl.protocol}//${refererUrl.host}`;
+    }
 
-    console.log(`Generating sitemap type: ${type}`);
+    console.log(`Generating sitemap type: ${type}, baseUrl: ${baseUrl}, host: ${url.host}`);
 
     let xmlContent = '';
 
@@ -96,11 +108,13 @@ Deno.serve(async (req) => {
         break;
 
       case 'categories':
-        const { data: categories } = await supabase
+        const { data: categories, error: categoriesError } = await supabase
           .from('categories')
           .select('slug, updated_at, created_at, parent_category:parent_category_id(slug)')
           .eq('is_active', true)
           .order('created_at', { ascending: false });
+
+        console.log(`Categories query result: ${categories?.length || 0} categories found`, categoriesError ? `Error: ${categoriesError.message}` : '');
 
         const categoryUrls: SitemapUrl[] = categories?.map(category => {
           let categoryUrl = '';
@@ -122,7 +136,7 @@ Deno.serve(async (req) => {
         break;
 
       case 'topics':
-        const { data: topics } = await supabase
+        const { data: topics, error: topicsError } = await supabase
           .from('topics')
           .select(`
             slug, 
@@ -136,6 +150,8 @@ Deno.serve(async (req) => {
           .eq('moderation_status', 'approved')
           .order('updated_at', { ascending: false })
           .limit(50000);
+
+        console.log(`Topics query result: ${topics?.length || 0} topics found`, topicsError ? `Error: ${topicsError.message}` : '');
 
         const topicUrls: SitemapUrl[] = topics?.map(topic => {
           let topicUrl = '';
@@ -159,11 +175,13 @@ Deno.serve(async (req) => {
         break;
 
       case 'blog':
-        const { data: blogPosts } = await supabase
+        const { data: blogPosts, error: blogError } = await supabase
           .from('blog_posts')
           .select('slug, updated_at, published_at')
           .eq('published_status', 'published')
           .order('published_at', { ascending: false });
+
+        console.log(`Blog posts query result: ${blogPosts?.length || 0} blog posts found`, blogError ? `Error: ${blogError.message}` : '');
 
         const blogUrls: SitemapUrl[] = blogPosts?.map(post => ({
           loc: `${baseUrl}/blog/${post.slug}`,
