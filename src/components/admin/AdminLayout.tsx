@@ -13,7 +13,8 @@ import {
   Flag,
   Search,
   AlertTriangle,
-  DollarSign
+  DollarSign,
+  FileText
 } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { LeaderboardTopAd } from '@/components/ads/LeaderboardTopAd';
@@ -38,6 +39,7 @@ export const AdminLayout = () => {
     { path: '/admin', label: 'Dashboard', icon: BarChart3 },
     { path: '/admin/users', label: 'Users', icon: Users },
     { path: '/admin/content', label: 'Content', icon: MessageSquare },
+    { path: '/admin/blog', label: 'Blog', icon: FileText },
     { path: '/admin/moderation', label: 'Moderation', icon: Flag },
     { path: '/admin/spam', label: 'Spam Management', icon: AlertTriangle },
     { path: '/admin/advertising', label: 'Advertising', icon: DollarSign },

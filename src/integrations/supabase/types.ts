@@ -321,6 +321,66 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          category: string
+          content: string
+          created_at: string
+          excerpt: string | null
+          featured_image: string | null
+          id: string
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          published_at: string | null
+          published_status: string
+          read_time: number | null
+          slug: string
+          title: string
+          updated_at: string
+          view_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          category?: string
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          published_status?: string
+          read_time?: number | null
+          slug: string
+          title: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          published_status?: string
+          read_time?: number | null
+          slug?: string
+          title?: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           birth_year: number | null
@@ -1627,6 +1687,10 @@ export type Database = {
       }
       generate_anonymous_session_id: {
         Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_blog_slug: {
+        Args: { title_text: string }
         Returns: string
       }
       generate_slug: {
