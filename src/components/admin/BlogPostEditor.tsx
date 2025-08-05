@@ -19,7 +19,7 @@ interface BlogPostEditorProps {
   onSave: () => void;
 }
 
-const categories = ['Training', 'Equipment', 'Team Building', 'Health', 'Safety'];
+const categories = ['Training', 'Equipment', 'Team Building', 'Health', 'Safety', 'Hockey News'];
 
 export const BlogPostEditor: React.FC<BlogPostEditorProps> = ({
   post,
