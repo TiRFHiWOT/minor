@@ -1,6 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const SitemapRedirect = () => {
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchAndServeSitemap = async () => {
       try {
@@ -25,12 +28,15 @@ export const SitemapRedirect = () => {
         });
 
         if (!response.ok) {
-          console.error('Error fetching sitemap:', response.statusText);
-          return;
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
         const xmlContent = await response.text();
         console.log('Fetched sitemap content, length:', xmlContent.length);
+        
+        if (!xmlContent || xmlContent.length === 0) {
+          throw new Error('Empty sitemap response');
+        }
         
         // Replace any remaining Supabase URLs with custom domain
         const correctedXml = xmlContent.replace(
@@ -43,13 +49,19 @@ export const SitemapRedirect = () => {
         document.write(correctedXml);
         document.close();
         
-        // Note: Content type is handled by the edge function response
+        setLoading(false);
         
       } catch (error) {
         console.error('Error in sitemap fetch:', error);
-        // Show a basic error message
+        setError(error instanceof Error ? error.message : 'Unknown error');
+        setLoading(false);
+        
+        // Show a basic error message in XML format
         document.open();
-        document.write('<?xml version="1.0" encoding="UTF-8"?><error>Failed to load sitemap</error>');
+        document.write(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Error loading sitemap: ${error instanceof Error ? error.message : 'Unknown error'} -->
+</urlset>`);
         document.close();
       }
     };
@@ -57,5 +69,13 @@ export const SitemapRedirect = () => {
     fetchAndServeSitemap();
   }, []);
 
-  return <div>Loading sitemap...</div>;
+  if (error) {
+    return <div>Error loading sitemap: {error}</div>;
+  }
+
+  if (loading) {
+    return <div>Loading sitemap...</div>;
+  }
+
+  return null;
 };
