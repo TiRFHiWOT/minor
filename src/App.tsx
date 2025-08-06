@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { ToastErrorBoundary } from "./components/ToastErrorBoundary";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { MetadataProvider } from "./components/seo/MetadataProvider";
@@ -116,6 +116,9 @@ const App = () => (
                   
                    {/* RSS Feed Route */}
                   <Route path="/rss" element={<RSSRedirect />} />
+                  
+                  {/* Sitemap Route - redirect to edge function */}
+                  <Route path="/sitemap.xml" element={<Navigate to="https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap-index" replace />} />
                   
                   {/* Forum routes - wrapped in ForumLayout */}
                   <Route path="/" element={<ForumLayout />}>
