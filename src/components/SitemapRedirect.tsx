@@ -13,27 +13,29 @@ export const SitemapRedirect = () => {
         
         console.log('Fetching sitemap type:', type);
         
-        // Use Supabase client to call the sitemap function
-        const { supabase } = await import('@/integrations/supabase/client');
+        // Construct the sitemap function URL directly
+        const functionUrl = `https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=${type}`;
         
-        const { data, error } = await supabase.functions.invoke('sitemap', {
-          body: { 
-            type,
-            custom_domain: window.location.host,
-            origin: window.location.origin
-          }
+        // Fetch the sitemap directly
+        const response = await fetch(functionUrl, {
+          method: 'GET',
+          headers: {
+            'Origin': window.location.origin,
+            'Referer': window.location.href,
+            'X-Custom-Domain': window.location.host
+          },
         });
 
-        if (error) {
-          throw new Error(`Supabase function error: ${error.message}`);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        if (!data) {
+        const xmlContent = await response.text();
+        console.log('Fetched sitemap content, length:', xmlContent.length);
+        
+        if (!xmlContent || xmlContent.length === 0) {
           throw new Error('Empty sitemap response');
         }
-
-        const xmlContent = typeof data === 'string' ? data : JSON.stringify(data);
-        console.log('Fetched sitemap content, length:', xmlContent.length);
         
         // Replace any remaining Supabase URLs with custom domain
         const correctedXml = xmlContent.replace(
@@ -41,8 +43,8 @@ export const SitemapRedirect = () => {
           window.location.origin
         );
         
-        // Replace the current page content with the sitemap XML
-        document.open();
+        // Replace the current page content with the sitemap XML and set proper content type
+        document.open('application/xml');
         document.write(correctedXml);
         document.close();
         
