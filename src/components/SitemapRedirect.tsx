@@ -13,30 +13,27 @@ export const SitemapRedirect = () => {
         
         console.log('Fetching sitemap type:', type);
         
-        // Construct the sitemap function URL with the type parameter and pass custom domain info
-        const functionUrl = `https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=${type}`;
+        // Use Supabase client to call the sitemap function
+        const { supabase } = await import('@/integrations/supabase/client');
         
-        // Fetch the sitemap directly with custom domain headers
-        const response = await fetch(functionUrl, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/xml',
-            'Origin': window.location.origin,
-            'Referer': window.location.href,
-            'X-Custom-Domain': window.location.host
-          },
+        const { data, error } = await supabase.functions.invoke('sitemap', {
+          body: { 
+            type,
+            custom_domain: window.location.host,
+            origin: window.location.origin
+          }
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (error) {
+          throw new Error(`Supabase function error: ${error.message}`);
         }
 
-        const xmlContent = await response.text();
-        console.log('Fetched sitemap content, length:', xmlContent.length);
-        
-        if (!xmlContent || xmlContent.length === 0) {
+        if (!data) {
           throw new Error('Empty sitemap response');
         }
+
+        const xmlContent = typeof data === 'string' ? data : JSON.stringify(data);
+        console.log('Fetched sitemap content, length:', xmlContent.length);
         
         // Replace any remaining Supabase URLs with custom domain
         const correctedXml = xmlContent.replace(
