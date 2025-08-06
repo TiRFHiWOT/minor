@@ -1,95 +1,96 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.3'
+import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-interface SitemapUrl {
-  loc: string;
-  lastmod?: string;
-  changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
-  priority?: number;
-}
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-function generateSitemapXML(urls: SitemapUrl[]): string {
-  const urlElements = urls.map(url => {
-    let urlXML = `    <url>\n        <loc>${url.loc}</loc>\n`;
-    if (url.lastmod) {
-      urlXML += `        <lastmod>${url.lastmod}</lastmod>\n`;
-    }
-    if (url.changefreq) {
-      urlXML += `        <changefreq>${url.changefreq}</changefreq>\n`;
-    }
-    if (url.priority !== undefined) {
-      urlXML += `        <priority>${url.priority}</priority>\n`;
-    }
-    urlXML += `    </url>`;
-    return urlXML;
-  }).join('\n');
-
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urlElements}
-</urlset>`;
-}
-
-Deno.serve(async (req) => {
+serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
     const host = req.headers.get("host");
     const protocol = host?.includes("localhost") ? "http" : "https";
     const baseUrl = `${protocol}://${host}`;
 
     console.log(`Generating blog sitemap for baseUrl: ${baseUrl}`);
 
-    const { data: blogPosts, error: blogError } = await supabase
-      .from('blog_posts')
-      .select('slug, updated_at, published_at')
+    const { data: blogPosts, error } = await supabase
+      .from("blog_posts")
+      .select("slug, updated_at, published_at")
       .eq('published_status', 'published')
-      .order('published_at', { ascending: false });
+      .order("published_at", { ascending: false });
 
-    if (blogError) {
-      throw blogError;
+    if (error) {
+      throw error;
     }
 
     console.log(`Blog posts query result: ${blogPosts?.length || 0} blog posts found`);
 
-    // Include static blog pages
-    const staticUrls: SitemapUrl[] = [
-      { loc: `${baseUrl}/blog`, priority: 0.8, changefreq: 'daily' },
-      { loc: `${baseUrl}/login`, priority: 0.3, changefreq: 'monthly' },
-      { loc: `${baseUrl}/register`, priority: 0.3, changefreq: 'monthly' },
-      { loc: `${baseUrl}/terms`, priority: 0.2, changefreq: 'yearly' },
-      { loc: `${baseUrl}/privacy`, priority: 0.2, changefreq: 'yearly' },
-      { loc: `${baseUrl}/rules`, priority: 0.4, changefreq: 'monthly' },
+    // Include static blog and general pages
+    const staticUrls = [
+      `<url>
+  <loc>${baseUrl}/blog</loc>
+  <priority>0.8</priority>
+  <changefreq>daily</changefreq>
+</url>`,
+      `<url>
+  <loc>${baseUrl}/login</loc>
+  <priority>0.3</priority>
+  <changefreq>monthly</changefreq>
+</url>`,
+      `<url>
+  <loc>${baseUrl}/register</loc>
+  <priority>0.3</priority>
+  <changefreq>monthly</changefreq>
+</url>`,
+      `<url>
+  <loc>${baseUrl}/terms</loc>
+  <priority>0.2</priority>
+  <changefreq>yearly</changefreq>
+</url>`,
+      `<url>
+  <loc>${baseUrl}/privacy</loc>
+  <priority>0.2</priority>
+  <changefreq>yearly</changefreq>
+</url>`,
+      `<url>
+  <loc>${baseUrl}/rules</loc>
+  <priority>0.4</priority>
+  <changefreq>monthly</changefreq>
+</url>`
     ];
 
-    const blogUrls: SitemapUrl[] = blogPosts?.map(post => ({
-      loc: `${baseUrl}/blog/${post.slug}`,
-      lastmod: post.updated_at || post.published_at,
-      priority: 0.7,
-      changefreq: 'monthly' as const,
-    })) || [];
+    const blogUrls = blogPosts?.map((post) => {
+      return `<url>
+  <loc>${baseUrl}/blog/${post.slug}</loc>
+  <lastmod>${new Date(post.updated_at || post.published_at).toISOString()}</lastmod>
+  <priority>0.7</priority>
+  <changefreq>monthly</changefreq>
+</url>`;
+    }) || [];
 
     const allUrls = [...staticUrls, ...blogUrls];
-    const xmlContent = generateSitemapXML(allUrls);
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${allUrls.join("\n")}
+</urlset>`;
 
     console.log(`Generated blog sitemap with ${allUrls.length} URLs`);
 
-    return new Response(xmlContent, {
+    return new Response(xml, {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/xml',
+        "Content-Type": "application/xml",
         'Cache-Control': 'public, max-age=3600',
       },
     });
