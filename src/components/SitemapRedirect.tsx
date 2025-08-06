@@ -4,9 +4,13 @@ export const SitemapRedirect = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  console.log('SitemapRedirect component mounted');
+
   useEffect(() => {
     const fetchAndServeSitemap = async () => {
       try {
+        console.log('Starting sitemap fetch...');
+        
         // Get the type parameter from the current URL
         const urlParams = new URLSearchParams(window.location.search);
         const type = urlParams.get('type') || 'index';
@@ -15,6 +19,7 @@ export const SitemapRedirect = () => {
         
         // Construct the sitemap function URL directly
         const functionUrl = `https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=${type}`;
+        console.log('Fetching from URL:', functionUrl);
         
         // Fetch the sitemap directly
         const response = await fetch(functionUrl, {
@@ -25,6 +30,8 @@ export const SitemapRedirect = () => {
             'X-Custom-Domain': window.location.host
           },
         });
+        
+        console.log('Response status:', response.status, response.statusText);
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -43,10 +50,15 @@ export const SitemapRedirect = () => {
           window.location.origin
         );
         
-        // Replace the current page content with the sitemap XML and set proper content type
-        document.open('application/xml');
+        // Replace the current page content with the sitemap XML
+        document.open();
         document.write(correctedXml);
         document.close();
+        
+        // Set the content type header if possible
+        if (document.contentType) {
+          (document as any).contentType = 'application/xml';
+        }
         
         setLoading(false);
         
