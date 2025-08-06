@@ -57,6 +57,7 @@ import { VPNBlocked } from "./pages/VPNBlocked";
 import { VPNGuard } from "./components/VPNGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { RSSRedirect } from "./components/RSSRedirect";
+import { SitemapRedirect } from "./components/SitemapRedirect";
 
 
 const queryClient = new QueryClient();
@@ -91,6 +92,7 @@ const App = () => (
                       <VPNGuard>
                        <Routes>
                            {/* Special routes */}
+                          <Route path="/sitemap.xml" element={<SitemapRedirect />} />
                          
                          {/* Authentication routes - standalone pages */}
                         <Route path="/login" element={<Login />} />
