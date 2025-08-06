@@ -57,6 +57,7 @@ import { VPNBlocked } from "./pages/VPNBlocked";
 import { VPNGuard } from "./components/VPNGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { RSSRedirect } from "./components/RSSRedirect";
+import { SitemapRedirect } from "./components/SitemapRedirect";
 
 
 
@@ -82,12 +83,15 @@ const App = () => (
                   <ScrollToTop />
                   <MetadataProvider>
                   <MaintenanceWrapper>
-                <Routes>
-                  {/* VPN blocked page - outside VPN guard */}
-                  <Route path="/vpn-blocked" element={<VPNBlocked />} />
-                  
-                  {/* All other routes wrapped in VPN guard */}
-                  <Route path="/*" element={
+                 <Routes>
+                   {/* Static redirects handled before VPN guard */}
+                   <Route path="/sitemap.xml" element={<SitemapRedirect />} />
+                   
+                   {/* VPN blocked page - outside VPN guard */}
+                   <Route path="/vpn-blocked" element={<VPNBlocked />} />
+                   
+                   {/* All other routes wrapped in VPN guard */}
+                   <Route path="/*" element={
                     <ErrorBoundary>
                       <VPNGuard>
                        <Routes>
