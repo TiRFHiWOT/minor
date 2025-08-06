@@ -1,59 +1,31 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.3'
+import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-interface SitemapUrl {
-  loc: string;
-  lastmod?: string;
-  changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
-  priority?: number;
-}
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-function generateSitemapXML(urls: SitemapUrl[]): string {
-  const urlElements = urls.map(url => {
-    let urlXML = `    <url>\n        <loc>${url.loc}</loc>\n`;
-    if (url.lastmod) {
-      urlXML += `        <lastmod>${url.lastmod}</lastmod>\n`;
-    }
-    if (url.changefreq) {
-      urlXML += `        <changefreq>${url.changefreq}</changefreq>\n`;
-    }
-    if (url.priority !== undefined) {
-      urlXML += `        <priority>${url.priority}</priority>\n`;
-    }
-    urlXML += `    </url>`;
-    return urlXML;
-  }).join('\n');
-
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urlElements}
-</urlset>`;
-}
-
-Deno.serve(async (req) => {
+serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
     const host = req.headers.get("host");
     const protocol = host?.includes("localhost") ? "http" : "https";
     const baseUrl = `${protocol}://${host}`;
 
     console.log(`Generating topics sitemap for baseUrl: ${baseUrl}`);
 
-    const { data: topics, error: topicsError } = await supabase
-      .from('topics')
+    // Pull topics with hierarchical category information
+    const { data: topics, error } = await supabase
+      .from("topics")
       .select(`
         slug, 
         updated_at, 
@@ -64,41 +36,47 @@ Deno.serve(async (req) => {
         )
       `)
       .eq('moderation_status', 'approved')
-      .order('updated_at', { ascending: false })
+      .order("updated_at", { ascending: false })
       .limit(50000);
 
-    if (topicsError) {
-      throw topicsError;
+    if (error) {
+      throw error;
     }
 
     console.log(`Topics query result: ${topics?.length || 0} topics found`);
 
-    const topicUrls: SitemapUrl[] = topics?.map(topic => {
+    const urls = topics?.map((topic) => {
+      const category = topic.categories;
+      if (!category?.slug) return ""; // Skip if no category
+
       let topicUrl = '';
-      if (topic.categories?.parent_category?.slug) {
-        topicUrl = `${baseUrl}/${topic.categories.parent_category.slug}/${topic.categories.slug}/${topic.slug}`;
-      } else if (topic.categories?.slug) {
-        topicUrl = `${baseUrl}/${topic.categories.slug}/${topic.slug}`;
+      if (category.parent_category?.slug) {
+        // Level 3 category: /parent-slug/subcategory-slug/topic-slug
+        topicUrl = `${baseUrl}/${category.parent_category.slug}/${category.slug}/${topic.slug}`;
       } else {
-        topicUrl = `${baseUrl}/topic/${topic.slug}`;
+        // Level 2 category: /category-slug/topic-slug
+        topicUrl = `${baseUrl}/${category.slug}/${topic.slug}`;
       }
 
-      return {
-        loc: topicUrl,
-        lastmod: topic.updated_at || topic.created_at,
-        priority: 0.6,
-        changefreq: 'weekly' as const,
-      };
-    }) || [];
+      return `<url>
+  <loc>${topicUrl}</loc>
+  <lastmod>${new Date(topic.updated_at || topic.created_at).toISOString()}</lastmod>
+  <priority>0.6</priority>
+  <changefreq>weekly</changefreq>
+</url>`;
+    }).filter(Boolean) || [];
 
-    const xmlContent = generateSitemapXML(topicUrls);
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join("\n")}
+</urlset>`;
 
-    console.log(`Generated topics sitemap with ${topicUrls.length} URLs`);
+    console.log(`Generated topics sitemap with ${urls.length} URLs`);
 
-    return new Response(xmlContent, {
+    return new Response(xml, {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/xml',
+        "Content-Type": "application/xml",
         'Cache-Control': 'public, max-age=3600',
       },
     });
