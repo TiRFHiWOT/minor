@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 export const SitemapRedirect = () => {
   useEffect(() => {
-    // Redirect to the actual sitemap endpoint
-    window.location.href = '/functions/v1/sitemap-index';
+    // Redirect to the actual sitemap endpoint using full Supabase URL
+    window.location.href = 'https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap-index';
   }, []);
 
   return (
@@ -16,7 +16,7 @@ export const SitemapRedirect = () => {
     }}>
       <div>
         <p>Redirecting to sitemap...</p>
-        <p>If you are not redirected automatically, <a href="/functions/v1/sitemap-index">click here</a>.</p>
+        <p>If you are not redirected automatically, <a href="https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap-index">click here</a>.</p>
       </div>
     </div>
   );
