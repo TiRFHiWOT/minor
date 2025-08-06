@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://rscowwmoeycyxmfslhme.supabase.co/sitemap.xml
+Sitemap: https://minorhockeytalks.com/sitemap.xml
