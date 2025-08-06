@@ -1,6 +1,6 @@
-# Sitemap redirects
-/sitemap.xml https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=index 200
-/sitemap.xml?type=* https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=:splat 200
+# Sitemap redirects - work with any domain
+/sitemap.xml /functions/v1/sitemap?type=index 200
+/sitemap.xml?type=* /functions/v1/sitemap?type=:splat 200
 
 # RSS Feed redirect
 /rss.xml https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/rss-feed 200
