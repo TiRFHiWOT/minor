@@ -117,9 +117,6 @@ const App = () => (
                    {/* RSS Feed Route */}
                   <Route path="/rss" element={<RSSRedirect />} />
                   
-                  {/* Sitemap Route - redirect to edge function */}
-                  <Route path="/sitemap.xml" element={<Navigate to="https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap-index" replace />} />
-                  
                   {/* Forum routes - wrapped in ForumLayout */}
                   <Route path="/" element={<ForumLayout />}>
                     <Route index element={<ForumHome />} />
