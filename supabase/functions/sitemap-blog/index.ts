@@ -17,9 +17,8 @@ serve(async (req) => {
   }
 
   try {
-    const host = req.headers.get("host");
-    const protocol = host?.includes("localhost") ? "http" : "https";
-    const baseUrl = `${protocol}://${host}`;
+    // Use the actual domain instead of edge runtime host
+    const baseUrl = "https://minorhockeytalks.com";
 
     console.log(`Generating blog sitemap for baseUrl: ${baseUrl}`);
 

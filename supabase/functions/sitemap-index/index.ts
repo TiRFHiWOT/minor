@@ -12,24 +12,23 @@ serve(async (req) => {
   }
 
   try {
-    const host = req.headers.get("host");
-    const protocol = host?.includes("localhost") ? "http" : "https";
-    const baseUrl = `${protocol}://${host}`;
+    // Use the actual domain instead of edge runtime host
+    const baseUrl = "https://minorhockeytalks.com";
 
     console.log(`Generating sitemap index for baseUrl: ${baseUrl}`);
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>${baseUrl}/functions/v1/sitemap-categories</loc>
+    <loc>https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap-categories</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${baseUrl}/functions/v1/sitemap-topics</loc>
+    <loc>https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap-topics</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${baseUrl}/functions/v1/sitemap-blog</loc>
+    <loc>https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap-blog</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
 </sitemapindex>`;
