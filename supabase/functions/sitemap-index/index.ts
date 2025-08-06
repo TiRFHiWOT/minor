@@ -14,7 +14,12 @@ serve(async (req) => {
   try {
     const host = req.headers.get("host");
     const protocol = host?.includes("localhost") ? "http" : "https";
-    const baseUrl = `${protocol}://${host}`;
+    
+    // Use actual domain when called via Supabase functions
+    const actualHost = host?.includes("supabase") || host?.includes("edge-runtime") 
+      ? "minorhockeytalks.com" 
+      : host;
+    const baseUrl = `${protocol}://${actualHost}`;
 
     console.log(`Generating sitemap index for baseUrl: ${baseUrl}`);
 
