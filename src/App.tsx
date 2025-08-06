@@ -126,10 +126,10 @@ const App = () => (
                     {/* Legacy UUID-based redirects */}
                     <Route path="topic/:topicId" element={<TopicView />} />
                     <Route path="category/:categoryId" element={<CategoryView />} />
-                    <Route path="create" element={<CreateTopic />} />
-                    <Route path="topics" element={<Topics />} />
-                    <Route path="categories" element={<Categories />} />
-                    <Route path="search" element={<Search />} />
+                     <Route path="create" element={<CreateTopic />} />
+                     <Route path="topics" element={<Topics />} />
+                     <Route path="categories" element={<Categories />} />
+                     <Route path="search" element={<Search />} />
                      <Route path="profile" element={<Profile />} />
                      <Route path="bookmarks" element={<Bookmarks />} />
                      <Route path="settings" element={<Settings />} />
@@ -138,6 +138,9 @@ const App = () => (
                      <Route path="rules" element={<ForumRules />} />
                      <Route path="blog" element={<Blog />} />
                      <Route path="blog/:slug" element={<BlogPost />} />
+                     {/* Catch-all routes MUST be last */}
+                     <Route path=":categorySlug" element={<CategoryView />} />
+                     <Route path=":categorySlug/:subcategorySlug" element={<CategoryView />} />
                   </Route>
                   
                   {/* Test page for ad integration */}
