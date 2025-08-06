@@ -70,12 +70,15 @@ Deno.serve(async (req) => {
     const referer = req.headers.get('referer');
     const forwardedHost = req.headers.get('x-forwarded-host');
     const customDomain = req.headers.get('x-custom-domain');
+    const host = req.headers.get('host');
     
     let baseUrl = 'https://rscowwmoeycyxmfslhme.supabase.co'; // fallback
     
-    // Priority: forwarded host (from redirects) > custom domain > origin > referer
+    // Priority: forwarded host > host header > custom domain > origin > referer
     if (forwardedHost && !forwardedHost.includes('supabase.co')) {
       baseUrl = `https://${forwardedHost}`;
+    } else if (host && !host.includes('supabase.co')) {
+      baseUrl = `https://${host}`;
     } else if (customDomain && !customDomain.includes('supabase.co')) {
       baseUrl = `https://${customDomain}`;
     } else if (origin && !origin.includes('supabase.co')) {
@@ -85,7 +88,7 @@ Deno.serve(async (req) => {
       baseUrl = `${refererUrl.protocol}//${refererUrl.host}`;
     }
 
-    console.log(`Generating sitemap type: ${type}, baseUrl: ${baseUrl}, host: ${url.host}, custom-domain: ${customDomain}`);
+    console.log(`Generating sitemap type: ${type}, baseUrl: ${baseUrl}, host: ${host}, forwarded-host: ${forwardedHost}, custom-domain: ${customDomain}, origin: ${origin}, referer: ${referer}`);
 
     let xmlContent = '';
 

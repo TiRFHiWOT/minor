@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 export const SitemapRedirect = () => {
   useEffect(() => {
-    // Immediately redirect to the edge function
-    window.location.replace('https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=index');
+    // Use relative URL to work with any domain (custom or Supabase)
+    window.location.replace('/sitemap.xml?type=index');
   }, []);
 
   // Return null since we're redirecting immediately
