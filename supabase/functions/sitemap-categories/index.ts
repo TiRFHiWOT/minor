@@ -1,100 +1,85 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.3'
+import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-interface SitemapUrl {
-  loc: string;
-  lastmod?: string;
-  changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
-  priority?: number;
-}
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-function generateSitemapXML(urls: SitemapUrl[]): string {
-  const urlElements = urls.map(url => {
-    let urlXML = `    <url>\n        <loc>${url.loc}</loc>\n`;
-    if (url.lastmod) {
-      urlXML += `        <lastmod>${url.lastmod}</lastmod>\n`;
-    }
-    if (url.changefreq) {
-      urlXML += `        <changefreq>${url.changefreq}</changefreq>\n`;
-    }
-    if (url.priority !== undefined) {
-      urlXML += `        <priority>${url.priority}</priority>\n`;
-    }
-    urlXML += `    </url>`;
-    return urlXML;
-  }).join('\n');
-
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urlElements}
-</urlset>`;
-}
-
-Deno.serve(async (req) => {
+serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
     const host = req.headers.get("host");
     const protocol = host?.includes("localhost") ? "http" : "https";
     const baseUrl = `${protocol}://${host}`;
 
     console.log(`Generating categories sitemap for baseUrl: ${baseUrl}`);
 
-    const { data: categories, error: categoriesError } = await supabase
-      .from('categories')
-      .select('slug, updated_at, created_at, parent_category:parent_category_id(slug)')
+    const { data: categories, error } = await supabase
+      .from("categories")
+      .select("slug, updated_at, created_at, parent_category:parent_category_id(slug)")
       .eq('is_active', true)
-      .order('created_at', { ascending: false });
+      .order("updated_at", { ascending: false });
 
-    if (categoriesError) {
-      throw categoriesError;
+    if (error) {
+      throw error;
     }
 
     console.log(`Categories query result: ${categories?.length || 0} categories found`);
 
     // Include static category pages
-    const staticUrls: SitemapUrl[] = [
-      { loc: baseUrl, priority: 1.0, changefreq: 'daily' },
-      { loc: `${baseUrl}/categories`, priority: 0.9, changefreq: 'daily' },
+    const staticUrls = [
+      `<url>
+  <loc>${baseUrl}</loc>
+  <priority>1.0</priority>
+  <changefreq>daily</changefreq>
+</url>`,
+      `<url>
+  <loc>${baseUrl}/categories</loc>
+  <priority>0.9</priority>
+  <changefreq>daily</changefreq>
+</url>`
     ];
 
-    const categoryUrls: SitemapUrl[] = categories?.map(category => {
+    const categoryUrls = categories?.map((category) => {
       let categoryUrl = '';
       if (category.parent_category?.slug) {
+        // Level 3 category: /parent-slug/subcategory-slug
         categoryUrl = `${baseUrl}/${category.parent_category.slug}/${category.slug}`;
       } else {
+        // Level 2 category: /category-slug
         categoryUrl = `${baseUrl}/${category.slug}`;
       }
 
-      return {
-        loc: categoryUrl,
-        lastmod: category.updated_at || category.created_at,
-        priority: category.parent_category ? 0.7 : 0.8,
-        changefreq: 'weekly' as const,
-      };
+      return `<url>
+  <loc>${categoryUrl}</loc>
+  <lastmod>${new Date(category.updated_at || category.created_at).toISOString()}</lastmod>
+  <priority>${category.parent_category ? '0.7' : '0.8'}</priority>
+  <changefreq>weekly</changefreq>
+</url>`;
     }) || [];
 
     const allUrls = [...staticUrls, ...categoryUrls];
-    const xmlContent = generateSitemapXML(allUrls);
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${allUrls.join("\n")}
+</urlset>`;
 
     console.log(`Generated categories sitemap with ${allUrls.length} URLs`);
 
-    return new Response(xmlContent, {
+    return new Response(xml, {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/xml',
+        "Content-Type": "application/xml",
         'Cache-Control': 'public, max-age=3600',
       },
     });
