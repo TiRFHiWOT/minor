@@ -17,8 +17,9 @@ serve(async (req) => {
   }
 
   try {
-    // Use the actual domain instead of edge runtime host
-    const baseUrl = "https://minorhockeytalks.com";
+    const host = req.headers.get("host");
+    const protocol = host?.includes("localhost") ? "http" : "https";
+    const baseUrl = `${protocol}://${host}`;
 
     console.log(`Generating topics sitemap for baseUrl: ${baseUrl}`);
 
