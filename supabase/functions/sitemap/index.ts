@@ -65,14 +65,18 @@ Deno.serve(async (req) => {
     const url = new URL(req.url);
     const type = url.searchParams.get('type') || 'index';
     
-    // Check if we have a custom domain from headers
+    // Determine the base URL from request headers
     const origin = req.headers.get('origin');
     const referer = req.headers.get('referer');
+    const forwardedHost = req.headers.get('x-forwarded-host');
     const customDomain = req.headers.get('x-custom-domain');
-    let baseUrl = `https://${url.host}`;
     
-    // Priority: custom domain header > origin > referer > default
-    if (customDomain && !customDomain.includes('supabase.co')) {
+    let baseUrl = 'https://rscowwmoeycyxmfslhme.supabase.co'; // fallback
+    
+    // Priority: forwarded host (from redirects) > custom domain > origin > referer
+    if (forwardedHost && !forwardedHost.includes('supabase.co')) {
+      baseUrl = `https://${forwardedHost}`;
+    } else if (customDomain && !customDomain.includes('supabase.co')) {
       baseUrl = `https://${customDomain}`;
     } else if (origin && !origin.includes('supabase.co')) {
       baseUrl = origin;
