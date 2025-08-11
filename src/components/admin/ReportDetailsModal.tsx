@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { HTMLRenderer } from '@/components/ui/html-renderer';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
@@ -411,11 +412,10 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
                     <h4 className="font-semibold text-base">{report.topic.title}</h4>
                   </div>
                 )}
-                <div className="prose prose-sm max-w-none">
-                  <p className="whitespace-pre-wrap text-sm">
-                    {report.post?.content || report.topic?.content || 'No content available'}
-                  </p>
-                </div>
+                <HTMLRenderer 
+                  content={report.post?.content || report.topic?.content || 'No content available'}
+                  className="text-sm"
+                />
               </div>
             </div>
 
