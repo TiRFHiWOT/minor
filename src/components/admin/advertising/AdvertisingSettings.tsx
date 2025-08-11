@@ -43,8 +43,8 @@ export const AdvertisingSettings = () => {
                 </p>
               </div>
               <Switch
-                checked={getSetting('advertising_enabled', 'true') === 'true'}
-                onCheckedChange={(checked) => handleSettingChange('advertising_enabled', checked.toString(), 'boolean')}
+                checked={getSetting('advertising_enabled', true) === true || getSetting('advertising_enabled', 'true') === 'true'}
+                onCheckedChange={(checked) => handleSettingChange('advertising_enabled', checked, 'boolean')}
               />
             </div>
 
@@ -88,8 +88,8 @@ export const AdvertisingSettings = () => {
                 </div>
               </div>
               <Switch
-                checked={getSetting('ads_desktop_enabled', 'true') === 'true'}
-                onCheckedChange={(checked) => handleSettingChange('ads_desktop_enabled', checked.toString(), 'boolean')}
+                checked={getSetting('ads_desktop_enabled', true) === true || getSetting('ads_desktop_enabled', 'true') === 'true'}
+                onCheckedChange={(checked) => handleSettingChange('ads_desktop_enabled', checked, 'boolean')}
               />
             </div>
 
@@ -104,8 +104,8 @@ export const AdvertisingSettings = () => {
                 </div>
               </div>
               <Switch
-                checked={getSetting('ads_mobile_enabled', 'true') === 'true'}
-                onCheckedChange={(checked) => handleSettingChange('ads_mobile_enabled', checked.toString(), 'boolean')}
+                checked={getSetting('ads_mobile_enabled', true) === true || getSetting('ads_mobile_enabled', 'true') === 'true'}
+                onCheckedChange={(checked) => handleSettingChange('ads_mobile_enabled', checked, 'boolean')}
               />
             </div>
           </CardContent>

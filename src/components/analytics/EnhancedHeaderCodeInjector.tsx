@@ -15,17 +15,24 @@ export const EnhancedHeaderCodeInjector = () => {
   
   // Get header scripts (now the primary header code system)
   const headerScriptsRaw = getSetting('header_scripts', []);
-  
+
+  // Robustly parse header scripts from setting (array or JSON string)
   let headerScripts: HeaderScript[] = [];
   try {
-    headerScripts = Array.isArray(headerScriptsRaw) ? headerScriptsRaw : [];
+    if (Array.isArray(headerScriptsRaw)) {
+      headerScripts = headerScriptsRaw as HeaderScript[];
+    } else if (typeof headerScriptsRaw === 'string') {
+      const parsed = JSON.parse(headerScriptsRaw);
+      if (Array.isArray(parsed)) headerScripts = parsed as HeaderScript[];
+    }
   } catch (error) {
     console.error('Error parsing header scripts:', error);
     headerScripts = [];
   }
   
-  // Check if advertising is enabled
-  const advertisingEnabled = getSetting('advertising_enabled', 'true') === 'true';
+  // Check if advertising is enabled (supports boolean or string)
+  const advertisingEnabledRaw = getSetting('advertising_enabled', true);
+  const advertisingEnabled = advertisingEnabledRaw === true || advertisingEnabledRaw === 'true' || advertisingEnabledRaw === 1;
 
   useEffect(() => {
     // Remove any existing custom header elements to avoid duplicates
@@ -36,21 +43,49 @@ export const EnhancedHeaderCodeInjector = () => {
       return;
     }
 
-    // Inject active header scripts
+    // Inject active header scripts by creating real DOM elements so scripts execute
     headerScripts
       .filter(script => script.is_active)
       .forEach((script) => {
-        const sanitizedScript = DOMPurify.sanitize(script.script, {
-          ALLOWED_TAGS: ['script', 'style', 'meta', 'link', 'ins'],
-          ALLOWED_ATTR: ['src', 'href', 'type', 'rel', 'charset', 'name', 'content', 'property', 'async', 'crossorigin', 'class', 'style', 'data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive'],
-          ALLOW_DATA_ATTR: true,
-          ALLOW_UNKNOWN_PROTOCOLS: false
-        });
+        try {
+          const sanitizedHtml = DOMPurify.sanitize(script.script, {
+            ALLOWED_TAGS: ['script', 'style', 'meta', 'link'],
+            ALLOWED_ATTR: ['src', 'href', 'type', 'rel', 'charset', 'name', 'content', 'property', 'async', 'crossorigin']
+          });
 
-        const scriptContainer = document.createElement('div');
-        scriptContainer.setAttribute('data-custom-header', `script-${script.id}`);
-        scriptContainer.innerHTML = sanitizedScript;
-        document.head.appendChild(scriptContainer);
+          const template = document.createElement('template');
+          template.innerHTML = sanitizedHtml;
+
+          Array.from(template.content.childNodes).forEach((node, idx) => {
+            if (node.nodeType !== Node.ELEMENT_NODE) return;
+            const el = node as Element;
+            const tag = el.tagName.toLowerCase();
+
+            if (tag === 'script') {
+              const s = document.createElement('script');
+              // Copy attributes
+              Array.from(el.attributes).forEach(attr => {
+                if (attr.name === 'async') {
+                  (s as HTMLScriptElement).async = true;
+                } else {
+                  s.setAttribute(attr.name, attr.value);
+                }
+              });
+              // Inline script content
+              if (!s.getAttribute('src')) {
+                s.textContent = el.textContent || '';
+              }
+              s.setAttribute('data-custom-header', `script-${script.id}-${idx}`);
+              document.head.appendChild(s);
+            } else if (tag === 'link' || tag === 'meta' || tag === 'style') {
+              const cloned = el.cloneNode(true) as Element;
+              cloned.setAttribute('data-custom-header', `script-${script.id}-${idx}`);
+              document.head.appendChild(cloned);
+            }
+          });
+        } catch (e) {
+          console.error('Failed injecting header script:', script.name, e);
+        }
       });
 
     return () => {

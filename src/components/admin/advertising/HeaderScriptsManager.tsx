@@ -32,10 +32,23 @@ export const HeaderScriptsManager = () => {
   // Get current header scripts from settings with safe parsing
   const getHeaderScripts = (): HeaderScript[] => {
     const scriptsData = getSetting('header_scripts', []);
-    console.log('Header scripts data:', scriptsData);
-    
-    // Since useForumSettings already parses the JSON, just return the array
-    return Array.isArray(scriptsData) ? scriptsData : [];
+    console.log('Header scripts raw setting value:', scriptsData);
+
+    // Already an array
+    if (Array.isArray(scriptsData)) return scriptsData as HeaderScript[];
+
+    // If it's a JSON string, try to parse it
+    if (typeof scriptsData === 'string') {
+      try {
+        const parsed = JSON.parse(scriptsData);
+        if (Array.isArray(parsed)) return parsed as HeaderScript[];
+      } catch (e) {
+        console.warn('Failed to parse header_scripts string:', e);
+      }
+    }
+
+    // Fallback
+    return [];
   };
   
   const headerScripts: HeaderScript[] = getHeaderScripts();
