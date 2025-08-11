@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { useForumSettings } from '@/hooks/useForumSettings';
 import { useAuth } from '@/hooks/useAuth';
+import { htmlToText } from '@/utils/htmlToText';
 
 interface PageMetadata {
   title?: string;
@@ -91,7 +92,7 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         
         const { data: childCategory, error: childError } = await supabase
           .from('categories')
-          .select('id, parent_category_id')
+          .select('id, parent_category_id, name')
           .eq('slug', params.subcategorySlug)
           .eq('parent_category_id', parentCategory.id)
           .single();
@@ -102,7 +103,7 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         // Single category
         const { data, error } = await supabase
           .from('categories')
-          .select('id, parent_category_id')
+          .select('id, parent_category_id, name')
           .eq('slug', params.categorySlug)
           .single();
         
@@ -129,7 +130,7 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       }
       
       console.log('MetadataProvider: Successfully fetched topic metadata:', topicData);
-      return topicData;
+      return { ...topicData, category_name: (categoryData as any)?.name };
     },
     enabled: !!params.categorySlug && !!params.topicSlug
   });
@@ -156,9 +157,17 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     enabled: !!user?.id && location.pathname === '/profile'
   });
 
+  // Helpers for formatting
+  const formatSlug = (slug?: string) => {
+    if (!slug) return '';
+    return slug.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+  };
+  const truncate = (s: string, len = 160) => (s.length > len ? s.slice(0, len - 1).trimEnd() + '…' : s);
+
   // Determine page metadata based on current route
   const getPageMetadata = (): PageMetadata => {
     const baseTitle = getSetting('forum_name', 'Minor Hockey Talks');
+    const forumTag = 'Minor Hockey forum';
     const baseSeparator = ' - ';
 
     // Custom metadata takes highest priority
@@ -171,27 +180,56 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
 
     // Topic page metadata
     if (topicMetadata && params.topicSlug) {
+      const catName = (topicMetadata as any).category_name || formatSlug(params.subcategorySlug || params.categorySlug || '');
+      const computedTitle = topicMetadata.meta_title
+        ? topicMetadata.meta_title
+        : `${topicMetadata.title || formatSlug(params.topicSlug!)} | ${forumTag} | ${catName}`;
+      const computedDesc = topicMetadata.meta_description
+        || (topicMetadata.content ? truncate(htmlToText(topicMetadata.content)) : undefined);
       return {
-        title: topicMetadata.meta_title || `${topicMetadata.title}${baseSeparator}${baseTitle}`,
-        description: topicMetadata.meta_description || (topicMetadata.content ? topicMetadata.content.substring(0, 160) : undefined),
+        title: computedTitle,
+        description: computedDesc,
         keywords: topicMetadata.meta_keywords,
         canonical: topicMetadata.canonical_url,
-        ogTitle: topicMetadata.og_title || topicMetadata.title,
-        ogDescription: topicMetadata.og_description || topicMetadata.meta_description,
+        ogTitle: topicMetadata.og_title || computedTitle,
+        ogDescription: topicMetadata.og_description || computedDesc,
         ogImage: topicMetadata.og_image
       };
     }
 
-    // Category page metadata
-    if (categoryMetadata && params.categorySlug) {
+    // Fallback while topic/category data loads
+    if (params.topicSlug) {
+      const cat = formatSlug(params.subcategorySlug || params.categorySlug || '');
+      const t = formatSlug(params.topicSlug);
       return {
-        title: categoryMetadata.meta_title || `${categoryMetadata.name || params.categorySlug}${baseSeparator}${baseTitle}`,
-        description: categoryMetadata.meta_description,
+        title: `${t} | ${forumTag} | ${cat}`,
+        description: `Join the discussion: ${t} in ${cat} on ${forumTag}.`
+      };
+    }
+
+    // Category page metadata
+    if (categoryMetadata && params.categorySlug && !params.topicSlug) {
+      const computedTitle = categoryMetadata.meta_title
+        || `${categoryMetadata.name || formatSlug(params.categorySlug)} | ${forumTag}`;
+      const computedDesc = categoryMetadata.meta_description
+        || `Explore ${categoryMetadata.name || formatSlug(params.categorySlug)} topics on ${forumTag}.`;
+      return {
+        title: computedTitle,
+        description: computedDesc,
         keywords: categoryMetadata.meta_keywords,
         canonical: categoryMetadata.canonical_url,
-        ogTitle: categoryMetadata.og_title,
-        ogDescription: categoryMetadata.og_description,
+        ogTitle: categoryMetadata.og_title || computedTitle,
+        ogDescription: categoryMetadata.og_description || computedDesc,
         ogImage: categoryMetadata.og_image
+      };
+    }
+
+    // Fallback while category loads
+    if (params.categorySlug && !params.topicSlug) {
+      const c = formatSlug(params.categorySlug);
+      return {
+        title: `${c} | ${forumTag}`,
+        description: `Browse ${c} discussions on ${forumTag}.`
       };
     }
 
