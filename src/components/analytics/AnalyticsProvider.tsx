@@ -1,5 +1,6 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useGoogleAnalytics } from '@/hooks/useGoogleAnalytics';
+import { useRouteTracking } from '@/hooks/useRouteTracking';
 
 interface AnalyticsContextType {
   trackPageView: (customTitle?: string) => void;
@@ -30,6 +31,9 @@ interface AnalyticsProviderProps {
 
 export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({ children }) => {
   const analytics = useGoogleAnalytics();
+  
+  // Initialize route tracking to ensure page views are tracked
+  useRouteTracking();
 
   return (
     <AnalyticsContext.Provider value={analytics}>

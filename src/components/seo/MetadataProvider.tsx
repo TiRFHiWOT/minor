@@ -351,6 +351,11 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
   };
 
   const metadata = getPageMetadata();
+  
+  // Debug logging for title tracking
+  console.log('🏷️ MetadataProvider computed metadata:', metadata);
+  console.log('📄 Current document.title:', document.title);
+  console.log('🔍 Current pathname:', location.pathname);
 
   return (
     <MetadataContext.Provider value={{ setPageMetadata }}>
