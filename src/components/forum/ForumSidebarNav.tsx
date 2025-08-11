@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
@@ -103,9 +104,8 @@ export const ForumSidebarNav = () => {
         </div>
       </Card>
 
-     <!-- /22404337467,423899568/minorhockeytalks-Sidebar-Left -->
-<div id='div-gpt-ad-1752247623844-0' style='min-width: 300px; min-height: 250px;'>
-</div>
+      {/* /22404337467,423899568/minorhockeytalks-Sidebar-Left */}
+      <div id="div-gpt-ad-1752247623844-0" style={{ minWidth: 300, minHeight: 250 }} />
 
       <SidebarAdBanner />
 
