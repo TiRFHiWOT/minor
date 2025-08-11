@@ -124,7 +124,7 @@ export const LiveVisitorMonitor: React.FC = () => {
             VPN & Security Traffic (Today)
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
               <div className="flex items-center gap-2 mb-2">
                 <Wifi className="h-4 w-4 text-orange-600" />
@@ -132,6 +132,15 @@ export const LiveVisitorMonitor: React.FC = () => {
               </div>
               <p className="text-xl font-bold text-orange-900">{vpnStats.unique_vpn_ips_today}</p>
               <p className="text-xs text-orange-700">Unique IPs detected</p>
+            </div>
+            
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium text-green-800">Active VPN Users</span>
+              </div>
+              <p className="text-xl font-bold text-green-900">{vpnStats.active_vpn_users}</p>
+              <p className="text-xs text-green-700">Currently online (30min)</p>
             </div>
             
             <div className="bg-red-50 p-4 rounded-lg border border-red-200">
@@ -157,7 +166,10 @@ export const LiveVisitorMonitor: React.FC = () => {
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
               <p className="text-sm text-blue-800">
                 <strong>Traffic Analysis:</strong> {vpnStats.total_vpn_visits_today} VPN visits detected today 
-                ({vpnStats.vpn_percentage}% of total traffic) from {vpnStats.unique_vpn_ips_today} unique IPs. 
+                ({vpnStats.vpn_percentage}% of total traffic) from {vpnStats.unique_vpn_ips_today} unique IPs.
+                {vpnStats.active_vpn_users > 0 && 
+                  ` Currently ${vpnStats.active_vpn_users} VPN users are active.`
+                }
                 {vpnStats.vpn_post_attempts_blocked > 0 ? 
                   ` ${vpnStats.vpn_post_attempts_blocked} posting attempts were blocked.` : 
                   ' No posting attempts were blocked.'

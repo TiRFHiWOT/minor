@@ -7,6 +7,7 @@ interface VPNTrafficStats {
   vpn_post_attempts_blocked: number;
   total_blocked_attempts: number;
   vpn_percentage: number;
+  active_vpn_users: number;
 }
 
 export const useVPNTrafficStats = () => {
@@ -29,6 +30,26 @@ export const useVPNTrafficStats = () => {
         }
 
         console.log('📊 VPN visits found:', vpnVisits?.length || 0);
+
+        // Get active VPN users (users active in the last 30 minutes with VPN IPs)
+        const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+        const { data: activeVPNVisits, error: activeVPNError } = await supabase
+          .from('ip_visit_tracking')
+          .select('ip_address, session_id')
+          .eq('is_vpn', true)
+          .gte('created_at', thirtyMinutesAgo);
+
+        if (activeVPNError) {
+          console.error('❌ Error fetching active VPN visits:', activeVPNError);
+          throw activeVPNError;
+        }
+
+        // Count unique active VPN users (by IP and session)
+        const activeVPNUsers = new Set(
+          activeVPNVisits?.map(visit => `${visit.ip_address}_${visit.session_id}`) || []
+        ).size;
+
+        console.log('👥 Active VPN users found:', activeVPNUsers);
 
         // Get total visits today for percentage calculation
         const { data: totalVisits, error: totalError } = await supabase
@@ -86,7 +107,8 @@ export const useVPNTrafficStats = () => {
           unique_vpn_ips_today: uniqueVPNIPs,
           vpn_post_attempts_blocked: vpnBlockedAttempts.length,
           total_blocked_attempts: blockedAttempts?.length || 0,
-          vpn_percentage: Math.round(vpnPercentage * 100) / 100
+          vpn_percentage: Math.round(vpnPercentage * 100) / 100,
+          active_vpn_users: activeVPNUsers
         };
 
         console.log('📈 VPN Stats computed:', stats);
