@@ -103,7 +103,10 @@ export const ForumSidebarNav = () => {
         </div>
       </Card>
 
-      {/* Sidebar Advertisement */}
+     <!-- /22404337467,423899568/minorhockeytalks-Sidebar-Left -->
+<div id='div-gpt-ad-1752247623844-0' style='min-width: 300px; min-height: 250px;'>
+</div>
+
       <SidebarAdBanner />
 
     </div>
