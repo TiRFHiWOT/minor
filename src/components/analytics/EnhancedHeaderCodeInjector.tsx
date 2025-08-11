@@ -35,9 +35,17 @@ export const EnhancedHeaderCodeInjector = () => {
   const advertisingEnabled = advertisingEnabledRaw === true || advertisingEnabledRaw === 'true' || advertisingEnabledRaw === 1;
 
   useEffect(() => {
-    // Remove any existing custom header elements to avoid duplicates
+    // Always remove existing custom header elements to avoid duplicates
     const existingElements = document.querySelectorAll('[data-custom-header]');
     existingElements.forEach(el => el.remove());
+
+    // Skip injecting header scripts on ad test routes to avoid double-loading vendors
+    const path = window.location.pathname;
+    const skipPaths = ['/test', '/ad-test-min'];
+    if (skipPaths.includes(path)) {
+      console.log('[HeaderInjector] Skipping header script injection on test route:', path);
+      return;
+    }
 
     if (!advertisingEnabled) {
       return;

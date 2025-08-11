@@ -34,6 +34,7 @@ import { Categories } from "./pages/Categories";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import AdTest from "./pages/AdTest";
+import AdTestMin from "./pages/AdTestMin";
 import AdminPage from "./pages/admin/AdminPage";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminContent from "./pages/admin/AdminContent";
@@ -145,10 +146,11 @@ const App = () => (
                      <Route path=":categorySlug/:subcategorySlug" element={<CategoryView />} />
                   </Route>
                   
-                  {/* Test page for ad integration */}
+                  {/* Test pages for ad integration */}
                   <Route path="/test" element={<AdTest />} />
+                  <Route path="/ad-test-min" element={<AdTestMin />} />
                   
-                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </VPNGuard>

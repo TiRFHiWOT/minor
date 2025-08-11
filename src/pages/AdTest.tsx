@@ -109,6 +109,35 @@ const AdTest: React.FC = () => {
     setTimeout(logAdContainers, 1000);
   }, []);
 
+  useEffect(() => {
+    // Diagnostics: count AdMetricsPro scripts and attach GPT listeners
+    const vendorScripts = Array.from(document.querySelectorAll('script'))
+      .map(s => (s as HTMLScriptElement).src)
+      .filter(Boolean);
+    const ampScripts = vendorScripts.filter(src => src.includes('admetricspro.com'));
+    console.log('[AdTest] AdMetricsPro scripts found:', ampScripts);
+
+    const attachGPT = () => {
+      const g = (window as any).googletag;
+      if (!g) return;
+      try {
+        g.pubads && g.pubads().addEventListener && g.pubads().addEventListener('slotRenderEnded', (e: any) => console.log('[AdTest] slotRenderEnded', e));
+        g.pubads && g.pubads().addEventListener && g.pubads().addEventListener('impressionViewable', (e: any) => console.log('[AdTest] impressionViewable', e));
+        g.pubads && g.pubads().addEventListener && g.pubads().addEventListener('slotOnload', (e: any) => console.log('[AdTest] slotOnload', e));
+        const slots = g.pubads && g.pubads().getSlots ? g.pubads().getSlots() : [];
+        console.log('[AdTest] GPT slots at attach time:', slots.map((s: any) => ({ id: s.getSlotElementId?.(), path: s.getAdUnitPath?.() })));
+      } catch (err) {
+        console.warn('[AdTest] Failed attaching GPT listeners', err);
+      }
+    };
+
+    if ((window as any).googletag?.cmd?.push) {
+      (window as any).googletag.cmd.push(attachGPT);
+    } else {
+      setTimeout(attachGPT, 5000);
+    }
+  }, []);
+
   const handleRefreshAds = () => {
     console.log('=== Manual Ad Refresh Triggered ===');
     setRefreshCount(prev => prev + 1);
