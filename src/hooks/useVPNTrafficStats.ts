@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 interface VPNTrafficStats {
-  total_vpn_visits_today: number;
-  unique_vpn_ips_today: number;
+  total_vpn_visits_24h: number;
+  unique_vpn_ips_24h: number;
   vpn_post_attempts_blocked: number;
   total_blocked_attempts: number;
   vpn_percentage: number;
@@ -17,12 +17,13 @@ export const useVPNTrafficStats = () => {
       console.log('🔍 Fetching VPN traffic stats...');
       
       try {
-        // Get VPN visits today
+        // Get VPN visits in last 24 hours
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
         const { data: vpnVisits, error: vpnError } = await supabase
           .from('ip_visit_tracking')
           .select('ip_address, is_vpn')
           .eq('is_vpn', true)
-          .gte('created_at', new Date().toISOString().split('T')[0] + 'T00:00:00.000Z');
+          .gte('created_at', twentyFourHoursAgo);
 
         if (vpnError) {
           console.error('❌ Error fetching VPN visits:', vpnError);
@@ -51,23 +52,23 @@ export const useVPNTrafficStats = () => {
 
         console.log('👥 Active VPN users found:', activeVPNUsers);
 
-        // Get total visits today for percentage calculation
+        // Get total visits in last 24 hours for percentage calculation
         const { data: totalVisits, error: totalError } = await supabase
           .from('ip_visit_tracking')
           .select('id')
-          .gte('created_at', new Date().toISOString().split('T')[0] + 'T00:00:00.000Z');
+          .gte('created_at', twentyFourHoursAgo);
 
         if (totalError) {
           console.error('❌ Error fetching total visits:', totalError);
           throw totalError;
         }
 
-        // Get blocked attempts from anonymous_post_tracking
+        // Get blocked attempts from last 24 hours
         const { data: blockedAttempts, error: blockedError } = await supabase
           .from('anonymous_post_tracking')
           .select('id, is_blocked, ip_address')
           .eq('is_blocked', true)
-          .gte('created_at', new Date().toISOString().split('T')[0] + 'T00:00:00.000Z');
+          .gte('created_at', twentyFourHoursAgo);
 
         if (blockedError) {
           console.error('❌ Error fetching blocked attempts:', blockedError);
@@ -103,8 +104,8 @@ export const useVPNTrafficStats = () => {
         const vpnPercentage = totalVisitsCount > 0 ? (totalVPNVisits / totalVisitsCount) * 100 : 0;
 
         const stats: VPNTrafficStats = {
-          total_vpn_visits_today: totalVPNVisits,
-          unique_vpn_ips_today: uniqueVPNIPs,
+          total_vpn_visits_24h: totalVPNVisits,
+          unique_vpn_ips_24h: uniqueVPNIPs,
           vpn_post_attempts_blocked: vpnBlockedAttempts.length,
           total_blocked_attempts: blockedAttempts?.length || 0,
           vpn_percentage: Math.round(vpnPercentage * 100) / 100,

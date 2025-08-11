@@ -104,7 +104,7 @@ export const LiveVisitorMonitor: React.FC = () => {
             <div>
               <p className="text-sm text-muted-foreground">VPN Traffic (24h)</p>
               <p className="text-2xl font-bold">
-                {vpnLoading ? '...' : vpnStats?.total_vpn_visits_today || 0}
+                {vpnLoading ? '...' : vpnStats?.total_vpn_visits_24h || 0}
               </p>
               {vpnStats && (
                 <p className="text-xs text-muted-foreground">
@@ -121,7 +121,7 @@ export const LiveVisitorMonitor: React.FC = () => {
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Shield className="h-5 w-5 text-orange-600" />
-            VPN & Security Traffic (Today)
+            VPN & Security Traffic (Last 24 Hours)
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -130,7 +130,7 @@ export const LiveVisitorMonitor: React.FC = () => {
                 <Wifi className="h-4 w-4 text-orange-600" />
                 <span className="text-sm font-medium text-orange-800">VPN Visitors</span>
               </div>
-              <p className="text-xl font-bold text-orange-900">{vpnStats.unique_vpn_ips_today}</p>
+              <p className="text-xl font-bold text-orange-900">{vpnStats.unique_vpn_ips_24h}</p>
               <p className="text-xs text-orange-700">Unique IPs detected</p>
             </div>
             
@@ -162,11 +162,11 @@ export const LiveVisitorMonitor: React.FC = () => {
             </div>
           </div>
           
-          {vpnStats.total_vpn_visits_today > 0 ? (
+          {vpnStats.total_vpn_visits_24h > 0 ? (
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
               <p className="text-sm text-blue-800">
-                <strong>Traffic Analysis:</strong> {vpnStats.total_vpn_visits_today} VPN visits detected today 
-                ({vpnStats.vpn_percentage}% of total traffic) from {vpnStats.unique_vpn_ips_today} unique IPs.
+                <strong>Traffic Analysis:</strong> {vpnStats.total_vpn_visits_24h} VPN visits detected in last 24 hours 
+                ({vpnStats.vpn_percentage}% of total traffic) from {vpnStats.unique_vpn_ips_24h} unique IPs.
                 {vpnStats.active_vpn_users > 0 && 
                   ` Currently ${vpnStats.active_vpn_users} VPN users are active.`
                 }
@@ -179,7 +179,7 @@ export const LiveVisitorMonitor: React.FC = () => {
           ) : (
             <div className="text-center py-4 text-muted-foreground">
               <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No VPN traffic detected today</p>
+              <p className="text-sm">No VPN traffic detected in last 24 hours</p>
             </div>
           )}
         </Card>
