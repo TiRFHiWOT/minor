@@ -52,6 +52,15 @@ const BOT_USER_AGENTS = [
   'ia_archiver',
   'Wayback',
   
+  // AI/Claude crawlers
+  'ClaudeBot',
+  'Claude-Web',
+  'anthropic',
+  
+  // AWS and cloud services that are often flagged as VPNs
+  'AmazonCloudWatch',
+  'AWS-Internal',
+  
   // Other legitimate bots
   'PingdomBot',
   'UptimeRobot',
@@ -75,7 +84,10 @@ const BOT_NAME_MAPPING: Record<string, { name: string; type: BotInfo['botType'] 
   'Applebot': { name: 'Apple Search', type: 'search' },
   'DuckDuckBot': { name: 'DuckDuckGo', type: 'search' },
   'YandexBot': { name: 'Yandex', type: 'search' },
-  'Baiduspider': { name: 'Baidu', type: 'search' }
+  'Baiduspider': { name: 'Baidu', type: 'search' },
+  'ClaudeBot': { name: 'Claude AI', type: 'other' },
+  'Claude-Web': { name: 'Claude AI', type: 'other' },
+  'anthropic': { name: 'Anthropic AI', type: 'other' }
 };
 
 /**

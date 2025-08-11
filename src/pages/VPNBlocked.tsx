@@ -5,28 +5,35 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useVPNDetection } from "@/hooks/useVPNDetection";
+import { useForumSettings } from "@/hooks/useForumSettings";
 import { LeaderboardTopAd } from "@/components/ads/LeaderboardTopAd";
 
 export const VPNBlocked = () => {
   const navigate = useNavigate();
   const { isVPN, isLoading, recheckVPN, isBlocked } = useVPNDetection();
+  const { getSetting } = useForumSettings();
+  const vpnDetectionEnabled = getSetting('vpn_detection_enabled', true);
 
-  console.log('🚫 VPNBlocked page state:', { isVPN, isLoading, isBlocked });
+  console.log('🚫 VPNBlocked page state:', { isVPN, isLoading, isBlocked, vpnDetectionEnabled });
 
-  // Auto-redirect logic - CRITICAL fix for infinite loop
+  // CRITICAL: Auto-redirect logic to fix the stuck users issue
   useEffect(() => {
-    // IMPORTANT: When VPN detection is disabled, this page should immediately redirect
-    // because the user should never see this page when VPN detection is off
-    if (!isLoading && isVPN === false) {
-      console.log('🛡️ VPN not detected (or detection disabled), redirecting to home');
-      // Immediate redirect when VPN detection is disabled or no VPN detected
-      const timer = setTimeout(() => {
-        navigate('/', { replace: true });
-      }, 100); // Very short delay to prevent rapid redirects during state changes
-      
-      return () => clearTimeout(timer);
+    console.log('🛡️ VPNBlocked page effect:', { vpnDetectionEnabled, isVPN, isLoading });
+    
+    // If VPN detection is disabled, redirect immediately
+    if (!vpnDetectionEnabled) {
+      console.log('🛡️ VPN detection disabled, redirecting from blocked page to home');
+      navigate('/', { replace: true });
+      return;
     }
-  }, [isVPN, isLoading, navigate]);
+    
+    // If not loading and no VPN detected, redirect to home
+    if (!isLoading && !isVPN) {
+      console.log('🛡️ No VPN detected, redirecting from blocked page to home');
+      navigate('/', { replace: true });
+      return;
+    }
+  }, [vpnDetectionEnabled, isVPN, isLoading, navigate]);
 
   const handleRefresh = async () => {
     try {
@@ -36,6 +43,18 @@ export const VPNBlocked = () => {
       console.error('Error rechecking VPN status:', error);
     }
   };
+
+  // Show loading if we're about to redirect
+  if (!vpnDetectionEnabled || (!isLoading && !isVPN)) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Redirecting...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

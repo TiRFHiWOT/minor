@@ -26,10 +26,12 @@ export const useVPNDetection = () => {
   // Immediately set safe defaults when VPN detection is disabled
   useEffect(() => {
     if (!vpnDetectionEnabled) {
-      console.log('🔧 VPN detection disabled - setting safe defaults immediately');
+      console.log('🔧 VPN detection disabled - setting safe defaults immediately and clearing cache');
       setIsVPN(false);
       setIsLoading(false);
       setError(null);
+      // Clear the cache to ensure fresh detection when re-enabled
+      vpnCache.clear();
       return;
     }
   }, [vpnDetectionEnabled]);

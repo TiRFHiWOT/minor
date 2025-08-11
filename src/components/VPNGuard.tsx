@@ -38,8 +38,15 @@ export const VPNGuard = ({ children }: VPNGuardProps) => {
   }
 
   // CRITICAL: If VPN detection is disabled, bypass all VPN logic immediately
+  // This must happen BEFORE any VPN checks or redirects
   if (!vpnDetectionEnabled) {
-    console.log('🛡️ VPN detection disabled - bypassing all VPN checks');
+    console.log('🛡️ VPN detection disabled - bypassing all VPN checks and allowing access');
+    // If user is currently on VPN blocked page and detection is disabled, redirect to home
+    if (location.pathname === '/vpn-blocked') {
+      console.log('🛡️ VPN detection disabled but user on blocked page - redirecting to home');
+      navigate('/', { replace: true });
+      return <LoadingSpinner message="Redirecting..." />;
+    }
     return <>{children}</>;
   }
 
@@ -55,11 +62,17 @@ export const VPNGuard = ({ children }: VPNGuardProps) => {
   // CRITICAL: Never redirect to VPN blocked page if VPN detection would be disabled
   // This prevents the infinite loop when VPN detection is turned off
   const shouldRedirect = useMemo(() => {
-    // Only redirect if VPN is explicitly detected as true (not null or false)
-    const result = isVPN === true && location.pathname !== '/vpn-blocked' && !isLoading;
-    console.log('🛡️ VPNGuard shouldRedirect logic:', { isVPN, pathname: location.pathname, isLoading, result });
+    // Only redirect if VPN detection is enabled AND VPN is explicitly detected as true (not null or false)
+    const result = vpnDetectionEnabled && isVPN === true && location.pathname !== '/vpn-blocked' && !isLoading;
+    console.log('🛡️ VPNGuard shouldRedirect logic:', { 
+      vpnDetectionEnabled, 
+      isVPN, 
+      pathname: location.pathname, 
+      isLoading, 
+      result 
+    });
     return result;
-  }, [isVPN, location.pathname, isLoading]);
+  }, [vpnDetectionEnabled, isVPN, location.pathname, isLoading]);
 
   useEffect(() => {
     // Only redirect if VPN is detected and user is not already on the VPN blocked page
