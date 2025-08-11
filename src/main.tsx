@@ -3,25 +3,50 @@ import App from './App.tsx'
 import './index.css'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
-// More robust error handling for third-party scripts
+// Aggressive error handling to prevent any script errors from crashing React
 window.addEventListener('error', (event) => {
-  // Prevent any script errors from crashing React
-  if (event.filename?.includes('sync.min.js') || 
-      event.filename?.includes('tags.crwdcntrl.net') ||
-      event.message === 'Script error.' ||
-      event.message?.includes('SYNC.JS')) {
-    console.log('Blocked problematic third-party script error:', event.message);
-    event.stopPropagation();
+  console.log('Global error caught:', {
+    message: event.message,
+    filename: event.filename,
+    lineno: event.lineno,
+    colno: event.colno
+  });
+  
+  // Block all external script errors
+  if (event.filename && (
+    event.filename.includes('sync.min.js') || 
+    event.filename.includes('tags.crwdcntrl.net') ||
+    event.filename.includes('adnxs.com') ||
+    event.filename.includes('adsystem.com') ||
+    event.filename === '' || 
+    event.filename === 'Unknown file'
+  )) {
+    console.log('Blocked external script error');
+    event.stopImmediatePropagation();
     event.preventDefault();
     return false;
   }
-  console.log('Allowed error:', event.message, event.filename);
+  
+  // Block generic script errors
+  if (event.message === 'Script error.' || event.message?.includes('SYNC.JS')) {
+    console.log('Blocked generic script error');
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    return false;
+  }
 });
 
 // Handle unhandled promise rejections
 window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
-  event.preventDefault(); // Prevent default handling
+  console.log('Promise rejection:', event.reason);
+  event.preventDefault();
+});
+
+// Force clear any cached scripts on load
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('Clearing cached ad scripts...');
+  const scripts = document.querySelectorAll('script[src*="tags.crwdcntrl.net"], script[src*="sync.min.js"]');
+  scripts.forEach(script => script.remove());
 });
 
 const root = document.getElementById("root");
