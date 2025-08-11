@@ -10,8 +10,6 @@ export const AdBanner: React.FC<AdBannerProps> = ({ className = '' }) => {
       <div className="flex justify-center px-4">
         <div className="w-full min-w-[320px] max-w-[728px]">
           <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
-          <div id='div-gpt-ad-1715358598569-0' style='min-width: 300px; min-height: 50px;'>
-
           <div 
             id='div-gpt-ad-1715358598569-0' 
             style={{ minWidth: '300px', minHeight: '50px' }}
