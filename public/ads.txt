@@ -7,7 +7,7 @@ contact=adops@admetricspro.com
 ownerdomain=minorhockeytalks.com
 admetricspro.com, 755, DIRECT
 
-# Version 20250721
+# Version 20250724
 # End Version 
 
 # Ads.txt Adagio
