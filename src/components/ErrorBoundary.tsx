@@ -16,6 +16,12 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    // Ignore cross-origin script errors from ad networks
+    if (error.message === 'Script error.' || error.message.includes('SYNC.JS')) {
+      console.log('Ignored cross-origin error from ad script:', error.message);
+      return { hasError: false };
+    }
+    
     console.error('Error caught by boundary:', error);
     return { hasError: true, error };
   }
