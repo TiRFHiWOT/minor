@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Helmet } from 'react-helmet-async';
 
 // Declare the global functions
 declare global {
@@ -134,9 +135,13 @@ const AdTest: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-4">AdMetricsPro Test Page</h1>
+    <>
+      <Helmet>
+        <script src="https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js" />
+      </Helmet>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-4">AdMetricsPro Test Page</h1>
         <p className="text-xl text-muted-foreground mb-6">
           Testing ad integration and placement for minorhockeytalks.com
         </p>
@@ -391,8 +396,28 @@ const AdTest: React.FC = () => {
           <p>5. Check network tab for ad request activity</p>
         </div>
       </Card>
+
+      {/* CMP Compliance Divs */}
+      <Card className="p-6 bg-yellow-50 border-yellow-200">
+        <h3 className="text-lg font-bold mb-4">Consent Management Platform (CMP)</h3>
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm font-medium mb-2">Footer CMP (for all pages):</p>
+            <div id="ampCMP_footer" className="border border-dashed border-yellow-400 p-2 bg-yellow-100">
+              <p className="text-xs text-center">CMP Footer Link will appear here</p>
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium mb-2">Privacy Policy CMP:</p>
+            <div id="ampCMP_privacyPolicy" className="border border-dashed border-yellow-400 p-2 bg-yellow-100">
+              <p className="text-xs text-center">CMP Privacy Policy controls will appear here</p>
+            </div>
+          </div>
+        </div>
+      </Card>
     </div>
     </div>
+    </>
   );
 };
 
