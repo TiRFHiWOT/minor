@@ -48,8 +48,13 @@ export const EnhancedHeaderCodeInjector = () => {
     }
 
     if (!advertisingEnabled) {
+      console.log('[HeaderInjector] Advertising disabled, skipping script injection');
       return;
     }
+
+    // Temporarily disable AdMetricsPro to prevent React crashes
+    console.log('[HeaderInjector] Temporarily skipping all header scripts to prevent crashes');
+    return;
 
     // Inject active header scripts by creating real DOM elements so scripts execute
     headerScripts
