@@ -16,11 +16,15 @@ export const useRouteTracking = () => {
       trackNavigation(previousPath, currentPath, 'click');
     }
 
-    // Track page view with current document title (set by MetadataProvider)
-    trackPageView(document.title);
+    // Small delay to ensure MetadataProvider has set the title
+    const timeoutId = setTimeout(() => {
+      trackPageView(document.title);
+    }, 100);
 
     // Update previous location
     previousLocation.current = currentPath;
+
+    return () => clearTimeout(timeoutId);
   }, [location, trackPageView, trackNavigation]);
 
   return {

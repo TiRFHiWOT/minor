@@ -201,8 +201,15 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     if (params.topicSlug) {
       const cat = formatSlug(params.subcategorySlug || params.categorySlug || '');
       const t = formatSlug(params.topicSlug);
+      const fallbackTitle = `${t} | ${forumTag} | ${cat}`;
+      
+      // Set fallback title immediately for analytics
+      if (document.title !== fallbackTitle) {
+        document.title = fallbackTitle;
+      }
+      
       return {
-        title: `${t} | ${forumTag} | ${cat}`,
+        title: fallbackTitle,
         description: `Join the discussion: ${t} in ${cat} on ${forumTag}.`
       };
     }
