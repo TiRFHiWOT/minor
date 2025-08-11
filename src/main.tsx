@@ -3,8 +3,8 @@ import App from './App.tsx'
 import './index.css'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
-// Aggressive error handling to prevent any script errors from crashing React
-window.addEventListener('error', (event) => {
+// Ultra-aggressive error handling to prevent any script errors from crashing React
+const blockExternalErrors = (event: ErrorEvent) => {
   console.log('Global error caught:', {
     message: event.message,
     filename: event.filename,
@@ -12,28 +12,31 @@ window.addEventListener('error', (event) => {
     colno: event.colno
   });
   
-  // Block all external script errors
-  if (event.filename && (
-    event.filename.includes('sync.min.js') || 
-    event.filename.includes('tags.crwdcntrl.net') ||
-    event.filename.includes('adnxs.com') ||
-    event.filename.includes('adsystem.com') ||
-    event.filename === '' || 
-    event.filename === 'Unknown file'
-  )) {
-    console.log('Blocked external script error');
+  // Block ALL sync.js related errors
+  if (event.message?.includes('SYNC.JS') || 
+      event.message?.includes('TCF IFRAME LOCATOR') ||
+      event.filename?.includes('sync.min.js') || 
+      event.filename?.includes('tags.crwdcntrl.net') ||
+      event.filename?.includes('adnxs.com') ||
+      event.filename?.includes('adsystem.com') ||
+      event.filename === '' || 
+      event.filename === 'Unknown file' ||
+      event.message === 'Script error.' ||
+      event.lineno === 0) {
+    
+    console.log('🛡️ Blocked external ad script error to prevent React crash');
     event.stopImmediatePropagation();
     event.preventDefault();
     return false;
   }
-  
-  // Block generic script errors
-  if (event.message === 'Script error.' || event.message?.includes('SYNC.JS')) {
-    console.log('Blocked generic script error');
-    event.stopImmediatePropagation();
-    event.preventDefault();
-    return false;
-  }
+};
+
+window.addEventListener('error', blockExternalErrors, true);
+
+// Also handle any SecurityError specifically
+window.addEventListener('securitypolicyviolation', (event) => {
+  console.log('🛡️ Security policy violation blocked:', event.violatedDirective);
+  event.preventDefault();
 });
 
 // Handle unhandled promise rejections
