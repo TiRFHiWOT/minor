@@ -16,12 +16,19 @@ interface GeolocationData {
 // Enhanced IP detection with multiple fallbacks and retry logic
 export const getUserIP = async (retryCount: number = 0): Promise<string | null> => {
   const maxRetries = 3;
+  const TIMEOUT_MS = 5000; // 5 second timeout
   
   try {
     console.log(`Attempting to get IP from edge function (attempt ${retryCount + 1})...`);
     
-    // Try to get IP from our Supabase Edge Function first
-    const { data, error } = await supabase.functions.invoke('get-client-ip');
+    // Create a timeout promise
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Request timeout')), TIMEOUT_MS);
+    });
+    
+    // Try to get IP from our Supabase Edge Function first with timeout
+    const edgePromise = supabase.functions.invoke('get-client-ip');
+    const { data, error } = await Promise.race([edgePromise, timeoutPromise]);
     
     console.log('Edge function response:', { data, error });
     
@@ -46,7 +53,8 @@ export const getUserIP = async (retryCount: number = 0): Promise<string | null> 
         console.log(`Trying external IP service: ${service.url}`);
         const response = await fetch(service.url, { 
           method: 'GET',
-          headers: { 'Accept': 'application/json' }
+          headers: { 'Accept': 'application/json' },
+          signal: AbortSignal.timeout(3000) // 3 second timeout for fallback services
         });
         
         if (!response.ok) {
@@ -82,9 +90,17 @@ export const getUserIP = async (retryCount: number = 0): Promise<string | null> 
 export const getIPGeolocation = async (ip: string): Promise<GeolocationData | null> => {
   try {
     console.log(`Getting geolocation for IP: ${ip}`);
-    const { data, error } = await supabase.functions.invoke('get-ip-geolocation', {
+    
+    // Add timeout to geolocation request
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Geolocation request timeout')), 8000);
+    });
+    
+    const geoPromise = supabase.functions.invoke('get-ip-geolocation', {
       body: { ip }
     });
+    
+    const { data, error } = await Promise.race([geoPromise, timeoutPromise]);
     
     if (error) {
       console.error('Geolocation error:', error);
