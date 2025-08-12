@@ -541,7 +541,7 @@ const ReportsTab = () => {
               Reports requiring attention from community members
             </div>
             <ScrollArea className="w-full">
-              <div className="min-w-[1200px]">
+              <div className="w-full">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -553,14 +553,14 @@ const ReportsTab = () => {
                         />
                       </TableHead>
                       <TableHead className="min-w-[120px]">Reporter</TableHead>
-                      <TableHead className="min-w-[130px]">Reporter IP</TableHead>
+                      <TableHead className="hidden xl:table-cell">Reporter IP</TableHead>
                       <TableHead className="min-w-[100px]">Content Type</TableHead>
                       <TableHead className="min-w-[150px]">Reason</TableHead>
                       <TableHead className="min-w-[200px]">Content Preview</TableHead>
-                      <TableHead className="min-w-[120px]">Author</TableHead>
-                      <TableHead className="min-w-[130px]">Content IP</TableHead>
-                      <TableHead className="min-w-[100px]">Reported</TableHead>
-                      <TableHead className="min-w-[80px]">Status</TableHead>
+                      <TableHead className="hidden md:table-cell min-w-[120px]">Author</TableHead>
+                      <TableHead className="hidden xl:table-cell">Content IP</TableHead>
+                      <TableHead className="hidden md:table-cell">Reported</TableHead>
+                      <TableHead className="hidden lg:table-cell">Status</TableHead>
                       <TableHead className="min-w-[200px]">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -568,7 +568,7 @@ const ReportsTab = () => {
                     {currentReports?.map((report) => (
                       <TableRow key={report.id}>
                         <TableCell className="min-w-[120px]">{report.reporter?.username || 'Anonymous'}</TableCell>
-                        <TableCell className="min-w-[130px]">
+                        <TableCell className="hidden xl:table-cell">
                           <code className="text-xs bg-muted px-1 py-0.5 rounded">
                             {String(report.reporter_ip_address || 'N/A')}
                           </code>
@@ -582,7 +582,7 @@ const ReportsTab = () => {
                           <div>
                             <div className="font-medium">{report.reason}</div>
                             {report.description && (
-                              <div className="text-sm text-muted-foreground truncate max-w-[140px]" title={report.description}>
+                              <div className="text-sm text-muted-foreground md:truncate max-w-[140px] break-words whitespace-normal" title={report.description}>
                                 {report.description}
                               </div>
                             )}
@@ -593,7 +593,7 @@ const ReportsTab = () => {
                             to={getReportedContentUrl(report)}
                             className="text-primary hover:text-primary/80 hover:underline block"
                           >
-                            <div className="truncate text-sm font-medium">
+                            <div className="md:truncate text-sm font-medium break-words whitespace-normal">
                               {report.post?.content || report.topic?.content || report.topic?.title}
                             </div>
                             <div className="text-xs text-muted-foreground">
@@ -601,7 +601,7 @@ const ReportsTab = () => {
                             </div>
                           </Link>
                         </TableCell>
-                        <TableCell className="min-w-[120px]">
+                        <TableCell className="hidden md:table-cell min-w-[120px]">
                           <div className="text-sm">
                             {report.contentAuthor?.username || 'Anonymous User'}
                           </div>
@@ -609,17 +609,17 @@ const ReportsTab = () => {
                             {report.post ? 'Post author' : 'Topic author'}
                           </div>
                         </TableCell>
-                        <TableCell className="min-w-[130px]">
+                        <TableCell className="hidden xl:table-cell">
                           <code className="text-xs bg-muted px-1 py-0.5 rounded">
                             {String(report.post?.ip_address || 'N/A')}
                           </code>
                         </TableCell>
-                        <TableCell className="min-w-[100px]">
+                        <TableCell className="hidden md:table-cell">
                           <div className="text-sm">
                             {formatDistanceToNow(new Date(report.created_at))} ago
                           </div>
                         </TableCell>
-                        <TableCell className="min-w-[80px]">
+                        <TableCell className="hidden lg:table-cell">
                           {/* Check if content is pending moderation */}
                           {(report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending') && (
                             <Badge variant="outline" className="text-xs">
@@ -715,7 +715,7 @@ const ReportsTab = () => {
               Previously handled reports (resolved, dismissed, or closed)
             </div>
             <ScrollArea className="w-full">
-              <div className="min-w-[1000px]">
+              <div className="w-full">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -730,22 +730,15 @@ const ReportsTab = () => {
                       <TableHead className="min-w-[100px]">Content Type</TableHead>
                       <TableHead className="min-w-[150px]">Reason</TableHead>
                       <TableHead className="min-w-[200px]">Content Preview</TableHead>
-                      <TableHead className="min-w-[120px]">Author</TableHead>
-                      <TableHead className="min-w-[80px]">Status</TableHead>
-                      <TableHead className="min-w-[100px]">Resolved</TableHead>
+                      <TableHead className="hidden md:table-cell min-w-[120px]">Author</TableHead>
+                      <TableHead className="hidden lg:table-cell min-w-[80px]">Status</TableHead>
+                      <TableHead className="hidden md:table-cell min-w-[100px]">Resolved</TableHead>
                       <TableHead className="min-w-[150px]">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {currentReports?.map((report) => (
                       <TableRow key={report.id}>
-                        <TableCell>
-                          <Checkbox
-                            checked={selectedReports.has(report.id)}
-                            onCheckedChange={() => handleSelectReport(report.id)}
-                            aria-label={`Select report ${report.id}`}
-                          />
-                        </TableCell>
                         <TableCell>
                           <Checkbox
                             checked={selectedReports.has(report.id)}
@@ -763,7 +756,7 @@ const ReportsTab = () => {
                           <div>
                             <div className="font-medium">{report.reason}</div>
                             {report.description && (
-                              <div className="text-sm text-muted-foreground truncate max-w-[140px]" title={report.description}>
+                              <div className="text-sm text-muted-foreground md:truncate max-w-[140px] break-words whitespace-normal" title={report.description}>
                                 {report.description}
                               </div>
                             )}
@@ -774,7 +767,7 @@ const ReportsTab = () => {
                             to={getReportedContentUrl(report)}
                             className="text-primary hover:text-primary/80 hover:underline block"
                           >
-                            <div className="truncate text-sm font-medium">
+                            <div className="md:truncate text-sm font-medium break-words whitespace-normal">
                               {report.post?.content || report.topic?.content || report.topic?.title}
                             </div>
                             <div className="text-xs text-muted-foreground">
@@ -782,12 +775,12 @@ const ReportsTab = () => {
                             </div>
                           </Link>
                         </TableCell>
-                        <TableCell className="min-w-[120px]">
+                        <TableCell className="hidden md:table-cell min-w-[120px]">
                           <div className="text-sm">
                             {report.contentAuthor?.username || 'Anonymous User'}
                           </div>
                         </TableCell>
-                        <TableCell className="min-w-[80px]">
+                        <TableCell className="hidden lg:table-cell min-w-[80px]">
                           <Badge 
                             variant={
                               report.status === 'resolved' ? 'default' : 
@@ -797,7 +790,7 @@ const ReportsTab = () => {
                             {report.status}
                           </Badge>
                         </TableCell>
-                        <TableCell className="min-w-[100px]">
+                        <TableCell className="hidden md:table-cell min-w-[100px]">
                           <div className="text-sm">
                             {report.reviewed_at ? formatDistanceToNow(new Date(report.reviewed_at)) + ' ago' : 'N/A'}
                           </div>
