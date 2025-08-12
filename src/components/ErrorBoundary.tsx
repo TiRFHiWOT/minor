@@ -29,6 +29,12 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       console.warn('Ignored MediaQueryList listener error:', msg);
       return { hasError: false };
     }
+
+    // Ignore AdSense TagErrors that should not crash the UI
+    if (/adsbygoogle\.push\(\) error/i.test(msg) || /No slot size for availableWidth=0/i.test(msg) || /All 'ins' elements.*already have ads/i.test(msg)) {
+      console.warn('Ignored AdSense TagError:', msg);
+      return { hasError: false };
+    }
     
     console.error('Error caught by boundary:', error);
     return { hasError: true, error };

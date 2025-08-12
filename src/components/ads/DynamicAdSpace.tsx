@@ -123,19 +123,37 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
           return;
         }
 
-        // Mark as initialized before pushing to prevent race conditions
-        (el as any)._adsbygoogle_initialized = true;
-        el.setAttribute('data-initialized', 'true');
-        
-        // Wrap in try-catch for mobile safety
+        // Ensure the slot has a measurable width before initializing (mobile-safe)
+        const width = el.getBoundingClientRect().width;
+        const isHidden = (el as HTMLElement).offsetParent === null;
+        if (width <= 0 || isHidden) {
+          const retries = parseInt(el.getAttribute('data-init-retries') || '0', 10);
+          if (retries < 10) {
+            el.setAttribute('data-init-retries', String(retries + 1));
+            setTimeout(() => initAdSlotsWithin(element), 200 * (retries + 1));
+          } else {
+            console.warn('[DynamicAdSpace] Giving up initializing zero-width slot', { location, idx });
+          }
+          return;
+        }
+
+        // Attempt initialization
         try {
           (window.adsbygoogle = window.adsbygoogle || []).push({});
+          // Mark as initialized only after successful push
+          (el as any)._adsbygoogle_initialized = true;
+          el.setAttribute('data-initialized', 'true');
           console.debug('[DynamicAdSpace] Initialized AdSense slot', { location, idx });
         } catch (pushError) {
+          const msg = String((pushError as any)?.message || '');
+          if (/already have ads/i.test(msg)) {
+            // Slot already filled; mark as initialized to avoid re-push
+            (el as any)._adsbygoogle_initialized = true;
+            el.setAttribute('data-initialized', 'true');
+            console.warn('[DynamicAdSpace] Slot already had an ad, marking initialized', { location, idx });
+            return;
+          }
           console.error('[DynamicAdSpace] AdSense push error:', pushError);
-          // Reset flags on error
-          (el as any)._adsbygoogle_initialized = false;
-          el.removeAttribute('data-initialized');
         }
       } catch (e) {
         console.error('[DynamicAdSpace] AdSense slot init error', e);
@@ -203,8 +221,14 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
       } catch (error) {
         console.error('[DynamicAdSpace] Ad initialization error:', error);
       }
-    }, 100);
+    }, 150);
   }, [adSpaces, location, deviceType]);
+
+  // Kill switch via URL parameter (?ads=off)
+  const adsOff = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('ads') === 'off';
+  if (adsOff) {
+    return null;
+  }
 
   // Don't show ads if advertising is disabled globally
   if (!advertisingEnabled) {

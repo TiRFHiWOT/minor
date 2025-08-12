@@ -41,9 +41,17 @@ export const EnhancedHeaderCodeInjector = () => {
 
     // Skip injecting header scripts on specific routes to avoid double-loading vendors
     const path = window.location.pathname;
+    const search = window.location.search;
     const skipPaths = ['/test', '/ad-test-min'];
     if (skipPaths.includes(path) || path.startsWith('/admin')) {
       console.log('[HeaderInjector] Skipping header script injection on route:', path);
+      return;
+    }
+
+    // Global ads kill switch via URL parameter (?ads=off)
+    const adsOff = new URLSearchParams(search).get('ads') === 'off';
+    if (adsOff) {
+      console.log('[HeaderInjector] Ads kill switch active (?ads=off)');
       return;
     }
 

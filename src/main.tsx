@@ -12,19 +12,25 @@ const blockExternalErrors = (event: ErrorEvent) => {
     colno: event.colno
   });
   
-  // Block ALL sync.js related errors
-  if (event.message?.includes('SYNC.JS') || 
-      event.message?.includes('TCF IFRAME LOCATOR') ||
-      event.filename?.includes('sync.min.js') || 
-      event.filename?.includes('tags.crwdcntrl.net') ||
-      event.filename?.includes('adnxs.com') ||
-      event.filename?.includes('adsystem.com') ||
-      event.filename === '' || 
-      event.filename === 'Unknown file' ||
-      event.message === 'Script error.' ||
-      event.lineno === 0) {
-    
-    console.log('🛡️ Blocked external ad script error to prevent React crash');
+  // Block known external ad script errors and AdSense TagErrors
+  const msg = String(event.message || '');
+  const file = String(event.filename || '');
+  if (
+    msg.includes('SYNC.JS') || 
+    msg.includes('TCF IFRAME LOCATOR') ||
+    file.includes('sync.min.js') || 
+    file.includes('tags.crwdcntrl.net') ||
+    file.includes('adnxs.com') ||
+    file.includes('adsystem.com') ||
+    file === '' || 
+    file === 'Unknown file' ||
+    msg === 'Script error.' ||
+    event.lineno === 0 ||
+    /adsbygoogle\.push\(\) error/i.test(msg) ||
+    /No slot size for availableWidth=0/i.test(msg) ||
+    /All 'ins' elements.*already have ads/i.test(msg)
+  ) {
+    console.log('🛡️ Blocked external ad/AdSense TagError to prevent React crash', { msg, file });
     event.stopImmediatePropagation();
     event.preventDefault();
     return false;

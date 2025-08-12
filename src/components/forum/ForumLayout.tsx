@@ -43,7 +43,7 @@ export const ForumLayout = () => {
       <Footer />
       
       {/* Mobile Bottom Navigation */}
-      <MobileBottomNav />
+      {isMobile && <MobileBottomNav />}
     </div>
   );
 };
