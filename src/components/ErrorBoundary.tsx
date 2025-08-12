@@ -21,9 +21,15 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
     
-    // Ignore cross-origin script errors from ad networks
-    if (error.message === 'Script error.' || error.message.includes('SYNC.JS')) {
-      console.log('✅ Ignored cross-origin error from ad script:', error.message);
+    // Ignore cross-origin script errors from ad networks (including SYNC.JS)
+    if (error.message === 'Script error.' || 
+        error.message.includes('SYNC.JS') || 
+        error.message.includes('cross-origin') ||
+        error.message.includes('SecurityError') ||
+        error.message.includes('Failed to read a named property') ||
+        error.message.includes('__tcfapiLocator') ||
+        error.message.includes('tags.crwdcntrl.net')) {
+      console.log('✅ Ignored cross-origin/SYNC.JS error from ad script:', error.message);
       return { hasError: false };
     }
 
@@ -50,6 +56,12 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     // Ignore theme-related errors
     if (/useTheme|next-themes|ThemeProvider/i.test(msg + ' ' + stack)) {
       console.warn('✅ Ignored theme-related error:', msg);
+      return { hasError: false };
+    }
+
+    // Ignore all SecurityError exceptions (cross-origin access violations)
+    if (error.name === 'SecurityError' || /SecurityError/i.test(msg)) {
+      console.warn('✅ Ignored SecurityError (cross-origin violation):', msg);
       return { hasError: false };
     }
     
