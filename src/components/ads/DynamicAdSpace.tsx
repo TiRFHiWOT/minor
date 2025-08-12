@@ -4,6 +4,9 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useForumSettings } from '@/hooks/useForumSettings';
 import DOMPurify from 'dompurify';
 
+// Global flag to prevent duplicate AdSense script loading
+let adsenseScriptLoaded = false;
+
 interface DynamicAdSpaceProps {
   location: string;
   className?: string;
@@ -47,12 +50,17 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
     });
   };
 
-  // Ensure AdSense loader script exists (once)
+  // Ensure AdSense loader script exists (once globally)
   const ensureAdSenseScript = (clientId?: string) => {
+    if (adsenseScriptLoaded) return;
+    
     const existing = document.querySelector(
       'script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]'
     ) as HTMLScriptElement | null;
-    if (existing) return;
+    if (existing) {
+      adsenseScriptLoaded = true;
+      return;
+    }
 
     const script = document.createElement('script');
     script.async = true;
@@ -62,6 +70,17 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
       : 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
     script.setAttribute('data-custom-header', '');
     script.setAttribute('data-source', 'DynamicAdSpace');
+    
+    script.onload = () => {
+      adsenseScriptLoaded = true;
+      console.debug('[DynamicAdSpace] AdSense script loaded successfully');
+    };
+    
+    script.onerror = (error) => {
+      console.error('[DynamicAdSpace] AdSense script failed to load:', error);
+      adsenseScriptLoaded = false;
+    };
+    
     document.head.appendChild(script);
   };
 
@@ -90,21 +109,34 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
           el.setAttribute('data-adtest', 'on');
         }
         
-        // More robust double-init prevention
+        // More robust double-init prevention with mobile-specific checks
         const isAlreadyInitialized = 
           el.getAttribute('data-adsbygoogle-status') || 
           el.hasAttribute('data-ad-status') ||
+          el.hasAttribute('data-initialized') ||
           (el as any)._adsbygoogle_initialized ||
-          el.innerHTML.trim().length > 0; // Has content already
+          el.innerHTML.trim().length > 0 || // Has content already
+          el.children.length > 0; // Has child elements
         
         if (isAlreadyInitialized) {
-          console.debug('[DynamicAdSpace] Skipping already initialized slot', { location, idx });
+          console.debug('[DynamicAdSpace] Skipping already initialized slot', { location, idx, status: el.getAttribute('data-adsbygoogle-status') });
           return;
         }
 
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        // Mark as initialized before pushing to prevent race conditions
         (el as any)._adsbygoogle_initialized = true;
-        console.debug('[DynamicAdSpace] Initialized AdSense slot', { location, idx });
+        el.setAttribute('data-initialized', 'true');
+        
+        // Wrap in try-catch for mobile safety
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          console.debug('[DynamicAdSpace] Initialized AdSense slot', { location, idx });
+        } catch (pushError) {
+          console.error('[DynamicAdSpace] AdSense push error:', pushError);
+          // Reset flags on error
+          (el as any)._adsbygoogle_initialized = false;
+          el.removeAttribute('data-initialized');
+        }
       } catch (e) {
         console.error('[DynamicAdSpace] AdSense slot init error', e);
       }
