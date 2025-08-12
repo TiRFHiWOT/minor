@@ -58,6 +58,8 @@ import { VPNBlocked } from "./pages/VPNBlocked";
 import { VPNGuard } from "./components/VPNGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { RSSRedirect } from "./components/RSSRedirect";
+import { SecurityHeaders } from "./components/security/SecurityHeaders";
+import { SessionTimeout } from "./components/security/SessionTimeout";
 
 
 
@@ -69,6 +71,8 @@ const App = () => (
       <TooltipProvider>
         <AuthProvider>
           <OnlineUsersProvider>
+            <SecurityHeaders />
+            <SessionTimeout timeoutDuration={30} warningTime={5} />
             <StickyBanner />
             <EnhancedHeaderCodeInjector />
             <CookieConsent />
