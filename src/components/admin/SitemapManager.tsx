@@ -26,7 +26,21 @@ export function SitemapManager() {
 
   const getSitemapUrl = (type?: string) => {
     const publicBase = String(siteUrl).replace(/\/$/, '');
-    return type ? `${publicBase}/sitemap.xml?type=${type}` : `${publicBase}/sitemap.xml`;
+    switch (type) {
+      case undefined:
+      case 'index':
+        return `${publicBase}/sitemap.xml`;
+      case 'static':
+        return `${publicBase}/sitemap-static.xml`;
+      case 'categories':
+        return `${publicBase}/sitemap-categories.xml`;
+      case 'topics':
+        return `${publicBase}/sitemap-topics.xml`;
+      case 'blog':
+        return `${publicBase}/sitemap-blog.xml`;
+      default:
+        return `${publicBase}/sitemap.xml`;
+    }
   };
 
   const testSitemap = async (type?: string) => {

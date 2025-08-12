@@ -115,10 +115,10 @@ Deno.serve(async (req) => {
     switch (type) {
       case 'index':
         const sitemaps = [
-          { loc: `${baseUrl}/sitemap.xml?type=static`, lastmod: new Date().toISOString() },
-          { loc: `${baseUrl}/sitemap.xml?type=categories`, lastmod: new Date().toISOString() },
-          { loc: `${baseUrl}/sitemap.xml?type=topics`, lastmod: new Date().toISOString() },
-          { loc: `${baseUrl}/sitemap.xml?type=blog`, lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/sitemap-static.xml`, lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/sitemap-categories.xml`, lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/sitemap-topics.xml`, lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/sitemap-blog.xml`, lastmod: new Date().toISOString() },
         ];
         xmlContent = generateSitemapIndexXML(sitemaps);
         break;
