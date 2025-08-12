@@ -13,6 +13,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 export const ForumLayout = () => {
   const isMobile = useIsMobile();
+  
+  console.log('🏠 ForumLayout rendering, isMobile:', isMobile);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden pb-16">

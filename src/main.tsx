@@ -41,7 +41,9 @@ window.addEventListener('error', blockExternalErrors, true);
 
 // Fallback: suppress generic cross-origin "Script error." via window.onerror
 window.onerror = function (message: any, source?: string, lineno?: number, colno?: number, error?: any) {
-  try {
+console.log('🚀 App starting...');
+
+try {
     const msg = String(message || '');
     const src = source || '';
     if (msg === 'Script error.' || src === '' || src === 'Unknown file' || (lineno === 0 && colno === 0)) {

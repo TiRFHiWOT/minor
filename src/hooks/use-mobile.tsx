@@ -13,6 +13,7 @@ export function useIsMobile() {
     }
 
     const onChange = () => {
+      console.log('📱 Mobile hook: window width:', window.innerWidth, 'breakpoint:', MOBILE_BREAKPOINT);
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
     }
 
