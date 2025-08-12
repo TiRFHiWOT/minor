@@ -42,6 +42,8 @@ export const GoogleAnalytics = () => {
     const script = document.createElement('script');
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
+    (script as HTMLScriptElement).crossOrigin = 'anonymous';
+    (script as HTMLScriptElement).referrerPolicy = 'origin';
     document.head.appendChild(script);
 
     // Initialize gtag with enhanced configuration

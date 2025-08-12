@@ -36,6 +36,9 @@ export const GoogleAnalyticsFixed = () => {
     const script = document.createElement('script');
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
+    // Improve error diagnostics and reduce generic "Script error." reports
+    (script as HTMLScriptElement).crossOrigin = 'anonymous';
+    (script as HTMLScriptElement).referrerPolicy = 'origin';
     script.onload = () => {
       console.log('GA: Script loaded successfully');
       

@@ -33,6 +33,19 @@ const blockExternalErrors = (event: ErrorEvent) => {
 
 window.addEventListener('error', blockExternalErrors, true);
 
+// Fallback: suppress generic cross-origin "Script error." via window.onerror
+window.onerror = function (message: any, source?: string, lineno?: number, colno?: number, error?: any) {
+  try {
+    const msg = String(message || '');
+    const src = source || '';
+    if (msg === 'Script error.' || src === '' || src === 'Unknown file' || (lineno === 0 && colno === 0)) {
+      console.warn('🛡️ Suppressed cross-origin script error via window.onerror', { msg, src, lineno, colno });
+      return true; // prevent default logging and potential blank screen reports
+    }
+  } catch {}
+  return false;
+};
+
 // Also handle any SecurityError specifically
 window.addEventListener('securitypolicyviolation', (event) => {
   console.log('🛡️ Security policy violation blocked:', event.violatedDirective);

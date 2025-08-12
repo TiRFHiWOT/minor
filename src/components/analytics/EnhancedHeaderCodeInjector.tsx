@@ -39,11 +39,11 @@ export const EnhancedHeaderCodeInjector = () => {
     const existingElements = document.querySelectorAll('[data-custom-header]');
     existingElements.forEach(el => el.remove());
 
-    // Skip injecting header scripts on ad test routes to avoid double-loading vendors
+    // Skip injecting header scripts on specific routes to avoid double-loading vendors
     const path = window.location.pathname;
     const skipPaths = ['/test', '/ad-test-min'];
-    if (skipPaths.includes(path)) {
-      console.log('[HeaderInjector] Skipping header script injection on test route:', path);
+    if (skipPaths.includes(path) || path.startsWith('/admin')) {
+      console.log('[HeaderInjector] Skipping header script injection on route:', path);
       return;
     }
 
