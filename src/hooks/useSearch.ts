@@ -34,8 +34,13 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
       
       // Search in topics (if filter allows)
       if (filter === 'all' || filter === 'topics') {
-        let topicQuery = supabase
-          .from('topics')
+        // For multiple words, get broader results and filter client-side
+        const searchConditions = searchWords.map(word => 
+          `title.ilike.%${word}%,content.ilike.%${word}%`
+        ).join(',');
+        
+        const { data: topicResults, error: topicError } = await supabase
+          .from('forum_topics')
           .select(`
             id,
             title,
@@ -45,16 +50,9 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
             reply_count,
             view_count,
             author_id,
-            categories (name, color, slug)
+            category_id
           `)
-          .eq('moderation_status', 'approved');
-
-        // For multiple words, get broader results and filter client-side
-        const searchConditions = searchWords.map(word => 
-          `title.ilike.%${word}%,content.ilike.%${word}%`
-        ).join(',');
-        
-        const { data: topicResults, error: topicError } = await topicQuery
+          .eq('moderation_status', 'approved')
           .or(searchConditions)
           .order('created_at', { ascending: false })
           .limit(200); // Increased limit for client-side filtering
@@ -71,6 +69,19 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
             titleContent.includes(word.toLowerCase())
           );
         }) || [];
+
+        // Get category data for topics
+        const categoryIds = [...new Set(filteredTopics.map(topic => topic.category_id).filter(Boolean))];
+        const categoriesData = categoryIds.length > 0 ? await supabase
+          .from('categories')
+          .select('id, name, color, slug')
+          .in('id', categoryIds)
+          .then(({ data }) => data || []) : [];
+
+        const categoryMap = new Map();
+        categoriesData.forEach(category => {
+          categoryMap.set(category.id, category);
+        });
 
         // Get author data for topics
         const topicAuthorIds = [...new Set(filteredTopics.map(topic => topic.author_id).filter(Boolean))];
@@ -100,15 +111,16 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
         // Add topic results
         filteredTopics.forEach((topic) => {
           const authorUsername = topic.author_id ? topicUserMap.get(topic.author_id) || 'Anonymous User' : 'Anonymous User';
+          const category = categoryMap.get(topic.category_id);
           results.push({
             id: topic.id,
             title: topic.title,
             content: topic.content || '',
             type: 'topic',
             author_username: authorUsername,
-            category_name: topic.categories?.name || 'Unknown',
-            category_color: topic.categories?.color || '#3b82f6',
-            category_slug: topic.categories?.slug,
+            category_name: category?.name || 'Unknown',
+            category_color: category?.color || '#3b82f6',
+            category_slug: category?.slug,
             slug: topic.slug,
             reply_count: topic.reply_count || 0,
             view_count: topic.view_count || 0,
@@ -125,18 +137,13 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
         ).join(',');
 
         const { data: postResults, error: postError } = await supabase
-          .from('posts')
+          .from('forum_posts')
           .select(`
             id,
             content,
             created_at,
             author_id,
-            topics (
-              id,
-              title,
-              slug,
-              categories (name, color, slug)
-            )
+            topic_id
           `)
           .eq('moderation_status', 'approved')
           .or(searchConditions)
@@ -181,10 +188,38 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
           postUserMap.set(tempUser.id, "Guest");
         });
 
+        // Get topic data for posts to get topic titles and categories
+        const topicIds = [...new Set(filteredPosts.map(post => post.topic_id).filter(Boolean))];
+        const topicsData = topicIds.length > 0 ? await supabase
+          .from('forum_topics')
+          .select('id, title, slug, category_id')
+          .in('id', topicIds)
+          .then(({ data }) => data || []) : [];
+
+        const topicMap = new Map();
+        topicsData.forEach(topic => {
+          topicMap.set(topic.id, topic);
+        });
+
+        // Get category data for the topics
+        const postCategoryIds = [...new Set(topicsData.map(topic => topic.category_id).filter(Boolean))];
+        const postCategoriesData = postCategoryIds.length > 0 ? await supabase
+          .from('categories')
+          .select('id, name, color, slug')
+          .in('id', postCategoryIds)
+          .then(({ data }) => data || []) : [];
+
+        const postCategoryMap = new Map();
+        postCategoriesData.forEach(category => {
+          postCategoryMap.set(category.id, category);
+        });
+
         // Add post results with topic context
         filteredPosts.forEach((post) => {
           const authorUsername = post.author_id ? postUserMap.get(post.author_id) || 'Anonymous User' : 'Anonymous User';
-          const topicTitle = post.topics?.title || 'Unknown Topic';
+          const topic = topicMap.get(post.topic_id);
+          const category = topic ? postCategoryMap.get(topic.category_id) : null;
+          const topicTitle = topic?.title || 'Unknown Topic';
           
           results.push({
             id: post.id,
@@ -192,11 +227,11 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
             content: post.content,
             type: 'post',
             author_username: authorUsername,
-            category_name: post.topics?.categories?.name || 'Unknown',
-            category_color: post.topics?.categories?.color || '#3b82f6',
-            category_slug: post.topics?.categories?.slug,
+            category_name: category?.name || 'Unknown',
+            category_color: category?.color || '#3b82f6',
+            category_slug: category?.slug,
             topic_title: topicTitle,
-            topic_slug: post.topics?.slug,
+            topic_slug: topic?.slug,
             reply_count: 0,
             view_count: 0,
             created_at: post.created_at,

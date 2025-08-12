@@ -12,7 +12,7 @@ export const useTopic = (identifier: string) => {
       const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier);
       
       let query = supabase
-        .from('topics')
+        .from('forum_topics')
         .select(`
           *,
           categories (name, color, slug, parent_category_id)
@@ -63,7 +63,7 @@ export const useTopic = (identifier: string) => {
       let lastPostAuthor = null;
       if (topicData.reply_count > 0) {
         const { data: lastPost } = await supabase
-          .from('posts')
+          .from('forum_posts')
           .select(`
             id,
             author_id,
