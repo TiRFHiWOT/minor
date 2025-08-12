@@ -21,6 +21,14 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       console.log('Ignored cross-origin error from ad script:', error.message);
       return { hasError: false };
     }
+
+    // Ignore MediaQueryList listener compatibility errors (older Safari/WebViews)
+    const msg = (error as any)?.message || '';
+    const stack = (error as any)?.stack || '';
+    if (/addEventListener is not a function/i.test(msg) && (/MediaQueryList|matchMedia|use-mobile/i.test(msg + ' ' + stack))) {
+      console.warn('Ignored MediaQueryList listener error:', msg);
+      return { hasError: false };
+    }
     
     console.error('Error caught by boundary:', error);
     return { hasError: true, error };

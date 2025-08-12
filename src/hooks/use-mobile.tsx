@@ -6,13 +6,46 @@ export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
 
   React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    // Guard for environments without window or matchMedia
+    if (typeof window === "undefined") {
+      setIsMobile(false)
+      return
+    }
+
     const onChange = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
     }
-    mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    return () => mql.removeEventListener("change", onChange)
+
+    try {
+      // Initialize immediately
+      onChange()
+
+      const mql = typeof window.matchMedia === "function"
+        ? window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+        : null
+
+      if (mql) {
+        // Prefer modern API
+        if (typeof (mql as any).addEventListener === "function") {
+          (mql as any).addEventListener("change", onChange)
+          return () => (mql as any).removeEventListener?.("change", onChange)
+        }
+        // Fallback for older Safari/iOS
+        if (typeof (mql as any).addListener === "function") {
+          ;(mql as any).addListener(onChange)
+          return () => (mql as any).removeListener?.(onChange)
+        }
+      }
+
+      // Last-resort: window resize listener
+      window.addEventListener("resize", onChange)
+      return () => window.removeEventListener("resize", onChange)
+    } catch {
+      // Very old browsers: rely on resize
+      window.addEventListener("resize", onChange)
+      onChange()
+      return () => window.removeEventListener("resize", onChange)
+    }
   }, [])
 
   return !!isMobile
