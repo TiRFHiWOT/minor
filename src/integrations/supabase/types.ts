@@ -564,6 +564,36 @@ export type Database = {
         }
         Relationships: []
       }
+      content_audit_log: {
+        Row: {
+          author_ip: unknown
+          content_id: string
+          content_type: string
+          created_at: string | null
+          id: string
+          session_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          author_ip: unknown
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          id?: string
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          author_ip?: unknown
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          id?: string
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       forum_settings: {
         Row: {
           category: string
@@ -785,13 +815,6 @@ export type Database = {
             columns: ["topic_visited"]
             isOneToOne: false
             referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ip_visit_tracking_topic_visited_fkey"
-            columns: ["topic_visited"]
-            isOneToOne: false
-            referencedRelation: "topics_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1083,13 +1106,6 @@ export type Database = {
             referencedRelation: "topics"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "polls_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       posts: {
@@ -1138,24 +1154,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "posts_parent_post_id_fkey"
-            columns: ["parent_post_id"]
-            isOneToOne: false
-            referencedRelation: "posts_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "posts_topic_id_fkey"
             columns: ["topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posts_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1242,24 +1244,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "reports_reported_post_id_fkey"
-            columns: ["reported_post_id"]
-            isOneToOne: false
-            referencedRelation: "posts_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "reports_reported_topic_id_fkey"
             columns: ["reported_topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reports_reported_topic_id_fkey"
-            columns: ["reported_topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1430,13 +1418,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "fk_topic_bookmarks_topic_id"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "fk_topic_bookmarks_user_id"
             columns: ["user_id"]
             isOneToOne: false
@@ -1495,13 +1476,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "topic_notifications_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "posts_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "topic_notifications_report_id_fkey"
             columns: ["report_id"]
             isOneToOne: false
@@ -1513,13 +1487,6 @@ export type Database = {
             columns: ["topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "topic_notifications_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_public"
             referencedColumns: ["id"]
           },
           {
@@ -1679,154 +1646,7 @@ export type Database = {
       }
     }
     Views: {
-      posts_public: {
-        Row: {
-          author_id: string | null
-          content: string | null
-          created_at: string | null
-          id: string | null
-          is_anonymous: boolean | null
-          moderation_status: string | null
-          parent_post_id: string | null
-          topic_id: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          author_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_anonymous?: boolean | null
-          moderation_status?: string | null
-          parent_post_id?: string | null
-          topic_id?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          author_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_anonymous?: boolean | null
-          moderation_status?: string | null
-          parent_post_id?: string | null
-          topic_id?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "posts_parent_post_id_fkey"
-            columns: ["parent_post_id"]
-            isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posts_parent_post_id_fkey"
-            columns: ["parent_post_id"]
-            isOneToOne: false
-            referencedRelation: "posts_public"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posts_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posts_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_public"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      topics_public: {
-        Row: {
-          author_id: string | null
-          canonical_url: string | null
-          category_id: string | null
-          content: string | null
-          created_at: string | null
-          id: string | null
-          is_anonymous: boolean | null
-          is_locked: boolean | null
-          is_pinned: boolean | null
-          last_reply_at: string | null
-          meta_description: string | null
-          meta_keywords: string | null
-          meta_title: string | null
-          moderation_status: string | null
-          og_description: string | null
-          og_image: string | null
-          og_title: string | null
-          reply_count: number | null
-          slug: string | null
-          title: string | null
-          updated_at: string | null
-          view_count: number | null
-        }
-        Insert: {
-          author_id?: string | null
-          canonical_url?: string | null
-          category_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_anonymous?: boolean | null
-          is_locked?: boolean | null
-          is_pinned?: boolean | null
-          last_reply_at?: string | null
-          meta_description?: string | null
-          meta_keywords?: string | null
-          meta_title?: string | null
-          moderation_status?: string | null
-          og_description?: string | null
-          og_image?: string | null
-          og_title?: string | null
-          reply_count?: number | null
-          slug?: string | null
-          title?: string | null
-          updated_at?: string | null
-          view_count?: number | null
-        }
-        Update: {
-          author_id?: string | null
-          canonical_url?: string | null
-          category_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_anonymous?: boolean | null
-          is_locked?: boolean | null
-          is_pinned?: boolean | null
-          last_reply_at?: string | null
-          meta_description?: string | null
-          meta_keywords?: string | null
-          meta_title?: string | null
-          moderation_status?: string | null
-          og_description?: string | null
-          og_image?: string | null
-          og_title?: string | null
-          reply_count?: number | null
-          slug?: string | null
-          title?: string | null
-          updated_at?: string | null
-          view_count?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "topics_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       analyze_content_for_spam: {
@@ -1878,6 +1698,10 @@ export type Database = {
       check_user_rate_limit: {
         Args: { user_id: string }
         Returns: boolean
+      }
+      cleanup_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       cleanup_expired_temp_users: {
         Args: Record<PropertyKey, never>
@@ -2227,6 +2051,10 @@ export type Database = {
         Args: { p_reporter_id?: string; p_reporter_ip?: unknown }
         Returns: Json
       }
+      get_secure_content: {
+        Args: { content_type: string; content_id: string }
+        Returns: Json
+      }
       get_topic_secure: {
         Args: { p_topic_id: string }
         Returns: {
@@ -2433,6 +2261,10 @@ export type Database = {
       }
       validate_anonymous_content: {
         Args: { content: string }
+        Returns: boolean
+      }
+      validate_session_security: {
+        Args: { p_session_id: string; p_user_ip: unknown }
         Returns: boolean
       }
     }
