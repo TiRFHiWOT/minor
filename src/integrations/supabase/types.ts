@@ -1653,6 +1653,10 @@ export type Database = {
         Args: { user_ip: unknown }
         Returns: Json
       }
+      check_ip_banned_secure: {
+        Args: { user_ip: unknown }
+        Returns: Json
+      }
       check_moderation_protection: {
         Args: { p_content_id: string; p_content_type: string }
         Returns: Json

@@ -69,8 +69,8 @@ export const useEnhancedSpamDetection = () => {
         };
       }
 
-      // First check if IP is banned
-      const { data: ipCheck, error: ipError } = await supabase.rpc('check_ip_banned', {
+      // First check if IP is banned using secure function
+      const { data: ipCheck, error: ipError } = await supabase.rpc('check_ip_banned_secure', {
         user_ip: userIP
       });
 
