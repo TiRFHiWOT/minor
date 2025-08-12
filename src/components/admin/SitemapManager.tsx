@@ -42,6 +42,17 @@ export function SitemapManager() {
         return `${publicBase}/sitemap.xml`;
     }
   };
+  
+  const getFunctionUrl = (type?: string) => {
+    const base = 'https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap';
+    switch (type) {
+      case undefined:
+      case 'index':
+        return base;
+      default:
+        return `${base}?type=${type}`;
+    }
+  };
 
   const testSitemap = async (type?: string) => {
     setIsGenerating(true);
@@ -210,6 +221,18 @@ export function SitemapManager() {
                   className="text-primary hover:underline flex items-center gap-1"
                 >
                   {getSitemapUrl(sitemap.type)}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                <span>Function URL:</span>
+                <a 
+                  href={getFunctionUrl(sitemap.type)} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline flex items-center gap-1"
+                >
+                  {getFunctionUrl(sitemap.type)}
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
