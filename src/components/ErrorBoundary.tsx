@@ -16,9 +16,14 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    console.error('🚨 ErrorBoundary caught error:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    
     // Ignore cross-origin script errors from ad networks
     if (error.message === 'Script error.' || error.message.includes('SYNC.JS')) {
-      console.log('Ignored cross-origin error from ad script:', error.message);
+      console.log('✅ Ignored cross-origin error from ad script:', error.message);
       return { hasError: false };
     }
 
@@ -26,22 +31,39 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     const msg = (error as any)?.message || '';
     const stack = (error as any)?.stack || '';
     if (/addEventListener is not a function/i.test(msg) && (/MediaQueryList|matchMedia|use-mobile/i.test(msg + ' ' + stack))) {
-      console.warn('Ignored MediaQueryList listener error:', msg);
+      console.warn('✅ Ignored MediaQueryList listener error:', msg);
       return { hasError: false };
     }
 
     // Ignore AdSense TagErrors that should not crash the UI
     if (/adsbygoogle\.push\(\) error/i.test(msg) || /No slot size for availableWidth=0/i.test(msg) || /All 'ins' elements.*already have ads/i.test(msg)) {
-      console.warn('Ignored AdSense TagError:', msg);
+      console.warn('✅ Ignored AdSense TagError:', msg);
+      return { hasError: false };
+    }
+
+    // Ignore chunk loading errors (common in SPAs)
+    if (/ChunkLoadError|Loading chunk/i.test(msg) || /Loading CSS chunk/i.test(msg)) {
+      console.warn('✅ Ignored chunk loading error:', msg);
+      return { hasError: false };
+    }
+
+    // Ignore theme-related errors
+    if (/useTheme|next-themes|ThemeProvider/i.test(msg + ' ' + stack)) {
+      console.warn('✅ Ignored theme-related error:', msg);
       return { hasError: false };
     }
     
-    console.error('Error caught by boundary:', error);
+    console.error('💥 CRITICAL ERROR - Will show error boundary:', {
+      name: error.name,
+      message: msg,
+      stack: stack
+    });
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error boundary caught an error:', error, errorInfo);
+    console.error('🔍 ErrorBoundary componentDidCatch:', error, errorInfo);
+    console.error('Component stack:', errorInfo.componentStack);
   }
 
   render() {
