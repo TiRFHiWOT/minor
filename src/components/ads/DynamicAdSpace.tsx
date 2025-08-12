@@ -89,13 +89,21 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
         if (adtestEnabled) {
           el.setAttribute('data-adtest', 'on');
         }
-        // Avoid re-pushing on already initialized slots
-        if (el.getAttribute('data-adsbygoogle-status')) return;
-        if ((el as any)._adsbygoogle_initialized) return;
+        
+        // More robust double-init prevention
+        const isAlreadyInitialized = 
+          el.getAttribute('data-adsbygoogle-status') || 
+          el.hasAttribute('data-ad-status') ||
+          (el as any)._adsbygoogle_initialized ||
+          el.innerHTML.trim().length > 0; // Has content already
+        
+        if (isAlreadyInitialized) {
+          console.debug('[DynamicAdSpace] Skipping already initialized slot', { location, idx });
+          return;
+        }
 
         (window.adsbygoogle = window.adsbygoogle || []).push({});
         (el as any)._adsbygoogle_initialized = true;
-        // Basic debugging aid
         console.debug('[DynamicAdSpace] Initialized AdSense slot', { location, idx });
       } catch (e) {
         console.error('[DynamicAdSpace] AdSense slot init error', e);
@@ -103,64 +111,68 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
     });
   };
   useEffect(() => {
-    if (adSpaces && adSpaces.length > 0 && adContainerRef.current) {
-      // Clear existing content
-      adContainerRef.current.innerHTML = '';
+    if (!adSpaces || adSpaces.length === 0 || !adContainerRef.current) return;
+    
+    // Clear existing content
+    adContainerRef.current.innerHTML = '';
+    
+    console.debug('[DynamicAdSpace] Rendering ads', { location, deviceType, count: adSpaces.length });
       
-      adSpaces.forEach((adSpace) => {
-        if (adSpace.ad_code) {
-          // Create container for this ad
-          const adDiv = document.createElement('div');
-          adDiv.className = 'ad-space-item mb-4 flex flex-col items-center justify-center text-center';
+    adSpaces.forEach((adSpace, adIdx) => {
+      if (adSpace.ad_code) {
+        // Create container for this ad
+        const adDiv = document.createElement('div');
+        adDiv.className = 'ad-space-item mb-4 flex flex-col items-center justify-center text-center';
+        adDiv.setAttribute('data-ad-space-id', adSpace.id);
+        adDiv.setAttribute('data-ad-index', adIdx.toString());
           
-          // Add "Advertisement" label
-          const label = document.createElement('div');
-          label.className = 'text-center text-xs text-muted-foreground mb-2';
-          label.textContent = 'Advertisement';
-          adDiv.appendChild(label);
-          
-          // Create content container
-          const contentDiv = document.createElement('div');
-          
-          // Sanitize the ad code but allow scripts
-          const sanitized = DOMPurify.sanitize(adSpace.ad_code, {
-            ALLOWED_TAGS: ['script', 'ins', 'div', 'span', 'noscript', 'iframe'],
-            ALLOWED_ATTR: [
-              'class', 'style', 'id', 'type',
-              // Common
-              'src', 'async', 'crossorigin',
-              // AdSense
-              'data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive',
-              // Iframe-related
-              'width', 'height', 'frameborder', 'scrolling', 'marginwidth', 'marginheight', 'referrerpolicy', 'sandbox', 'allow', 'allowfullscreen', 'name'
-            ],
-            ALLOW_DATA_ATTR: true,
-            ALLOW_UNKNOWN_PROTOCOLS: false,
-            ADD_TAGS: ['script', 'ins', 'iframe'],
-            ADD_ATTR: ['data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive']
-          });
-          
-          contentDiv.innerHTML = sanitized;
-          adDiv.appendChild(contentDiv);
-          adContainerRef.current.appendChild(adDiv);
-          
-          // Execute scripts after DOM insertion
-          executeScripts(contentDiv);
+        // Add "Advertisement" label
+        const label = document.createElement('div');
+        label.className = 'text-center text-xs text-muted-foreground mb-2';
+        label.textContent = 'Advertisement';
+        adDiv.appendChild(label);
+        
+        // Create content container
+        const contentDiv = document.createElement('div');
+        
+        // Sanitize the ad code but allow scripts
+        const sanitized = DOMPurify.sanitize(adSpace.ad_code, {
+          ALLOWED_TAGS: ['script', 'ins', 'div', 'span', 'noscript', 'iframe'],
+          ALLOWED_ATTR: [
+            'class', 'style', 'id', 'type',
+            // Common
+            'src', 'async', 'crossorigin',
+            // AdSense
+            'data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive',
+            // Iframe-related
+            'width', 'height', 'frameborder', 'scrolling', 'marginwidth', 'marginheight', 'referrerpolicy', 'sandbox', 'allow', 'allowfullscreen', 'name'
+          ],
+          ALLOW_DATA_ATTR: true,
+          ALLOW_UNKNOWN_PROTOCOLS: false,
+          ADD_TAGS: ['script', 'ins', 'iframe'],
+          ADD_ATTR: ['data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive']
+        });
+        
+        contentDiv.innerHTML = sanitized;
+        adDiv.appendChild(contentDiv);
+        adContainerRef.current!.appendChild(adDiv);
+        
+        // Execute scripts after DOM insertion
+        executeScripts(contentDiv);
+      }
+    });
+    
+    // Initialize AdSense after all ads are inserted
+    setTimeout(() => {
+      try {
+        if (adContainerRef.current) {
+          initAdSlotsWithin(adContainerRef.current);
         }
-      });
-      
-      // Initialize AdSense after all ads are inserted
-      setTimeout(() => {
-        try {
-          if (adContainerRef.current) {
-            initAdSlotsWithin(adContainerRef.current);
-          }
-        } catch (error) {
-          console.error('[DynamicAdSpace] Ad initialization error:', error);
-        }
-      }, 100);
-    }
-  }, [adSpaces]);
+      } catch (error) {
+        console.error('[DynamicAdSpace] Ad initialization error:', error);
+      }
+    }, 100);
+  }, [adSpaces, location, deviceType]);
 
   // Don't show ads if advertising is disabled globally
   if (!advertisingEnabled) {
