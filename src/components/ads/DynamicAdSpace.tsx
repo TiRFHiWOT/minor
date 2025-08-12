@@ -21,10 +21,16 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
   const deviceType = isMobile ? 'mobile' : 'desktop';
   const adContainerRef = useRef<HTMLDivElement>(null);
   
+  // Helper: robust boolean from settings (accepts boolean, string, or number)
+  const getBoolSetting = (key: string, fallback: boolean) => {
+    const val = getSetting(key, fallback);
+    return val === true || val === 'true' || val === 1 || val === '1';
+  };
+  
   // Check if advertising is enabled and device-specific settings
-  const advertisingEnabled = getSetting('advertising_enabled', 'true') === 'true';
-  const desktopEnabled = getSetting('ads_desktop_enabled', 'true') === 'true';
-  const mobileEnabled = getSetting('ads_mobile_enabled', 'true') === 'true';
+  const advertisingEnabled = getBoolSetting('advertising_enabled', true);
+  const desktopEnabled = getBoolSetting('ads_desktop_enabled', true);
+  const mobileEnabled = getBoolSetting('ads_mobile_enabled', true);
   
   const { data: adSpaces, isLoading } = useActiveAdSpaces(location, deviceType);
 
@@ -41,6 +47,61 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
     });
   };
 
+  // Ensure AdSense loader script exists (once)
+  const ensureAdSenseScript = (clientId?: string) => {
+    const existing = document.querySelector(
+      'script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]'
+    ) as HTMLScriptElement | null;
+    if (existing) return;
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.src = clientId
+      ? `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`
+      : 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+    script.setAttribute('data-custom-header', '');
+    script.setAttribute('data-source', 'DynamicAdSpace');
+    document.head.appendChild(script);
+  };
+
+  // Initialize AdSense slots inside a container (idempotent)
+  const initAdSlotsWithin = (element: HTMLElement) => {
+    if (!element) return;
+    const insEls = element.querySelectorAll<HTMLModElement>('ins.adsbygoogle');
+    if (!insEls || insEls.length === 0) return;
+
+    // Use adtest if present (?adtest=1)
+    const url = new URL(window.location.href);
+    const adtestEnabled = url.searchParams.get('adtest') === '1' || url.searchParams.get('adtest') === 'on';
+
+    // Try to get client id from first slot
+    let clientId: string | undefined;
+    insEls.forEach((el) => {
+      const c = el.getAttribute('data-ad-client');
+      if (!clientId && c) clientId = c;
+    });
+
+    ensureAdSenseScript(clientId);
+
+    insEls.forEach((el, idx) => {
+      try {
+        if (adtestEnabled) {
+          el.setAttribute('data-adtest', 'on');
+        }
+        // Avoid re-pushing on already initialized slots
+        if (el.getAttribute('data-adsbygoogle-status')) return;
+        if ((el as any)._adsbygoogle_initialized) return;
+
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        (el as any)._adsbygoogle_initialized = true;
+        // Basic debugging aid
+        console.debug('[DynamicAdSpace] Initialized AdSense slot', { location, idx });
+      } catch (e) {
+        console.error('[DynamicAdSpace] AdSense slot init error', e);
+      }
+    });
+  };
   useEffect(() => {
     if (adSpaces && adSpaces.length > 0 && adContainerRef.current) {
       // Clear existing content
@@ -63,11 +124,19 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
           
           // Sanitize the ad code but allow scripts
           const sanitized = DOMPurify.sanitize(adSpace.ad_code, {
-            ALLOWED_TAGS: ['script', 'ins', 'div', 'span', 'noscript'],
-            ALLOWED_ATTR: ['class', 'style', 'data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive', 'async', 'crossorigin', 'src', 'type', 'id'],
+            ALLOWED_TAGS: ['script', 'ins', 'div', 'span', 'noscript', 'iframe'],
+            ALLOWED_ATTR: [
+              'class', 'style', 'id', 'type',
+              // Common
+              'src', 'async', 'crossorigin',
+              // AdSense
+              'data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive',
+              // Iframe-related
+              'width', 'height', 'frameborder', 'scrolling', 'marginwidth', 'marginheight', 'referrerpolicy', 'sandbox', 'allow', 'allowfullscreen', 'name'
+            ],
             ALLOW_DATA_ATTR: true,
             ALLOW_UNKNOWN_PROTOCOLS: false,
-            ADD_TAGS: ['script', 'ins'],
+            ADD_TAGS: ['script', 'ins', 'iframe'],
             ADD_ATTR: ['data-ad-client', 'data-ad-slot', 'data-ad-format', 'data-full-width-responsive']
           });
           
@@ -83,13 +152,11 @@ export const DynamicAdSpace: React.FC<DynamicAdSpaceProps> = ({ location, classN
       // Initialize AdSense after all ads are inserted
       setTimeout(() => {
         try {
-          if (window.adsbygoogle) {
-            adSpaces.forEach(() => {
-              (window.adsbygoogle = window.adsbygoogle || []).push({});
-            });
+          if (adContainerRef.current) {
+            initAdSlotsWithin(adContainerRef.current);
           }
         } catch (error) {
-          console.error('AdSense initialization error:', error);
+          console.error('[DynamicAdSpace] Ad initialization error:', error);
         }
       }, 100);
     }
