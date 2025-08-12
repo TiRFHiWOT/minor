@@ -3,6 +3,7 @@ import { useParams, Navigate } from 'react-router-dom';
 import { Calendar, User, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { HTMLRenderer } from '@/components/ui/html-renderer';
 import { useBlogPost } from '@/hooks/useBlogPosts';
 import { Link } from 'react-router-dom';
 
@@ -108,9 +109,9 @@ const BlogPost = () => {
         )}
 
         {/* Article Content */}
-        <div 
+        <HTMLRenderer 
+          content={post.content}
           className="prose prose-lg max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </article>
 
