@@ -594,6 +594,42 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_posts: {
+        Row: {
+          author_id: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          moderation_status: string | null
+          parent_post_id: string | null
+          topic_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          moderation_status?: string | null
+          parent_post_id?: string | null
+          topic_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          moderation_status?: string | null
+          parent_post_id?: string | null
+          topic_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       forum_settings: {
         Row: {
           category: string
@@ -627,6 +663,81 @@ export type Database = {
           setting_type?: string
           setting_value?: Json | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      forum_topics: {
+        Row: {
+          author_id: string | null
+          canonical_url: string | null
+          category_id: string
+          content: string | null
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          is_locked: boolean | null
+          is_pinned: boolean | null
+          last_reply_at: string | null
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          moderation_status: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          reply_count: number | null
+          slug: string
+          title: string
+          updated_at: string | null
+          view_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          canonical_url?: string | null
+          category_id: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          last_reply_at?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          moderation_status?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          reply_count?: number | null
+          slug: string
+          title: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          canonical_url?: string | null
+          category_id?: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          last_reply_at?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          moderation_status?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          reply_count?: number | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+          view_count?: number | null
         }
         Relationships: []
       }
@@ -815,13 +926,6 @@ export type Database = {
             columns: ["topic_visited"]
             isOneToOne: false
             referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ip_visit_tracking_topic_visited_fkey"
-            columns: ["topic_visited"]
-            isOneToOne: false
-            referencedRelation: "topics_secure"
             referencedColumns: ["id"]
           },
         ]
@@ -1113,13 +1217,6 @@ export type Database = {
             referencedRelation: "topics"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "polls_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_secure"
-            referencedColumns: ["id"]
-          },
         ]
       }
       posts: {
@@ -1168,24 +1265,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "posts_parent_post_id_fkey"
-            columns: ["parent_post_id"]
-            isOneToOne: false
-            referencedRelation: "posts_secure"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "posts_topic_id_fkey"
             columns: ["topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posts_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_secure"
             referencedColumns: ["id"]
           },
         ]
@@ -1272,24 +1355,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "reports_reported_post_id_fkey"
-            columns: ["reported_post_id"]
-            isOneToOne: false
-            referencedRelation: "posts_secure"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "reports_reported_topic_id_fkey"
             columns: ["reported_topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reports_reported_topic_id_fkey"
-            columns: ["reported_topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_secure"
             referencedColumns: ["id"]
           },
         ]
@@ -1460,13 +1529,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "fk_topic_bookmarks_topic_id"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_secure"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "fk_topic_bookmarks_user_id"
             columns: ["user_id"]
             isOneToOne: false
@@ -1525,13 +1587,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "topic_notifications_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "posts_secure"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "topic_notifications_report_id_fkey"
             columns: ["report_id"]
             isOneToOne: false
@@ -1543,13 +1598,6 @@ export type Database = {
             columns: ["topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "topic_notifications_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_secure"
             referencedColumns: ["id"]
           },
           {
@@ -1709,154 +1757,7 @@ export type Database = {
       }
     }
     Views: {
-      posts_secure: {
-        Row: {
-          author_id: string | null
-          content: string | null
-          created_at: string | null
-          id: string | null
-          is_anonymous: boolean | null
-          moderation_status: string | null
-          parent_post_id: string | null
-          topic_id: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          author_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_anonymous?: boolean | null
-          moderation_status?: string | null
-          parent_post_id?: string | null
-          topic_id?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          author_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_anonymous?: boolean | null
-          moderation_status?: string | null
-          parent_post_id?: string | null
-          topic_id?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "posts_parent_post_id_fkey"
-            columns: ["parent_post_id"]
-            isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posts_parent_post_id_fkey"
-            columns: ["parent_post_id"]
-            isOneToOne: false
-            referencedRelation: "posts_secure"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posts_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posts_topic_id_fkey"
-            columns: ["topic_id"]
-            isOneToOne: false
-            referencedRelation: "topics_secure"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      topics_secure: {
-        Row: {
-          author_id: string | null
-          canonical_url: string | null
-          category_id: string | null
-          content: string | null
-          created_at: string | null
-          id: string | null
-          is_anonymous: boolean | null
-          is_locked: boolean | null
-          is_pinned: boolean | null
-          last_reply_at: string | null
-          meta_description: string | null
-          meta_keywords: string | null
-          meta_title: string | null
-          moderation_status: string | null
-          og_description: string | null
-          og_image: string | null
-          og_title: string | null
-          reply_count: number | null
-          slug: string | null
-          title: string | null
-          updated_at: string | null
-          view_count: number | null
-        }
-        Insert: {
-          author_id?: string | null
-          canonical_url?: string | null
-          category_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_anonymous?: boolean | null
-          is_locked?: boolean | null
-          is_pinned?: boolean | null
-          last_reply_at?: string | null
-          meta_description?: string | null
-          meta_keywords?: string | null
-          meta_title?: string | null
-          moderation_status?: string | null
-          og_description?: string | null
-          og_image?: string | null
-          og_title?: string | null
-          reply_count?: number | null
-          slug?: string | null
-          title?: string | null
-          updated_at?: string | null
-          view_count?: number | null
-        }
-        Update: {
-          author_id?: string | null
-          canonical_url?: string | null
-          category_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_anonymous?: boolean | null
-          is_locked?: boolean | null
-          is_pinned?: boolean | null
-          last_reply_at?: string | null
-          meta_description?: string | null
-          meta_keywords?: string | null
-          meta_title?: string | null
-          moderation_status?: string | null
-          og_description?: string | null
-          og_image?: string | null
-          og_title?: string | null
-          reply_count?: number | null
-          slug?: string | null
-          title?: string | null
-          updated_at?: string | null
-          view_count?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "topics_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       analyze_content_for_spam: {
