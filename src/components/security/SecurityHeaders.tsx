@@ -11,7 +11,7 @@ export const SecurityHeaders = () => {
     csp.httpEquiv = 'Content-Security-Policy';
     csp.content = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://hcaptcha.com https://*.hcaptcha.com",
+      "script-src 'self' 'nonce-' https://hcaptcha.com https://*.hcaptcha.com https://lovableproject.com https://*.lovableproject.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https: blob:",
@@ -31,10 +31,10 @@ export const SecurityHeaders = () => {
     
     document.head.appendChild(csp);
 
-    // Add X-Frame-Options for clickjacking protection
+    // Add X-Frame-Options for clickjacking protection (SAMEORIGIN allows Lovable editor)
     const frameOptions = document.createElement('meta');
     frameOptions.httpEquiv = 'X-Frame-Options';
-    frameOptions.content = 'DENY';
+    frameOptions.content = 'SAMEORIGIN';
     document.head.appendChild(frameOptions);
 
     // Add X-Content-Type-Options for MIME type sniffing protection
