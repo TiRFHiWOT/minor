@@ -17,7 +17,7 @@ import {
   FileText
 } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
-
+import { LeaderboardTopAd } from '@/components/ads/LeaderboardTopAd';
 
 export const AdminLayout = () => {
   const location = useLocation();
@@ -65,6 +65,9 @@ export const AdminLayout = () => {
           </div>
         </div>
       </header>
+
+      {/* Leaderboard Top Ad - Appears on all admin pages */}
+      <LeaderboardTopAd />
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex gap-6">

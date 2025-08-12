@@ -14,7 +14,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-
+import { ContentAdSpace } from '@/components/ads/ContentAdSpace';
 
 const CategoryCard = ({ category }: { category: any }) => {
   const { data: stats } = useCategoryStats(category.id);
@@ -82,6 +82,9 @@ export const Categories = () => {
         <p className="text-muted-foreground">Browse all forum categories and discussions</p>
       </div>
 
+      {/* Content Ad 1 - After header */}
+      <ContentAdSpace contentId={1} />
+
       {/* Main Forums */}
       {level1Categories && level1Categories.length > 0 && (
         <div className="space-y-4">
@@ -93,6 +96,9 @@ export const Categories = () => {
           </div>
         </div>
       )}
+
+      {/* Content Ad 2 - Between sections */}
+      <ContentAdSpace contentId={2} />
 
       {/* Province/State Forums */}
       {level2Categories && level2Categories.length > 0 && (

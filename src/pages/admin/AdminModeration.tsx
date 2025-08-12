@@ -478,14 +478,6 @@ const ReportsTab = () => {
     refetchResolved();
   };
 
-  // Limit long strings in table cells
-  const MAX_REASON_CHARS = 150;
-  const truncateText = (text?: string, max: number = MAX_REASON_CHARS) => {
-    if (!text) return '';
-    const t = String(text).trim();
-    return t.length > max ? t.slice(0, max) + '…' : t;
-  };
-
   if (isLoading) {
     return (
       <Card className="p-6">
@@ -588,9 +580,7 @@ const ReportsTab = () => {
                         </TableCell>
                         <TableCell className="min-w-[150px]">
                           <div>
-                            <div className="font-medium whitespace-normal break-words" title={report.reason}>
-                              {truncateText(report.reason, MAX_REASON_CHARS)}
-                            </div>
+                            <div className="font-medium">{report.reason}</div>
                             {report.description && (
                               <div className="text-sm text-muted-foreground md:truncate max-w-[140px] break-words whitespace-normal" title={report.description}>
                                 {report.description}
@@ -764,9 +754,7 @@ const ReportsTab = () => {
                         </TableCell>
                         <TableCell className="min-w-[150px]">
                           <div>
-                            <div className="font-medium whitespace-normal break-words" title={report.reason}>
-                              {truncateText(report.reason, MAX_REASON_CHARS)}
-                            </div>
+                            <div className="font-medium">{report.reason}</div>
                             {report.description && (
                               <div className="text-sm text-muted-foreground md:truncate max-w-[140px] break-words whitespace-normal" title={report.description}>
                                 {report.description}
