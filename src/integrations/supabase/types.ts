@@ -787,6 +787,13 @@ export type Database = {
             referencedRelation: "topics"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "ip_visit_tracking_topic_visited_fkey"
+            columns: ["topic_visited"]
+            isOneToOne: false
+            referencedRelation: "topics_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       ip_whitelist: {
@@ -1076,6 +1083,13 @@ export type Database = {
             referencedRelation: "topics"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "polls_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       posts: {
@@ -1124,10 +1138,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "posts_parent_post_id_fkey"
+            columns: ["parent_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "posts_topic_id_fkey"
             columns: ["topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1214,10 +1242,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reports_reported_post_id_fkey"
+            columns: ["reported_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reports_reported_topic_id_fkey"
             columns: ["reported_topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_reported_topic_id_fkey"
+            columns: ["reported_topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1388,6 +1430,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "fk_topic_bookmarks_topic_id"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "fk_topic_bookmarks_user_id"
             columns: ["user_id"]
             isOneToOne: false
@@ -1446,6 +1495,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "topic_notifications_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "topic_notifications_report_id_fkey"
             columns: ["report_id"]
             isOneToOne: false
@@ -1457,6 +1513,13 @@ export type Database = {
             columns: ["topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topic_notifications_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics_public"
             referencedColumns: ["id"]
           },
           {
@@ -1616,7 +1679,154 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      posts_public: {
+        Row: {
+          author_id: string | null
+          content: string | null
+          created_at: string | null
+          id: string | null
+          is_anonymous: boolean | null
+          moderation_status: string | null
+          parent_post_id: string | null
+          topic_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          moderation_status?: string | null
+          parent_post_id?: string | null
+          topic_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          moderation_status?: string | null
+          parent_post_id?: string | null
+          topic_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_parent_post_id_fkey"
+            columns: ["parent_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_parent_post_id_fkey"
+            columns: ["parent_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topics_public: {
+        Row: {
+          author_id: string | null
+          canonical_url: string | null
+          category_id: string | null
+          content: string | null
+          created_at: string | null
+          id: string | null
+          is_anonymous: boolean | null
+          is_locked: boolean | null
+          is_pinned: boolean | null
+          last_reply_at: string | null
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          moderation_status: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          reply_count: number | null
+          slug: string | null
+          title: string | null
+          updated_at: string | null
+          view_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          canonical_url?: string | null
+          category_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          last_reply_at?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          moderation_status?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          reply_count?: number | null
+          slug?: string | null
+          title?: string | null
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          canonical_url?: string | null
+          category_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          last_reply_at?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          moderation_status?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          reply_count?: number | null
+          slug?: string | null
+          title?: string | null
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       analyze_content_for_spam: {
@@ -1817,6 +2027,28 @@ export type Database = {
         Args: { p_topic_id: string }
         Returns: number
       }
+      get_enriched_posts_secure: {
+        Args: { p_topic_id: string; p_limit?: number; p_offset?: number }
+        Returns: {
+          id: string
+          content: string
+          author_id: string
+          topic_id: string
+          parent_post_id: string
+          created_at: string
+          updated_at: string
+          moderation_status: string
+          ip_address: string
+          is_anonymous: boolean
+          author_username: string
+          author_avatar_url: string
+          parent_post_content: string
+          parent_post_author_username: string
+          parent_post_author_avatar_url: string
+          parent_post_created_at: string
+          parent_post_moderation_status: string
+        }[]
+      }
       get_enriched_topics: {
         Args: { p_category_id?: string; p_limit?: number; p_offset?: number }
         Returns: {
@@ -1994,6 +2226,34 @@ export type Database = {
       get_reporter_behavior: {
         Args: { p_reporter_id?: string; p_reporter_ip?: unknown }
         Returns: Json
+      }
+      get_topic_secure: {
+        Args: { p_topic_id: string }
+        Returns: {
+          id: string
+          title: string
+          content: string
+          author_id: string
+          category_id: string
+          is_pinned: boolean
+          is_locked: boolean
+          view_count: number
+          reply_count: number
+          last_reply_at: string
+          created_at: string
+          updated_at: string
+          slug: string
+          moderation_status: string
+          ip_address: string
+          is_anonymous: boolean
+          meta_title: string
+          meta_description: string
+          meta_keywords: string
+          canonical_url: string
+          og_title: string
+          og_description: string
+          og_image: string
+        }[]
       }
       get_topics_count: {
         Args: { p_category_id?: string }
