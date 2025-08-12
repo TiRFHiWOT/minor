@@ -64,28 +64,48 @@ Deno.serve(async (req) => {
 
     const url = new URL(req.url);
     const type = url.searchParams.get('type') || 'index';
+
+    // Try to get a canonical site URL from forum settings
+    let siteSettingUrl: string | null = null;
+    try {
+      const { data: settings } = await supabase
+        .from('forum_settings')
+        .select('setting_key, setting_value')
+        .eq('setting_key', 'site_url')
+        .maybeSingle();
+      if (settings && settings.setting_value) {
+        siteSettingUrl = String(settings.setting_value).replace(/\/$/, '');
+      }
+    } catch (e) {
+      console.warn('Failed to read site_url from forum_settings:', e);
+    }
     
-    // Determine the base URL from request headers
+    // Determine the base URL from settings or request headers
     const origin = req.headers.get('origin');
     const referer = req.headers.get('referer');
     const forwardedHost = req.headers.get('x-forwarded-host');
     const customDomain = req.headers.get('x-custom-domain');
     const host = req.headers.get('host');
     
-    let baseUrl = 'https://rscowwmoeycyxmfslhme.supabase.co'; // fallback
+    let baseUrl = siteSettingUrl || 'https://rscowwmoeycyxmfslhme.supabase.co';
     
-    // Priority: forwarded host > host header > custom domain > origin > referer
-    if (forwardedHost && !forwardedHost.includes('supabase.co')) {
-      baseUrl = `https://${forwardedHost}`;
-    } else if (host && !host.includes('supabase.co')) {
-      baseUrl = `https://${host}`;
-    } else if (customDomain && !customDomain.includes('supabase.co')) {
-      baseUrl = `https://${customDomain}`;
-    } else if (origin && !origin.includes('supabase.co')) {
-      baseUrl = origin;
-    } else if (referer && !referer.includes('supabase.co')) {
-      const refererUrl = new URL(referer);
-      baseUrl = `${refererUrl.protocol}//${refererUrl.host}`;
+    if (!siteSettingUrl) {
+      // Priority: forwarded host > host header > custom domain > origin > referer
+      if (forwardedHost && !forwardedHost.includes('supabase.co')) {
+        baseUrl = `https://${forwardedHost}`;
+      } else if (host && !host.includes('supabase.co')) {
+        baseUrl = `https://${host}`;
+      } else if (customDomain && !customDomain.includes('supabase.co')) {
+        baseUrl = `https://${customDomain}`;
+      } else if (origin && !origin.includes('supabase.co')) {
+        baseUrl = origin;
+      } else if (referer && !referer.includes('supabase.co')) {
+        const refererUrl = new URL(referer);
+        baseUrl = `${refererUrl.protocol}//${refererUrl.host}`;
+      } else {
+        // Final fallback to known custom domain
+        baseUrl = 'https://minorhockeytalks.com';
+      }
     }
 
     console.log(`Generating sitemap type: ${type}, baseUrl: ${baseUrl}, host: ${host}, forwarded-host: ${forwardedHost}, custom-domain: ${customDomain}, origin: ${origin}, referer: ${referer}`);

@@ -17,14 +17,32 @@ serve(async (req) => {
   }
 
   try {
-    const host = req.headers.get("host");
-    const protocol = host?.includes("localhost") ? "http" : "https";
-    
-    // Use actual domain when called via Supabase functions
-    const actualHost = host?.includes("supabase") || host?.includes("edge-runtime") 
-      ? "minorhockeytalks.com" 
-      : host;
-    const baseUrl = `${protocol}://${actualHost}`;
+    // Prefer site_url from forum settings
+    let baseUrl = 'https://minorhockeytalks.com';
+    try {
+      const { data: setting } = await supabase
+        .from('forum_settings')
+        .select('setting_value')
+        .eq('setting_key', 'site_url')
+        .maybeSingle();
+      if (setting?.setting_value) {
+        baseUrl = String(setting.setting_value).replace(/\/$/, '');
+      } else {
+        const host = req.headers.get('host');
+        const protocol = host?.includes('localhost') ? 'http' : 'https';
+        const actualHost = host?.includes('supabase') || host?.includes('edge-runtime') 
+          ? 'minorhockeytalks.com' 
+          : host;
+        baseUrl = `${protocol}://${actualHost}`;
+      }
+    } catch (_) {
+      const host = req.headers.get('host');
+      const protocol = host?.includes('localhost') ? 'http' : 'https';
+      const actualHost = host?.includes('supabase') || host?.includes('edge-runtime') 
+        ? 'minorhockeytalks.com' 
+        : host;
+      baseUrl = `${protocol}://${actualHost}`;
+    }
 
     console.log(`Generating categories sitemap for baseUrl: ${baseUrl}`);
 

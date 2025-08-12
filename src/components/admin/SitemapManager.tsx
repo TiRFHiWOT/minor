@@ -6,11 +6,15 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ExternalLink, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useForumSettings } from '@/hooks/useForumSettings';
 
 export function SitemapManager() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [testResults, setTestResults] = useState<Record<string, { status: number; urls: number } | null>>({});
   const { toast } = useToast();
+  const { getSetting } = useForumSettings();
+
+  const siteUrl = (getSetting('site_url', '') || (typeof window !== 'undefined' ? window.location.origin : 'https://minorhockeytalks.com')) as string;
 
   const sitemapTypes = [
     { type: 'index', label: 'Sitemap Index', description: 'Main sitemap index file' },
@@ -21,8 +25,8 @@ export function SitemapManager() {
   ];
 
   const getSitemapUrl = (type?: string) => {
-    const baseUrl = `https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap`;
-    return type ? `${baseUrl}?type=${type}` : baseUrl;
+    const publicBase = String(siteUrl).replace(/\/$/, '');
+    return type ? `${publicBase}/sitemap.xml?type=${type}` : `${publicBase}/sitemap.xml`;
   };
 
   const testSitemap = async (type?: string) => {

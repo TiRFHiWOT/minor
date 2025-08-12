@@ -26,15 +26,15 @@ serve(async (req) => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>${baseUrl}/functions/v1/sitemap-categories</loc>
+    <loc>${baseUrl}/sitemap.xml?type=categories</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${baseUrl}/functions/v1/sitemap-topics</loc>
+    <loc>${baseUrl}/sitemap.xml?type=topics</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${baseUrl}/functions/v1/sitemap-blog</loc>
+    <loc>${baseUrl}/sitemap.xml?type=blog</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
 </sitemapindex>`;
