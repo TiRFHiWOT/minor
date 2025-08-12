@@ -44,7 +44,7 @@ export function SitemapManager() {
   };
   
   const getFunctionUrl = (type?: string) => {
-    const base = 'https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap';
+    const base = 'https://hockey.minorhockeytalks.com/functions/v1/sitemap';
     switch (type) {
       case undefined:
       case 'index':

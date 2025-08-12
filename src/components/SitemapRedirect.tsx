@@ -6,13 +6,13 @@ interface SitemapRedirectProps {
 
 export const SitemapRedirect: React.FC<SitemapRedirectProps> = ({ type = "index" }) => {
   useEffect(() => {
-    const base = "https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap";
+    const base = "https://hockey.minorhockeytalks.com/functions/v1/sitemap";
     const dest = type && type !== "index" ? `${base}?type=${type}` : base;
     // Hard redirect so the browser loads raw XML from the edge function
     window.location.replace(dest);
   }, [type]);
 
-  const base = "https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap";
+  const base = "https://hockey.minorhockeytalks.com/functions/v1/sitemap";
   const href = type && type !== "index" ? `${base}?type=${type}` : base;
 
   return (

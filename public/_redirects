@@ -1,10 +1,10 @@
-/sitemap.xml https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap 200
+/sitemap.xml https://hockey.minorhockeytalks.com/functions/v1/sitemap 200
 
 # Pretty sitemap endpoints
-/sitemap-static.xml https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=static 200
-/sitemap-categories.xml https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=categories 200
-/sitemap-topics.xml https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=topics 200
-/sitemap-blog.xml https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap?type=blog 200
+/sitemap-static.xml https://hockey.minorhockeytalks.com/functions/v1/sitemap?type=static 200
+/sitemap-categories.xml https://hockey.minorhockeytalks.com/functions/v1/sitemap?type=categories 200
+/sitemap-topics.xml https://hockey.minorhockeytalks.com/functions/v1/sitemap?type=topics 200
+/sitemap-blog.xml https://hockey.minorhockeytalks.com/functions/v1/sitemap?type=blog 200
 
 # RSS Feed redirect
 /rss.xml https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/rss-feed 200
