@@ -52,10 +52,6 @@ export const EnhancedHeaderCodeInjector = () => {
       return;
     }
 
-    // Temporarily disable AdMetricsPro to prevent React crashes
-    console.log('[HeaderInjector] Temporarily skipping all header scripts to prevent crashes');
-    return;
-
     // Inject active header scripts by creating real DOM elements so scripts execute
     headerScripts
       .filter(script => script.is_active)

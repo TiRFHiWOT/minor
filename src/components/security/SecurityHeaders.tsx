@@ -11,12 +11,13 @@ export const SecurityHeaders = () => {
     csp.httpEquiv = 'Content-Security-Policy';
     csp.content = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://www.google-analytics.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://hcaptcha.com https://*.hcaptcha.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://www.google-analytics.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://hcaptcha.com https://*.hcaptcha.com https://c.amazon-adsystem.com https://aax.amazon-adsystem.com https://contextual.media.net https://media.net",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https: blob:",
-      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://ipapi.co https://ipify.org https://api.ipify.org https://hcaptcha.com https://*.hcaptcha.com",
-      "frame-src 'self' https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://hcaptcha.com https://*.hcaptcha.com https://js.hcaptcha.com",
+      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://ipapi.co https://ipify.org https://api.ipify.org https://hcaptcha.com https://*.hcaptcha.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://securepubads.g.doubleclick.net https://c.amazon-adsystem.com https://aax.amazon-adsystem.com https://contextual.media.net https://media.net",
+      "frame-src 'self' https://www.google.com https://recaptcha.google.com https://www.recaptcha.net https://hcaptcha.com https://*.hcaptcha.com https://js.hcaptcha.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net",
+      "child-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net",
       "worker-src 'self' blob:",
       "object-src 'none'",
       "base-uri 'self'",
