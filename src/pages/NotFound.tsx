@@ -7,7 +7,7 @@ import { Search, Home, MessageSquare, Users, ArrowLeft, ExternalLink } from "luc
 import { useState } from "react";
 import { useSearch } from "@/hooks/useSearch";
 import { useCategories } from "@/hooks/useCategories";
-import { LeaderboardTopAd } from "@/components/ads/LeaderboardTopAd";
+
 
 const NotFound = () => {
   const location = useLocation();
@@ -33,7 +33,6 @@ const NotFound = () => {
 
   return (
     <>
-      <LeaderboardTopAd />
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto">

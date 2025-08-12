@@ -33,21 +33,17 @@ import Bookmarks from "./pages/Bookmarks";
 import { Categories } from "./pages/Categories";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
-import AdTest from "./pages/AdTest";
-import AdTestMin from "./pages/AdTestMin";
 import AdminPage from "./pages/admin/AdminPage";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminContent from "./pages/admin/AdminContent";
 import AdminModeration from "./pages/admin/AdminModeration";
 import AdminSpam from "./pages/admin/AdminSpam";
 import AdminSEO from "./pages/admin/AdminSEO";
-import AdminAdvertising from "./pages/admin/AdminAdvertising";
+
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminBlogPage from "./pages/admin/AdminBlog";
 
 import { AnalyticsProvider } from "./components/analytics/AnalyticsProvider";
-import { HeaderCodeInjector } from "./components/analytics/HeaderCodeInjector";
-import { EnhancedHeaderCodeInjector } from "./components/analytics/EnhancedHeaderCodeInjector";
 import { CookieConsent } from "./components/cookies/CookieConsent";
 import { CookieDebugPanel } from "./components/cookies/CookieDebugPanel";
 import { MaintenanceWrapper } from "./components/MaintenanceWrapper";
@@ -75,7 +71,7 @@ const App = () => (
             <SecurityHeaders />
             <SessionTimeout timeoutDuration={30} warningTime={5} />
             <StickyBanner />
-            <EnhancedHeaderCodeInjector />
+            
             <CookieConsent />
             <ToastErrorBoundary>
               <Toaster />
@@ -122,7 +118,7 @@ const App = () => (
                     <Route path="blog" element={<AdminBlogPage />} />
                     <Route path="moderation" element={<AdminModeration />} />
                     <Route path="spam" element={<AdminSpam />} />
-                    <Route path="advertising" element={<AdminAdvertising />} />
+                    
                     <Route path="seo" element={<AdminSEO />} />
                     <Route path="settings" element={<AdminSettings />} />
                   </Route>
@@ -158,9 +154,6 @@ const App = () => (
                      <Route path=":categorySlug/:subcategorySlug" element={<CategoryView />} />
                   </Route>
                   
-                  {/* Test pages for ad integration */}
-                  <Route path="/test" element={<AdTest />} />
-                  <Route path="/ad-test-min" element={<AdTestMin />} />
                   
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />

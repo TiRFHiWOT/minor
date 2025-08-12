@@ -21,7 +21,7 @@ import { InlineReplyForm } from './InlineReplyForm';
 import { AdminControls } from './AdminControls';
 import { PollDisplay } from './PollDisplay';
 import { BookmarkButton } from './BookmarkButton';
-import { ContentAdSpace } from '@/components/ads/ContentAdSpace';
+
 import { useForumSettings } from '@/hooks/useForumSettings';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
@@ -625,28 +625,17 @@ export const TopicView = () => {
         ) : posts && posts.length > 0 ? (
           <div className="space-y-1">
             {organizeReplies(posts).map((reply, index) => (
-              <React.Fragment key={reply.id}>
-                <PostComponent
-                  post={reply}
-                  topicId={topic.id || ''}
-                  depth={0}
-                  onReport={handleReport}
-                />
-                {/* Sequential content ads between posts */}
-                {shouldShowAd(index) && (() => {
-                  const contentAdId = getContentAdId(index);
-                  return contentAdId ? <ContentAdSpace contentId={contentAdId} /> : null;
-                })()}
-              </React.Fragment>
+              <PostComponent
+                key={reply.id}
+                post={reply}
+                topicId={topic.id || ''}
+                depth={0}
+                onReport={handleReport}
+              />
             ))}
           </div>
         ) : (
           <p className="text-muted-foreground text-center py-8 px-3">No replies yet. Be the first to reply!</p>
-        )}
-        
-        {/* Content 5 Ad - Always above pagination */}
-        {totalPosts > 0 && (
-          <ContentAdSpace contentId={5} />
         )}
         
         {/* Pagination Controls */}

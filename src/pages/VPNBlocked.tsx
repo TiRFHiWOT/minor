@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useVPNDetection } from "@/hooks/useVPNDetection";
 import { useForumSettings } from "@/hooks/useForumSettings";
-import { LeaderboardTopAd } from "@/components/ads/LeaderboardTopAd";
+
 
 export const VPNBlocked = () => {
   const navigate = useNavigate();
@@ -58,7 +58,6 @@ export const VPNBlocked = () => {
 
   return (
     <>
-      <LeaderboardTopAd />
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl">
         <CardHeader className="text-center space-y-4">
