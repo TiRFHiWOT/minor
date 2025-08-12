@@ -24,6 +24,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { RoleChangeModal } from './RoleChangeModal';
 import { BanUserModal } from './BanUserModal';
 import { EditProfileModal } from './EditProfileModal';
+import { CreateUserModal } from './CreateUserModal';
 import { useQueryClient } from '@tanstack/react-query';
 
 export const UserManagement = () => {
@@ -32,6 +33,7 @@ export const UserManagement = () => {
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [isBanModalOpen, setIsBanModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { data: users, isLoading, error } = useAdminUsers();
   const queryClient = useQueryClient();
 
@@ -81,7 +83,7 @@ export const UserManagement = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-        <Button>Add New User</Button>
+        <Button onClick={() => setIsCreateModalOpen(true)}>Add New User</Button>
       </div>
 
       {/* Search */}
@@ -231,6 +233,12 @@ export const UserManagement = () => {
         user={selectedUser}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
+        onSuccess={handleRefresh}
+      />
+      
+      <CreateUserModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
         onSuccess={handleRefresh}
       />
     </div>
