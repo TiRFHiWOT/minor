@@ -1,61 +1,22 @@
-// Add immediate console log before any imports
-console.log('🔥 SCRIPT STARTING - main.tsx execution begins');
+console.log('🔥 MAIN.TSX SCRIPT STARTED');
 
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-
-console.log('✅ All imports loaded successfully');
-console.log('App component:', App);
-console.log('createRoot:', createRoot);
-
-// Handle unhandled promise rejections
-window.addEventListener('unhandledrejection', (event) => {
-  console.error('🔴 UNHANDLED PROMISE REJECTION:', event.reason);
-  console.error('Promise:', event.promise);
-  console.error('Reason stack:', event.reason?.stack);
-  event.preventDefault();
-});
-
-// Handle unhandled errors
-window.addEventListener('error', (event) => {
-  console.error('🔴 UNHANDLED ERROR:', event.error);
-  console.error('Message:', event.message);
-  console.error('Filename:', event.filename);
-  console.error('Line:', event.lineno);
-  console.error('Column:', event.colno);
-});
-
-console.log('🚀 Starting React app initialization...');
-
+// Test if basic DOM access works
 const root = document.getElementById("root");
-if (!root) {
-  console.error('❌ Root element not found!');
+if (root) {
+  console.log('✅ ROOT ELEMENT FOUND');
+  root.innerHTML = '<div style="padding: 20px; color: green; font-family: Arial;"><h1>Basic Script Works</h1><p>If you see this, the script is running</p></div>';
 } else {
-  console.log('✅ Root element found, creating React app...');
-  try {
-    console.log('✅ Creating React root...');
-    const reactRoot = createRoot(root);
-    console.log('✅ React root created successfully:', reactRoot);
-    
-    console.log('✅ About to render App component...');
-    reactRoot.render(<App />);
-    console.log('✅ React app rendered successfully');
-  } catch (error) {
-    console.error('❌ CRITICAL ERROR rendering React app:', error);
-    console.error('Error details:', {
-      name: error?.name,
-      message: error?.message,
-      stack: error?.stack
-    });
-    
-    // Show basic error message in DOM
-    root.innerHTML = `
-      <div style="padding: 20px; color: red; font-family: Arial;">
-        <h1>App Failed to Load</h1>
-        <p>Error: ${error?.message || 'Unknown error'}</p>
-        <p>Check console for details</p>
-      </div>
-    `;
-  }
+  console.error('❌ ROOT ELEMENT NOT FOUND');
+}
+
+// Test if we can import React modules
+try {
+  console.log('📦 Testing React import...');
+  import('react').then(() => {
+    console.log('✅ React import successful');
+  }).catch(err => {
+    console.error('❌ React import failed:', err);
+  });
+} catch (err) {
+  console.error('❌ React import error:', err);
 }
