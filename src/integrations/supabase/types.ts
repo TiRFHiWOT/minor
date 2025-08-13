@@ -1848,20 +1848,20 @@ export type Database = {
         Returns: {
           id: string
           content: string
+          created_at: string
+          updated_at: string
           author_id: string
           topic_id: string
           parent_post_id: string
-          created_at: string
-          updated_at: string
           moderation_status: string
           is_anonymous: boolean
-          author_username: string
-          author_avatar_url: string
-          parent_post_content: string
-          parent_post_created_at: string
-          parent_post_moderation_status: string
-          parent_post_author_username: string
-          parent_post_author_avatar_url: string
+          username: string
+          avatar_url: string
+          display_name: string
+          is_temp_user: boolean
+          parent_content: string
+          parent_author: string
+          parent_created_at: string
         }[]
       }
       get_enriched_posts_count: {
@@ -1901,6 +1901,8 @@ export type Database = {
           id: string
           title: string
           content: string
+          created_at: string
+          updated_at: string
           author_id: string
           category_id: string
           is_pinned: boolean
@@ -1908,27 +1910,16 @@ export type Database = {
           view_count: number
           reply_count: number
           last_reply_at: string
-          created_at: string
-          updated_at: string
-          slug: string
           moderation_status: string
           is_anonymous: boolean
-          ip_address: unknown
-          meta_title: string
-          meta_description: string
-          meta_keywords: string
-          canonical_url: string
-          og_title: string
-          og_description: string
-          og_image: string
-          author_username: string
-          author_avatar_url: string
+          slug: string
+          username: string
+          avatar_url: string
+          display_name: string
+          is_temp_user: boolean
           category_name: string
           category_color: string
           category_slug: string
-          parent_category_id: string
-          last_reply_username: string
-          last_reply_avatar: string
           last_post_id: string
         }[]
       }
