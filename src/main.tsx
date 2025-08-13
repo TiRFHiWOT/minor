@@ -1,7 +1,14 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { ErrorBoundary } from './components/ErrorBoundary'
+
+// Add more detailed error logging
+console.log('🚀 Main.tsx loading...');
+
+// Log if imports worked
+console.log('✅ Imports loaded successfully');
+console.log('App component:', App);
+console.log('createRoot:', createRoot);
 
 // Handle unhandled promise rejections
 window.addEventListener('unhandledrejection', (event) => {
@@ -29,16 +36,28 @@ if (!root) {
 } else {
   console.log('✅ Root element found, creating React app...');
   try {
+    console.log('✅ Creating React root...');
     const reactRoot = createRoot(root);
-    console.log('✅ React root created, rendering app...');
+    console.log('✅ React root created successfully:', reactRoot);
+    
+    console.log('✅ About to render App component...');
     reactRoot.render(<App />);
     console.log('✅ React app rendered successfully');
   } catch (error) {
-    console.error('❌ Error rendering React app:', error);
+    console.error('❌ CRITICAL ERROR rendering React app:', error);
     console.error('Error details:', {
       name: error?.name,
       message: error?.message,
       stack: error?.stack
     });
+    
+    // Show basic error message in DOM
+    root.innerHTML = `
+      <div style="padding: 20px; color: red; font-family: Arial;">
+        <h1>App Failed to Load</h1>
+        <p>Error: ${error?.message || 'Unknown error'}</p>
+        <p>Check console for details</p>
+      </div>
+    `;
   }
 }

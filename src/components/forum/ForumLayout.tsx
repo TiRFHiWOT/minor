@@ -7,8 +7,6 @@ import { ForumSidebarNav } from './ForumSidebarNav';
 import { ForumStats } from './ForumStats';
 import { Footer } from '@/components/layout/Footer';
 import { MobileBottomNav } from './MobileBottomNav';
-import { MobileErrorBoundary } from '@/components/MobileErrorBoundary';
-import { ErrorBoundaryEnhanced } from '@/components/ErrorBoundaryEnhanced';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export const ForumLayout = () => {
