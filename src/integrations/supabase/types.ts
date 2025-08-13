@@ -1839,29 +1839,15 @@ export type Database = {
         Returns: number
       }
       get_most_commented_topics: {
-        Args: { limit_count?: number; offset_count?: number }
+        Args:
+          | { limit_count?: number }
+          | { limit_count?: number; offset_count?: number }
         Returns: {
           id: string
           title: string
-          content: string
-          author_id: string
-          category_id: string
-          is_pinned: boolean
-          is_locked: boolean
-          view_count: number
-          reply_count: number
-          last_reply_at: string
           created_at: string
-          updated_at: string
-          username: string
-          avatar_url: string
-          category_name: string
-          category_color: string
-          category_slug: string
-          slug: string
-          last_post_id: string
-          parent_category_id: string
-          parent_category_slug: string
+          reply_count: number
+          view_count: number
         }[]
       }
       get_most_commented_topics_count: {
@@ -1988,7 +1974,7 @@ export type Database = {
         }[]
       }
       get_topics_count: {
-        Args: { p_category_id?: string }
+        Args: { category_id_param?: string }
         Returns: number
       }
       get_topics_total_count: {

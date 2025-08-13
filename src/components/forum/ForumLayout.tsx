@@ -8,11 +8,12 @@ import { ForumStats } from './ForumStats';
 import { Footer } from '@/components/layout/Footer';
 import { MobileBottomNav } from './MobileBottomNav';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { MobileErrorBoundary } from '@/components/MobileErrorBoundary';
 
 export const ForumLayout = () => {
   const isMobile = useIsMobile();
 
-  return (
+  const content = (
     <div className="min-h-screen bg-background overflow-x-hidden pb-16">
       <RedirectHandler />
       <ForumHeader />
@@ -40,4 +41,11 @@ export const ForumLayout = () => {
       {isMobile && <MobileBottomNav />}
     </div>
   );
+
+  // Wrap mobile users with error boundary for better error handling
+  if (isMobile) {
+    return <MobileErrorBoundary>{content}</MobileErrorBoundary>;
+  }
+
+  return content;
 };
