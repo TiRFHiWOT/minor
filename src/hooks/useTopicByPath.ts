@@ -57,7 +57,7 @@ export const useTopicByPath = (categorySlug: string, subcategorySlug?: string, t
       
       // Get topic by slug and category
       const { data: topicData, error: topicError } = await supabase
-        .from('topics')
+        .from('forum_topics')
         .select(`
           *,
           categories (name, color, slug, parent_category_id, parent_category:categories!parent_category_id(slug, name))
