@@ -334,45 +334,45 @@ export const ForumHome = () => {
               }
               
               return countries.map((country, index) => (
-                <React.Fragment key={country.name}>
+                <div key={country.name}>
                   {/* Content-Three Banner - Between Canada and USA forums */}
                   {index === 1 && <ContentBanner bannerId="three" />}
-                  
+                   
                   <div className="forum-spacing">
-                  <h3 className="text-base font-semibold text-foreground border-b pb-1 forum-header">
-                    {country.name}
-                  </h3>
-                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {country.forums.map((forum) => (
-                      <Link
-                        key={forum.id}
-                        to={`/category/${forum.slug}`}
-                        className="block"
-                      >
-                        <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <div 
-                              className="w-3 h-3 rounded-full"
-                              style={{ backgroundColor: forum.color }}
-                            />
-                            <h4 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">
-                              {forum.name}
-                            </h4>
-                          </div>
-                          {forum.description && (
-                            <p className="text-xs text-muted-foreground line-clamp-2">
-                              {forum.description}
-                            </p>
-                          )}
-                        </Card>
-                      </Link>
-                    ))}
-                  </div>
+                    <h3 className="text-base font-semibold text-foreground border-b pb-1 forum-header">
+                      {country.name}
+                    </h3>
+                    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                      {country.forums.map((forum) => (
+                        <Link
+                          key={forum.id}
+                          to={`/category/${forum.slug}`}
+                          className="block"
+                        >
+                          <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <div 
+                                className="w-3 h-3 rounded-full"
+                                style={{ backgroundColor: forum.color }}
+                              />
+                              <h4 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">
+                                {forum.name}
+                              </h4>
+                            </div>
+                            {forum.description && (
+                              <p className="text-xs text-muted-foreground line-clamp-2">
+                                {forum.description}
+                              </p>
+                            )}
+                          </Card>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                   
                   {/* Content-Four Banner - After USA forums */}
                   {index === countries.length - 1 && <ContentBanner bannerId="four" />}
-                </React.Fragment>
+                </div>
               ));
             })()}
           </div>
