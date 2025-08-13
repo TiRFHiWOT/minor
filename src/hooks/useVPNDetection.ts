@@ -138,7 +138,7 @@ export const useVPNDetection = () => {
       }
       
       console.error('🛡️ VPN detection error:', err);
-      setError(err as Error);
+      setError(err instanceof Error ? err.message : 'VPN detection failed');
       // CRITICAL: On error, default to allowing access (fail-safe approach)
       console.log('🛡️ Error occurred - defaulting to allow access (revenue protection)');
       setIsVPN(false);
