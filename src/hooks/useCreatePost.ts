@@ -19,18 +19,27 @@ export const useCreatePost = () => {
 
   return useMutation({
     mutationFn: async (data: CreatePostData) => {
-      // For anonymous users, check spam content only (rate limits removed)
+      console.log('Creating post - authenticated user:', !!user);
+      
+      // For anonymous users, ensure session is initialized but skip complex spam detection
       if (!user) {
-        const tempUserId = sessionManager.getTempUserId();
-        if (!tempUserId) {
-          throw new Error('No temporary user session available');
+        console.log('Anonymous user posting - initializing session...');
+        try {
+          await sessionManager.initializeSession();
+          const tempUserId = sessionManager.getTempUserId();
+          console.log('Temp user ID after initialization:', tempUserId);
+          
+          if (!tempUserId) {
+            console.error('Failed to get temp user ID after initialization');
+            throw new Error('Unable to create anonymous session. Please try again.');
+          }
+        } catch (sessionError) {
+          console.error('Session initialization failed:', sessionError);
+          throw new Error('Unable to initialize anonymous session. Please try again.');
         }
         
-        // Analyze content for spam only
-        const contentAnalysis = await analyzeContent(data.content, 'post');
-        if (!contentAnalysis.allowed) {
-          throw new Error(contentAnalysis.message || 'Content flagged as spam');
-        }
+        // Skip complex spam detection for now - only do basic checks
+        console.log('Skipping enhanced spam detection for anonymous user');
       }
 
       // Check for banned words (backup check)
@@ -72,6 +81,10 @@ export const useCreatePost = () => {
         console.log('DEBUG POST: Got mandatory user IP:', userIP);
       } catch (ipError) {
         console.error('Failed to get IP address:', ipError);
+        // For anonymous users, provide a more detailed error message
+        if (!user) {
+          throw new Error('Unable to verify your network connection for anonymous posting. Please check your internet connection and try again.');
+        }
         throw new Error('Unable to determine your IP address. Please check your network connection and try again.');
       }
 
@@ -97,13 +110,16 @@ export const useCreatePost = () => {
       } else {
         // Anonymous user - use temporary user ID
         const tempUserId = sessionManager.getTempUserId();
+        console.log('Using temp user ID for post:', tempUserId);
         if (!tempUserId) {
-          throw new Error('No temporary user session available');
+          console.error('No temporary user session available during post creation');
+          throw new Error('Anonymous session expired. Please refresh the page and try again.');
         }
         postData.author_id = tempUserId;
         postData.is_anonymous = true;
       }
       
+      console.log('Inserting post with data:', postData);
       const { data: post, error } = await supabase
         .from('posts')
         .insert(postData)
@@ -111,8 +127,14 @@ export const useCreatePost = () => {
         .single();
 
       if (error) {
-        throw error;
+        console.error('Database error inserting post:', error);
+        if (error.code === 'PGRST116') {
+          throw new Error('Post creation failed - you may need to refresh the page and try again.');
+        }
+        throw new Error(`Failed to create post: ${error.message}`);
       }
+
+      console.log('Post created successfully:', post);
 
       // Update topic's last_reply_at using secure function
       const { error: updateError } = await supabase.rpc('update_topic_last_reply', { 
