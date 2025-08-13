@@ -1,5 +1,38 @@
 console.log('🔥 MAIN.TSX SCRIPT STARTED');
 
+// Add global error handlers first
+window.addEventListener('error', (event) => {
+  console.error('🔴 GLOBAL ERROR CAUGHT:', event.error);
+  console.error('Message:', event.message);
+  console.error('Filename:', event.filename);
+  console.error('Line:', event.lineno, 'Column:', event.colno);
+  
+  const root = document.getElementById("root");
+  if (root) {
+    root.innerHTML = `
+      <div style="padding: 20px; color: red; font-family: Arial;">
+        <h1>Global Error Caught</h1>
+        <p>Error: ${event.message}</p>
+        <p>File: ${event.filename}:${event.lineno}</p>
+      </div>
+    `;
+  }
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('🔴 UNHANDLED PROMISE REJECTION:', event.reason);
+  
+  const root = document.getElementById("root");
+  if (root) {
+    root.innerHTML = `
+      <div style="padding: 20px; color: orange; font-family: Arial;">
+        <h1>Promise Rejection</h1>
+        <p>Error: ${event.reason?.message || event.reason}</p>
+      </div>
+    `;
+  }
+});
+
 const root = document.getElementById("root");
 if (!root) {
   console.error('❌ ROOT ELEMENT NOT FOUND');
@@ -8,6 +41,7 @@ if (!root) {
   
   // Test React imports step by step
   let ReactModule: any;
+  let reactRoot: any;
   
   Promise.resolve()
     .then(() => {
@@ -24,18 +58,18 @@ if (!root) {
       console.log('✅ Step 2: ReactDOM imported successfully');
       console.log('📦 Step 3: Testing createRoot...');
       const { createRoot } = ReactDOM;
-      const reactRoot = createRoot(root);
+      reactRoot = createRoot(root);
       console.log('✅ Step 3: createRoot successful');
       
       console.log('📦 Step 4: Testing CSS import...');
-      return import('./index.css').then(() => ({ reactRoot }));
+      return import('./index.css');
     })
-    .then(({ reactRoot }) => {
+    .then(() => {
       console.log('✅ Step 4: CSS imported successfully');
       console.log('📦 Step 5: Testing App import...');
-      return import('./App.tsx').then(AppModule => ({ reactRoot, AppModule }));
+      return import('./App.tsx');
     })
-    .then(({ reactRoot, AppModule }) => {
+    .then((AppModule) => {
       console.log('✅ Step 5: App imported successfully');
       const App = AppModule.default;
       
@@ -47,55 +81,60 @@ if (!root) {
       reactRoot.render(element);
       console.log('✅ Step 7: Basic render successful');
       
-      // Now try the actual App component with detailed error catching
-      setTimeout(() => {
-        console.log('📦 Step 8: About to test App component...');
-        console.log('App component details:', App);
-        console.log('App.name:', App?.name);
-        console.log('App.prototype:', App?.prototype);
-        
+      // Immediate App component test without setTimeout
+      console.log('📦 Step 8: IMMEDIATE App component test...');
+      console.log('App component:', App);
+      
+      return new Promise((resolve, reject) => {
         try {
           console.log('📦 Step 8a: Creating App element...');
           const appElement = ReactModule.createElement(App);
-          console.log('✅ Step 8a: App element created successfully', appElement);
+          console.log('✅ Step 8a: App element created', appElement);
           
-          console.log('📦 Step 8b: Rendering App element...');
+          console.log('📦 Step 8b: About to render App...');
           reactRoot.render(appElement);
-          console.log('✅ Step 8b: App component rendered successfully');
+          console.log('✅ Step 8b: App render call completed');
+          
+          // Wait a bit to see if render completes
+          setTimeout(() => {
+            console.log('📦 Step 8c: Checking if App rendered...');
+            resolve('App render completed');
+          }, 100);
           
         } catch (appError) {
-          console.error('❌ STEP 8 APP ERROR:', appError);
-          console.error('App error details:', {
-            name: appError?.name,
-            message: appError?.message,
-            stack: appError?.stack
-          });
-          
-          // Render error message but keep it on screen
-          const errorElement = ReactModule.createElement('div', 
-            { style: { padding: '20px', color: 'red', fontFamily: 'Arial' } },
-            ReactModule.createElement('h1', null, 'App Component Error'),
-            ReactModule.createElement('p', null, `Error: ${appError?.message || 'Unknown app error'}`),
-            ReactModule.createElement('p', null, 'App component failed to render')
-          );
-          reactRoot.render(errorElement);
+          console.error('❌ STEP 8 SYNC ERROR:', appError);
+          reject(appError);
         }
-      }, 2000);
+      });
+    })
+    .then((result) => {
+      console.log('✅ SUCCESS:', result);
     })
     .catch(error => {
-      console.error('❌ IMPORT ERROR:', error);
+      console.error('❌ PROMISE CHAIN ERROR:', error);
       console.error('Error details:', {
         name: error?.name,
         message: error?.message,
         stack: error?.stack
       });
       
-      root.innerHTML = `
-        <div style="padding: 20px; color: red; font-family: Arial;">
-          <h1>Import Error</h1>
-          <p>Error: ${error?.message || 'Unknown error'}</p>
-          <p>Import step failed - check console</p>
-        </div>
-      `;
+      // Show error but don't clear blue message immediately
+      const errorElement = ReactModule ? ReactModule.createElement('div', 
+        { style: { padding: '20px', color: 'red', fontFamily: 'Arial', backgroundColor: 'white' } },
+        ReactModule.createElement('h1', null, 'Promise Chain Error'),
+        ReactModule.createElement('p', null, `Error: ${error?.message || 'Unknown error'}`),
+        ReactModule.createElement('pre', null, error?.stack || 'No stack trace')
+      ) : null;
+      
+      if (errorElement && reactRoot) {
+        reactRoot.render(errorElement);
+      } else {
+        root.innerHTML = `
+          <div style="padding: 20px; color: red; font-family: Arial;">
+            <h1>Promise Chain Error</h1>
+            <p>Error: ${error?.message || 'Unknown error'}</p>
+          </div>
+        `;
+      }
     });
 }
