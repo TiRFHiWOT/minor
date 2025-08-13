@@ -15,8 +15,19 @@ import { QuickTopicModal } from './QuickTopicModal';
 
 export const MobileBottomNav = () => {
   const location = useLocation();
-  const { user, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  
+  // Wrap auth hook in try-catch for mobile stability
+  let user = null;
+  let signOut = async () => {};
+  
+  try {
+    const authContext = useAuth();
+    user = authContext.user;
+    signOut = authContext.signOut;
+  } catch (error) {
+    console.error('Auth context error in MobileBottomNav:', error);
+  }
   
   const navItems = [
     { icon: Home, label: 'Home', href: '/', active: location.pathname === '/' },

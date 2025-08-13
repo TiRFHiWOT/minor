@@ -39,33 +39,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         if (session?.user) {
           // Clear temp session when user logs in
-          sessionManager.clearSession();
+          try {
+            sessionManager.clearSession();
+          } catch (error) {
+            console.error('Error clearing session:', error);
+          }
           
-          // Fetch user role
-          setTimeout(async () => {
+          // Fetch user role with proper error handling
+          const fetchUserRole = async () => {
             if (!isMounted) return;
             try {
-              const { data: roleData } = await supabase
+              const { data: roleData, error } = await supabase
                 .from('user_roles')
                 .select('role')
                 .eq('user_id', session.user.id)
                 .single();
+              
+              if (error) {
+                console.warn('No user role found, defaulting to user:', error.message);
+                if (isMounted) setUserRole('user');
+                return;
+              }
               
               if (roleData && isMounted) {
                 setUserRole(roleData.role);
               }
             } catch (error) {
               console.error('Error fetching user role:', error);
+              if (isMounted) setUserRole('user');
             }
-          }, 100);
+          };
+          
+          fetchUserRole();
         } else {
           setUserRole('user');
-          // Re-initialize temp session when user logs out
-          setTimeout(() => {
-            if (isMounted) {
-              sessionManager.initializeSession();
+          // Re-initialize temp session when user logs out with error handling
+          const reinitializeSession = async () => {
+            if (!isMounted) return;
+            try {
+              await sessionManager.initializeSession();
+            } catch (error) {
+              console.error('Error reinitializing session:', error);
             }
-          }, 100);
+          };
+          
+          reinitializeSession();
         }
         
         setLoading(false);

@@ -8,6 +8,7 @@ import { ForumStats } from './ForumStats';
 import { Footer } from '@/components/layout/Footer';
 import { MobileBottomNav } from './MobileBottomNav';
 import { MobileErrorBoundary } from '@/components/MobileErrorBoundary';
+import { ErrorBoundaryEnhanced } from '@/components/ErrorBoundaryEnhanced';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export const ForumLayout = () => {
@@ -29,7 +30,9 @@ export const ForumLayout = () => {
 
           {/* Main Content */}
           <main className="flex-1 min-w-0 w-full overflow-x-hidden">
-            <Outlet />
+            <ErrorBoundaryEnhanced maxRetries={2}>
+              <Outlet />
+            </ErrorBoundaryEnhanced>
           </main>
         </div>
       </div>

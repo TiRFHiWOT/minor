@@ -22,16 +22,58 @@ export class MobileErrorBoundary extends React.Component<MobileErrorBoundaryProp
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Mobile Error Boundary caught an error:', error, errorInfo);
+    console.error('🔴 MOBILE ERROR BOUNDARY TRIGGERED 🔴');
+    console.error('Error:', error);
+    console.error('Error Info:', errorInfo);
     
-    // Log mobile-specific error details
-    console.error('Mobile error details:', {
-      userAgent: navigator.userAgent,
-      viewport: `${window.innerWidth}x${window.innerHeight}`,
+    // Enhanced mobile-specific error details
+    const errorDetails = {
       timestamp: new Date().toISOString(),
-      error: error.message,
-      stack: error.stack
-    });
+      error: {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      },
+      component: {
+        stack: errorInfo.componentStack
+      },
+      device: {
+        userAgent: navigator.userAgent,
+        viewport: `${window.innerWidth}x${window.innerHeight}`,
+        pixelRatio: window.devicePixelRatio,
+        platform: navigator.platform,
+        language: navigator.language,
+        cookieEnabled: navigator.cookieEnabled,
+        onLine: navigator.onLine
+      },
+      browser: {
+        localStorage: typeof localStorage !== 'undefined',
+        sessionStorage: typeof sessionStorage !== 'undefined',
+        fetch: typeof fetch !== 'undefined'
+      },
+      memory: (window.performance as any)?.memory ? {
+        used: (window.performance as any).memory.usedJSHeapSize,
+        total: (window.performance as any).memory.totalJSHeapSize,
+        limit: (window.performance as any).memory.jsHeapSizeLimit
+      } : 'not available'
+    };
+    
+    console.error('📱 Mobile Error Details:', errorDetails);
+    
+    // Attempt to identify the failing component
+    const componentStack = errorInfo.componentStack;
+    if (componentStack.includes('AuthProvider')) {
+      console.error('❌ AUTH PROVIDER ERROR DETECTED');
+    }
+    if (componentStack.includes('SessionManager') || componentStack.includes('useTempUser')) {
+      console.error('❌ SESSION MANAGER ERROR DETECTED');
+    }
+    if (componentStack.includes('MobileBottomNav')) {
+      console.error('❌ MOBILE BOTTOM NAV ERROR DETECTED');
+    }
+    if (componentStack.includes('useIsMobile')) {
+      console.error('❌ USE IS MOBILE HOOK ERROR DETECTED');
+    }
   }
 
   render() {

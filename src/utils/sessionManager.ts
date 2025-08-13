@@ -21,23 +21,36 @@ class SessionManager {
   }
 
   async initializeSession(): Promise<string> {
-    // Check if we have a valid session in localStorage
-    const storedSessionId = localStorage.getItem('temp_session_id');
-    const storedExpiry = localStorage.getItem('temp_session_expiry');
-    const storedTempUserId = localStorage.getItem('temp_user_id');
+    try {
+      // Check if we have a valid session in localStorage
+      const storedSessionId = localStorage.getItem('temp_session_id');
+      const storedExpiry = localStorage.getItem('temp_session_expiry');
+      const storedTempUserId = localStorage.getItem('temp_user_id');
 
-    if (storedSessionId && storedExpiry && storedTempUserId) {
-      const expiry = new Date(storedExpiry);
-      if (expiry > new Date()) {
-        // Session is still valid
-        this.sessionId = storedSessionId;
-        this.tempUserId = storedTempUserId;
-        return this.tempUserId;
+      if (storedSessionId && storedExpiry && storedTempUserId) {
+        try {
+          const expiry = new Date(storedExpiry);
+          if (expiry > new Date()) {
+            // Session is still valid
+            this.sessionId = storedSessionId;
+            this.tempUserId = storedTempUserId;
+            return this.tempUserId;
+          }
+        } catch (error) {
+          console.warn('Invalid stored session data, creating new session');
+          this.clearSession();
+        }
       }
-    }
 
-    // Create new session
-    return this.createNewSession();
+      // Create new session
+      return this.createNewSession();
+    } catch (error) {
+      console.error('Failed to initialize session:', error);
+      // Fallback - create a basic fallback session without database calls
+      this.sessionId = 'fallback_' + Date.now();
+      this.tempUserId = 'temp_' + Date.now();
+      return this.tempUserId;
+    }
   }
 
   private async createNewSession(): Promise<string> {
@@ -45,34 +58,50 @@ class SessionManager {
     this.sessionId = 'session_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
     
     try {
-      // Get or create temporary user
-      const { data, error } = await supabase.rpc('get_or_create_temp_user', {
+      // Add timeout for mobile networks
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Session creation timeout')), 10000);
+      });
+      
+      const sessionPromise = supabase.rpc('get_or_create_temp_user', {
         p_session_id: this.sessionId
       });
+      
+      const { data, error } = await Promise.race([sessionPromise, timeoutPromise]) as any;
 
       if (error) {
         console.error('Error creating temp user:', error);
-        throw error;
+        // Don't throw error, create fallback session
+        this.tempUserId = 'fallback_' + Date.now();
+        console.warn('Using fallback session due to database error');
+        return this.tempUserId;
       }
 
       this.tempUserId = data;
       
       // Store in localStorage with 12-hour expiry
-      const expiry = new Date(Date.now() + 12 * 60 * 60 * 1000);
-      localStorage.setItem('temp_session_id', this.sessionId);
-      localStorage.setItem('temp_user_id', this.tempUserId);
-      localStorage.setItem('temp_session_expiry', expiry.toISOString());
+      try {
+        const expiry = new Date(Date.now() + 12 * 60 * 60 * 1000);
+        localStorage.setItem('temp_session_id', this.sessionId);
+        localStorage.setItem('temp_user_id', this.tempUserId);
+        localStorage.setItem('temp_session_expiry', expiry.toISOString());
 
-      console.log('Created new temporary user session:', {
-        sessionId: this.sessionId,
-        tempUserId: this.tempUserId,
-        expiry: expiry.toISOString()
-      });
+        console.log('Created new temporary user session:', {
+          sessionId: this.sessionId,
+          tempUserId: this.tempUserId,
+          expiry: expiry.toISOString()
+        });
+      } catch (storageError) {
+        console.warn('Failed to store session in localStorage:', storageError);
+      }
 
       return this.tempUserId;
     } catch (error) {
       console.error('Failed to create temp user session:', error);
-      throw error;
+      // Create fallback session that doesn't require database
+      this.tempUserId = 'fallback_' + Date.now();
+      console.warn('Using offline fallback session');
+      return this.tempUserId;
     }
   }
 
