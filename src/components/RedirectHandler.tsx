@@ -2,18 +2,38 @@ import { useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getRedirectUrl } from '@/utils/urlRedirects';
 import { migrateUrl } from '@/utils/urlMigration';
+import { useUrlMigrationByOldUrl, useIncrementRedirectCount } from '@/hooks/useUrlMigrations';
 
 export const RedirectHandler = () => {
   const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const incrementRedirectCount = useIncrementRedirectCount();
+
+  // Check for old URL database lookup
+  const shouldCheckDatabase = migrateUrl(location.pathname)?.startsWith('__OLD_URL_LOOKUP__');
+  const oldUrlPath = shouldCheckDatabase ? location.pathname : '';
+  
+  const { data: urlMigration } = useUrlMigrationByOldUrl(oldUrlPath);
 
   useEffect(() => {
     const { categorySlug, subcategorySlug, topicSlug } = params;
     
-    // Check for URL migration first
+    // Handle old URL database lookup first
+    if (shouldCheckDatabase && urlMigration) {
+      console.log('Redirecting old URL:', oldUrlPath, '->', urlMigration.new_url);
+      
+      // Increment redirect count for analytics
+      incrementRedirectCount.mutate(urlMigration.id);
+      
+      // Perform 301 redirect
+      navigate(urlMigration.new_url, { replace: true });
+      return;
+    }
+    
+    // Check for URL migration patterns
     const migratedUrl = migrateUrl(location.pathname);
-    if (migratedUrl) {
+    if (migratedUrl && !migratedUrl.startsWith('__OLD_URL_LOOKUP__')) {
       navigate(migratedUrl, { replace: true });
       return;
     }

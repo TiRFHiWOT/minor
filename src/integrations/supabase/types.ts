@@ -1372,6 +1372,7 @@ export type Database = {
           is_locked: boolean | null
           is_pinned: boolean | null
           last_reply_at: string | null
+          legacy_topic_id: number | null
           meta_description: string | null
           meta_keywords: string | null
           meta_title: string | null
@@ -1397,6 +1398,7 @@ export type Database = {
           is_locked?: boolean | null
           is_pinned?: boolean | null
           last_reply_at?: string | null
+          legacy_topic_id?: number | null
           meta_description?: string | null
           meta_keywords?: string | null
           meta_title?: string | null
@@ -1422,6 +1424,7 @@ export type Database = {
           is_locked?: boolean | null
           is_pinned?: boolean | null
           last_reply_at?: string | null
+          legacy_topic_id?: number | null
           meta_description?: string | null
           meta_keywords?: string | null
           meta_title?: string | null
@@ -1444,6 +1447,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      url_migrations: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          last_modified_date: string | null
+          new_category_id: string | null
+          new_post_id: string | null
+          new_topic_id: string | null
+          new_url: string
+          notes: string | null
+          old_category_id: number | null
+          old_post_id: number | null
+          old_topic_id: number | null
+          old_url: string
+          priority: number | null
+          redirect_count: number | null
+          status: string
+          updated_at: string
+          url_type: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_modified_date?: string | null
+          new_category_id?: string | null
+          new_post_id?: string | null
+          new_topic_id?: string | null
+          new_url: string
+          notes?: string | null
+          old_category_id?: number | null
+          old_post_id?: number | null
+          old_topic_id?: number | null
+          old_url: string
+          priority?: number | null
+          redirect_count?: number | null
+          status?: string
+          updated_at?: string
+          url_type?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_modified_date?: string | null
+          new_category_id?: string | null
+          new_post_id?: string | null
+          new_topic_id?: string | null
+          new_url?: string
+          notes?: string | null
+          old_category_id?: number | null
+          old_post_id?: number | null
+          old_topic_id?: number | null
+          old_url?: string
+          priority?: number | null
+          redirect_count?: number | null
+          status?: string
+          updated_at?: string
+          url_type?: string
+        }
+        Relationships: []
       }
       user_behavior_patterns: {
         Row: {
@@ -2029,6 +2095,10 @@ export type Database = {
       increment: {
         Args: { x: number }
         Returns: number
+      }
+      increment_redirect_count: {
+        Args: { migration_id: string }
+        Returns: undefined
       }
       increment_reply_count: {
         Args: { topic_id: string }

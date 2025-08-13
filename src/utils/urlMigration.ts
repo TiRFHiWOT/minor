@@ -1,10 +1,21 @@
 import { getRedirectUrl } from './urlRedirects';
+import { parseOldUrl } from './sitemapProcessor';
 
 // Migration utility to handle URL structure changes
 export const migrateUrl = (path: string): string | null => {
   // Remove leading slash for processing
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
   const segments = cleanPath.split('/');
+  
+  // Check for old forum URL patterns first (e.g., "2011-aa-gthl-east-t5448.html")
+  const fullPath = path.endsWith('/') ? path.slice(0, -1) : path;
+  const oldPattern = parseOldUrl(`https://example.com${fullPath}`);
+  
+  if (oldPattern && (oldPattern.type === 'topic' || oldPattern.type === 'post')) {
+    // This is an old forum URL that needs database lookup
+    // Return a special marker to indicate database lookup is needed
+    return `__OLD_URL_LOOKUP__${fullPath}`;
+  }
   
   // Handle flat Level 3 category URLs that need to become hierarchical
   if (segments.length === 1) {

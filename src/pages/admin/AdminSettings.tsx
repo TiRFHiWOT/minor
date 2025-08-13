@@ -13,6 +13,7 @@ import { useEnhancedForumStats } from '@/hooks/useEnhancedForumStats';
 import { WysiwygEditor } from '@/components/ui/wysiwyg-editor';
 import { Save, Settings, Users, Shield, Database, BarChart3, Eye, TrendingUp, Calendar, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 import { AnalyticsSettings } from '@/components/admin/AnalyticsSettings';
+import { UrlMigrationManager } from '@/components/admin/UrlMigrationManager';
 
 const AdminSettings = () => {
   const { toast } = useToast();
@@ -123,7 +124,7 @@ const AdminSettings = () => {
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             General
@@ -143,6 +144,10 @@ const AdminSettings = () => {
           <TabsTrigger value="appearance" className="flex items-center gap-2">
             <Eye className="h-4 w-4" />
             Appearance
+          </TabsTrigger>
+          <TabsTrigger value="migration" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            URL Migration
           </TabsTrigger>
           <TabsTrigger value="stats" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
@@ -718,6 +723,11 @@ const AdminSettings = () => {
         {/* Analytics Settings */}
         <TabsContent value="analytics">
           <AnalyticsSettings />
+        </TabsContent>
+
+        {/* URL Migration Settings */}
+        <TabsContent value="migration">
+          <UrlMigrationManager />
         </TabsContent>
 
         {/* System Settings */}
