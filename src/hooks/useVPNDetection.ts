@@ -36,135 +36,139 @@ export const useVPNDetection = () => {
     }
   }, [vpnDetectionEnabled]);
 
-  // Memoized VPN detection function with debouncing and caching
+  // Memoized VPN detection function with comprehensive safeguards
   const checkVPNStatus = useCallback(async () => {
-    // CRITICAL: Check for bots first - never run VPN detection on crawlers
-    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
-    const isWhitelistedBot = shouldWhitelistFromVPN(userAgent);
+    console.log('🛡️ VPN Detection: Starting check, enabled:', vpnDetectionEnabled);
     
-    if (isWhitelistedBot) {
-      const botInfo = getBotInfo(userAgent);
-      console.log(`🤖 Bot detected in VPN check - skipping: ${botInfo.botName}`);
+    // CRITICAL: If VPN detection is disabled, bypass ALL VPN logic immediately
+    if (!vpnDetectionEnabled) {
+      console.log('🛡️ VPN detection disabled - bypassing all checks and allowing access');
+      setIsVPN(false);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+    
+    // CRITICAL: Check for bots first - never block legitimate crawlers/ads  
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+    
+    // Get user IP for comprehensive whitelist checking
+    let userIP: string | null = null;
+    try {
+      userIP = await getUserIP();
+    } catch (err) {
+      console.warn('🛡️ Could not determine user IP for bot checking:', err);
+    }
+    
+    if (shouldWhitelistFromVPN(userAgent, userIP || undefined)) {
+      console.log('🤖 Traffic whitelisted - bypassing VPN check completely');
       setIsVPN(false);
       setIsLoading(false);
       setError(null);
       return;
     }
 
-    // Don't check if VPN detection is disabled - return early
-    if (!vpnDetectionEnabled) {
-      console.log('🔧 VPN detection disabled, skipping check entirely');
-      return;
-    }
-    
-    // Prevent multiple simultaneous checks
+    // Prevent concurrent checks
     if (isCheckingRef.current) {
-      console.log('🔧 VPN check already in progress, skipping...');
+      console.log('🛡️ VPN check already in progress, skipping');
       return;
     }
 
-    console.log('🔧 checkVPNStatus called with VPN detection enabled:', vpnDetectionEnabled);
     isCheckingRef.current = true;
+    setIsLoading(true);
+    setError(null);
 
-    // Cancel any previous request
+    // Abort any previous request
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
     abortControllerRef.current = new AbortController();
 
     try {
-
-      setIsLoading(true);
-      setError(null);
-      
-      console.log('🔍 Starting VPN detection check...');
-      
-      // Get user's IP address with abort signal
-      const ip = await getUserIP();
-      
-      if (abortControllerRef.current?.signal.aborted) {
-        console.log('🔧 VPN check was aborted');
-        return;
+      if (!userIP) {
+        userIP = await getUserIP();
       }
       
-      if (!ip) {
-        console.warn('❌ Could not retrieve IP address for VPN check');
-        setIsVPN(false); // Allow access if we can't determine IP
+      if (!userIP) {
+        console.warn('🛡️ Could not determine user IP - allowing access (fail-safe)');
+        setIsVPN(false);
+        setIsLoading(false);
+        isCheckingRef.current = false;
         return;
       }
 
       // Check cache first
-      const cacheKey = `${ip}_${vpnDetectionEnabled}`;
-      const cached = vpnCache.get(cacheKey);
-      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-        console.log('🔧 Using cached VPN result for IP:', ip, 'isVPN:', cached.isVPN);
+      const cached = vpnCache.get(userIP);
+      if (cached && (Date.now() - cached.timestamp < CACHE_DURATION)) {
+        console.log('🛡️ Using cached VPN result for IP:', userIP, cached.isVPN);
         setIsVPN(cached.isVPN);
         setIsLoading(false);
+        isCheckingRef.current = false;
         return;
       }
 
-      console.log(`🌍 Checking VPN status for IP: ${ip}`);
-
-      // Get geolocation data which includes VPN detection
-      const geoData = await getIPGeolocation(ip);
-      
+      // Get geolocation data
+      const geoData = await getIPGeolocation(userIP);
       if (abortControllerRef.current?.signal.aborted) {
-        console.log('🔧 VPN check was aborted after geolocation');
+        console.log('🛡️ VPN check was aborted');
         return;
       }
+
+      const isVPNDetected = geoData?.is_vpn || geoData?.is_proxy || false;
       
-      console.log('📍 Geolocation data received:', {
-        ip,
-        is_vpn: geoData?.is_vpn,
-        is_proxy: geoData?.is_proxy,
-        isp: geoData?.isp,
-        country: geoData?.country_name
+      // Cache the result
+      vpnCache.set(userIP, {
+        isVPN: isVPNDetected,
+        timestamp: Date.now()
       });
-      
-      if (geoData && typeof geoData.is_vpn === 'boolean') {
-        const isVPNDetected = geoData.is_vpn;
-        
-        // Cache the result
-        vpnCache.set(cacheKey, { isVPN: isVPNDetected, timestamp: Date.now() });
-        
-        setIsVPN(isVPNDetected);
-        
-        if (isVPNDetected) {
-          console.log('🚨 VPN DETECTED for IP:', ip, 'ISP:', geoData.isp);
-        } else {
-          console.log('✅ No VPN detected for IP:', ip, 'ISP:', geoData.isp);
-        }
-      } else {
-        console.warn('⚠️ VPN status could not be determined from geolocation data:', geoData);
-        setIsVPN(false); // Allow access if we can't determine VPN status
-      }
+
+      console.log('🛡️ VPN Detection Result:', { 
+        ip: userIP, 
+        isVPN: isVPNDetected, 
+        country: geoData?.country_name,
+        isp: geoData?.isp 
+      });
+
+      setIsVPN(isVPNDetected);
+      setError(null);
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
-        console.log('🔧 VPN check was aborted');
+        console.log('🛡️ VPN check was aborted');
         return;
       }
       
-      console.error('💥 Error checking VPN status:', err);
-      setError(err instanceof Error ? err.message : 'Failed to check VPN status');
-      setIsVPN(false); // Allow access on error to prevent breaking the site
+      console.error('🛡️ VPN detection error:', err);
+      setError(err as Error);
+      // CRITICAL: On error, default to allowing access (fail-safe approach)
+      console.log('🛡️ Error occurred - defaulting to allow access (revenue protection)');
+      setIsVPN(false);
     } finally {
       setIsLoading(false);
       isCheckingRef.current = false;
     }
   }, [vpnDetectionEnabled]);
 
-  // Effect to run VPN check when component mounts or VPN detection setting changes
+  // Effect to set initial defaults if VPN detection is disabled
   useEffect(() => {
-    console.log('🔧 useVPNDetection useEffect triggered, VPN detection enabled:', vpnDetectionEnabled);
-    
-    // Clear cache when VPN detection is disabled to ensure fresh check when re-enabled
     if (!vpnDetectionEnabled) {
-      console.log('🔧 Clearing VPN cache due to disabled detection');
-      vpnCache.clear();
+      console.log('🛡️ VPN detection disabled - setting safe defaults and bypassing all checks');
+      setIsVPN(false);
+      setIsLoading(false);
+      setError(null);
+      return;
     }
-    
-    checkVPNStatus();
-  }, [checkVPNStatus, vpnDetectionEnabled]);
+  }, [vpnDetectionEnabled]);
+
+  // Effect to check VPN status on mount and when enabled changes
+  useEffect(() => {
+    // Only run VPN checks if detection is enabled
+    if (vpnDetectionEnabled) {
+      console.log('🛡️ VPN detection enabled - running check');
+      checkVPNStatus();
+    } else {
+      console.log('🛡️ VPN detection disabled - skipping check entirely');
+    }
+  }, [vpnDetectionEnabled, checkVPNStatus]);
 
   // Cleanup effect to cancel ongoing requests when component unmounts
   useEffect(() => {
