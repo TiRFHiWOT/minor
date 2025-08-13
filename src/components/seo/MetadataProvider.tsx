@@ -50,6 +50,9 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
   const { getSetting } = useForumSettings();
   const { user } = useAuth();
   const [customMetadata, setCustomMetadata] = React.useState<PageMetadata>({});
+  
+  // Get base title consistently
+  const baseTitle = getSetting('forum_name_override', getSetting('forum_name', 'Minor Hockey Forum'));
 
   // Get category metadata if on category page
   const { data: categoryMetadata } = useQuery({
@@ -174,9 +177,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
 
   // Determine page metadata based on current route
   const getPageMetadata = (): PageMetadata => {
-    const baseTitle = getSetting('forum_name', 'Minor Hockey Talks');
     const baseSeparator = ' - ';
-    const autoGenerationEnabled = getSetting('seo_auto_generation', true);
+    const autoGenerationEnabled = getSetting('seo_auto_generate_topic_titles', true);
 
     // Custom metadata takes highest priority
     if (Object.keys(customMetadata).length > 0) {
@@ -186,37 +188,29 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       };
     }
 
-    // Topic page metadata
+    // Topic page metadata - Database first approach
     if (topicMetadata && params.topicSlug) {
       const catName = (topicMetadata as any).category_name || formatSlug(params.subcategorySlug || params.categorySlug || '');
       
-      // Use auto-generation if no manual title is set or auto-generation is enabled
-      const autoTitle = generateTopicTitle({
+      // Use database meta_title if it exists, otherwise auto-generate
+      const title = topicMetadata.meta_title || generateTopicTitle({
         topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
         categoryName: catName
       });
       
-      const autoDescription = generateTopicDescription({
+      const description = topicMetadata.meta_description || generateTopicDescription({
         topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
         categoryName: catName,
         topicContent: topicMetadata.content
       });
       
-      const computedTitle = shouldUseAutoGeneration(topicMetadata.meta_title, autoGenerationEnabled)
-        ? autoTitle
-        : topicMetadata.meta_title || autoTitle;
-        
-      const computedDesc = shouldUseAutoGeneration(topicMetadata.meta_description, autoGenerationEnabled)
-        ? autoDescription
-        : topicMetadata.meta_description || autoDescription;
-      
       return {
-        title: computedTitle,
-        description: computedDesc,
+        title,
+        description,
         keywords: topicMetadata.meta_keywords,
         canonical: topicMetadata.canonical_url,
-        ogTitle: topicMetadata.og_title || computedTitle,
-        ogDescription: topicMetadata.og_description || computedDesc,
+        ogTitle: topicMetadata.og_title || title,
+        ogDescription: topicMetadata.og_description || description,
         ogImage: topicMetadata.og_image
       };
     }
@@ -244,28 +238,21 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       };
     }
 
-    // Category page metadata
+    // Category page metadata - Database first approach
     if (categoryMetadata && params.categorySlug && !params.topicSlug) {
       const categoryName = categoryMetadata.name || formatSlug(params.categorySlug);
       
-      const autoTitle = generateCategoryTitle(categoryName);
-      const autoDescription = generateCategoryDescription(categoryName);
-      
-      const computedTitle = shouldUseAutoGeneration(categoryMetadata.meta_title, autoGenerationEnabled)
-        ? autoTitle
-        : categoryMetadata.meta_title || autoTitle;
-        
-      const computedDesc = shouldUseAutoGeneration(categoryMetadata.meta_description, autoGenerationEnabled)
-        ? autoDescription
-        : categoryMetadata.meta_description || autoDescription;
+      // Use database meta_title if it exists, otherwise auto-generate
+      const title = categoryMetadata.meta_title || generateCategoryTitle(categoryName);
+      const description = categoryMetadata.meta_description || generateCategoryDescription(categoryName);
       
       return {
-        title: computedTitle,
-        description: computedDesc,
+        title,
+        description,
         keywords: categoryMetadata.meta_keywords,
         canonical: categoryMetadata.canonical_url,
-        ogTitle: categoryMetadata.og_title || computedTitle,
-        ogDescription: categoryMetadata.og_description || computedDesc,
+        ogTitle: categoryMetadata.og_title || title,
+        ogDescription: categoryMetadata.og_description || description,
         ogImage: categoryMetadata.og_image
       };
     }
@@ -408,14 +395,14 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         <link 
           rel="alternate" 
           type="application/rss+xml" 
-          title={`${getSetting('forum_name', 'Minor Hockey Talks')} RSS Feed`}
+          title={`${baseTitle} RSS Feed`}
           href="/rss" 
         />
         {params.categorySlug && (
           <link 
             rel="alternate" 
             type="application/rss+xml" 
-            title={`${getSetting('forum_name', 'Minor Hockey Talks')} - ${params.categorySlug} RSS Feed`}
+            title={`${baseTitle} - ${params.categorySlug} RSS Feed`}
             href={`/rss?category=${params.categorySlug}`}
           />
         )}
