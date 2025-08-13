@@ -89,7 +89,7 @@ export const useCreateTopic = () => {
       console.log('DEBUG TOPIC: Final topicData before insert:', topicData);
 
       const { data: topic, error } = await supabase
-        .from('topics')
+        .from('forum_topics')
         .insert(topicData)
         .select(`
           *,
