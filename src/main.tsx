@@ -4,49 +4,22 @@ import './index.css'
 
 console.log('🔥 MAIN.TSX STARTED');
 
-// Test App components gradually
+// Test App components gradually with proper ES6 imports
 const TestApp = () => {
   console.log('🧪 TestApp component rendering...');
   
-  // Test basic imports first
-  try {
-    console.log('📦 Testing React Router import...');
-    const { BrowserRouter } = require('react-router-dom');
-    console.log('✅ React Router imported');
-    
-    console.log('📦 Testing QueryClient import...');
-    const { QueryClient, QueryClientProvider } = require('@tanstack/react-query');
-    console.log('✅ QueryClient imported');
-    
-    console.log('📦 Testing HelmetProvider import...');
-    const { HelmetProvider } = require('react-helmet-async');
-    console.log('✅ HelmetProvider imported');
-    
-    return (
-      <div style={{ 
-        minHeight: '100vh', 
-        background: 'lightgreen', 
-        padding: '20px',
-        fontSize: '16px',
-        color: 'black'
-      }}>
-        <h1>✅ Basic Imports Working!</h1>
-        <p>React Router: ✅</p>
-        <p>React Query: ✅</p>
-        <p>React Helmet: ✅</p>
-        <p>Testing main App imports...</p>
-      </div>
-    );
-    
-  } catch (error) {
-    console.error('❌ Import test failed:', error);
-    return (
-      <div style={{ padding: '20px', background: 'red', color: 'white' }}>
-        <h1>Import Error</h1>
-        <p>Error: {error.message}</p>
-      </div>
-    );
-  }
+  return (
+    <div style={{ 
+      minHeight: '100vh', 
+      background: 'lightgreen', 
+      padding: '20px',
+      fontSize: '16px',
+      color: 'black'
+    }}>
+      <h1>✅ Testing App.tsx Imports</h1>
+      <p>About to test importing your actual App component...</p>
+    </div>
+  );
 };
 
 const root = document.getElementById("root");
@@ -60,15 +33,54 @@ if (!root) {
   const reactRoot = createRoot(root);
   
   setTimeout(() => {
-    console.log('🚀 Testing App imports...');
+    console.log('🚀 Rendering test app...');
     
     try {
       reactRoot.render(React.createElement(TestApp));
-      console.log('✅ Import test rendered');
+      console.log('✅ Test app rendered, now testing actual App import...');
+      
+      // Test actual App import after a delay
+      setTimeout(() => {
+        console.log('📦 Testing actual App.tsx import...');
+        
+        import('./App.tsx').then(AppModule => {
+          console.log('✅ App.tsx imported successfully');
+          const App = AppModule.default;
+          
+          try {
+            console.log('🔧 Creating actual App element...');
+            const appElement = React.createElement(App);
+            console.log('✅ App element created, rendering...');
+            
+            reactRoot.render(appElement);
+            console.log('✅ Actual App rendered successfully!');
+            
+          } catch (appRenderError) {
+            console.error('❌ App render error:', appRenderError);
+            reactRoot.render(React.createElement('div', {
+              style: { padding: '20px', background: 'red', color: 'white', minHeight: '100vh' }
+            }, [
+              React.createElement('h1', { key: 'title' }, 'App Render Error'),
+              React.createElement('p', { key: 'msg' }, `Error: ${appRenderError.message}`),
+              React.createElement('pre', { key: 'stack' }, appRenderError.stack || 'No stack trace')
+            ]));
+          }
+          
+        }).catch(appImportError => {
+          console.error('❌ App import error:', appImportError);
+          reactRoot.render(React.createElement('div', {
+            style: { padding: '20px', background: 'red', color: 'white', minHeight: '100vh' }
+          }, [
+            React.createElement('h1', { key: 'title' }, 'App Import Error'),
+            React.createElement('p', { key: 'msg' }, `Error: ${appImportError.message}`)
+          ]));
+        });
+        
+      }, 1000);
       
     } catch (renderError) {
-      console.error('❌ Import test render error:', renderError);
-      root.innerHTML = `<div style="padding: 20px; background: red; color: white;">Import Test Error: ${renderError.message}</div>`;
+      console.error('❌ Test render error:', renderError);
+      root.innerHTML = `<div style="padding: 20px; background: red; color: white;">Test Render Error: ${renderError.message}</div>`;
     }
     
   }, 500);
