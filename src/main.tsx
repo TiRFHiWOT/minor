@@ -4,9 +4,85 @@ import './index.css'
 
 console.log('🔥 MAIN.TSX STARTED');
 
-// Test App components gradually with proper ES6 imports
+// Add global error handlers
+window.addEventListener('error', (event) => {
+  console.error('🔴 GLOBAL ERROR:', event.error);
+  const root = document.getElementById("root");
+  if (root) {
+    root.innerHTML = `<div style="padding: 20px; background: red; color: white; font-family: Arial;">
+      <h1>Global JavaScript Error</h1>
+      <p>Message: ${event.message}</p>
+      <p>File: ${event.filename}:${event.lineno}</p>
+      <p>Error: ${event.error?.message || 'Unknown'}</p>
+    </div>`;
+  }
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('🔴 UNHANDLED PROMISE REJECTION:', event.reason);
+  const root = document.getElementById("root");
+  if (root) {
+    root.innerHTML = `<div style="padding: 20px; background: orange; color: black; font-family: Arial;">
+      <h1>Unhandled Promise Rejection</h1>
+      <p>Reason: ${event.reason?.message || event.reason}</p>
+    </div>`;
+  }
+});
+
 const TestApp = () => {
   console.log('🧪 TestApp component rendering...');
+  
+  React.useEffect(() => {
+    console.log('🔄 TestApp useEffect running - testing App import...');
+    
+    const testAppImport = async () => {
+      try {
+        console.log('📦 Starting App.tsx import...');
+        
+        const AppModule = await import('./App.tsx');
+        console.log('✅ App.tsx imported successfully:', AppModule);
+        
+        const App = AppModule.default;
+        console.log('✅ App component extracted:', App);
+        
+        // Test if we can create the App element
+        const appElement = React.createElement(App);
+        console.log('✅ App element created successfully');
+        
+        // Show success message
+        const root = document.getElementById("root");
+        if (root) {
+          root.innerHTML = `<div style="padding: 20px; background: blue; color: white; font-family: Arial;">
+            <h1>✅ App Import Successful!</h1>
+            <p>App.tsx imported and element created successfully</p>
+            <p>Now attempting to render...</p>
+          </div>`;
+        }
+        
+        // Attempt to render after short delay
+        setTimeout(() => {
+          const reactRoot = createRoot(root);
+          reactRoot.render(appElement);
+          console.log('✅ App rendered successfully!');
+        }, 1000);
+        
+      } catch (error) {
+        console.error('❌ App import/create error:', error);
+        const root = document.getElementById("root");
+        if (root) {
+          root.innerHTML = `<div style="padding: 20px; background: red; color: white; font-family: Arial;">
+            <h1>App Import/Create Error</h1>
+            <p>Error: ${error.message}</p>
+            <p>Stack: ${error.stack}</p>
+          </div>`;
+        }
+      }
+    };
+    
+    // Add delay before testing
+    setTimeout(testAppImport, 2000);
+    
+  }, []);
   
   return (
     <div style={{ 
@@ -16,8 +92,9 @@ const TestApp = () => {
       fontSize: '16px',
       color: 'black'
     }}>
-      <h1>✅ Testing App.tsx Imports</h1>
-      <p>About to test importing your actual App component...</p>
+      <h1>✅ React Component Working</h1>
+      <p>UseEffect will test App import in 2 seconds...</p>
+      <p>Wait for blue or red message...</p>
     </div>
   );
 };
@@ -33,54 +110,15 @@ if (!root) {
   const reactRoot = createRoot(root);
   
   setTimeout(() => {
-    console.log('🚀 Rendering test app...');
+    console.log('🚀 Rendering test component...');
     
     try {
       reactRoot.render(React.createElement(TestApp));
-      console.log('✅ Test app rendered, now testing actual App import...');
-      
-      // Test actual App import after a delay
-      setTimeout(() => {
-        console.log('📦 Testing actual App.tsx import...');
-        
-        import('./App.tsx').then(AppModule => {
-          console.log('✅ App.tsx imported successfully');
-          const App = AppModule.default;
-          
-          try {
-            console.log('🔧 Creating actual App element...');
-            const appElement = React.createElement(App);
-            console.log('✅ App element created, rendering...');
-            
-            reactRoot.render(appElement);
-            console.log('✅ Actual App rendered successfully!');
-            
-          } catch (appRenderError) {
-            console.error('❌ App render error:', appRenderError);
-            reactRoot.render(React.createElement('div', {
-              style: { padding: '20px', background: 'red', color: 'white', minHeight: '100vh' }
-            }, [
-              React.createElement('h1', { key: 'title' }, 'App Render Error'),
-              React.createElement('p', { key: 'msg' }, `Error: ${appRenderError.message}`),
-              React.createElement('pre', { key: 'stack' }, appRenderError.stack || 'No stack trace')
-            ]));
-          }
-          
-        }).catch(appImportError => {
-          console.error('❌ App import error:', appImportError);
-          reactRoot.render(React.createElement('div', {
-            style: { padding: '20px', background: 'red', color: 'white', minHeight: '100vh' }
-          }, [
-            React.createElement('h1', { key: 'title' }, 'App Import Error'),
-            React.createElement('p', { key: 'msg' }, `Error: ${appImportError.message}`)
-          ]));
-        });
-        
-      }, 1000);
+      console.log('✅ Test component rendered successfully');
       
     } catch (renderError) {
-      console.error('❌ Test render error:', renderError);
-      root.innerHTML = `<div style="padding: 20px; background: red; color: white;">Test Render Error: ${renderError.message}</div>`;
+      console.error('❌ Test component render error:', renderError);
+      root.innerHTML = `<div style="padding: 20px; background: red; color: white;">Test Component Error: ${renderError.message}</div>`;
     }
     
   }, 500);
