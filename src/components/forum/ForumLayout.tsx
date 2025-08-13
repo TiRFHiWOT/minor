@@ -7,6 +7,7 @@ import { ForumSidebarNav } from './ForumSidebarNav';
 import { ForumStats } from './ForumStats';
 import { Footer } from '@/components/layout/Footer';
 import { MobileBottomNav } from './MobileBottomNav';
+import { MobileErrorBoundary } from '@/components/MobileErrorBoundary';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export const ForumLayout = () => {
@@ -37,7 +38,11 @@ export const ForumLayout = () => {
       <Footer />
       
       {/* Mobile Bottom Navigation */}
-      <MobileBottomNav />
+      {isMobile && (
+        <MobileErrorBoundary>
+          <MobileBottomNav />
+        </MobileErrorBoundary>
+      )}
     </div>
   );
 };
