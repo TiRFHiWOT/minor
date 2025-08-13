@@ -18,6 +18,7 @@ import { PaginationControls } from '@/components/ui/pagination-controls';
 import { TopicTable } from './TopicTable';
 import { ReportModal } from './ReportModal';
 import { QuickTopicModal } from './QuickTopicModal';
+import { AdMetricsBanner } from '../ads/AdMetricsBanner';
 
 export const ForumHome = () => {
   const { user } = useAuth();
@@ -165,6 +166,8 @@ export const ForumHome = () => {
         })()}
       </div>
 
+      {/* AdMetrics Banner */}
+      <AdMetricsBanner />
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>

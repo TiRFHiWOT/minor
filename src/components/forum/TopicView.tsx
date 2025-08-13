@@ -27,6 +27,7 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { MoveTopicModal } from '@/components/admin/MoveTopicModal';
 import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
+import { AdMetricsBanner } from '../ads/AdMetricsBanner';
 
 export const TopicView = () => {
   const { getSetting } = useForumSettings();
@@ -590,6 +591,9 @@ export const TopicView = () => {
           ))}
         </div>
       )}
+
+      {/* AdMetrics Banner */}
+      <AdMetricsBanner />
 
       {/* Comments */}
       <div className="bg-card">
