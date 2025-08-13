@@ -1806,7 +1806,9 @@ export type Database = {
         }[]
       }
       get_hot_topics: {
-        Args: { limit_count?: number; offset_count?: number }
+        Args:
+          | { limit_count?: number }
+          | { limit_count?: number; offset_count?: number }
         Returns: {
           id: string
           title: string
@@ -1932,7 +1934,7 @@ export type Database = {
         }[]
       }
       get_posts_count: {
-        Args: { p_topic_id: string }
+        Args: { topic_id_param: string }
         Returns: number
       }
       get_posts_without_ip: {
