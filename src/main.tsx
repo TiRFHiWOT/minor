@@ -13,13 +13,7 @@ const blockExternalErrors = (event: ErrorEvent) => {
   });
   
   // Block ALL sync.js related errors
-  if (event.message?.includes('SYNC.JS') || 
-      event.message?.includes('TCF IFRAME LOCATOR') ||
-      event.filename?.includes('sync.min.js') || 
-      event.filename?.includes('tags.crwdcntrl.net') ||
-      event.filename?.includes('adnxs.com') ||
-      event.filename?.includes('adsystem.com') ||
-      event.filename === '' || 
+  if (event.filename === '' || 
       event.filename === 'Unknown file' ||
       event.message === 'Script error.' ||
       event.lineno === 0) {

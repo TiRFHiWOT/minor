@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { LeaderboardTopAd } from '@/components/ads/LeaderboardTopAd';
 import { Eye, EyeOff } from 'lucide-react';
 
 const ResetPassword = () => {
@@ -83,9 +82,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <>
-      <LeaderboardTopAd />
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle>Reset Your Password</CardTitle>
@@ -172,7 +169,6 @@ const ResetPassword = () => {
         </CardContent>
         </Card>
       </div>
-    </>
   );
 };
 

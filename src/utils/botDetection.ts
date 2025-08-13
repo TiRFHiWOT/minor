@@ -10,11 +10,7 @@ export interface BotInfo {
 const BOT_USER_AGENTS = [
   // Google bots
   'Googlebot',
-  'GoogleAdSenseInfeed', 
-  'Mediapartners-Google',
-  'GoogleAdSenseBot',
   'GoogleImageProxy',
-  'GoogleAdBot',
   'GoogleAssistant',
   
   // Bing
@@ -72,10 +68,6 @@ const BOT_USER_AGENTS = [
 // Bot name mapping for better identification
 const BOT_NAME_MAPPING: Record<string, { name: string; type: BotInfo['botType'] }> = {
   'Googlebot': { name: 'Google Search', type: 'search' },
-  'GoogleAdSenseInfeed': { name: 'Google AdSense', type: 'ad' },
-  'Mediapartners-Google': { name: 'Google AdSense', type: 'ad' },
-  'GoogleAdSenseBot': { name: 'Google AdSense', type: 'ad' },
-  'GoogleAdBot': { name: 'Google Ads', type: 'ad' },
   'bingbot': { name: 'Bing Search', type: 'search' },
   'Slurp': { name: 'Yahoo Search', type: 'search' },
   'facebookexternalhit': { name: 'Facebook', type: 'social' },

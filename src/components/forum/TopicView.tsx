@@ -21,7 +21,6 @@ import { InlineReplyForm } from './InlineReplyForm';
 import { AdminControls } from './AdminControls';
 import { PollDisplay } from './PollDisplay';
 import { BookmarkButton } from './BookmarkButton';
-import { ContentAdSpace } from '@/components/ads/ContentAdSpace';
 import { useForumSettings } from '@/hooks/useForumSettings';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
@@ -32,8 +31,6 @@ import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
 export const TopicView = () => {
   const { getSetting } = useForumSettings();
   
-  // Get ad frequency setting
-  const adFrequency = parseInt(getSetting('ads_between_posts_frequency', '3'));
   const { topicId, categorySlug, subcategorySlug, topicSlug } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -258,20 +255,6 @@ export const TopicView = () => {
     return posts.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
   };
 
-  // Function to determine which content ad to show based on post index
-  const getContentAdId = (index: number): 1 | 2 | 3 | 4 | null => {
-    const adPosition = Math.floor((index + 1) / adFrequency);
-    if (adPosition === 1) return 1;
-    if (adPosition === 2) return 2;
-    if (adPosition === 3) return 3;
-    if (adPosition === 4) return 4;
-    return null; // No more ads after Content 4
-  };
-
-  // Function to check if we should show an ad at this position
-  const shouldShowAd = (index: number) => {
-    return (index + 1) % adFrequency === 0 && index < posts.length - 1;
-  };
 
 
   if (topicLoading) {
@@ -632,21 +615,11 @@ export const TopicView = () => {
                   depth={0}
                   onReport={handleReport}
                 />
-                {/* Sequential content ads between posts */}
-                {shouldShowAd(index) && (() => {
-                  const contentAdId = getContentAdId(index);
-                  return contentAdId ? <ContentAdSpace contentId={contentAdId} /> : null;
-                })()}
               </React.Fragment>
             ))}
           </div>
         ) : (
           <p className="text-muted-foreground text-center py-8 px-3">No replies yet. Be the first to reply!</p>
-        )}
-        
-        {/* Content 5 Ad - Always above pagination */}
-        {totalPosts > 0 && (
-          <ContentAdSpace contentId={5} />
         )}
         
         {/* Pagination Controls */}
