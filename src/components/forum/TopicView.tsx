@@ -608,14 +608,13 @@ export const TopicView = () => {
         ) : posts && posts.length > 0 ? (
           <div className="space-y-1">
             {organizeReplies(posts).map((reply, index) => (
-              <React.Fragment key={reply.id}>
-                <PostComponent
-                  post={reply}
-                  topicId={topic.id || ''}
-                  depth={0}
-                  onReport={handleReport}
-                />
-              </React.Fragment>
+              <PostComponent
+                key={reply.id}
+                post={reply}
+                topicId={topic.id || ''}
+                depth={0}
+                onReport={handleReport}
+              />
             ))}
           </div>
         ) : (
