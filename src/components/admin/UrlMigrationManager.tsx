@@ -31,7 +31,8 @@ import {
   useBulkCreateUrlMigrations,
   type UrlMigration 
 } from '@/hooks/useUrlMigrations';
-import { fetchSitemap, processSitemapUrls, type OldUrlPattern } from '@/utils/sitemapProcessor';
+import { type OldUrlPattern } from '@/utils/sitemapProcessor';
+import { supabase } from '@/integrations/supabase/client';
 
 export const UrlMigrationManager = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -62,13 +63,23 @@ export const UrlMigrationManager = () => {
 
     setIsProcessingSitemap(true);
     try {
-      const urls = await fetchSitemap(sitemapUrl);
-      const patterns = processSitemapUrls(urls);
-      setSitemapData(patterns);
-      toast.success(`Processed ${patterns.length} URLs from sitemap`);
+      const { data, error } = await supabase.functions.invoke('process-sitemap', {
+        body: { sitemapUrl }
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to process sitemap');
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Unknown error processing sitemap');
+      }
+
+      setSitemapData(data.patterns);
+      toast.success(`Processed ${data.patterns.length} URLs from sitemap (${data.summary.topics} topics, ${data.summary.posts} posts, ${data.summary.categories} categories)`);
     } catch (error) {
       console.error('Error processing sitemap:', error);
-      toast.error('Failed to process sitemap');
+      toast.error(`Failed to process sitemap: ${error.message}`);
     } finally {
       setIsProcessingSitemap(false);
     }
