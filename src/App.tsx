@@ -57,7 +57,6 @@ import { RSSRedirect } from "./components/RSSRedirect";
 import { SitemapRedirect } from "./components/SitemapRedirect";
 
 import { SessionTimeout } from "./components/security/SessionTimeout";
-import { ScriptErrorDebugger } from "./components/debug/ScriptErrorDebugger";
 
 
 
@@ -70,7 +69,6 @@ const App = () => (
         <AuthProvider>
           <OnlineUsersProvider>
             
-            <ScriptErrorDebugger />
             <SessionTimeout timeoutDuration={30} warningTime={5} />
             <StickyBanner />
             
