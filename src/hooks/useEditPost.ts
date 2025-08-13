@@ -14,7 +14,7 @@ export const useEditPost = () => {
   return useMutation({
     mutationFn: async ({ postId, content }: EditPostParams) => {
       const { data, error } = await supabase
-        .from('forum_posts')
+        .from('posts')
         .update({ 
           content,
           updated_at: new Date().toISOString()

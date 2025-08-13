@@ -77,7 +77,7 @@ export const usePosts = (topicId: string, options: UsePostsOptions = {}) => {
         updated_at: post.updated_at,
         vote_score: null, // Not used in current UI
         moderation_status: post.moderation_status,
-        ip_address: undefined, // IP address not available in forum_posts table
+        ip_address: (post as any).ip_address || null, // IP address available in posts table
         is_anonymous: post.is_anonymous,
         profiles: post.author_username ? {
           username: post.author_username,
@@ -93,7 +93,7 @@ export const usePosts = (topicId: string, options: UsePostsOptions = {}) => {
           updated_at: post.parent_post_created_at!,
           vote_score: null,
           moderation_status: post.parent_post_moderation_status,
-          ip_address: undefined,
+          ip_address: undefined, // Parent post IP not needed in display
           is_anonymous: undefined,
           profiles: post.parent_post_author_username ? {
             username: post.parent_post_author_username,
