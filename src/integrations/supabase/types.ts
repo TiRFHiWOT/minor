@@ -1891,7 +1891,12 @@ export type Database = {
         }[]
       }
       get_enriched_topics: {
-        Args: { p_category_id?: string; p_limit?: number; p_offset?: number }
+        Args: {
+          p_category_id?: string
+          p_limit?: number
+          p_offset?: number
+          p_sort_by?: string
+        }
         Returns: {
           id: string
           title: string
@@ -1908,6 +1913,14 @@ export type Database = {
           slug: string
           moderation_status: string
           is_anonymous: boolean
+          ip_address: unknown
+          meta_title: string
+          meta_description: string
+          meta_keywords: string
+          canonical_url: string
+          og_title: string
+          og_description: string
+          og_image: string
           author_username: string
           author_avatar_url: string
           category_name: string

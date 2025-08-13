@@ -39,11 +39,11 @@ export interface PaginatedTopicsResult {
   currentPage: number;
 }
 
-export const useTopics = (categoryId?: string, page = 1, limit = 10) => {
+export const useTopics = (categoryId?: string, page = 1, limit = 10, sortBy = 'created_at') => {
   const offset = (page - 1) * limit;
   
   return useQuery({
-    queryKey: ['topics', categoryId, page, limit],
+    queryKey: ['topics', categoryId, page, limit, sortBy],
     queryFn: async () => {
       console.log('Fetching topics for category:', categoryId, 'with optimized function');
       
@@ -52,7 +52,8 @@ export const useTopics = (categoryId?: string, page = 1, limit = 10) => {
         supabase.rpc('get_enriched_topics', {
           p_category_id: categoryId || null,
           p_limit: limit,
-          p_offset: offset
+          p_offset: offset,
+          p_sort_by: sortBy
         }) as any, // Type assertion needed for new fields
         supabase.rpc('get_enriched_topics_count', {
           p_category_id: categoryId || null

@@ -39,7 +39,7 @@ export const ForumHome = () => {
   
   // Paginated data hooks
   const { data: hotTopicsData, isLoading: hotTopicsLoading } = useMostCommentedTopics(hotPage, 10);
-  const { data: newTopicsData, isLoading: newTopicsLoading } = useTopics(undefined, newPage, 10);
+  const { data: newTopicsData, isLoading: newTopicsLoading } = useTopics(undefined, newPage, 10, 'last_reply_at');
   const { data: topTopicsData, isLoading: topTopicsLoading } = useMostViewedTopics(topPage, 10);
   
   const { data: level1Forums } = useCategories(null, 1); // Only Level 1 forums
