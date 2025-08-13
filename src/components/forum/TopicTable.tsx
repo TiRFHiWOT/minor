@@ -181,6 +181,25 @@ export const TopicTable: React.FC<TopicTableProps> = ({
                       <span className="text-muted-foreground">No replies</span>
                     )}
                   </div>
+
+                  {/* Latest Post Button for Mobile */}
+                  {topic.last_reply_at && (
+                    <div className="mt-2 flex justify-end">
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs px-3 py-1 h-7"
+                      >
+                        <Link 
+                          to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
+                        >
+                          Latest Post
+                          <ChevronRight className="h-3 w-3 ml-1" />
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
 
