@@ -91,7 +91,52 @@ const parseOldUrl = (url: string): OldUrlPattern | null => {
   }
 };
 
-// Fetch and parse XML sitemap
+// Simple XML parser for sitemap processing
+const parseXmlSitemap = (xmlText: string): SitemapUrl[] => {
+  const urls: SitemapUrl[] = [];
+  
+  try {
+    // Extract URLs using regex patterns
+    const urlMatches = xmlText.matchAll(/<url[^>]*>(.*?)<\/url>/gs);
+    
+    for (const match of urlMatches) {
+      const urlBlock = match[1];
+      
+      // Extract location
+      const locMatch = urlBlock.match(/<loc[^>]*>(.*?)<\/loc>/s);
+      if (locMatch) {
+        const url: SitemapUrl = {
+          loc: locMatch[1].trim()
+        };
+        
+        // Extract optional fields
+        const lastmodMatch = urlBlock.match(/<lastmod[^>]*>(.*?)<\/lastmod>/s);
+        if (lastmodMatch) {
+          url.lastmod = lastmodMatch[1].trim();
+        }
+        
+        const changefreqMatch = urlBlock.match(/<changefreq[^>]*>(.*?)<\/changefreq>/s);
+        if (changefreqMatch) {
+          url.changefreq = changefreqMatch[1].trim();
+        }
+        
+        const priorityMatch = urlBlock.match(/<priority[^>]*>(.*?)<\/priority>/s);
+        if (priorityMatch) {
+          url.priority = priorityMatch[1].trim();
+        }
+        
+        urls.push(url);
+      }
+    }
+    
+    return urls;
+  } catch (error) {
+    console.error('Error parsing XML:', error);
+    return [];
+  }
+};
+
+// Fetch and parse XML sitemap using regex-based parsing
 const fetchSitemap = async (sitemapUrl: string): Promise<SitemapUrl[]> => {
   try {
     console.log('Fetching sitemap:', sitemapUrl);
@@ -103,50 +148,32 @@ const fetchSitemap = async (sitemapUrl: string): Promise<SitemapUrl[]> => {
     const xmlText = await response.text();
     console.log('Sitemap fetched, length:', xmlText.length);
     
-    // Parse XML using DOMParser (available in Deno)
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-    
-    // Check for parsing errors
-    const parserError = xmlDoc.querySelector('parsererror');
-    if (parserError) {
-      throw new Error('Failed to parse XML sitemap: ' + parserError.textContent);
-    }
-    
     const urls: SitemapUrl[] = [];
     
-    // Handle sitemap index (contains references to other sitemaps)
-    const sitemapElements = xmlDoc.querySelectorAll('sitemap');
-    if (sitemapElements.length > 0) {
-      console.log('Found sitemap index with', sitemapElements.length, 'child sitemaps');
-      for (const sitemap of sitemapElements) {
-        const loc = sitemap.querySelector('loc')?.textContent;
-        if (loc) {
-          // Recursively fetch child sitemaps
+    // Check if this is a sitemap index (contains references to other sitemaps)
+    const sitemapMatches = xmlText.matchAll(/<sitemap[^>]*>(.*?)<\/sitemap>/gs);
+    const sitemapIndexUrls = Array.from(sitemapMatches);
+    
+    if (sitemapIndexUrls.length > 0) {
+      console.log('Found sitemap index with', sitemapIndexUrls.length, 'child sitemaps');
+      for (const match of sitemapIndexUrls) {
+        const sitemapBlock = match[1];
+        const locMatch = sitemapBlock.match(/<loc[^>]*>(.*?)<\/loc>/s);
+        if (locMatch) {
+          const childSitemapUrl = locMatch[1].trim();
           try {
-            const childUrls = await fetchSitemap(loc);
+            const childUrls = await fetchSitemap(childSitemapUrl);
             urls.push(...childUrls);
           } catch (error) {
-            console.error('Error fetching child sitemap:', loc, error);
+            console.error('Error fetching child sitemap:', childSitemapUrl, error);
           }
         }
       }
     } else {
       // Handle regular sitemap (contains URLs)
-      const urlElements = xmlDoc.querySelectorAll('url');
-      console.log('Found', urlElements.length, 'URLs in sitemap');
-      
-      for (const urlElement of urlElements) {
-        const loc = urlElement.querySelector('loc')?.textContent;
-        if (loc) {
-          urls.push({
-            loc,
-            lastmod: urlElement.querySelector('lastmod')?.textContent || undefined,
-            changefreq: urlElement.querySelector('changefreq')?.textContent || undefined,
-            priority: urlElement.querySelector('priority')?.textContent || undefined
-          });
-        }
-      }
+      const parsedUrls = parseXmlSitemap(xmlText);
+      console.log('Found', parsedUrls.length, 'URLs in sitemap');
+      urls.push(...parsedUrls);
     }
     
     console.log('Total URLs extracted:', urls.length);
