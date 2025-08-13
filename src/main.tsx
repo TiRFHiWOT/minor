@@ -1,12 +1,11 @@
+// Add immediate console log before any imports
+console.log('🔥 SCRIPT STARTING - main.tsx execution begins');
+
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-// Add more detailed error logging
-console.log('🚀 Main.tsx loading...');
-
-// Log if imports worked
-console.log('✅ Imports loaded successfully');
+console.log('✅ All imports loaded successfully');
 console.log('App component:', App);
 console.log('createRoot:', createRoot);
 
@@ -27,7 +26,6 @@ window.addEventListener('error', (event) => {
   console.error('Column:', event.colno);
 });
 
-// Add console.log to track app initialization
 console.log('🚀 Starting React app initialization...');
 
 const root = document.getElementById("root");
