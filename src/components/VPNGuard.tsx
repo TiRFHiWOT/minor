@@ -27,7 +27,7 @@ export const VPNGuard = ({ children }: VPNGuardProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // CRITICAL: Check for bots first - never block legitimate crawlers
+  // CRITICAL: Check for bots first - never block legitimate crawlers/ads
   const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   const isWhitelistedBot = shouldWhitelistFromVPN(userAgent);
   
