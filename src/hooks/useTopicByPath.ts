@@ -39,7 +39,7 @@ export const useTopicByPath = (categorySlug: string, subcategorySlug?: string, t
         categoryData = childCategory;
         categoryError = childError;
       } else {
-        // Single category
+        // Single category - can be either top-level or subcategory
         const { data, error } = await supabase
           .from('categories')
           .select('id, parent_category_id')

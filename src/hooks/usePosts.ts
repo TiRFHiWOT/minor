@@ -79,27 +79,11 @@ export const usePosts = (topicId: string, options: UsePostsOptions = {}) => {
         moderation_status: post.moderation_status,
         ip_address: (post as any).ip_address || null, // IP address available in posts table
         is_anonymous: post.is_anonymous,
-        profiles: post.author_username ? {
-          username: post.author_username,
-          avatar_url: post.author_avatar_url
+        profiles: post.username ? {
+          username: post.username,
+          avatar_url: post.avatar_url
         } : undefined,
-        parent_post: post.parent_post_content ? {
-          id: post.parent_post_id!,
-          content: post.parent_post_content,
-          author_id: null,
-          topic_id: topicId,
-          parent_post_id: null,
-          created_at: post.parent_post_created_at!,
-          updated_at: post.parent_post_created_at!,
-          vote_score: null,
-          moderation_status: post.parent_post_moderation_status,
-          ip_address: undefined, // Parent post IP not needed in display
-          is_anonymous: undefined,
-          profiles: post.parent_post_author_username ? {
-            username: post.parent_post_author_username,
-            avatar_url: post.parent_post_author_avatar_url
-          } : undefined
-        } : undefined
+        parent_post: undefined // Parent post info not available in current query
       }));
       
       console.log('Optimized posts fetched:', enrichedPosts.length, 'posts in single query');
