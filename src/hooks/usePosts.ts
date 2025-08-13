@@ -77,7 +77,7 @@ export const usePosts = (topicId: string, options: UsePostsOptions = {}) => {
         updated_at: post.updated_at,
         vote_score: null, // Not used in current UI
         moderation_status: post.moderation_status,
-        ip_address: post.ip_address,
+        ip_address: undefined, // IP address not available in forum_posts table
         is_anonymous: post.is_anonymous,
         profiles: post.author_username ? {
           username: post.author_username,

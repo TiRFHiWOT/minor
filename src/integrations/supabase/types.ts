@@ -1854,7 +1854,6 @@ export type Database = {
           created_at: string
           updated_at: string
           moderation_status: string
-          ip_address: unknown
           is_anonymous: boolean
           author_username: string
           author_avatar_url: string
@@ -1864,6 +1863,10 @@ export type Database = {
           parent_post_author_username: string
           parent_post_author_avatar_url: string
         }[]
+      }
+      get_enriched_posts_count: {
+        Args: { p_topic_id: string }
+        Returns: number
       }
       get_enriched_posts_secure: {
         Args: { p_topic_id: string; p_limit?: number; p_offset?: number }
