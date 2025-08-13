@@ -28,6 +28,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { MoveTopicModal } from '@/components/admin/MoveTopicModal';
 import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
 import { AdMetricsBanner } from '../ads/AdMetricsBanner';
+import { ContentBanner } from '../ads/ContentBanner';
 
 export const TopicView = () => {
   const { getSetting } = useForumSettings();
@@ -612,13 +613,18 @@ export const TopicView = () => {
         ) : posts && posts.length > 0 ? (
           <div className="space-y-1">
             {organizeReplies(posts).map((reply, index) => (
-              <PostComponent
-                key={reply.id}
-                post={reply}
-                topicId={topic.id || ''}
-                depth={0}
-                onReport={handleReport}
-              />
+              <React.Fragment key={reply.id}>
+                <PostComponent
+                  post={reply}
+                  topicId={topic.id || ''}
+                  depth={0}
+                  onReport={handleReport}
+                />
+                {/* Content-Five Banner - Between posts (every 4th post) */}
+                {(index + 1) % 4 === 0 && index < posts.length - 1 && (
+                  <ContentBanner bannerId="five" />
+                )}
+              </React.Fragment>
             ))}
           </div>
         ) : (

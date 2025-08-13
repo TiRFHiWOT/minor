@@ -3,11 +3,15 @@ import { InlineContentEditor } from '@/components/admin/InlineContentEditor';
 
 const Privacy = () => {
   return (
-    <InlineContentEditor
-      settingKey="privacy_content"
-      title="Privacy Policy"
-      defaultContent=""
-    />
+    <div>
+      <InlineContentEditor
+        settingKey="privacy_content"
+        title="Privacy Policy"
+        defaultContent=""
+      />
+      {/* AdMetrics CMP Privacy Policy - required for privacy law compliance */}
+      <div id="ampCMP_privacyPolicy" className="mt-4"></div>
+    </div>
   );
 };
 

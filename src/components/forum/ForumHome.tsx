@@ -19,6 +19,7 @@ import { TopicTable } from './TopicTable';
 import { ReportModal } from './ReportModal';
 import { QuickTopicModal } from './QuickTopicModal';
 import { AdMetricsBanner } from '../ads/AdMetricsBanner';
+import { ContentBanner } from '../ads/ContentBanner';
 
 export const ForumHome = () => {
   const { user } = useAuth();
@@ -258,6 +259,8 @@ export const ForumHome = () => {
         </TabsContent>
       </Tabs>
 
+      {/* Content-One Banner - Under pagination for hot topic tabs */}
+      <ContentBanner bannerId="one" />
 
       {/* Forums Section */}
       <div className="forum-spacing">
@@ -301,6 +304,8 @@ export const ForumHome = () => {
         )}
       </div>
 
+      {/* Content-Two Banner - Between main forums and province forums */}
+      <ContentBanner bannerId="two" />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
@@ -328,8 +333,12 @@ export const ForumHome = () => {
                 countries.push({ name: 'USA', forums: usaForums });
               }
               
-              return countries.map(country => (
-                <div key={country.name} className="forum-spacing">
+              return countries.map((country, index) => (
+                <React.Fragment key={country.name}>
+                  {/* Content-Three Banner - Between Canada and USA forums */}
+                  {index === 1 && <ContentBanner bannerId="three" />}
+                  
+                  <div className="forum-spacing">
                   <h3 className="text-base font-semibold text-foreground border-b pb-1 forum-header">
                     {country.name}
                   </h3>
@@ -359,7 +368,11 @@ export const ForumHome = () => {
                       </Link>
                     ))}
                   </div>
-                </div>
+                  </div>
+                  
+                  {/* Content-Four Banner - After USA forums */}
+                  {index === countries.length - 1 && <ContentBanner bannerId="four" />}
+                </React.Fragment>
               ));
             })()}
           </div>
