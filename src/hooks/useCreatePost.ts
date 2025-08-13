@@ -51,7 +51,7 @@ export const useCreatePost = () => {
 
       // Get the topic to validate its category and check moderation requirements
       const { data: topic, error: topicError } = await supabase
-        .from('forum_topics')
+        .from('topics')
         .select('category_id, categories(level, name, requires_moderation)')
         .eq('id', data.topic_id)
         .single();
@@ -105,7 +105,7 @@ export const useCreatePost = () => {
       }
       
       const { data: post, error } = await supabase
-        .from('forum_posts')
+        .from('posts')
         .insert(postData)
         .select()
         .single();
