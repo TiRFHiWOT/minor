@@ -4,21 +4,49 @@ import './index.css'
 
 console.log('🔥 MAIN.TSX STARTED');
 
-// Create a minimal test App component
+// Test App components gradually
 const TestApp = () => {
-  return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: 'lightgreen', 
-      padding: '20px',
-      fontSize: '18px',
-      color: 'black'
-    }}>
-      <h1>✅ Test App Component Working!</h1>
-      <p>React is rendering successfully on mobile</p>
-      <p>This confirms the basic setup is working</p>
-    </div>
-  );
+  console.log('🧪 TestApp component rendering...');
+  
+  // Test basic imports first
+  try {
+    console.log('📦 Testing React Router import...');
+    const { BrowserRouter } = require('react-router-dom');
+    console.log('✅ React Router imported');
+    
+    console.log('📦 Testing QueryClient import...');
+    const { QueryClient, QueryClientProvider } = require('@tanstack/react-query');
+    console.log('✅ QueryClient imported');
+    
+    console.log('📦 Testing HelmetProvider import...');
+    const { HelmetProvider } = require('react-helmet-async');
+    console.log('✅ HelmetProvider imported');
+    
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        background: 'lightgreen', 
+        padding: '20px',
+        fontSize: '16px',
+        color: 'black'
+      }}>
+        <h1>✅ Basic Imports Working!</h1>
+        <p>React Router: ✅</p>
+        <p>React Query: ✅</p>
+        <p>React Helmet: ✅</p>
+        <p>Testing main App imports...</p>
+      </div>
+    );
+    
+  } catch (error) {
+    console.error('❌ Import test failed:', error);
+    return (
+      <div style={{ padding: '20px', background: 'red', color: 'white' }}>
+        <h1>Import Error</h1>
+        <p>Error: {error.message}</p>
+      </div>
+    );
+  }
 };
 
 const root = document.getElementById("root");
@@ -29,28 +57,19 @@ if (!root) {
   
   root.innerHTML = '<div style="padding: 20px; background: lime; color: black; font-size: 24px;">React is starting...</div>';
   
-  console.log('✅ About to create React root');
   const reactRoot = createRoot(root);
-  console.log('✅ React root created');
   
   setTimeout(() => {
-    console.log('🚀 TIMEOUT EXECUTING - Testing simple App!');
+    console.log('🚀 Testing App imports...');
     
     try {
-      console.log('🔧 Creating test React element...');
-      const testElement = React.createElement(TestApp);
-      console.log('✅ Test React element created');
-      
-      console.log('🎯 Rendering test App...');
-      reactRoot.render(testElement);
-      console.log('✅ Test App rendered successfully');
+      reactRoot.render(React.createElement(TestApp));
+      console.log('✅ Import test rendered');
       
     } catch (renderError) {
-      console.error('❌ Test render error:', renderError);
-      root.innerHTML = `<div style="padding: 20px; background: red; color: white;">Test Render Error: ${renderError.message}</div>`;
+      console.error('❌ Import test render error:', renderError);
+      root.innerHTML = `<div style="padding: 20px; background: red; color: white;">Import Test Error: ${renderError.message}</div>`;
     }
     
   }, 500);
-  
-  console.log('✅ setTimeout registered');
 }
