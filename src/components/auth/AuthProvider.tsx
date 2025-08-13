@@ -14,25 +14,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userRole, setUserRole] = useState<'admin' | 'moderator' | 'user'>('user');
 
   useEffect(() => {
+    console.log('🔵 AuthProvider useEffect started');
     let isMounted = true;
 
     // Initialize session manager for anonymous users
     const initializeApp = async () => {
       try {
+        console.log('🔵 Initializing session manager...');
         await sessionManager.initializeSession();
+        console.log('✅ Session manager initialized successfully');
       } catch (error) {
-        console.error('Failed to initialize session manager:', error);
+        console.error('❌ Failed to initialize session manager:', error);
+        console.error('Error details:', {
+          name: error?.name,
+          message: error?.message,
+          stack: error?.stack
+        });
       }
     };
 
     initializeApp();
 
     // Set up auth state listener
+    console.log('🔵 Setting up auth state listener...');
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if (!isMounted) return;
+        if (!isMounted) {
+          console.log('⚠️ Auth state change ignored - component unmounted');
+          return;
+        }
         
-        console.log('Auth state change:', event, session?.user?.id);
+        console.log('🔵 Auth state change:', event, session?.user?.id);
         
         setSession(session);
         setUser(session?.user ?? null);
@@ -86,40 +98,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           reinitializeSession();
         }
         
+        console.log('🔵 Setting loading to false');
         setLoading(false);
       }
     );
+    console.log('✅ Auth state listener set up successfully');
 
     // Check for existing session
+    console.log('🔵 Checking for existing session...');
     const getInitialSession = async () => {
       try {
+        console.log('🔵 Getting initial session from Supabase...');
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
-          console.error('Error getting initial session:', error);
+          console.error('❌ Error getting initial session:', error);
+        } else {
+          console.log('✅ Initial session retrieved successfully');
         }
         
         if (isMounted) {
+          console.log('🔵 Setting initial session state...');
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);
           
           if (session?.user) {
-            console.log('Initial session found for user:', session.user.id);
+            console.log('✅ Initial session found for user:', session.user.id);
+          } else {
+            console.log('ℹ️ No initial session found');
           }
         }
       } catch (error) {
-        console.error('Failed to get initial session:', error);
+        console.error('❌ Failed to get initial session:', error);
+        console.error('Error details:', {
+          name: error?.name,
+          message: error?.message,
+          stack: error?.stack
+        });
         if (isMounted) {
+          console.log('🔵 Setting loading to false after error');
           setLoading(false);
         }
       }
     };
 
+    console.log('🔵 Calling getInitialSession...');
     getInitialSession();
 
     return () => {
+      console.log('🔵 AuthProvider cleanup - unmounting...');
       isMounted = false;
       subscription.unsubscribe();
+      console.log('✅ AuthProvider cleanup completed');
     };
   }, []);
 

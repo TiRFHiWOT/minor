@@ -22,12 +22,62 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       return { hasError: false };
     }
     
-    console.error('Error caught by boundary:', error);
+    console.error('🔴 MAIN ERROR BOUNDARY TRIGGERED 🔴');
+    console.error('Error caught by main boundary:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error boundary caught an error:', error, errorInfo);
+    console.error('🔴 MAIN ERROR BOUNDARY - componentDidCatch 🔴');
+    console.error('Error:', error);
+    console.error('Error Info:', errorInfo);
+    console.error('Component Stack:', errorInfo.componentStack);
+    
+    // Log detailed mobile debugging info
+    const debugInfo = {
+      timestamp: new Date().toISOString(),
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+      error: {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      },
+      componentStack: errorInfo.componentStack,
+      device: {
+        platform: navigator.platform,
+        language: navigator.language,
+        cookieEnabled: navigator.cookieEnabled,
+        onLine: navigator.onLine,
+        localStorage: typeof localStorage !== 'undefined',
+        sessionStorage: typeof sessionStorage !== 'undefined'
+      }
+    };
+    
+    console.error('🐛 DEBUG INFO:', JSON.stringify(debugInfo, null, 2));
+    
+    // Try to identify what's failing
+    const stack = errorInfo.componentStack;
+    if (stack.includes('AuthProvider')) {
+      console.error('❌ ERROR IN AUTH PROVIDER');
+    }
+    if (stack.includes('SessionManager') || stack.includes('sessionManager')) {
+      console.error('❌ ERROR IN SESSION MANAGER');
+    }
+    if (stack.includes('useIsMobile')) {
+      console.error('❌ ERROR IN useIsMobile HOOK');
+    }
+    if (stack.includes('MobileBottomNav')) {
+      console.error('❌ ERROR IN MOBILE BOTTOM NAV');
+    }
+    if (stack.includes('ForumLayout')) {
+      console.error('❌ ERROR IN FORUM LAYOUT');
+    }
   }
 
   render() {
