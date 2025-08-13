@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { safeStorage } from './safeStorage';
 
 export interface TempUser {
   id: string;
@@ -22,10 +23,10 @@ class SessionManager {
 
   async initializeSession(): Promise<string> {
     try {
-      // Check if we have a valid session in localStorage
-      const storedSessionId = localStorage.getItem('temp_session_id');
-      const storedExpiry = localStorage.getItem('temp_session_expiry');
-      const storedTempUserId = localStorage.getItem('temp_user_id');
+      // Check if we have a valid session in storage (mobile-safe)
+      const storedSessionId = safeStorage.getItem('temp_session_id');
+      const storedExpiry = safeStorage.getItem('temp_session_expiry');
+      const storedTempUserId = safeStorage.getItem('temp_user_id');
 
       if (storedSessionId && storedExpiry && storedTempUserId) {
         try {
@@ -82,9 +83,9 @@ class SessionManager {
       // Store in localStorage with 12-hour expiry
       try {
         const expiry = new Date(Date.now() + 12 * 60 * 60 * 1000);
-        localStorage.setItem('temp_session_id', this.sessionId);
-        localStorage.setItem('temp_user_id', this.tempUserId);
-        localStorage.setItem('temp_session_expiry', expiry.toISOString());
+        safeStorage.setItem('temp_session_id', this.sessionId);
+        safeStorage.setItem('temp_user_id', this.tempUserId);
+        safeStorage.setItem('temp_session_expiry', expiry.toISOString());
 
         console.log('Created new temporary user session:', {
           sessionId: this.sessionId,
@@ -138,9 +139,9 @@ class SessionManager {
   clearSession(): void {
     this.sessionId = null;
     this.tempUserId = null;
-    localStorage.removeItem('temp_session_id');
-    localStorage.removeItem('temp_user_id');
-    localStorage.removeItem('temp_session_expiry');
+    safeStorage.removeItem('temp_session_id');
+    safeStorage.removeItem('temp_user_id');
+    safeStorage.removeItem('temp_session_expiry');
   }
 
   async checkRateLimit(): Promise<{ canPost: boolean; remainingPosts: number }> {
