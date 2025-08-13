@@ -49,7 +49,7 @@ export const useTopicBookmarks = (topicId?: string) => {
       // Step 2: Get topic details for bookmarked topics
       const topicIds = bookmarkData.map(b => b.topic_id);
       const { data: topicsData, error: topicsError } = await supabase
-        .from('forum_topics')
+        .from('topics')
         .select(`
           id,
           title,

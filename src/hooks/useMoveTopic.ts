@@ -17,7 +17,7 @@ export const useMoveTopic = () => {
     mutationFn: async ({ topicId, newCategoryId, currentCategoryName, newCategoryName }: MoveTopicParams) => {
       // Update the topic's category
       const { data, error } = await supabase
-        .from('forum_topics')
+        .from('topics')
         .update({ 
           category_id: newCategoryId,
           updated_at: new Date().toISOString()
