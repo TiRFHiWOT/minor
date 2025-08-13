@@ -14,7 +14,7 @@ export const usePinTopic = () => {
   return useMutation({
     mutationFn: async ({ topicId, isPinned }: PinTopicParams) => {
       const { data, error } = await supabase
-        .from('topics')
+        .from('forum_topics')
         .update({ 
           is_pinned: isPinned,
           updated_at: new Date().toISOString()

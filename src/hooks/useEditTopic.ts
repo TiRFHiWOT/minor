@@ -15,7 +15,7 @@ export const useEditTopic = () => {
   return useMutation({
     mutationFn: async ({ topicId, title, content }: EditTopicParams) => {
       const { data, error } = await supabase
-        .from('topics')
+        .from('forum_topics')
         .update({ 
           title,
           content,

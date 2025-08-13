@@ -40,7 +40,7 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
         ).join(',');
         
         const { data: topicResults, error: topicError } = await supabase
-          .from('topics')
+          .from('forum_topics')
           .select(`
             id,
             title,
@@ -137,7 +137,7 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
         ).join(',');
 
         const { data: postResults, error: postError } = await supabase
-          .from('posts')
+          .from('forum_posts')
           .select(`
             id,
             content,
@@ -191,7 +191,7 @@ export const useSearch = (query: string, filter: SearchFilter = 'all') => {
         // Get topic data for posts to get topic titles and categories
         const topicIds = [...new Set(filteredPosts.map(post => post.topic_id).filter(Boolean))];
         const topicsData = topicIds.length > 0 ? await supabase
-          .from('topics')
+          .from('forum_topics')
           .select('id, title, slug, category_id')
           .in('id', topicIds)
           .then(({ data }) => data || []) : [];

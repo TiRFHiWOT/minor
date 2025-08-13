@@ -12,7 +12,7 @@ export const useDeleteTopic = () => {
     mutationFn: async (topicId: string) => {
       // First get topic details and count posts for audit logging
       const { data: topic, error: fetchError } = await supabase
-        .from('topics')
+        .from('forum_topics')
         .select('id, title, content, author_id, category_id, created_at, reply_count')
         .eq('id', topicId)
         .single();
@@ -21,7 +21,7 @@ export const useDeleteTopic = () => {
 
       // Check if topic has posts - prevent deletion if it does to avoid mass deletion
       const { count: postCount, error: countError } = await supabase
-        .from('posts')
+        .from('forum_posts')
         .select('id', { count: 'exact' })
         .eq('topic_id', topicId);
 
@@ -33,7 +33,7 @@ export const useDeleteTopic = () => {
 
       // Delete the topic
       const { error } = await supabase
-        .from('topics')
+        .from('forum_topics')
         .delete()
         .eq('id', topicId);
 

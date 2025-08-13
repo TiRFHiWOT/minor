@@ -9,7 +9,7 @@ export const usePostPage = (topicId: string, postId: string, postsPerPage: numbe
       
       // First, get the target post to get its creation time
       const { data: targetPost, error: targetError } = await supabase
-        .from('posts')
+        .from('forum_posts')
         .select('created_at')
         .eq('id', postId)
         .eq('topic_id', topicId)
@@ -23,7 +23,7 @@ export const usePostPage = (topicId: string, postId: string, postsPerPage: numbe
 
       // Count posts created before or at the same time as the target post
       const { count, error: countError } = await supabase
-        .from('posts')
+        .from('forum_posts')
         .select('*', { count: 'exact', head: true })
         .eq('topic_id', topicId)
         .eq('moderation_status', 'approved')

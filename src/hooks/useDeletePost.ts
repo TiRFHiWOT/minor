@@ -12,7 +12,7 @@ export const useDeletePost = () => {
     mutationFn: async (postId: string) => {
       // First get post details for audit logging
       const { data: post, error: fetchError } = await supabase
-        .from('posts')
+        .from('forum_posts')
         .select('id, content, author_id, topic_id, created_at')
         .eq('id', postId)
         .single();
@@ -21,7 +21,7 @@ export const useDeletePost = () => {
 
       // Delete the post
       const { error } = await supabase
-        .from('posts')
+        .from('forum_posts')
         .delete()
         .eq('id', postId);
 

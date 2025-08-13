@@ -36,7 +36,7 @@ export const useTopicsLegacy = (categoryId?: string, limit = 25) => {
       console.log('Fetching topics for category:', categoryId);
       
       let query = supabase
-        .from('topics')
+        .from('forum_topics')
         .select(`
           *,
           categories (name, color, slug, parent_category_id)
@@ -93,7 +93,7 @@ export const useTopicsLegacy = (categoryId?: string, limit = 25) => {
       const lastPostIds = await Promise.all(
         topicsWithReplies.map(async (topic) => {
           const { data: lastPost } = await supabase
-            .from('posts')
+            .from('forum_posts')
             .select('id')
             .eq('topic_id', topic.id)
             .eq('moderation_status', 'approved')

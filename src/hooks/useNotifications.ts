@@ -44,7 +44,7 @@ export const useNotifications = () => {
       if (topicIds.length === 0) return [];
       
       const { data, error } = await supabase
-        .from('topics')
+        .from('forum_topics')
         .select(`
           id,
           title,
