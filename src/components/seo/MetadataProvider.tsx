@@ -6,6 +6,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { useForumSettings } from '@/hooks/useForumSettings';
 import { useAuth } from '@/hooks/useAuth';
 import { htmlToText } from '@/utils/htmlToText';
+import { 
+  generateTopicTitle, 
+  generateCategoryTitle, 
+  generateTopicDescription, 
+  generateCategoryDescription,
+  shouldUseAutoGeneration,
+  FORUM_NAME
+} from '@/utils/seoHelpers';
 
 interface PageMetadata {
   title?: string;
@@ -167,8 +175,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
   // Determine page metadata based on current route
   const getPageMetadata = (): PageMetadata => {
     const baseTitle = getSetting('forum_name', 'Minor Hockey Talks');
-    const forumTag = 'Minor Hockey forum';
     const baseSeparator = ' - ';
+    const autoGenerationEnabled = getSetting('seo_auto_generation', true);
 
     // Custom metadata takes highest priority
     if (Object.keys(customMetadata).length > 0) {
@@ -181,11 +189,27 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     // Topic page metadata
     if (topicMetadata && params.topicSlug) {
       const catName = (topicMetadata as any).category_name || formatSlug(params.subcategorySlug || params.categorySlug || '');
-      const computedTitle = topicMetadata.meta_title
-        ? topicMetadata.meta_title
-        : `${topicMetadata.title || formatSlug(params.topicSlug!)} | ${forumTag} | ${catName}`;
-      const computedDesc = topicMetadata.meta_description
-        || (topicMetadata.content ? truncate(htmlToText(topicMetadata.content)) : undefined);
+      
+      // Use auto-generation if no manual title is set or auto-generation is enabled
+      const autoTitle = generateTopicTitle({
+        topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
+        categoryName: catName
+      });
+      
+      const autoDescription = generateTopicDescription({
+        topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
+        categoryName: catName,
+        topicContent: topicMetadata.content
+      });
+      
+      const computedTitle = shouldUseAutoGeneration(topicMetadata.meta_title, autoGenerationEnabled)
+        ? autoTitle
+        : topicMetadata.meta_title || autoTitle;
+        
+      const computedDesc = shouldUseAutoGeneration(topicMetadata.meta_description, autoGenerationEnabled)
+        ? autoDescription
+        : topicMetadata.meta_description || autoDescription;
+      
       return {
         title: computedTitle,
         description: computedDesc,
@@ -201,7 +225,10 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     if (params.topicSlug) {
       const cat = formatSlug(params.subcategorySlug || params.categorySlug || '');
       const t = formatSlug(params.topicSlug);
-      const fallbackTitle = `${t} | ${forumTag} | ${cat}`;
+      const fallbackTitle = generateTopicTitle({
+        topicTitle: t,
+        categoryName: cat
+      });
       
       // Set fallback title immediately for analytics
       if (document.title !== fallbackTitle) {
@@ -210,16 +237,28 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       
       return {
         title: fallbackTitle,
-        description: `Join the discussion: ${t} in ${cat} on ${forumTag}.`
+        description: generateTopicDescription({
+          topicTitle: t,
+          categoryName: cat
+        })
       };
     }
 
     // Category page metadata
     if (categoryMetadata && params.categorySlug && !params.topicSlug) {
-      const computedTitle = categoryMetadata.meta_title
-        || `${categoryMetadata.name || formatSlug(params.categorySlug)} | ${forumTag}`;
-      const computedDesc = categoryMetadata.meta_description
-        || `Explore ${categoryMetadata.name || formatSlug(params.categorySlug)} topics on ${forumTag}.`;
+      const categoryName = categoryMetadata.name || formatSlug(params.categorySlug);
+      
+      const autoTitle = generateCategoryTitle(categoryName);
+      const autoDescription = generateCategoryDescription(categoryName);
+      
+      const computedTitle = shouldUseAutoGeneration(categoryMetadata.meta_title, autoGenerationEnabled)
+        ? autoTitle
+        : categoryMetadata.meta_title || autoTitle;
+        
+      const computedDesc = shouldUseAutoGeneration(categoryMetadata.meta_description, autoGenerationEnabled)
+        ? autoDescription
+        : categoryMetadata.meta_description || autoDescription;
+      
       return {
         title: computedTitle,
         description: computedDesc,
@@ -235,8 +274,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     if (params.categorySlug && !params.topicSlug) {
       const c = formatSlug(params.categorySlug);
       return {
-        title: `${c} | ${forumTag}`,
-        description: `Browse ${c} discussions on ${forumTag}.`
+        title: generateCategoryTitle(c),
+        description: generateCategoryDescription(c)
       };
     }
 

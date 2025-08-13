@@ -230,6 +230,12 @@ export const TopicSeoManager: React.FC = () => {
               onChange={setSeoData}
               title="Topic SEO"
               description="Configure SEO metadata for this topic"
+              autoPreview={{
+                type: 'topic',
+                title: selectedTopic?.title,
+                categoryName: selectedTopic?.category.name,
+                content: selectedTopic?.title // We don't have content here, just use title
+              }}
             />
             <div className="flex justify-end gap-2">
               <Button

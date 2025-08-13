@@ -207,6 +207,10 @@ export const CategorySeoManager: React.FC = () => {
               onChange={setSeoData}
               title="Category SEO"
               description="Configure SEO metadata for this category"
+              autoPreview={{
+                type: 'category',
+                title: selectedCategory?.name
+              }}
             />
             <div className="flex justify-end gap-2">
               <Button

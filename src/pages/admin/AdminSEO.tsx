@@ -2,10 +2,11 @@ import React from 'react';
 import { CategorySeoManager } from '@/components/admin/CategorySeoManager';
 import { TopicSeoManager } from '@/components/admin/TopicSeoManager';
 import { HomePageSeoManager } from '@/components/admin/HomePageSeoManager';
+import { SeoGlobalSettings } from '@/components/admin/SeoGlobalSettings';
 import { RSSSettings } from '@/components/admin/RSSSettings';
 import { SitemapManager } from '@/components/admin/SitemapManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Tag, Home, Rss, Map } from 'lucide-react';
+import { Search, Tag, Home, Rss, Map, Settings } from 'lucide-react';
 
 export default function AdminSEO() {
   return (
@@ -17,8 +18,12 @@ export default function AdminSEO() {
         </p>
       </div>
 
-      <Tabs defaultValue="home" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 max-w-[1000px]">
+      <Tabs defaultValue="settings" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-6 max-w-[1200px]">
+          <TabsTrigger value="settings" className="gap-2">
+            <Settings className="h-4 w-4" />
+            Settings
+          </TabsTrigger>
           <TabsTrigger value="home" className="gap-2">
             <Home className="h-4 w-4" />
             Home Page
@@ -40,6 +45,10 @@ export default function AdminSEO() {
             RSS Feed
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="settings" className="space-y-6">
+          <SeoGlobalSettings />
+        </TabsContent>
 
         <TabsContent value="home" className="space-y-6">
           <HomePageSeoManager />
