@@ -31,11 +31,7 @@ if (!root) {
   try {
     const reactRoot = createRoot(root);
     console.log('✅ React root created, rendering app...');
-    reactRoot.render(
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    );
+    reactRoot.render(<App />);
     console.log('✅ React app rendered successfully');
   } catch (error) {
     console.error('❌ Error rendering React app:', error);

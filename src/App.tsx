@@ -99,7 +99,6 @@ const App = () => (
                    
                    {/* All other routes wrapped in VPN guard */}
                    <Route path="/*" element={
-                    <ErrorBoundary>
                       <VPNGuard>
                        <Routes>
                            {/* Special routes */}
@@ -159,7 +158,6 @@ const App = () => (
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </VPNGuard>
-                    </ErrorBoundary>
                   } />
                 </Routes>
                   </MaintenanceWrapper>

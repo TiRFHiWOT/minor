@@ -30,9 +30,7 @@ export const ForumLayout = () => {
 
           {/* Main Content */}
           <main className="flex-1 min-w-0 w-full overflow-x-hidden">
-            <ErrorBoundaryEnhanced maxRetries={2}>
-              <Outlet />
-            </ErrorBoundaryEnhanced>
+            <Outlet />
           </main>
         </div>
       </div>
@@ -41,11 +39,7 @@ export const ForumLayout = () => {
       <Footer />
       
       {/* Mobile Bottom Navigation */}
-      {isMobile && (
-        <MobileErrorBoundary>
-          <MobileBottomNav />
-        </MobileErrorBoundary>
-      )}
+      {isMobile && <MobileBottomNav />}
     </div>
   );
 };
