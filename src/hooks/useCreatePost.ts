@@ -105,7 +105,7 @@ export const useCreatePost = () => {
       }
       
       const { data: post, error } = await supabase
-        .from('forum_posts')
+        .from('posts')
         .insert(postData)
         .select()
         .single();
