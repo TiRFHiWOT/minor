@@ -20,8 +20,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { CategoryRequestsManager } from '@/components/admin/CategoryRequestsManager';
+import { AppealsManager } from '@/components/admin/AppealsManager';
 import { ReportDetailsModal } from '@/components/admin/ReportDetailsModal';
 import { ModerationItemDetailsModal } from '@/components/admin/ModerationItemDetailsModal';
+import { useAppealsCount } from '@/hooks/useAppeals';
 
 interface ModerationItem {
   id: string;
@@ -849,6 +851,7 @@ const AdminModeration = () => {
   const { toast } = useToast();
   const [selectedModerationItem, setSelectedModerationItem] = React.useState<ModerationItem | null>(null);
   const [isModerationModalOpen, setIsModerationModalOpen] = React.useState(false);
+  const appealsCount = useAppealsCount();
 
   // Query for reports count
   const { data: reportsCount } = useQuery({
@@ -1179,7 +1182,7 @@ const AdminModeration = () => {
         <p className="text-muted-foreground">Review and moderate forum content</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-4">
         <Card className="p-4">
           <div className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-yellow-500" />
@@ -1195,6 +1198,15 @@ const AdminModeration = () => {
             <div>
               <div className="text-2xl font-bold">{reportsCount || 0}</div>
               <div className="text-sm text-muted-foreground">Pending Reports</div>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-blue-500" />
+            <div>
+              <div className="text-2xl font-bold">{appealsCount}</div>
+              <div className="text-sm text-muted-foreground">Pending Appeals</div>
             </div>
           </div>
         </Card>
@@ -1218,6 +1230,15 @@ const AdminModeration = () => {
           <TabsTrigger value="reports" className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
             User Reports
+          </TabsTrigger>
+          <TabsTrigger value="appeals" className="flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4" />
+            Appeals
+            {appealsCount > 0 && (
+              <Badge variant="destructive" className="ml-1 text-xs">
+                {appealsCount}
+              </Badge>
+            )}
           </TabsTrigger>
           <TabsTrigger value="category-requests" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
@@ -1364,6 +1385,18 @@ const AdminModeration = () => {
 
         <TabsContent value="reports">
           <ReportsTab />
+        </TabsContent>
+
+        <TabsContent value="appeals">
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Moderation Appeals</h2>
+              <p className="text-muted-foreground">
+                Review appeals from users who believe their content was incorrectly moderated
+              </p>
+            </div>
+            <AppealsManager />
+          </div>
         </TabsContent>
 
         <TabsContent value="category-requests">
