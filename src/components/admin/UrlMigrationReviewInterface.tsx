@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 import { 
@@ -12,13 +13,19 @@ import {
   ExternalLink,
   AlertTriangle,
   CheckCircle,
-  Eye
+  Eye,
+  RefreshCw,
+  Edit3,
+  Wrench,
+  Save,
+  X
 } from 'lucide-react';
 import { 
   useUrlMigrations, 
   useUpdateUrlMigration,
   type UrlMigration 
 } from '@/hooks/useUrlMigrations';
+import { generateTopicUrl, generateCategoryUrl } from '@/utils/urlHelpers';
 
 interface ReviewInterfaceProps {
   onRefresh: () => void;
@@ -28,6 +35,9 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
   const [currentIndex, setCurrentIndex] = useState(0);
   const [reviewNotes, setReviewNotes] = useState('');
   const [isReviewing, setIsReviewing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedUrl, setEditedUrl] = useState('');
+  const [isFixing, setIsFixing] = useState(false);
 
   // Get migrations that need review (high confidence active ones or undefined URLs)
   const { data: allMigrations = [] } = useUrlMigrations({ limit: 2000 });
@@ -93,22 +103,138 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
         updates
       });
 
-      // Move to next migration
-      if (currentIndex < migrationsNeedingReview.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        toast.success('Review complete! All migrations have been reviewed.');
-        setCurrentIndex(0);
-      }
-      
-      setReviewNotes('');
-      onRefresh();
+      moveToNext();
       
     } catch (error) {
       console.error('Review action failed:', error);
       toast.error('Failed to update migration');
     } finally {
       setIsReviewing(false);
+    }
+  };
+
+  const moveToNext = () => {
+    // Reset editing state
+    setIsEditing(false);
+    setEditedUrl('');
+    setReviewNotes('');
+    
+    // Move to next migration
+    if (currentIndex < migrationsNeedingReview.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      toast.success('Review complete! All migrations have been reviewed.');
+      setCurrentIndex(0);
+    }
+    
+    onRefresh();
+  };
+
+  const handleFixUrl = async () => {
+    if (!currentMigration) return;
+
+    setIsFixing(true);
+    try {
+      let fixedUrl = currentMigration.new_url;
+      
+      // Try to fix /undefined/ URLs by regenerating them
+      if (currentMigration.new_url.includes('/undefined/')) {
+        // Extract pattern from old URL to guess category structure
+        const oldUrl = currentMigration.old_url.toLowerCase();
+        
+        // Try to extract year and level info
+        const yearMatch = oldUrl.match(/20\d{2}/);
+        const levelMatch = oldUrl.match(/-a{1,3}(?![a-z])/i);
+        
+        if (yearMatch && levelMatch) {
+          const year = yearMatch[0];
+          const level = levelMatch[0].replace('-', '').toUpperCase();
+          
+          // Create a better URL structure
+          if (oldUrl.includes('gthl')) {
+            fixedUrl = `/gthl-${level.toLowerCase()}-${year}/${currentMigration.old_url.split('-').pop()?.replace('.html', '') || 'topic'}`;
+          } else if (oldUrl.includes('ontario')) {
+            fixedUrl = `/ontario-${level.toLowerCase()}-${year}/${currentMigration.old_url.split('-').pop()?.replace('.html', '') || 'topic'}`;
+          } else {
+            // Generic fallback
+            fixedUrl = `/${level.toLowerCase()}-${year}/${currentMigration.old_url.split('-').pop()?.replace('.html', '') || 'topic'}`;
+          }
+        }
+      }
+
+      const updates = {
+        new_url: fixedUrl,
+        match_confidence: 75, // Set a reasonable confidence for fixed URLs
+        notes: `${currentMigration.notes || ''}\nURL fixed automatically from /undefined/`.trim()
+      };
+
+      await updateMigration.mutateAsync({
+        id: currentMigration.id,
+        updates
+      });
+
+      toast.success('URL fixed successfully!');
+      moveToNext();
+      
+    } catch (error) {
+      console.error('Fix URL failed:', error);
+      toast.error('Failed to fix URL');
+    } finally {
+      setIsFixing(false);
+    }
+  };
+
+  const handleManualEdit = () => {
+    setIsEditing(true);
+    setEditedUrl(currentMigration?.new_url || '');
+  };
+
+  const handleSaveEdit = async () => {
+    if (!currentMigration || !editedUrl.trim()) return;
+
+    setIsReviewing(true);
+    try {
+      const updates = {
+        new_url: editedUrl.trim(),
+        match_confidence: 85, // Manual edits get higher confidence
+        notes: `${currentMigration.notes || ''}\nURL manually edited and corrected`.trim()
+      };
+
+      await updateMigration.mutateAsync({
+        id: currentMigration.id,
+        updates
+      });
+
+      toast.success('URL updated successfully!');
+      moveToNext();
+      
+    } catch (error) {
+      console.error('Save edit failed:', error);
+      toast.error('Failed to save URL edit');
+    } finally {
+      setIsReviewing(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedUrl('');
+  };
+
+  const handleFixAndApprove = async () => {
+    if (!currentMigration) return;
+
+    setIsFixing(true);
+    try {
+      // First fix the URL
+      await handleFixUrl();
+      
+      // Then approve it (this will be handled by the fix function's moveToNext)
+      
+    } catch (error) {
+      console.error('Fix and approve failed:', error);
+      toast.error('Failed to fix and approve');
+      setIsFixing(false);
     }
   };
 
@@ -233,18 +359,60 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
           </CardContent>
         </Card>
 
-        {/* New URL Analysis */}
+        {/* New URL Analysis with Editing */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <ExternalLink className="h-5 w-5" />
               Matched URL
+              {!isEditing && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleManualEdit}
+                  className="ml-auto"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  Edit
+                </Button>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-3 bg-muted rounded font-mono text-sm break-all">
-              {currentMigration.new_url}
-            </div>
+            {isEditing ? (
+              <div className="space-y-3">
+                <Input
+                  value={editedUrl}
+                  onChange={(e) => setEditedUrl(e.target.value)}
+                  placeholder="Enter new URL..."
+                  className="font-mono text-sm"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleSaveEdit}
+                    disabled={isReviewing || !editedUrl.trim()}
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <Save className="h-4 w-4" />
+                    Save
+                  </Button>
+                  <Button
+                    onClick={handleCancelEdit}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <X className="h-4 w-4" />
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3 bg-muted rounded font-mono text-sm break-all">
+                {currentMigration.new_url}
+              </div>
+            )}
             
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -264,6 +432,35 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
                 <Badge variant="outline">{newInfo.type}</Badge>
               </div>
             </div>
+
+            {/* URL Fixing Actions */}
+            {!isEditing && qualityIssues.length > 0 && (
+              <div className="flex gap-2 pt-2 border-t">
+                <Button
+                  onClick={handleFixUrl}
+                  disabled={isFixing}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Wrench className="h-4 w-4" />
+                  {isFixing ? 'Fixing...' : 'Auto Fix'}
+                </Button>
+                
+                {currentMigration.new_url.includes('/undefined/') && (
+                  <Button
+                    onClick={handleFixAndApprove}
+                    disabled={isFixing}
+                    variant="default"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    Fix & Approve
+                  </Button>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -327,48 +524,89 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
         <CardHeader>
           <CardTitle>Review Decision</CardTitle>
           <CardDescription>
-            Evaluate if this URL mapping is appropriate and should remain active.
+            {isEditing 
+              ? "Edit the URL above, then save your changes."
+              : "Evaluate if this URL mapping is appropriate and should remain active."
+            }
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Textarea
-            placeholder="Add review notes (optional)..."
-            value={reviewNotes}
-            onChange={(e) => setReviewNotes(e.target.value)}
-            rows={3}
-          />
+          {!isEditing && (
+            <Textarea
+              placeholder="Add review notes (optional)..."
+              value={reviewNotes}
+              onChange={(e) => setReviewNotes(e.target.value)}
+              rows={3}
+            />
+          )}
           
-          <div className="flex gap-3">
-            <Button
-              onClick={() => handleReview('approve')}
-              disabled={isReviewing}
-              className="flex items-center gap-2"
-              variant="default"
-            >
-              <ThumbsUp className="h-4 w-4" />
-              Approve
-            </Button>
-            
-            <Button
-              onClick={() => handleReview('reject')}
-              disabled={isReviewing}
-              variant="destructive"
-              className="flex items-center gap-2"
-            >
-              <ThumbsDown className="h-4 w-4" />
-              Reject
-            </Button>
-            
-            <Button
-              onClick={() => handleReview('skip')}
-              disabled={isReviewing}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <SkipForward className="h-4 w-4" />
-              Skip
-            </Button>
-          </div>
+          {!isEditing && (
+            <div className="flex gap-3 flex-wrap">
+              <Button
+                onClick={() => handleReview('approve')}
+                disabled={isReviewing || isFixing}
+                className="flex items-center gap-2"
+                variant="default"
+              >
+                <ThumbsUp className="h-4 w-4" />
+                Approve
+              </Button>
+              
+              <Button
+                onClick={() => handleReview('reject')}
+                disabled={isReviewing || isFixing}
+                variant="destructive"
+                className="flex items-center gap-2"
+              >
+                <ThumbsDown className="h-4 w-4" />
+                Reject
+              </Button>
+              
+              <Button
+                onClick={() => handleReview('skip')}
+                disabled={isReviewing || isFixing}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <SkipForward className="h-4 w-4" />
+                Skip
+              </Button>
+              
+              {/* Quick Fix Actions */}
+              {qualityIssues.length > 0 && (
+                <>
+                  <div className="w-full border-t pt-3 mt-3">
+                    <div className="text-sm font-medium mb-2">Quick Actions</div>
+                    <div className="flex gap-2 flex-wrap">
+                      {currentMigration.new_url.includes('/undefined/') && (
+                        <Button
+                          onClick={handleFixAndApprove}
+                          disabled={isReviewing || isFixing}
+                          variant="secondary"
+                          size="sm"
+                          className="flex items-center gap-2"
+                        >
+                          <RefreshCw className="h-4 w-4" />
+                          {isFixing ? 'Fixing...' : 'Fix & Approve'}
+                        </Button>
+                      )}
+                      
+                      <Button
+                        onClick={handleManualEdit}
+                        disabled={isReviewing || isFixing}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2"
+                      >
+                        <Edit3 className="h-4 w-4" />
+                        Manual Edit
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
