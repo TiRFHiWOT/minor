@@ -506,41 +506,86 @@ const generateEnhancedMigrations = async (
   // Fetch essential data only for performance with reduced limits
   console.log('Fetching topics and categories for matching...');
   
-  const { data: topics, error: topicsError } = await supabase
-    .from('topics')
-    .select(`
-      id,
-      title,
-      slug,
-      legacy_topic_id,
-      categories!inner(slug)
-    `)
-    .eq('moderation_status', 'approved')
-    .limit(1500); // Reduced limit for performance
+  try {
+    const { data: topics, error: topicsError } = await supabase
+      .from('topics')
+      .select(`
+        id,
+        title,
+        slug,
+        legacy_topic_id,
+        categories!inner(
+          id,
+          slug,
+          name,
+          parent_category_id,
+          parent_category:categories!parent_category_id(
+            id,
+            slug,
+            name
+          )
+        )
+      `)
+      .eq('moderation_status', 'approved')
+      .limit(1500); // Reduced limit for performance
 
-  if (topicsError) {
-    console.error('Error fetching topics:', topicsError);
-    throw new Error('Failed to fetch topics for matching');
+    if (topicsError) {
+      console.error('Error fetching topics:', topicsError);
+      throw new Error(`Failed to fetch topics for matching: ${topicsError.message}`);
+    }
+
+    const { data: categories, error: categoriesError } = await supabase
+      .from('categories')
+      .select(`
+        id,
+        name,
+        slug,
+        parent_category_id,
+        parent_category:categories!parent_category_id(
+          id,
+          slug,
+          name
+        )
+      `)
+      .eq('is_active', true)
+      .limit(300); // Reduced limit
+
+    if (categoriesError) {
+      console.error('Error fetching categories:', categoriesError);
+      throw new Error(`Failed to fetch categories for matching: ${categoriesError.message}`);
+    }
+
+    // Validate and log the data structure
+    console.log('Raw topics data sample:', topics?.slice(0, 1));
+    console.log('Raw categories data sample:', categories?.slice(0, 1));
+
+    // Flatten topics data properly
+    const flatTopics = topics?.map(topic => {
+      console.log('Processing topic:', topic.title, 'with categories:', topic.categories);
+      return {
+        id: topic.id,
+        title: topic.title,
+        slug: topic.slug,
+        legacy_topic_id: topic.legacy_topic_id,
+        categories: topic.categories
+      };
+    }) || [];
+
+    if (flatTopics.length === 0) {
+      console.warn('No topics were loaded! This will result in no migrations.');
+    }
+
+    if (!categories || categories.length === 0) {
+      console.warn('No categories were loaded! This will affect URL generation.');
+    }
+
+    console.log(`Successfully loaded ${flatTopics.length} topics and ${categories?.length || 0} categories for matching`);
+    console.log('Topics structure verified:', flatTopics[0] ? 'OK' : 'FAILED');
+    console.log('Categories structure verified:', categories?.[0] ? 'OK' : 'FAILED');
+  } catch (fetchError) {
+    console.error('Critical error during data fetch:', fetchError);
+    throw new Error(`Database fetch failed: ${fetchError.message}`);
   }
-
-  const { data: categories, error: categoriesError } = await supabase
-    .from('categories')
-    .select('id, name, slug, parent_category_id')
-    .eq('is_active', true)
-    .limit(300); // Reduced limit
-
-  if (categoriesError) {
-    console.error('Error fetching categories:', categoriesError);
-    throw new Error('Failed to fetch categories for matching');
-  }
-
-  // Flatten topics data
-  const flatTopics = topics?.map(topic => ({
-    ...topic,
-    category_slug: topic.categories?.slug
-  })) || [];
-
-  console.log(`Found ${flatTopics.length} topics and ${categories?.length || 0} categories for matching`);
   
   // Build optimized lookup maps for faster searching
   const { topicTitleMap, categoryNameMap } = buildLookupMaps(flatTopics, categories || []);
@@ -549,21 +594,29 @@ const generateEnhancedMigrations = async (
   // Process in smaller sub-batches with timeout protection
   const subBatchSize = 50; // Much smaller sub-batches for better progress tracking
   let processed = 0;
+  let successfulMigrations = 0;
+  let failedPatterns = 0;
+  
+  console.log(`Starting pattern processing: ${patterns.length} patterns to process`);
   
   for (let i = 0; i < patterns.length; i += subBatchSize) {
     // Check timeout before each sub-batch
     if (Date.now() - startTime > TIMEOUT_MS) {
-      console.log(`Timeout reached after processing ${processed}/${patterns.length} patterns`);
+      console.log(`⏰ Timeout reached after processing ${processed}/${patterns.length} patterns`);
       break;
     }
     
     const end = Math.min(i + subBatchSize, patterns.length);
     const subBatch = patterns.slice(i, end);
+    const percentComplete = Math.round((i / patterns.length) * 100);
     
-    console.log(`Processing sub-batch: ${i + 1}-${end}/${patterns.length} (${Math.round(processed/patterns.length * 100)}%)`);
+    console.log(`🔄 Processing sub-batch: ${i + 1}-${end}/${patterns.length} (${percentComplete}% complete)`);
+    console.log(`📊 Progress: ${processed} processed, ${successfulMigrations} migrations created, ${failedPatterns} failed`);
     
     for (const pattern of subBatch) {
       try {
+        console.log(`Processing pattern: ${pattern.type} - ${pattern.path} (topicId: ${pattern.topicId || 'none'})`);
+        
         const migration = await generateMigrationForPattern(
           pattern, 
           flatTopics, 
@@ -571,27 +624,46 @@ const generateEnhancedMigrations = async (
           topicTitleMap,
           categoryNameMap
         );
+        
         if (migration) {
           migrations.push(migration);
+          successfulMigrations++;
+          console.log(`✅ Migration created: ${migration.old_url} -> ${migration.new_url} (${migration.match_type}, confidence: ${Math.round((migration.match_confidence || 0) * 100)}%)`);
+        } else {
+          console.log(`⚠️  No migration created for pattern: ${pattern.path} (type: ${pattern.type})`);
         }
+        
         processed++;
         
         // Check timeout more frequently
-        if (processed % 25 === 0 && Date.now() - startTime > TIMEOUT_MS) {
-          console.log(`Timeout reached after processing ${processed} patterns`);
-          break;
+        if (processed % 25 === 0) {
+          const currentDuration = Date.now() - startTime;
+          console.log(`📈 Checkpoint: ${processed}/${patterns.length} processed in ${currentDuration}ms`);
+          
+          if (currentDuration > TIMEOUT_MS) {
+            console.log(`⏰ Timeout reached after processing ${processed} patterns`);
+            break;
+          }
         }
       } catch (error) {
-        console.error(`Error processing pattern ${pattern.path}:`, error);
+        console.error(`❌ Error processing pattern ${pattern.path}:`, error);
+        failedPatterns++;
         processed++;
       }
     }
     
     // Break out of outer loop if timeout reached
     if (Date.now() - startTime > TIMEOUT_MS) {
+      console.log(`⏰ Breaking outer loop due to timeout`);
       break;
     }
   }
+  
+  console.log(`🏁 Pattern processing complete:`);
+  console.log(`   Total processed: ${processed}/${patterns.length}`);
+  console.log(`   Successful migrations: ${successfulMigrations}`);
+  console.log(`   Failed patterns: ${failedPatterns}`);
+  console.log(`   Success rate: ${processed > 0 ? Math.round((successfulMigrations / processed) * 100) : 0}%`);
 
   const duration = Date.now() - startTime;
   console.log(`Generated ${migrations.length} migrations from ${processed} processed patterns in ${duration}ms`);
@@ -690,8 +762,10 @@ serve(async (req) => {
           currentBatch: batchIndex + 1,
           totalBatches,
           hasMore: summary.hasMore,
-          processedUrls: (batchIndex + 1) * batchSize,
-          totalUrls: totalUrls || batchPatterns.length
+          processedUrls: Math.min((batchIndex + 1) * batchSize, totalUrls || batchPatterns.length),
+          totalUrls: totalUrls || batchPatterns.length,
+          actualMigrationsGenerated: migrations.length,
+          processingComplete: !summary.hasMore
         }
       }),
       {
