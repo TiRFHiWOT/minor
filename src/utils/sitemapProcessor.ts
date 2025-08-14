@@ -15,6 +15,10 @@ export interface OldUrlPattern {
   categoryId?: number;
   type: 'topic' | 'post' | 'category' | 'other';
   title?: string;
+  year?: string;
+  level?: string;
+  organization?: string;
+  originalSlug?: string;
 }
 
 // Parse old URL patterns and extract identifiers
@@ -27,14 +31,31 @@ export const parseOldUrl = (url: string): OldUrlPattern | null => {
     // Topic pattern: ends with -t{number}.html
     const topicMatch = filename.match(/^(.+)-t(\d+)\.html$/);
     if (topicMatch) {
-      const [, title, topicId] = topicMatch;
+      const [, titlePart, topicId] = topicMatch;
+      
+      // Extract meaningful components from title
+      const year = titlePart.match(/20\d{2}/)?.[0];
+      const levelMatch = titlePart.match(/-a{1,3}(?![a-z])/i);
+      const level = levelMatch ? levelMatch[0].replace('-', '').toUpperCase() : undefined;
+      
+      // Extract organization/league
+      const organization = titlePart.includes('gthl') ? 'gthl' : 
+                          titlePart.includes('ontario') ? 'ontario' :
+                          titlePart.includes('alliance') ? 'alliance' :
+                          titlePart.includes('minor-hockey') ? 'minor-hockey' :
+                          undefined;
+      
       return {
         fullUrl: url,
         path,
         filename,
         topicId: parseInt(topicId),
         type: 'topic',
-        title: title.replace(/-/g, ' ')
+        title: titlePart.replace(/-/g, ' '),
+        year,
+        level,
+        organization,
+        originalSlug: titlePart // Preserve the original slug format
       };
     }
     
@@ -165,22 +186,32 @@ export const processSitemapUrls = (urls: SitemapUrl[]): OldUrlPattern[] => {
   });
 };
 
-// Generate potential new URLs based on old patterns
+// Generate potential new URLs based on old patterns - PRESERVING ORIGINAL STRUCTURE
 export const generatePotentialNewUrl = (pattern: OldUrlPattern): string[] => {
   const potentialUrls: string[] = [];
   
-  if (pattern.type === 'topic' && pattern.title) {
-    // Generate slug from title
-    const slug = pattern.title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-');
+  if (pattern.type === 'topic' && pattern.originalSlug && pattern.topicId) {
+    // Create topic slug that preserves original meaningful parts + topic ID
+    const topicSlug = `${pattern.originalSlug}-t${pattern.topicId}`;
     
-    // Try different category structures
-    potentialUrls.push(`/topic/${slug}`);
-    potentialUrls.push(`/general-youth-hockey-discussion/${slug}`);
-    potentialUrls.push(`/ontario-youth-hockey-forum/${slug}`);
+    // Build hierarchical category structure based on extracted components
+    if (pattern.year && pattern.level && pattern.organization) {
+      // For organization-year-level structure: /ontario-2015-aaa/alliance-2015-aaa-t6066
+      const categorySlug = `${pattern.organization}-${pattern.year}-${pattern.level.toLowerCase()}`;
+      potentialUrls.push(`/${categorySlug}/${topicSlug}`);
+      
+      // Also try with parent category structure
+      if (pattern.organization !== 'ontario') {
+        potentialUrls.push(`/ontario-${pattern.year}-${pattern.level.toLowerCase()}/${topicSlug}`);
+      }
+    } else if (pattern.year && pattern.level) {
+      // Fallback: /year-level/original-slug-t6066
+      const categorySlug = `${pattern.year}-${pattern.level.toLowerCase()}`;
+      potentialUrls.push(`/${categorySlug}/${topicSlug}`);
+    } else {
+      // Last resort: preserve as much as possible
+      potentialUrls.push(`/topic/${topicSlug}`);
+    }
   }
   
   return potentialUrls;

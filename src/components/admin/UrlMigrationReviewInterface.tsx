@@ -25,7 +25,7 @@ import {
   useUpdateUrlMigration,
   type UrlMigration 
 } from '@/hooks/useUrlMigrations';
-import { generateTopicUrl, generateCategoryUrl } from '@/utils/urlHelpers';
+import { generateTopicUrl, generateCategoryUrl, reconstructPreservingOriginal } from '@/utils/urlHelpers';
 
 interface ReviewInterfaceProps {
   onRefresh: () => void;
@@ -137,27 +137,30 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
     try {
       let fixedUrl = currentMigration.new_url;
       
-      // Try to fix /undefined/ URLs by regenerating them
-      if (currentMigration.new_url.includes('/undefined/')) {
-        // Extract pattern from old URL to guess category structure
-        const oldUrl = currentMigration.old_url.toLowerCase();
-        
-        // Try to extract year and level info
-        const yearMatch = oldUrl.match(/20\d{2}/);
-        const levelMatch = oldUrl.match(/-a{1,3}(?![a-z])/i);
-        
-        if (yearMatch && levelMatch) {
-          const year = yearMatch[0];
-          const level = levelMatch[0].replace('-', '').toUpperCase();
+      // Try to fix URLs by preserving original structure
+      const reconstructedUrl = reconstructPreservingOriginal(currentMigration.old_url);
+      
+      if (reconstructedUrl) {
+        fixedUrl = reconstructedUrl;
+      } else {
+        // Fallback to original logic for /undefined/ URLs
+        if (currentMigration.new_url.includes('/undefined/')) {
+          const oldUrl = currentMigration.old_url;
+          const filename = oldUrl.split('/').pop()?.replace('.html', '') || '';
           
-          // Create a better URL structure
-          if (oldUrl.includes('gthl')) {
-            fixedUrl = `/gthl-${level.toLowerCase()}-${year}/${currentMigration.old_url.split('-').pop()?.replace('.html', '') || 'topic'}`;
-          } else if (oldUrl.includes('ontario')) {
-            fixedUrl = `/ontario-${level.toLowerCase()}-${year}/${currentMigration.old_url.split('-').pop()?.replace('.html', '') || 'topic'}`;
-          } else {
-            // Generic fallback
-            fixedUrl = `/${level.toLowerCase()}-${year}/${currentMigration.old_url.split('-').pop()?.replace('.html', '') || 'topic'}`;
+          // Extract components
+          const year = filename.match(/20\d{2}/)?.[0];
+          const levelMatch = filename.match(/-a{1,3}(?![a-z])/i);
+          const level = levelMatch ? levelMatch[0].replace('-', '').toLowerCase() : null;
+          const topicId = filename.match(/-t(\d+)$/)?.[1];
+          
+          if (year && level && topicId) {
+            // Preserve original filename structure with topic ID
+            const organization = filename.includes('gthl') ? 'gthl' :
+                               filename.includes('alliance') ? 'alliance' :
+                               'ontario';
+            
+            fixedUrl = `/${organization}-${year}-${level}/${filename}`;
           }
         }
       }
@@ -250,10 +253,26 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
     }
     
     // Check for level mismatches (A vs AA vs AAA)
-    const oldLevel = migration.old_url.match(/-a{1,3}[^a]/i)?.[0];
-    const newLevel = migration.new_url.match(/-a{1,3}[^a]/i)?.[0];
+    const oldLevel = migration.old_url.match(/-a{1,3}(?![a-z])/i)?.[0]?.replace('-', '').toUpperCase();
+    const newLevel = migration.new_url.match(/-a{1,3}(?![a-z])/i)?.[0]?.replace('-', '').toUpperCase();
     if (oldLevel && newLevel && oldLevel !== newLevel) {
-      issues.push('Hockey level mismatch (A vs AA vs AAA)');
+      issues.push(`Hockey level mismatch (${oldLevel} vs ${newLevel})`);
+    }
+    
+    // Check for year mismatches
+    const oldYear = migration.old_url.match(/20\d{2}/)?.[0];
+    const newYear = migration.new_url.match(/20\d{2}/)?.[0];
+    if (oldYear && newYear && oldYear !== newYear) {
+      issues.push(`Year mismatch (${oldYear} vs ${newYear})`);
+    }
+    
+    // Check for missing topic ID preservation
+    const oldTopicId = migration.old_url.match(/-t(\d+)/)?.[1];
+    const newTopicId = migration.new_url.match(/-t(\d+)/)?.[1];
+    if (oldTopicId && !newTopicId) {
+      issues.push('Topic ID lost in migration');
+    } else if (oldTopicId && newTopicId && oldTopicId !== newTopicId) {
+      issues.push(`Topic ID mismatch (t${oldTopicId} vs t${newTopicId})`);
     }
     
     // Check for content type mismatches
