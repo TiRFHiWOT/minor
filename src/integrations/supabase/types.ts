@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -1454,6 +1454,8 @@ export type Database = {
           created_by: string | null
           id: string
           last_modified_date: string | null
+          match_confidence: number | null
+          match_type: string | null
           new_category_id: string | null
           new_post_id: string | null
           new_topic_id: string | null
@@ -1474,6 +1476,8 @@ export type Database = {
           created_by?: string | null
           id?: string
           last_modified_date?: string | null
+          match_confidence?: number | null
+          match_type?: string | null
           new_category_id?: string | null
           new_post_id?: string | null
           new_topic_id?: string | null
@@ -1494,6 +1498,8 @@ export type Database = {
           created_by?: string | null
           id?: string
           last_modified_date?: string | null
+          match_confidence?: number | null
+          match_type?: string | null
           new_category_id?: string | null
           new_post_id?: string | null
           new_topic_id?: string | null
@@ -1581,7 +1587,7 @@ export type Database = {
         Returns: Json
       }
       check_anonymous_rate_limit: {
-        Args: { user_ip: unknown; session_id: string }
+        Args: { session_id: string; user_ip: unknown }
         Returns: boolean
       }
       check_banned_words: {
@@ -1590,19 +1596,19 @@ export type Database = {
       }
       check_enhanced_anonymous_rate_limit: {
         Args: {
-          user_ip: unknown
-          p_session_id: string
-          p_fingerprint_hash?: string
           p_content_type?: string
+          p_fingerprint_hash?: string
+          p_session_id: string
+          user_ip: unknown
         }
         Returns: Json
       }
       check_enhanced_rate_limit_with_penalties: {
         Args: {
-          user_ip: unknown
-          p_session_id: string
-          p_fingerprint_hash?: string
           p_content_type?: string
+          p_fingerprint_hash?: string
+          p_session_id: string
+          user_ip: unknown
         }
         Returns: Json
       }
@@ -1648,24 +1654,24 @@ export type Database = {
       }
       create_post_secure: {
         Args: {
-          p_content: string
-          p_topic_id: string
           p_author_id: string
           p_author_ip: unknown
-          p_parent_post_id?: string
+          p_content: string
           p_is_anonymous?: boolean
+          p_parent_post_id?: string
+          p_topic_id: string
         }
         Returns: string
       }
       create_topic_secure: {
         Args: {
-          p_title: string
-          p_content: string
-          p_category_id: string
           p_author_id: string
           p_author_ip: unknown
-          p_slug?: string
+          p_category_id: string
+          p_content: string
           p_is_anonymous?: boolean
+          p_slug?: string
+          p_title: string
         }
         Returns: string
       }
@@ -1692,18 +1698,18 @@ export type Database = {
       get_active_visitors: {
         Args: Record<PropertyKey, never>
         Returns: {
-          ip_address: unknown
+          city: string
           country_code: string
           country_name: string
-          city: string
-          region: string
+          current_page: string
+          ip_address: unknown
+          is_vpn: boolean
+          last_activity: string
           latitude: number
           longitude: number
-          current_page: string
+          region: string
           session_start: string
-          last_activity: string
           total_pages: number
-          is_vpn: boolean
         }[]
       }
       get_admin_display_name: {
@@ -1713,87 +1719,87 @@ export type Database = {
       get_admin_users_with_emails: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
           email: string
+          id: string
         }[]
       }
       get_categories_by_activity: {
-        Args: { p_parent_category_id?: string; p_category_level?: number }
+        Args: { p_category_level?: number; p_parent_category_id?: string }
         Returns: {
-          id: string
-          name: string
-          description: string
-          slug: string
-          color: string
-          sort_order: number
-          is_active: boolean
-          created_at: string
-          parent_category_id: string
-          level: number
-          region: string
           birth_year: number
-          play_level: string
+          color: string
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
           last_activity_at: string
+          level: number
+          name: string
+          parent_category_id: string
+          play_level: string
+          region: string
+          slug: string
+          sort_order: number
         }[]
       }
       get_category_stats: {
         Args: { category_id: string }
         Returns: {
-          topic_count: number
           post_count: number
+          topic_count: number
         }[]
       }
       get_comprehensive_ip_activity: {
         Args: { target_ip: unknown }
         Returns: {
-          ip_address: unknown
-          total_sessions: number
-          total_page_visits: number
-          total_posts: number
-          total_topics: number
-          total_reports: number
+          ban_status: Json
           blocked_attempts: number
           first_seen: string
+          ip_address: unknown
           last_seen: string
           recent_activities: Json
-          ban_status: Json
+          total_page_visits: number
+          total_posts: number
+          total_reports: number
+          total_sessions: number
+          total_topics: number
         }[]
       }
       get_enhanced_forum_stats: {
         Args: Record<PropertyKey, never>
         Returns: {
-          total_topics: number
-          total_posts: number
-          total_members: number
-          topics_today: number
-          posts_today: number
-          members_today: number
-          topics_this_week: number
-          posts_this_week: number
           members_this_week: number
+          members_today: number
           most_active_category: string
+          posts_this_week: number
+          posts_today: number
           top_poster: string
+          topics_this_week: number
+          topics_today: number
+          total_members: number
+          total_posts: number
+          total_topics: number
         }[]
       }
       get_enriched_posts: {
-        Args: { p_topic_id: string; p_limit?: number; p_offset?: number }
+        Args: { p_limit?: number; p_offset?: number; p_topic_id: string }
         Returns: {
-          id: string
+          author_id: string
+          avatar_url: string
           content: string
           created_at: string
-          updated_at: string
-          author_id: string
-          topic_id: string
-          parent_post_id: string
-          moderation_status: string
-          is_anonymous: boolean
-          username: string
-          avatar_url: string
           display_name: string
+          id: string
+          is_anonymous: boolean
           is_temp_user: boolean
-          parent_content: string
+          moderation_status: string
           parent_author: string
+          parent_content: string
           parent_created_at: string
+          parent_post_id: string
+          topic_id: string
+          updated_at: string
+          username: string
         }[]
       }
       get_enriched_posts_count: {
@@ -1801,25 +1807,25 @@ export type Database = {
         Returns: number
       }
       get_enriched_posts_secure: {
-        Args: { p_topic_id: string; p_limit?: number; p_offset?: number }
+        Args: { p_limit?: number; p_offset?: number; p_topic_id: string }
         Returns: {
-          id: string
-          content: string
+          author_avatar_url: string
           author_id: string
-          topic_id: string
-          parent_post_id: string
+          author_username: string
+          content: string
           created_at: string
-          updated_at: string
-          moderation_status: string
+          id: string
           ip_address: string
           is_anonymous: boolean
-          author_username: string
-          author_avatar_url: string
-          parent_post_content: string
-          parent_post_author_username: string
+          moderation_status: string
           parent_post_author_avatar_url: string
+          parent_post_author_username: string
+          parent_post_content: string
           parent_post_created_at: string
+          parent_post_id: string
           parent_post_moderation_status: string
+          topic_id: string
+          updated_at: string
         }[]
       }
       get_enriched_topics: {
@@ -1830,29 +1836,29 @@ export type Database = {
           p_sort_by?: string
         }
         Returns: {
-          id: string
-          title: string
+          author_id: string
+          avatar_url: string
+          category_color: string
+          category_id: string
+          category_name: string
+          category_slug: string
           content: string
           created_at: string
-          updated_at: string
-          author_id: string
-          category_id: string
-          is_pinned: boolean
+          display_name: string
+          id: string
+          is_anonymous: boolean
           is_locked: boolean
-          view_count: number
-          reply_count: number
+          is_pinned: boolean
+          is_temp_user: boolean
+          last_post_id: string
           last_reply_at: string
           moderation_status: string
-          is_anonymous: boolean
+          reply_count: number
           slug: string
+          title: string
+          updated_at: string
           username: string
-          avatar_url: string
-          display_name: string
-          is_temp_user: boolean
-          category_name: string
-          category_color: string
-          category_slug: string
-          last_post_id: string
+          view_count: number
         }[]
       }
       get_enriched_topics_count: {
@@ -1866,9 +1872,9 @@ export type Database = {
       get_forum_stats: {
         Args: Record<PropertyKey, never>
         Returns: {
-          total_topics: number
-          total_posts: number
           total_members: number
+          total_posts: number
+          total_topics: number
         }[]
       }
       get_hot_topics: {
@@ -1876,28 +1882,28 @@ export type Database = {
           | { limit_count?: number }
           | { limit_count?: number; offset_count?: number }
         Returns: {
-          id: string
-          title: string
-          content: string
           author_id: string
-          category_id: string
-          is_pinned: boolean
-          is_locked: boolean
-          view_count: number
-          reply_count: number
-          last_reply_at: string
-          created_at: string
-          updated_at: string
-          username: string
           avatar_url: string
-          category_name: string
           category_color: string
+          category_id: string
+          category_name: string
           category_slug: string
-          slug: string
+          content: string
+          created_at: string
           hot_score: number
+          id: string
+          is_locked: boolean
+          is_pinned: boolean
           last_post_id: string
+          last_reply_at: string
           parent_category_id: string
           parent_category_slug: string
+          reply_count: number
+          slug: string
+          title: string
+          updated_at: string
+          username: string
+          view_count: number
         }[]
       }
       get_hot_topics_count: {
@@ -1909,10 +1915,10 @@ export type Database = {
           | { limit_count?: number }
           | { limit_count?: number; offset_count?: number }
         Returns: {
-          id: string
-          title: string
           created_at: string
+          id: string
           reply_count: number
+          title: string
           view_count: number
         }[]
       }
@@ -1923,27 +1929,27 @@ export type Database = {
       get_most_viewed_topics: {
         Args: { limit_count?: number; offset_count?: number }
         Returns: {
-          id: string
-          title: string
-          content: string
           author_id: string
-          category_id: string
-          is_pinned: boolean
-          is_locked: boolean
-          view_count: number
-          reply_count: number
-          last_reply_at: string
-          created_at: string
-          updated_at: string
-          username: string
           avatar_url: string
-          category_name: string
           category_color: string
+          category_id: string
+          category_name: string
           category_slug: string
-          slug: string
+          content: string
+          created_at: string
+          id: string
+          is_locked: boolean
+          is_pinned: boolean
           last_post_id: string
+          last_reply_at: string
           parent_category_id: string
           parent_category_slug: string
+          reply_count: number
+          slug: string
+          title: string
+          updated_at: string
+          username: string
+          view_count: number
         }[]
       }
       get_most_viewed_topics_count: {
@@ -1978,11 +1984,11 @@ export type Database = {
       get_poll_results: {
         Args: { poll_id_param: string }
         Returns: {
+          display_order: number
           option_id: string
           option_text: string
-          display_order: number
-          vote_count: number
           percentage: number
+          vote_count: number
         }[]
       }
       get_posts_count: {
@@ -1990,17 +1996,17 @@ export type Database = {
         Returns: number
       }
       get_posts_without_ip: {
-        Args: { p_topic_id: string; p_limit?: number; p_offset?: number }
+        Args: { p_limit?: number; p_offset?: number; p_topic_id: string }
         Returns: {
-          id: string
-          content: string
           author_id: string
-          topic_id: string
-          parent_post_id: string
+          content: string
           created_at: string
-          updated_at: string
-          moderation_status: string
+          id: string
           is_anonymous: boolean
+          moderation_status: string
+          parent_post_id: string
+          topic_id: string
+          updated_at: string
         }[]
       }
       get_reporter_behavior: {
@@ -2008,35 +2014,35 @@ export type Database = {
         Returns: Json
       }
       get_secure_content: {
-        Args: { content_type: string; content_id: string }
+        Args: { content_id: string; content_type: string }
         Returns: Json
       }
       get_topic_secure: {
         Args: { p_topic_id: string }
         Returns: {
-          id: string
-          title: string
-          content: string
           author_id: string
+          canonical_url: string
           category_id: string
-          is_pinned: boolean
-          is_locked: boolean
-          view_count: number
-          reply_count: number
-          last_reply_at: string
+          content: string
           created_at: string
-          updated_at: string
-          slug: string
-          moderation_status: string
+          id: string
           ip_address: string
           is_anonymous: boolean
-          meta_title: string
+          is_locked: boolean
+          is_pinned: boolean
+          last_reply_at: string
           meta_description: string
           meta_keywords: string
-          canonical_url: string
-          og_title: string
+          meta_title: string
+          moderation_status: string
           og_description: string
           og_image: string
+          og_title: string
+          reply_count: number
+          slug: string
+          title: string
+          updated_at: string
+          view_count: number
         }[]
       }
       get_topics_count: {
@@ -2050,21 +2056,21 @@ export type Database = {
       get_topics_without_ip: {
         Args: { p_category_id?: string; p_limit?: number; p_offset?: number }
         Returns: {
-          id: string
-          title: string
-          content: string
           author_id: string
           category_id: string
-          is_pinned: boolean
-          is_locked: boolean
-          view_count: number
-          reply_count: number
-          last_reply_at: string
+          content: string
           created_at: string
-          updated_at: string
-          slug: string
-          moderation_status: string
+          id: string
           is_anonymous: boolean
+          is_locked: boolean
+          is_pinned: boolean
+          last_reply_at: string
+          moderation_status: string
+          reply_count: number
+          slug: string
+          title: string
+          updated_at: string
+          view_count: number
         }[]
       }
       get_unread_notification_count: {
@@ -2074,11 +2080,11 @@ export type Database = {
       get_visitor_geographic_summary: {
         Args: { p_hours_back?: number }
         Returns: {
+          avg_session_duration: unknown
           country_code: string
           country_name: string
-          visitor_count: number
           page_views: number
-          avg_session_duration: unknown
+          visitor_count: number
         }[]
       }
       get_visitors_last_24h: {
@@ -2087,8 +2093,8 @@ export type Database = {
       }
       has_role: {
         Args: {
-          _user_id: string
           _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
         }
         Returns: boolean
       }
@@ -2114,72 +2120,72 @@ export type Database = {
       }
       log_admin_action: {
         Args: {
-          p_admin_user_id: string
           p_action_type: string
-          p_target_type: string
-          p_target_id: string
+          p_admin_user_id: string
           p_target_details?: Json
+          p_target_id: string
+          p_target_type: string
         }
         Returns: undefined
       }
       log_ip_activity: {
         Args: {
-          p_ip_address: unknown
-          p_session_id: string
+          p_action_data?: Json
           p_activity_type: string
+          p_blocked_reason?: string
           p_content_id?: string
           p_content_type?: string
-          p_action_data?: Json
+          p_ip_address: unknown
           p_is_blocked?: boolean
-          p_blocked_reason?: string
+          p_session_id: string
         }
         Returns: undefined
       }
       log_page_visit: {
         Args: {
+          p_category_id?: string
           p_ip_address: unknown
-          p_session_id: string
           p_page_path: string
           p_page_title?: string
           p_referrer?: string
-          p_user_agent?: string
           p_search_query?: string
-          p_category_id?: string
+          p_session_id: string
           p_topic_id?: string
+          p_user_agent?: string
         }
         Returns: undefined
       }
       log_page_visit_with_geolocation: {
         Args: {
+          p_category_id?: string
+          p_city?: string
+          p_country_code?: string
+          p_country_name?: string
           p_ip_address: unknown
-          p_session_id: string
+          p_is_proxy?: boolean
+          p_is_vpn?: boolean
+          p_isp?: string
+          p_latitude?: number
+          p_longitude?: number
           p_page_path: string
           p_page_title?: string
           p_referrer?: string
-          p_user_agent?: string
-          p_search_query?: string
-          p_category_id?: string
-          p_topic_id?: string
-          p_country_code?: string
-          p_country_name?: string
-          p_city?: string
           p_region?: string
-          p_latitude?: number
-          p_longitude?: number
+          p_search_query?: string
+          p_session_id: string
           p_timezone?: string
-          p_is_vpn?: boolean
-          p_is_proxy?: boolean
-          p_isp?: string
+          p_topic_id?: string
+          p_user_agent?: string
         }
         Returns: undefined
       }
       notify_all_admins: {
         Args: {
+          p_appeal_id?: string
           p_notification_type: Database["public"]["Enums"]["notification_type"]
-          p_topic_id?: string
           p_post_id?: string
           p_report_id?: string
-          p_appeal_id?: string
+          p_topic_id?: string
         }
         Returns: undefined
       }
@@ -2188,15 +2194,15 @@ export type Database = {
         Returns: Json
       }
       record_anonymous_post: {
-        Args: { user_ip: unknown; session_id: string }
+        Args: { session_id: string; user_ip: unknown }
         Returns: undefined
       }
       record_enhanced_anonymous_activity: {
         Args: {
-          user_ip: unknown
-          p_session_id: string
-          p_fingerprint_hash?: string
           p_content_type?: string
+          p_fingerprint_hash?: string
+          p_session_id: string
+          user_ip: unknown
         }
         Returns: undefined
       }
@@ -2207,19 +2213,19 @@ export type Database = {
       set_forum_setting: {
         Args:
           | {
-              key_name: string
-              value: Json
-              setting_type?: string
-              category?: string
-              description?: string
-            }
-          | {
-              key_name: string
-              value: Json
-              setting_type?: string
               category?: string
               description?: string
               is_public?: boolean
+              key_name: string
+              setting_type?: string
+              value: Json
+            }
+          | {
+              category?: string
+              description?: string
+              key_name: string
+              setting_type?: string
+              value: Json
             }
         Returns: undefined
       }
