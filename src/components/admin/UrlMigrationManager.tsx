@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 import { 
   ExternalLink, 
@@ -21,7 +22,8 @@ import {
   BarChart3,
   CheckCircle,
   AlertCircle,
-  Clock
+  Clock,
+  X
 } from 'lucide-react';
 import { 
   useUrlMigrations, 
@@ -40,6 +42,16 @@ export const UrlMigrationManager = () => {
   const [isProcessingSitemap, setIsProcessingSitemap] = useState(false);
   const [sitemapData, setSitemapData] = useState<OldUrlPattern[]>([]);
   const [editingMigration, setEditingMigration] = useState<UrlMigration | null>(null);
+  
+  // Batch processing state
+  const [batchProgress, setBatchProgress] = useState({
+    isProcessing: false,
+    currentBatch: 0,
+    totalBatches: 0,
+    processedUrls: 0,
+    totalUrls: 0,
+    migrationsCreated: 0
+  });
   const [newMigration, setNewMigration] = useState({
     old_url: '',
     new_url: '',
@@ -119,36 +131,96 @@ export const UrlMigrationManager = () => {
     }
 
     try {
-      toast.info('Generating enhanced migrations with database lookups...');
-      
-      const { data, error } = await supabase.functions.invoke('process-sitemap', {
-        body: { 
-          sitemapUrl, 
-          generateMigrations: true,
-          batchSize: 500 
-        }
+      setBatchProgress({
+        isProcessing: true,
+        currentBatch: 0,
+        totalBatches: 0,
+        processedUrls: 0,
+        totalUrls: 0,
+        migrationsCreated: 0
       });
 
-      if (error) {
-        throw new Error(error.message || 'Failed to generate migrations');
+      let batchIndex = 0;
+      let hasMore = true;
+      let totalMigrationsCreated = 0;
+
+      while (hasMore) {
+        try {
+          const { data, error } = await supabase.functions.invoke('process-sitemap', {
+            body: { 
+              sitemapUrl, 
+              generateMigrations: true,
+              batchSize: 1000,
+              batchIndex
+            }
+          });
+
+          if (error) {
+            throw new Error(error.message || 'Failed to generate migrations');
+          }
+
+          if (!data.success) {
+            throw new Error(data.error || 'Unknown error generating migrations');
+          }
+
+          // Update progress
+          setBatchProgress(prev => ({
+            ...prev,
+            currentBatch: data.batchInfo.currentBatch,
+            totalBatches: data.batchInfo.totalBatches,
+            processedUrls: data.batchInfo.processedUrls,
+            totalUrls: data.batchInfo.totalUrls,
+            migrationsCreated: prev.migrationsCreated + (data.migrationsCreated || 0)
+          }));
+
+          // Create migrations if any were generated
+          if (data.migrations && data.migrations.length > 0) {
+            await bulkCreateMigrations.mutateAsync(data.migrations);
+            totalMigrationsCreated += data.migrations.length;
+          }
+
+          hasMore = data.batchInfo.hasMore;
+          batchIndex++;
+
+          // Small delay between batches to prevent overwhelming the system
+          if (hasMore) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+
+        } catch (batchError) {
+          console.error(`Error processing batch ${batchIndex + 1}:`, batchError);
+          toast.error(`Failed to process batch ${batchIndex + 1}: ${batchError.message}`);
+          
+          // Ask user if they want to continue with next batch
+          const shouldContinue = confirm(`Batch ${batchIndex + 1} failed. Continue with next batch?`);
+          if (!shouldContinue) {
+            hasMore = false;
+          } else {
+            batchIndex++;
+          }
+        }
       }
 
-      if (!data.success) {
-        throw new Error(data.error || 'Unknown error generating migrations');
-      }
-
-      if (data.migrations && data.migrations.length > 0) {
-        await bulkCreateMigrations.mutateAsync(data.migrations);
-        toast.success(`Created ${data.migrations.length} enhanced migrations with SEO-friendly URLs`);
+      setBatchProgress(prev => ({ ...prev, isProcessing: false }));
+      
+      if (totalMigrationsCreated > 0) {
+        toast.success(`Batch processing complete! Created ${totalMigrationsCreated} enhanced migrations with SEO-friendly URLs`);
       } else {
-        toast.warning('No migrations were generated from the sitemap data');
+        toast.warning('Batch processing complete, but no migrations were generated');
       }
       
       setSitemapData([]);
+      
     } catch (error) {
-      console.error('Error creating enhanced migrations:', error);
-      toast.error(`Failed to create migrations: ${error.message}`);
+      setBatchProgress(prev => ({ ...prev, isProcessing: false }));
+      console.error('Error in batch processing:', error);
+      toast.error(`Failed to process migrations: ${error.message}`);
     }
+  };
+
+  const cancelBatchProcessing = () => {
+    setBatchProgress(prev => ({ ...prev, isProcessing: false }));
+    toast.info('Batch processing cancelled');
   };
 
   const getStatusIcon = (status: string) => {
@@ -402,7 +474,7 @@ export const UrlMigrationManager = () => {
                 </Button>
               </div>
 
-              {sitemapData.length > 0 && (
+              {sitemapData.length > 0 && !batchProgress.isProcessing && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-muted-foreground">
@@ -410,7 +482,7 @@ export const UrlMigrationManager = () => {
                     </p>
                     <Button onClick={handleBulkCreateFromSitemap}>
                       <Upload className="h-4 w-4 mr-2" />
-                      Create Enhanced Migrations
+                      Create Enhanced Migrations (Batched)
                     </Button>
                   </div>
 
@@ -444,6 +516,61 @@ export const UrlMigrationManager = () => {
                       </TableBody>
                     </Table>
                   </div>
+                </div>
+              )}
+
+              {/* Batch Processing Progress */}
+              {batchProgress.isProcessing && (
+                <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium">Processing Sitemap in Batches</h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={cancelBatchProcessing}
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Cancel
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Batch Progress</span>
+                      <span>{batchProgress.currentBatch} / {batchProgress.totalBatches}</span>
+                    </div>
+                    <Progress 
+                      value={batchProgress.totalBatches > 0 ? (batchProgress.currentBatch / batchProgress.totalBatches) * 100 : 0} 
+                      className="h-2" 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>URLs Processed</span>
+                      <span>{Math.min(batchProgress.processedUrls, batchProgress.totalUrls)} / {batchProgress.totalUrls}</span>
+                    </div>
+                    <Progress 
+                      value={batchProgress.totalUrls > 0 ? (Math.min(batchProgress.processedUrls, batchProgress.totalUrls) / batchProgress.totalUrls) * 100 : 0} 
+                      className="h-2" 
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Migrations Created:</span>
+                      <div className="font-medium">{batchProgress.migrationsCreated}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Current Batch:</span>
+                      <div className="font-medium">{batchProgress.currentBatch} of {batchProgress.totalBatches}</div>
+                    </div>
+                  </div>
+                  
+                  <p className="text-xs text-muted-foreground">
+                    Processing 1,000 URLs per batch to ensure reliable operation. 
+                    Each batch includes database lookups for enhanced URL matching.
+                  </p>
                 </div>
               )}
             </CardContent>

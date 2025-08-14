@@ -476,23 +476,61 @@ serve(async (req) => {
 
   try {
     console.log('Processing request body:', JSON.stringify(req.body, null, 2));
-    const { sitemapUrl, generateMigrations = false, batchSize = 500 } = await req.json();
+    const { 
+      sitemapUrl, 
+      generateMigrations = false, 
+      batchSize = 1000,
+      startIndex = 0,
+      batchIndex = 0
+    } = await req.json();
     
     if (!sitemapUrl) {
       throw new Error('Sitemap URL is required');
     }
 
     console.log('Processing sitemap:', sitemapUrl);
-    const urls = await fetchSitemap(sitemapUrl);
-    const patterns = processSitemapUrls(urls);
     
-    // Create summary statistics
+    // For first batch or non-batched requests, fetch and process sitemap
+    let patterns: OldUrlPattern[] = [];
+    let totalUrls = 0;
+    
+    if (batchIndex === 0) {
+      const urls = await fetchSitemap(sitemapUrl);
+      patterns = processSitemapUrls(urls);
+      totalUrls = patterns.length;
+      console.log('Total URLs found:', totalUrls);
+    }
+    
+    // For batched processing, only process a subset
+    let batchPatterns = patterns;
+    let totalBatches = 1;
+    
+    if (generateMigrations && batchIndex >= 0) {
+      // If this is not the first batch, we need to re-fetch to get patterns
+      if (batchIndex > 0) {
+        const urls = await fetchSitemap(sitemapUrl);
+        patterns = processSitemapUrls(urls);
+        totalUrls = patterns.length;
+      }
+      
+      totalBatches = Math.ceil(patterns.length / batchSize);
+      const start = batchIndex * batchSize;
+      const end = Math.min(start + batchSize, patterns.length);
+      batchPatterns = patterns.slice(start, end);
+      
+      console.log(`Processing batch ${batchIndex + 1}/${totalBatches} (${batchPatterns.length} URLs)`);
+    }
+    
+    // Create summary statistics for the current batch
     const summary = {
-      total: patterns.length,
-      topics: patterns.filter(p => p.type === 'topic').length,
-      posts: patterns.filter(p => p.type === 'post').length,
-      categories: patterns.filter(p => p.type === 'category').length,
-      other: patterns.filter(p => p.type === 'other').length,
+      total: totalUrls || batchPatterns.length,
+      topics: batchPatterns.filter(p => p.type === 'topic').length,
+      posts: batchPatterns.filter(p => p.type === 'post').length,
+      categories: batchPatterns.filter(p => p.type === 'category').length,
+      other: batchPatterns.filter(p => p.type === 'other').length,
+      batchIndex,
+      totalBatches,
+      hasMore: batchIndex < totalBatches - 1
     };
 
     console.log('Processing complete. Summary:', summary);
@@ -500,27 +538,34 @@ serve(async (req) => {
     let migrations: EnhancedMigration[] = [];
     
     if (generateMigrations) {
-      console.log('Generating enhanced migrations...');
-      
-      // Initialize Supabase client for database lookups
-      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-      const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-      const supabase = createClient(supabaseUrl, supabaseKey);
-      
-      migrations = await generateEnhancedMigrations(supabase, patterns, batchSize);
-      
-      console.log(`Generated ${migrations.length} enhanced migrations`);
+      const supabase = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      );
+
+      // Only process the batch patterns for migration generation
+      migrations = await generateEnhancedMigrations(supabase, batchPatterns, 500);
     }
 
-    return new Response(JSON.stringify({
-      success: true,
-      patterns,
-      migrations,
-      summary,
-      total: urls.length
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        success: true,
+        patterns: batchPatterns,
+        summary,
+        migrations,
+        migrationsCreated: migrations.length,
+        batchInfo: {
+          currentBatch: batchIndex + 1,
+          totalBatches,
+          hasMore: summary.hasMore,
+          processedUrls: (batchIndex + 1) * batchSize,
+          totalUrls: totalUrls || batchPatterns.length
+        }
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   } catch (error) {
     console.error('Error in process-sitemap function:', error);
     return new Response(JSON.stringify({
