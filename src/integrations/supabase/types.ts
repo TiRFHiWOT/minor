@@ -1448,6 +1448,45 @@ export type Database = {
           },
         ]
       }
+      url_migration_fix_patterns: {
+        Row: {
+          confidence_improvement: number | null
+          corrected_new_url: string
+          created_at: string
+          created_by: string | null
+          fix_reason: string
+          id: string
+          notes: string | null
+          old_url: string
+          original_new_url: string
+          pattern_type: string
+        }
+        Insert: {
+          confidence_improvement?: number | null
+          corrected_new_url: string
+          created_at?: string
+          created_by?: string | null
+          fix_reason: string
+          id?: string
+          notes?: string | null
+          old_url: string
+          original_new_url: string
+          pattern_type: string
+        }
+        Update: {
+          confidence_improvement?: number | null
+          corrected_new_url?: string
+          created_at?: string
+          created_by?: string | null
+          fix_reason?: string
+          id?: string
+          notes?: string | null
+          old_url?: string
+          original_new_url?: string
+          pattern_type?: string
+        }
+        Relationships: []
+      }
       url_migrations: {
         Row: {
           created_at: string

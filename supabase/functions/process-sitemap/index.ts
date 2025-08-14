@@ -523,6 +523,16 @@ const generateMigrationForPattern = async (
     const enhancedPattern = pattern as EnhancedOldUrlPattern;
     let newUrl: string;
     let newTopicId: string | undefined;
+    let yearMismatchNote = '';
+    
+    // Detect year mismatches for quality scoring
+    if (enhancedPattern.year && matchedTopic) {
+      const topicYear = matchedTopic.title.match(/(20\d{2})/)?.[1];
+      if (topicYear && topicYear !== enhancedPattern.year) {
+        yearMismatchNote = ` Year mismatch detected: original ${enhancedPattern.year} vs matched ${topicYear}.`;
+        confidence = Math.max(0.4, confidence - 0.2); // Penalize year mismatches
+      }
+    }
     
     if (matchedTopic) {
       // Generate proper hierarchical URL for matched topic
@@ -531,7 +541,7 @@ const generateMigrationForPattern = async (
       
       // Use enhanced reconstruction that preserves original URL structure
       newUrl = reconstructUrlPreservingOriginal(enhancedPattern, matchedTopic, category);
-      console.log(`✅ Generated preserved URL: ${newUrl} for topic: ${matchedTopic.title}`);
+      console.log(`✅ Generated preserved URL: ${newUrl} for topic: ${matchedTopic.title}${yearMismatchNote}`);
       
     } else {
       // Generate new URL using preservation logic
@@ -549,7 +559,7 @@ const generateMigrationForPattern = async (
       new_topic_id: newTopicId,
       priority: confidence > 0.8 ? 1 : confidence > 0.5 ? 2 : 3,
       status: 'pending', // Force all to pending for manual review
-      notes: `${matchType} match (${Math.round(confidence * 100)}% confidence). Original title: ${pattern.title || 'Unknown'}`,
+      notes: `${matchType} match (${Math.round(confidence * 100)}% confidence). Original title: ${pattern.title || 'Unknown'}.${yearMismatchNote}`,
       match_confidence: confidence,
       match_type: matchType
     };
@@ -852,6 +862,47 @@ serve(async (req) => {
 
       // Only process the batch patterns for migration generation
       migrations = await generateEnhancedMigrations(supabase, batchPatterns, 500);
+      
+      // CRITICAL FIX: Save migrations to database
+      if (migrations.length > 0) {
+        console.log('💾 Saving', migrations.length, 'migrations to database...');
+        
+        try {
+          const { data: savedMigrations, error: saveError } = await supabase
+            .from('url_migrations')
+            .upsert(
+              migrations.map(migration => ({
+                old_url: migration.old_url,
+                new_url: migration.new_url,
+                url_type: migration.url_type,
+                old_topic_id: migration.old_topic_id,
+                old_post_id: migration.old_post_id,
+                old_category_id: migration.old_category_id,
+                new_topic_id: migration.new_topic_id,
+                new_category_id: migration.new_category_id,
+                priority: migration.priority,
+                status: 'pending', // Force all to pending for manual review
+                notes: migration.notes,
+                match_confidence: migration.match_confidence,
+                match_type: migration.match_type
+              })),
+              { 
+                onConflict: 'old_url',
+                ignoreDuplicates: false 
+              }
+            );
+          
+          if (saveError) {
+            console.error('❌ Error saving migrations to database:', saveError);
+            throw saveError;
+          }
+          
+          console.log('✅ Successfully saved', savedMigrations?.length || 0, 'migrations to database');
+        } catch (saveError) {
+          console.error('❌ Failed to save migrations:', saveError);
+          // Continue without failing the entire request
+        }
+      }
     }
 
     return new Response(

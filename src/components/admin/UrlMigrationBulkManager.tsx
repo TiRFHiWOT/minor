@@ -203,13 +203,21 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
       toast.info('Step 2: Reprocessing sitemap with enhanced URL preservation...');
       const { data, error } = await supabase.functions.invoke('process-sitemap', {
         body: { 
-          sitemapUrl: 'https://hockeyforum.com/sitemap.xml',
+          sitemapUrl: 'https://gthl.ca/sitemap.xml',
           generateMigrations: true,
-          forceReprocess: true
+          batchSize: 500
         }
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Edge function error:', error);
+        throw new Error(`Reprocessing failed: ${error.message || 'Unknown error'}`);
+      }
+      
+      if (!data || !data.success) {
+        console.error('❌ Invalid response from process-sitemap:', data);
+        throw new Error(`Reprocessing failed: ${data?.error || 'Invalid response'}`);
+      }
       
       setProgress(75);
       
@@ -218,7 +226,7 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
       onRefresh();
       setProgress(100);
       
-      toast.success(`Reprocessing complete! Generated ${data?.migrations?.length || 0} new migrations with improved URL preservation. All set to "pending" for your review.`);
+      toast.success(`Reprocessing complete! Generated ${data?.migrationsCreated || 0} new migrations with improved URL preservation. All set to "pending" for your review.`);
       
     } catch (error) {
       console.error('Reprocessing failed:', error);
