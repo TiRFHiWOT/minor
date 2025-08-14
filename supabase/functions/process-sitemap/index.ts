@@ -499,6 +499,11 @@ const generateEnhancedMigrations = async (
   const startTime = Date.now();
   const TIMEOUT_MS = 45000; // 45 second timeout to stay within edge function limits
   
+  // Initialize variables outside try-catch for proper scope
+  let flatTopics: any[] = [];
+  let categories: any[] = [];
+  let lookupMaps: any = null;
+  
   console.log(`Generating enhanced migrations for ${patterns.length} patterns`);
   
   const migrations: EnhancedMigration[] = [];
@@ -559,8 +564,8 @@ const generateEnhancedMigrations = async (
     console.log('Raw topics data sample:', topics?.slice(0, 1));
     console.log('Raw categories data sample:', categories?.slice(0, 1));
 
-    // Flatten topics data properly
-    const flatTopics = topics?.map(topic => {
+    // Flatten topics data properly - use the outer scope variable
+    flatTopics = topics?.map(topic => {
       console.log('Processing topic:', topic.title, 'with categories:', topic.categories);
       return {
         id: topic.id,
