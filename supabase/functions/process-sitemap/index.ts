@@ -237,24 +237,43 @@ const generateSlug = (title: string): string => {
     .replace(/^-+|-+$/g, '');
 };
 
-// Calculate title similarity using simple string comparison
+// Optimized similarity calculation with early exits
 const calculateSimilarity = (str1: string, str2: string): number => {
+  if (!str1 || !str2) return 0;
+  if (str1 === str2) return 1.0;
+  
   const a = str1.toLowerCase().replace(/[^a-z0-9]/g, '');
   const b = str2.toLowerCase().replace(/[^a-z0-9]/g, '');
   
   if (a === b) return 1.0;
+  
+  // Quick length check - if lengths differ too much, similarity is low
+  const lengthDiff = Math.abs(a.length - b.length);
+  if (lengthDiff > Math.max(a.length, b.length) * 0.5) return 0;
+  
+  // Simple character overlap check first
+  const overlap = getCharacterOverlap(a, b);
+  if (overlap < 0.3) return 0; // Early exit if no significant overlap
   
   const longer = a.length > b.length ? a : b;
   const shorter = a.length > b.length ? b : a;
   
   if (longer.length === 0) return 1.0;
   
+  // Only do expensive calculation if there's promise
   let matches = 0;
   for (let i = 0; i < shorter.length; i++) {
     if (longer.includes(shorter[i])) matches++;
   }
   
   return matches / longer.length;
+};
+
+const getCharacterOverlap = (str1: string, str2: string): number => {
+  const chars1 = new Set(str1);
+  const chars2 = new Set(str2);
+  const intersection = new Set([...chars1].filter(x => chars2.has(x)));
+  return intersection.size / Math.max(chars1.size, chars2.size);
 };
 
 // Find appropriate category based on title keywords
@@ -287,27 +306,101 @@ const findAppropriateCategory = (title: string, categories: any[]): any | null =
   return null;
 };
 
-// Generate a single migration for a pattern
+// Optimized function to pre-compute lookup maps
+const buildLookupMaps = (topics: any[], categories: any[]) => {
+  const topicTitleMap = new Map<string, any[]>();
+  const categoryNameMap = new Map<string, any[]>();
+  
+  // Build topic title word map for faster lookups
+  for (const topic of topics) {
+    if (topic.title) {
+      const words = topic.title.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      for (const word of words.slice(0, 5)) { // Limit words to process
+        if (!topicTitleMap.has(word)) {
+          topicTitleMap.set(word, []);
+        }
+        topicTitleMap.get(word)!.push(topic);
+      }
+    }
+  }
+  
+  // Build category name word map
+  for (const category of categories) {
+    if (category.name) {
+      const words = category.name.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+      for (const word of words) {
+        if (!categoryNameMap.has(word)) {
+          categoryNameMap.set(word, []);
+        }
+        categoryNameMap.get(word)!.push(category);
+      }
+    }
+  }
+  
+  return { topicTitleMap, categoryNameMap };
+};
+
+// Optimized function to generate migration for a single URL pattern
 const generateMigrationForPattern = async (
   pattern: OldUrlPattern,
   topics: any[],
-  categories: any[]
+  categories: any[],
+  topicTitleMap?: Map<string, any[]>,
+  categoryNameMap?: Map<string, any[]>
 ): Promise<EnhancedMigration | null> => {
   
   if (pattern.type === 'topic' && pattern.topicId) {
-    // Try to find matching topic by legacy_topic_id first
+    // Fast path: exact legacy ID match
     let matchedTopic = topics.find(t => t.legacy_topic_id === pattern.topicId);
     let matchType: 'exact' | 'title_similarity' | 'legacy_id' | 'generated' = 'legacy_id';
     let confidence = 1.0;
     
-    // If no legacy match, try title similarity
-    if (!matchedTopic && pattern.title) {
+    // Optimized title similarity matching using pre-computed map
+    if (!matchedTopic && pattern.title && topicTitleMap) {
+      const titleWords = pattern.title.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      const candidates = new Set<any>();
+      
+      // Collect candidates that share keywords
+      for (const word of titleWords.slice(0, 3)) { // Limit to first 3 significant words
+        const matches = topicTitleMap.get(word) || [];
+        matches.forEach(topic => candidates.add(topic));
+      }
+      
       let bestMatch = null;
       let bestSimilarity = 0;
+      let comparisons = 0;
+      
+      // Only compare against relevant candidates
+      for (const topic of candidates) {
+        if (++comparisons > 30) break; // Limit comparisons to prevent timeout
+        
+        const similarity = calculateSimilarity(pattern.title, topic.title);
+        
+        if (similarity > 0.85) { // Higher threshold for confidence
+          bestSimilarity = similarity;
+          bestMatch = topic;
+          break; // Early exit on high confidence match
+        } else if (similarity > bestSimilarity && similarity > 0.7) {
+          bestSimilarity = similarity;
+          bestMatch = topic;
+        }
+      }
+      
+      if (bestMatch) {
+        matchedTopic = bestMatch;
+        matchType = 'title_similarity';
+        confidence = bestSimilarity;
+      }
+    } else if (!matchedTopic && pattern.title && !topicTitleMap) {
+      // Fallback to simple search if no lookup map
+      let bestMatch = null;
+      let bestSimilarity = 0;
+      let comparisons = 0;
       
       for (const topic of topics) {
+        if (++comparisons > 50) break; // Strict limit
         const similarity = calculateSimilarity(pattern.title, topic.title);
-        if (similarity > bestSimilarity && similarity > 0.7) { // 70% similarity threshold
+        if (similarity > bestSimilarity && similarity > 0.7) {
           bestSimilarity = similarity;
           bestMatch = topic;
         }
@@ -397,15 +490,22 @@ const generateMigrationForPattern = async (
   return null;
 };
 
-// Generate enhanced migrations with database lookups
+// Optimized function to generate enhanced migrations with timeout protection
 const generateEnhancedMigrations = async (
   supabase: any,
   patterns: OldUrlPattern[],
   batchSize: number = 500
 ): Promise<EnhancedMigration[]> => {
+  const startTime = Date.now();
+  const TIMEOUT_MS = 45000; // 45 second timeout to stay within edge function limits
+  
+  console.log(`Generating enhanced migrations for ${patterns.length} patterns`);
+  
   const migrations: EnhancedMigration[] = [];
   
-  // Get all current topics and categories for matching
+  // Fetch essential data only for performance with reduced limits
+  console.log('Fetching topics and categories for matching...');
+  
   const { data: topics, error: topicsError } = await supabase
     .from('topics')
     .select(`
@@ -413,57 +513,89 @@ const generateEnhancedMigrations = async (
       title,
       slug,
       legacy_topic_id,
-      categories!inner (
-        id,
-        name,
-        slug,
-        parent_category_id,
-        parent_category:categories (
-          slug
-        )
-      )
-    `);
-    
+      categories!inner(slug)
+    `)
+    .eq('moderation_status', 'approved')
+    .limit(1500); // Reduced limit for performance
+
   if (topicsError) {
     console.error('Error fetching topics:', topicsError);
     throw new Error('Failed to fetch topics for matching');
   }
-  
+
   const { data: categories, error: categoriesError } = await supabase
     .from('categories')
-    .select(`
-      id,
-      name,
-      slug,
-      parent_category_id,
-      parent_category:categories (
-        slug
-      )
-    `);
-    
+    .select('id, name, slug, parent_category_id')
+    .eq('is_active', true)
+    .limit(300); // Reduced limit
+
   if (categoriesError) {
     console.error('Error fetching categories:', categoriesError);
     throw new Error('Failed to fetch categories for matching');
   }
+
+  // Flatten topics data
+  const flatTopics = topics?.map(topic => ({
+    ...topic,
+    category_slug: topic.categories?.slug
+  })) || [];
+
+  console.log(`Found ${flatTopics.length} topics and ${categories?.length || 0} categories for matching`);
   
-  console.log(`Found ${topics?.length || 0} topics and ${categories?.length || 0} categories for matching`);
+  // Build optimized lookup maps for faster searching
+  const { topicTitleMap, categoryNameMap } = buildLookupMaps(flatTopics, categories || []);
+  console.log('Built lookup maps for faster matching');
+
+  // Process in smaller sub-batches with timeout protection
+  const subBatchSize = 50; // Much smaller sub-batches for better progress tracking
+  let processed = 0;
   
-  // Process patterns in batches to avoid timeouts
-  for (let i = 0; i < patterns.length; i += batchSize) {
-    const batch = patterns.slice(i, i + batchSize);
-    console.log(`Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(patterns.length / batchSize)}`);
+  for (let i = 0; i < patterns.length; i += subBatchSize) {
+    // Check timeout before each sub-batch
+    if (Date.now() - startTime > TIMEOUT_MS) {
+      console.log(`Timeout reached after processing ${processed}/${patterns.length} patterns`);
+      break;
+    }
     
-    for (const pattern of batch) {
+    const end = Math.min(i + subBatchSize, patterns.length);
+    const subBatch = patterns.slice(i, end);
+    
+    console.log(`Processing sub-batch: ${i + 1}-${end}/${patterns.length} (${Math.round(processed/patterns.length * 100)}%)`);
+    
+    for (const pattern of subBatch) {
       try {
-        const migration = await generateMigrationForPattern(pattern, topics, categories);
+        const migration = await generateMigrationForPattern(
+          pattern, 
+          flatTopics, 
+          categories || [],
+          topicTitleMap,
+          categoryNameMap
+        );
         if (migration) {
           migrations.push(migration);
         }
+        processed++;
+        
+        // Check timeout more frequently
+        if (processed % 25 === 0 && Date.now() - startTime > TIMEOUT_MS) {
+          console.log(`Timeout reached after processing ${processed} patterns`);
+          break;
+        }
       } catch (error) {
-        console.error(`Error generating migration for pattern ${pattern.path}:`, error);
+        console.error(`Error processing pattern ${pattern.path}:`, error);
+        processed++;
       }
     }
+    
+    // Break out of outer loop if timeout reached
+    if (Date.now() - startTime > TIMEOUT_MS) {
+      break;
+    }
   }
+
+  const duration = Date.now() - startTime;
+  console.log(`Generated ${migrations.length} migrations from ${processed} processed patterns in ${duration}ms`);
+  console.log(`Processing rate: ${(processed / (duration / 1000)).toFixed(2)} patterns/second`);
   
   return migrations;
 };
