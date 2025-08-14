@@ -234,6 +234,19 @@ export const useBulkUpdateUrlMigrations = () => {
   
   return useMutation({
     mutationFn: async ({ ids, updates }: { ids: string[]; updates: Partial<UrlMigration> }) => {
+      // Special handling for undefined URLs bulk operation
+      if (ids.length === 0 && updates.status === 'disabled') {
+        const { data, error } = await supabase
+          .from('url_migrations')
+          .update(updates)
+          .eq('status', 'active')
+          .like('new_url', '%/undefined/%')
+          .select();
+        
+        if (error) throw error;
+        return data;
+      }
+      
       const { data, error } = await supabase
         .from('url_migrations')
         .update(updates)

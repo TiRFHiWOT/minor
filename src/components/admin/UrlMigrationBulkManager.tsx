@@ -316,6 +316,27 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
               )}
               Execute ({selectedMigrations.size})
             </Button>
+
+            <Button 
+              onClick={async () => {
+                try {
+                  await bulkUpdate.mutateAsync({
+                    ids: [], // Special case handled in hook
+                    updates: { status: 'disabled' }
+                  });
+                  onRefresh();
+                  toast.success('Disabled all active URLs with /undefined/');
+                } catch (error) {
+                  toast.error('Failed to disable undefined URLs');
+                }
+              }}
+              disabled={isProcessing}
+              variant="destructive"
+              className="flex items-center gap-2"
+            >
+              <AlertTriangle className="h-4 w-4" />
+              Disable All /undefined/ URLs
+            </Button>
           </div>
 
           {/* Progress */}
