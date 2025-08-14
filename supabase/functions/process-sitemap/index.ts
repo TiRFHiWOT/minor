@@ -421,13 +421,25 @@ const generateMigrationForPattern = async (
       newTopicId = matchedTopic.id;
       const category = matchedTopic.categories;
       
-      if (category.parent_category_id && category.parent_category?.slug) {
+      // Enhanced logging for debugging URL generation
+      console.log(`Processing topic: ${matchedTopic.title}`);
+      console.log(`Category data:`, JSON.stringify(category, null, 2));
+      console.log(`Parent category exists:`, !!category?.parent_category);
+      console.log(`Parent category slug:`, category?.parent_category?.slug);
+      
+      // Robust URL generation with proper null checks
+      if (category?.parent_category_id && 
+          category?.parent_category && 
+          typeof category.parent_category === 'object' && 
+          category.parent_category.slug && 
+          category.parent_category.slug !== 'undefined') {
         // Level 3 category: /parent-slug/category-slug/topic-slug
         newUrl = `/${category.parent_category.slug}/${category.slug}/${matchedTopic.slug}`;
-        console.log(`Generated level 3 URL: ${newUrl} for topic: ${matchedTopic.title}`);
+        console.log(`✅ Generated level 3 URL: ${newUrl} for topic: ${matchedTopic.title}`);
       } else {
         // Level 2 category: /category-slug/topic-slug
         newUrl = `/${category.slug}/${matchedTopic.slug}`;
+        console.log(`✅ Generated level 2 URL: ${newUrl} for topic: ${matchedTopic.title}`);
         console.log(`Generated level 2 URL: ${newUrl} for topic: ${matchedTopic.title}`);
       }
     } else {
@@ -568,15 +580,29 @@ const generateEnhancedMigrations = async (
     console.log('Raw topics data sample:', topics?.slice(0, 1));
     console.log('Raw categories data sample:', categories?.slice(0, 1));
 
-    // Flatten topics data properly - use the outer scope variable
+    // Flatten topics data properly with enhanced validation
     flatTopics = topics?.map(topic => {
-      console.log('Processing topic:', topic.title, 'with categories:', topic.categories);
+      console.log('🔍 Processing topic:', topic.title);
+      console.log('📂 Raw categories data:', JSON.stringify(topic.categories, null, 2));
+      
+      // Validate and normalize category data
+      const normalizedCategories = topic.categories ? {
+        ...topic.categories,
+        parent_category: topic.categories.parent_category && 
+                        typeof topic.categories.parent_category === 'object' &&
+                        topic.categories.parent_category.slug !== 'undefined' 
+                        ? topic.categories.parent_category 
+                        : null
+      } : null;
+      
+      console.log('📂 Normalized categories:', JSON.stringify(normalizedCategories, null, 2));
+      
       return {
         id: topic.id,
         title: topic.title,
         slug: topic.slug,
         legacy_topic_id: topic.legacy_topic_id,
-        categories: topic.categories
+        categories: normalizedCategories
       };
     }) || [];
 
