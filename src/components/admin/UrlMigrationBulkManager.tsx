@@ -180,6 +180,55 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
     toast.success(`Fixed ${fixed} undefined URLs out of ${migrationIds.length} selected`);
   };
 
+  const handleReprocessAllUrls = async () => {
+    const confirmed = window.confirm(
+      'This will disable all existing migrations and reprocess the sitemap with improved logic. All new migrations will be set to "pending" for your manual review. Continue?'
+    );
+    
+    if (!confirmed) return;
+    
+    setIsProcessing(true);
+    setProgress(0);
+    
+    try {
+      // Step 1: Disable all existing migrations
+      toast.info('Step 1: Disabling existing migrations...');
+      await bulkUpdate.mutateAsync({
+        ids: migrations.map(m => m.id),
+        updates: { status: 'disabled' }
+      });
+      setProgress(25);
+      
+      // Step 2: Reprocess sitemap with new logic
+      toast.info('Step 2: Reprocessing sitemap with enhanced URL preservation...');
+      const { data, error } = await supabase.functions.invoke('process-sitemap', {
+        body: { 
+          sitemapUrl: 'https://hockeyforum.com/sitemap.xml',
+          generateMigrations: true,
+          forceReprocess: true
+        }
+      });
+      
+      if (error) throw error;
+      
+      setProgress(75);
+      
+      // Step 3: Refresh data
+      toast.info('Step 3: Refreshing migration data...');
+      onRefresh();
+      setProgress(100);
+      
+      toast.success(`Reprocessing complete! Generated ${data?.migrations?.length || 0} new migrations with improved URL preservation. All set to "pending" for your review.`);
+      
+    } catch (error) {
+      console.error('Reprocessing failed:', error);
+      toast.error('Failed to reprocess URLs. Check console for details.');
+    } finally {
+      setIsProcessing(false);
+      setProgress(0);
+    }
+  };
+
   const getConfidenceColor = (confidence?: number) => {
     if (!confidence) return 'secondary';
     if (confidence >= 80) return 'default';
@@ -336,6 +385,16 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
             >
               <AlertTriangle className="h-4 w-4" />
               Disable All /undefined/ URLs
+            </Button>
+
+            <Button 
+              onClick={handleReprocessAllUrls}
+              disabled={isProcessing}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Reprocess All URLs
             </Button>
           </div>
 

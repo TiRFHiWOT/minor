@@ -40,24 +40,59 @@ interface EnhancedMigration {
   match_type?: 'exact' | 'title_similarity' | 'legacy_id' | 'generated';
 }
 
-// Parse old URL patterns and extract identifiers
-const parseOldUrl = (url: string): OldUrlPattern | null => {
+// Enhanced URL pattern interface with preservation info
+interface EnhancedOldUrlPattern extends OldUrlPattern {
+  year?: string;
+  level?: string;
+  organization?: string;
+  originalSlug?: string;
+  extractedInfo?: {
+    preservedTopicId?: string;
+    hasYear?: boolean;
+    hasLevel?: boolean;
+    hasOrganization?: boolean;
+  };
+}
+
+// Enhanced URL parsing with preservation logic
+const parseOldUrl = (url: string): EnhancedOldUrlPattern | null => {
   try {
     const urlObj = new URL(url);
     const path = urlObj.pathname;
     const filename = path.split('/').pop() || '';
     
-    // Topic pattern: ends with -t{number}.html
+    // Enhanced topic pattern: ends with -t{number}.html
     const topicMatch = filename.match(/^(.+)-t(\d+)\.html$/);
     if (topicMatch) {
-      const [, title, topicId] = topicMatch;
+      const [, titlePart, topicId] = topicMatch;
+      
+      // Extract meaningful components from filename
+      const year = titlePart.match(/(20\d{2})/)?.[1];
+      const levelMatch = titlePart.match(/-a{1,3}(?![a-z])/i);
+      const level = levelMatch ? levelMatch[0].replace('-', '').toLowerCase() : undefined;
+      
+      // Extract organization
+      const organization = titlePart.includes('gthl') ? 'gthl' :
+                          titlePart.includes('alliance') ? 'alliance' :
+                          titlePart.includes('ontario') ? 'ontario' : undefined;
+      
       return {
         fullUrl: url,
         path,
         filename,
         topicId: parseInt(topicId),
         type: 'topic',
-        title: title.replace(/-/g, ' ')
+        title: titlePart.replace(/-/g, ' '),
+        year,
+        level,
+        organization,
+        originalSlug: titlePart,
+        extractedInfo: {
+          preservedTopicId: `t${topicId}`,
+          hasYear: !!year,
+          hasLevel: !!level,
+          hasOrganization: !!organization
+        }
       };
     }
     
@@ -340,6 +375,77 @@ const buildLookupMaps = (topics: any[], categories: any[]) => {
   return { topicTitleMap, categoryNameMap };
 };
 
+// Enhanced URL reconstruction that preserves original structure
+const reconstructUrlPreservingOriginal = (
+  pattern: EnhancedOldUrlPattern, 
+  matchedTopic: any, 
+  category: any
+): string => {
+  const { year, level, organization, originalSlug, extractedInfo } = pattern;
+  
+  // Build hierarchical category path with preserved information
+  let categoryPath = '';
+  
+  if (category?.parent_category_id && category?.parent_category?.slug) {
+    // Level 3 category: /parent-slug/subcategory-slug
+    categoryPath = `/${category.parent_category.slug}/${category.slug}`;
+  } else if (category?.slug) {
+    // Level 2 category: /category-slug  
+    categoryPath = `/${category.slug}`;
+  } else {
+    // Fallback category
+    categoryPath = '/general-youth-hockey-discussion';
+  }
+  
+  // Build topic slug preserving original meaningful parts
+  let topicSlug = matchedTopic.slug;
+  
+  // If we have preserved info, enhance the slug
+  if (extractedInfo?.preservedTopicId && originalSlug) {
+    // Try to preserve original naming pattern with topic ID
+    const baseName = originalSlug.replace(/-t\d+$/, ''); // Remove old topic ID
+    topicSlug = `${baseName}-${extractedInfo.preservedTopicId}`;
+  }
+  
+  return `${categoryPath}/${topicSlug}`;
+};
+
+// Generate new URL using preservation logic for unmatched topics
+const generatePreservedUrl = (pattern: EnhancedOldUrlPattern, categories: any[]): string => {
+  const { year, level, organization, originalSlug, extractedInfo } = pattern;
+  
+  // Build category path based on extracted information
+  let categoryPath = '';
+  
+  if (year && level && organization) {
+    // Try to find or construct hierarchical category
+    const parentSlug = organization === 'gthl' ? 'gthl' : 'ontario';
+    const subSlug = `${organization}-${year}-${level}`;
+    categoryPath = `/${parentSlug}/${subSlug}`;
+  } else if (year && level) {
+    // Default to ontario if no organization
+    categoryPath = `/ontario/ontario-${year}-${level}`;
+  } else {
+    // Fallback to general category
+    categoryPath = '/general-youth-hockey-discussion';
+  }
+  
+  // Build topic slug preserving as much original info as possible
+  let topicSlug = '';
+  if (originalSlug && extractedInfo?.preservedTopicId) {
+    topicSlug = `${originalSlug}`;
+  } else if (pattern.title) {
+    topicSlug = generateSlug(pattern.title);
+    if (extractedInfo?.preservedTopicId) {
+      topicSlug = `${topicSlug}-${extractedInfo.preservedTopicId}`;
+    }
+  } else {
+    topicSlug = `topic-${extractedInfo?.preservedTopicId || 'unknown'}`;
+  }
+  
+  return `${categoryPath}/${topicSlug}`;
+};
+
 // Optimized function to generate migration for a single URL pattern
 const generateMigrationForPattern = async (
   pattern: OldUrlPattern,
@@ -413,6 +519,8 @@ const generateMigrationForPattern = async (
       }
     }
     
+    // Enhanced URL reconstruction with preservation logic
+    const enhancedPattern = pattern as EnhancedOldUrlPattern;
     let newUrl: string;
     let newTopicId: string | undefined;
     
@@ -421,56 +529,16 @@ const generateMigrationForPattern = async (
       newTopicId = matchedTopic.id;
       const category = matchedTopic.categories;
       
-      // Enhanced logging for debugging URL generation
-      console.log(`Processing topic: ${matchedTopic.title}`);
-      console.log(`Category data:`, JSON.stringify(category, null, 2));
-      console.log(`Parent category exists:`, !!category?.parent_category);
-      console.log(`Parent category slug:`, category?.parent_category?.slug);
+      // Use enhanced reconstruction that preserves original URL structure
+      newUrl = reconstructUrlPreservingOriginal(enhancedPattern, matchedTopic, category);
+      console.log(`✅ Generated preserved URL: ${newUrl} for topic: ${matchedTopic.title}`);
       
-      // Robust URL generation with proper null checks
-      if (category?.parent_category_id && 
-          category?.parent_category && 
-          typeof category.parent_category === 'object' && 
-          category.parent_category.slug && 
-          category.parent_category.slug !== 'undefined') {
-        // Level 3 category: /parent-slug/category-slug/topic-slug
-        newUrl = `/${category.parent_category.slug}/${category.slug}/${matchedTopic.slug}`;
-        console.log(`✅ Generated level 3 URL: ${newUrl} for topic: ${matchedTopic.title}`);
-      } else {
-        // Level 2 category: /category-slug/topic-slug
-        newUrl = `/${category.slug}/${matchedTopic.slug}`;
-        console.log(`✅ Generated level 2 URL: ${newUrl} for topic: ${matchedTopic.title}`);
-        console.log(`Generated level 2 URL: ${newUrl} for topic: ${matchedTopic.title}`);
-      }
     } else {
-      // Generate new URL based on title and best-guess category
+      // Generate new URL using preservation logic
+      newUrl = generatePreservedUrl(enhancedPattern, categories);
       matchType = 'generated';
-      confidence = 0.5;
-      
-      if (pattern.title) {
-        const slug = generateSlug(pattern.title);
-        // Try to find appropriate category based on title keywords
-        const appropriateCategory = findAppropriateCategory(pattern.title, categories);
-        
-        if (appropriateCategory) {
-          if (appropriateCategory.parent_category_id && appropriateCategory.parent_category?.slug) {
-            newUrl = `/${appropriateCategory.parent_category.slug}/${appropriateCategory.slug}/${slug}`;
-            console.log(`Generated level 3 URL from category mapping: ${newUrl} for title: ${pattern.title}`);
-          } else {
-            newUrl = `/${appropriateCategory.slug}/${slug}`;
-            console.log(`Generated level 2 URL from category mapping: ${newUrl} for title: ${pattern.title}`);
-          }
-        } else {
-          // Fallback to general discussion
-          newUrl = `/general-youth-hockey-discussion/${slug}`;
-        }
-      } else {
-        // Last resort: create a proper slug from the URL or ID
-        const cleanTitle = pattern.title || `Topic ${pattern.topicId}`;
-        const slug = generateSlug(cleanTitle);
-        newUrl = `/general-youth-hockey-discussion/${slug}`;
-        confidence = 0.1;
-      }
+      confidence = enhancedPattern.extractedInfo?.preservedTopicId ? 0.7 : 0.5;
+      console.log(`Generated preserved URL from pattern: ${newUrl} for original: ${enhancedPattern.path}`);
     }
     
     return {
@@ -480,7 +548,7 @@ const generateMigrationForPattern = async (
       old_topic_id: pattern.topicId,
       new_topic_id: newTopicId,
       priority: confidence > 0.8 ? 1 : confidence > 0.5 ? 2 : 3,
-      status: confidence > 0.7 ? 'active' : 'pending',
+      status: 'pending', // Force all to pending for manual review
       notes: `${matchType} match (${Math.round(confidence * 100)}% confidence). Original title: ${pattern.title || 'Unknown'}`,
       match_confidence: confidence,
       match_type: matchType

@@ -186,44 +186,56 @@ export const useBulkCreateUrlMigrations = () => {
     mutationFn: async (migrations: Array<Omit<UrlMigration, 'id' | 'created_at' | 'updated_at' | 'redirect_count' | 'created_by'>>) => {
       const userId = (await supabase.auth.getUser()).data.user?.id;
       
-      // Check for existing URLs to avoid duplicates
-      const oldUrls = migrations.map(m => m.old_url);
-      const { data: existing } = await supabase
-        .from('url_migrations')
-        .select('old_url')
-        .in('old_url', oldUrls);
-      
-      const existingUrls = new Set(existing?.map(e => e.old_url) || []);
-      const newMigrations = migrations.filter(m => !existingUrls.has(m.old_url));
-      
-      if (newMigrations.length === 0) {
-        throw new Error('All URLs already exist in the database');
-      }
-      
-      const migrationsWithUser = newMigrations.map(migration => ({
+      // For reprocessing, we allow overwriting existing URLs
+      const migrationsWithUser = migrations.map(migration => ({
         ...migration,
-        created_by: userId
+        created_by: userId,
+        status: 'pending' as const // Force all new migrations to pending
       }));
       
+      // Use upsert to handle duplicates during reprocessing
       const { data, error } = await supabase
         .from('url_migrations')
-        .insert(migrationsWithUser)
+        .upsert(migrationsWithUser, { 
+          onConflict: 'old_url',
+          ignoreDuplicates: false 
+        })
         .select();
       
       if (error) throw error;
-      return { data, existingCount: existingUrls.size, newCount: newMigrations.length };
+      return { data, existingCount: 0, newCount: migrationsWithUser.length };
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ['url-migrations'] });
-      toast.success(`${result.newCount} new URL migrations created. ${result.existingCount} already existed.`);
+      toast.success(`${result.newCount} URL migrations processed with enhanced preservation logic.`);
     },
     onError: (error: any) => {
       console.error('Error creating URL migrations:', error);
-      if (error.message.includes('All URLs already exist')) {
-        toast.error('All URLs already exist in the database');
-      } else {
-        toast.error('Failed to create URL migrations');
-      }
+      toast.error('Failed to create URL migrations');
+    }
+  });
+};
+
+// Clear all existing migrations for reprocessing
+export const useClearAllUrlMigrations = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from('url_migrations')
+        .update({ status: 'disabled' })
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Update all
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['url-migrations'] });
+      toast.success('All URL migrations disabled for reprocessing');
+    },
+    onError: (error) => {
+      console.error('Error clearing URL migrations:', error);
+      toast.error('Failed to clear URL migrations');
     }
   });
 };
