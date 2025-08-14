@@ -26,7 +26,10 @@ import {
   X,
   ChevronUp,
   ChevronDown,
-  Filter
+  Filter,
+  Settings,
+  Eye,
+  TrendingUp
 } from 'lucide-react';
 import { 
   useUrlMigrations, 
@@ -34,11 +37,14 @@ import {
   useUpdateUrlMigration, 
   useDeleteUrlMigration,
   useBulkCreateUrlMigrations,
+  useUrlMigrationQualityMetrics,
   type UrlMigration 
 } from '@/hooks/useUrlMigrations';
 import { useUrlMigrationStats } from '@/hooks/useUrlMigrationStats';
 import { type OldUrlPattern } from '@/utils/sitemapProcessor';
 import { supabase } from '@/integrations/supabase/client';
+import { UrlMigrationBulkManager } from './UrlMigrationBulkManager';
+import { UrlMigrationReviewInterface } from './UrlMigrationReviewInterface';
 
 export const UrlMigrationManager = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -78,6 +84,7 @@ export const UrlMigrationManager = () => {
   
   const { data: migrations = [], refetch } = useUrlMigrations(migrationFilters);
   const { data: stats, refetch: refetchStats } = useUrlMigrationStats();
+  const { data: qualityMetrics } = useUrlMigrationQualityMetrics();
   const createMigration = useCreateUrlMigration();
   const updateMigration = useUpdateUrlMigration();
   const deleteMigration = useDeleteUrlMigration();
@@ -344,6 +351,18 @@ export const UrlMigrationManager = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="bulk-manager">
+            <Settings className="h-4 w-4 mr-2" />
+            Bulk Manager
+          </TabsTrigger>
+          <TabsTrigger value="review">
+            <Eye className="h-4 w-4 mr-2" />
+            Review
+          </TabsTrigger>
+          <TabsTrigger value="quality">
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Quality
+          </TabsTrigger>
           <TabsTrigger value="sitemap">Sitemap Import</TabsTrigger>
           <TabsTrigger value="manual">Manual Entry</TabsTrigger>
         </TabsList>
@@ -557,6 +576,168 @@ export const UrlMigrationManager = () => {
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="bulk-manager">
+          <UrlMigrationBulkManager onRefresh={() => { refetch(); refetchStats(); }} />
+        </TabsContent>
+
+        <TabsContent value="review">
+          <UrlMigrationReviewInterface onRefresh={() => { refetch(); refetchStats(); }} />
+        </TabsContent>
+
+        <TabsContent value="quality">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Quality Metrics Dashboard
+                </CardTitle>
+                <CardDescription>
+                  Monitor the quality and health of URL migrations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {qualityMetrics ? (
+                  <div className="space-y-6">
+                    {/* Quality Overview */}
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium">Needs Review</p>
+                              <p className="text-2xl font-bold text-warning">{qualityMetrics.needsReview}</p>
+                            </div>
+                            <AlertCircle className="h-8 w-8 text-warning" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium">Undefined URLs</p>
+                              <p className="text-2xl font-bold text-destructive">{qualityMetrics.activeWithUndefined}</p>
+                            </div>
+                            <AlertCircle className="h-8 w-8 text-destructive" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium">Undefined %</p>
+                              <p className="text-2xl font-bold text-destructive">{qualityMetrics.undefinedPercentage}%</p>
+                            </div>
+                            <BarChart3 className="h-8 w-8 text-destructive" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Confidence Distribution */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Confidence Score Distribution</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {Object.entries(qualityMetrics.confidenceRanges).map(([range, count]) => (
+                            <div key={range} className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <Badge variant={
+                                  range.startsWith('90') ? 'default' :
+                                  range.startsWith('80') ? 'outline' :
+                                  range.startsWith('70') ? 'secondary' : 'destructive'
+                                }>
+                                  {range}
+                                </Badge>
+                                <span className="text-sm">{count} migrations</span>
+                              </div>
+                              <div className="w-32">
+                                <Progress 
+                                  value={(count / qualityMetrics.totalMigrations) * 100} 
+                                  className="h-2"
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Action Items */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Recommended Actions</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {qualityMetrics.activeWithUndefined > 0 && (
+                            <div className="flex items-center justify-between p-3 bg-destructive/10 border border-destructive/20 rounded">
+                              <div>
+                                <div className="font-medium text-destructive">Fix Undefined URLs</div>
+                                <div className="text-sm text-muted-foreground">
+                                  {qualityMetrics.activeWithUndefined} active migrations have /undefined/ in their URLs
+                                </div>
+                              </div>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => setActiveTab('bulk-manager')}
+                              >
+                                Fix Now
+                              </Button>
+                            </div>
+                          )}
+                          
+                          {qualityMetrics.lowConfidenceActive > 0 && (
+                            <div className="flex items-center justify-between p-3 bg-warning/10 border border-warning/20 rounded">
+                              <div>
+                                <div className="font-medium text-warning">Review Low Confidence</div>
+                                <div className="text-sm text-muted-foreground">
+                                  {qualityMetrics.lowConfidenceActive} active migrations have low confidence scores
+                                </div>
+                              </div>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => setActiveTab('review')}
+                              >
+                                Review
+                              </Button>
+                            </div>
+                          )}
+                          
+                          {qualityMetrics.needsReview === 0 && (
+                            <div className="flex items-center gap-3 p-3 bg-success/10 border border-success/20 rounded">
+                              <CheckCircle className="h-5 w-5 text-success" />
+                              <div>
+                                <div className="font-medium text-success">All Quality Checks Passed</div>
+                                <div className="text-sm text-muted-foreground">
+                                  No immediate action items detected
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">Loading quality metrics...</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="sitemap">

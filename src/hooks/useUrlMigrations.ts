@@ -227,3 +227,69 @@ export const useBulkCreateUrlMigrations = () => {
     }
   });
 };
+
+// Bulk update URL migrations status
+export const useBulkUpdateUrlMigrations = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ ids, updates }: { ids: string[]; updates: Partial<UrlMigration> }) => {
+      const { data, error } = await supabase
+        .from('url_migrations')
+        .update(updates)
+        .in('id', ids)
+        .select();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['url-migrations'] });
+      toast.success(`Updated ${data.length} URL migrations`);
+    },
+    onError: (error) => {
+      console.error('Error bulk updating URL migrations:', error);
+      toast.error('Failed to update URL migrations');
+    }
+  });
+};
+
+// Get quality metrics for URL migrations
+export const useUrlMigrationQualityMetrics = () => {
+  return useQuery({
+    queryKey: ['url-migration-quality-metrics'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('url_migrations')
+        .select('match_confidence, status, new_url, url_type, created_at');
+      
+      if (error) throw error;
+      
+      // Calculate quality metrics
+      const totalMigrations = data.length;
+      const activeWithUndefined = data.filter(m => m.status === 'active' && m.new_url.includes('/undefined/')).length;
+      const highConfidenceActive = data.filter(m => m.status === 'active' && (m.match_confidence || 0) > 80).length;
+      const lowConfidenceActive = data.filter(m => m.status === 'active' && (m.match_confidence || 0) < 50).length;
+      
+      // Group by confidence ranges
+      const confidenceRanges = {
+        '90-100%': data.filter(m => (m.match_confidence || 0) >= 90).length,
+        '80-89%': data.filter(m => (m.match_confidence || 0) >= 80 && (m.match_confidence || 0) < 90).length,
+        '70-79%': data.filter(m => (m.match_confidence || 0) >= 70 && (m.match_confidence || 0) < 80).length,
+        '50-69%': data.filter(m => (m.match_confidence || 0) >= 50 && (m.match_confidence || 0) < 70).length,
+        'Below 50%': data.filter(m => (m.match_confidence || 0) < 50).length,
+      };
+      
+      return {
+        totalMigrations,
+        activeWithUndefined,
+        highConfidenceActive,
+        lowConfidenceActive,
+        confidenceRanges,
+        undefinedPercentage: Math.round((activeWithUndefined / totalMigrations) * 100),
+        needsReview: lowConfidenceActive + activeWithUndefined
+      };
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
