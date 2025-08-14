@@ -287,9 +287,6 @@ export const AppealsManager = () => {
                           <Calendar className="h-4 w-4" />
                           Reviewed {formatDistanceToNow(new Date(appeal.reviewed_at), { addSuffix: true })}
                         </div>
-                        {appeal.reviewer && typeof appeal.reviewer === 'object' && 'username' in appeal.reviewer && (
-                          <span>by {String(appeal.reviewer.username)}</span>
-                        )}
                       </div>
                     </div>
                   </Card>

@@ -9,10 +9,7 @@ export const useAppeals = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('moderation_appeals')
-        .select(`
-          *,
-          reviewer:profiles!moderation_appeals_reviewed_by_fkey(username)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
