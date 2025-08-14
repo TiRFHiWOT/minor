@@ -33,6 +33,7 @@ import {
   useBulkCreateUrlMigrations,
   type UrlMigration 
 } from '@/hooks/useUrlMigrations';
+import { useUrlMigrationStats } from '@/hooks/useUrlMigrationStats';
 import { type OldUrlPattern } from '@/utils/sitemapProcessor';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -62,6 +63,7 @@ export const UrlMigrationManager = () => {
   });
 
   const { data: migrations = [], refetch } = useUrlMigrations();
+  const { data: stats, refetch: refetchStats } = useUrlMigrationStats();
   const createMigration = useCreateUrlMigration();
   const updateMigration = useUpdateUrlMigration();
   const deleteMigration = useDeleteUrlMigration();
@@ -239,7 +241,8 @@ export const UrlMigrationManager = () => {
     }
   };
 
-  const stats = {
+  // Use stats from dedicated hook, fallback to calculated stats if loading
+  const displayStats = stats || {
     total: migrations.length,
     active: migrations.filter(m => m.status === 'active').length,
     pending: migrations.filter(m => m.status === 'pending').length,
@@ -253,7 +256,7 @@ export const UrlMigrationManager = () => {
           <h2 className="text-2xl font-bold tracking-tight">URL Migration Manager</h2>
           <p className="text-muted-foreground">Manage redirects for old forum URLs</p>
         </div>
-        <Button onClick={() => refetch()}>
+        <Button onClick={() => { refetch(); refetchStats(); }}>
           <RefreshCw className="h-4 w-4 mr-2" />
           Refresh
         </Button>
@@ -267,7 +270,7 @@ export const UrlMigrationManager = () => {
             <ExternalLink className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
+            <div className="text-2xl font-bold">{displayStats.total}</div>
           </CardContent>
         </Card>
         <Card>
@@ -276,7 +279,7 @@ export const UrlMigrationManager = () => {
             <CheckCircle className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.active}</div>
+            <div className="text-2xl font-bold">{displayStats.active}</div>
           </CardContent>
         </Card>
         <Card>
@@ -285,7 +288,7 @@ export const UrlMigrationManager = () => {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.pending}</div>
+            <div className="text-2xl font-bold">{displayStats.pending}</div>
           </CardContent>
         </Card>
         <Card>
@@ -294,7 +297,7 @@ export const UrlMigrationManager = () => {
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalRedirects}</div>
+            <div className="text-2xl font-bold">{displayStats.totalRedirects}</div>
           </CardContent>
         </Card>
       </div>
