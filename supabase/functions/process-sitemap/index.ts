@@ -421,12 +421,14 @@ const generateMigrationForPattern = async (
       newTopicId = matchedTopic.id;
       const category = matchedTopic.categories;
       
-      if (category.parent_category_id && category.parent_category) {
+      if (category.parent_category_id && category.parent_category?.slug) {
         // Level 3 category: /parent-slug/category-slug/topic-slug
         newUrl = `/${category.parent_category.slug}/${category.slug}/${matchedTopic.slug}`;
+        console.log(`Generated level 3 URL: ${newUrl} for topic: ${matchedTopic.title}`);
       } else {
         // Level 2 category: /category-slug/topic-slug
         newUrl = `/${category.slug}/${matchedTopic.slug}`;
+        console.log(`Generated level 2 URL: ${newUrl} for topic: ${matchedTopic.title}`);
       }
     } else {
       // Generate new URL based on title and best-guess category
@@ -439,10 +441,12 @@ const generateMigrationForPattern = async (
         const appropriateCategory = findAppropriateCategory(pattern.title, categories);
         
         if (appropriateCategory) {
-          if (appropriateCategory.parent_category_id && appropriateCategory.parent_category) {
+          if (appropriateCategory.parent_category_id && appropriateCategory.parent_category?.slug) {
             newUrl = `/${appropriateCategory.parent_category.slug}/${appropriateCategory.slug}/${slug}`;
+            console.log(`Generated level 3 URL from category mapping: ${newUrl} for title: ${pattern.title}`);
           } else {
             newUrl = `/${appropriateCategory.slug}/${slug}`;
+            console.log(`Generated level 2 URL from category mapping: ${newUrl} for title: ${pattern.title}`);
           }
         } else {
           // Fallback to general discussion
