@@ -118,20 +118,37 @@ export const UrlMigrationManager = () => {
       return;
     }
 
-    const migrations = sitemapData
-      .filter(pattern => pattern.type === 'topic' && pattern.topicId)
-      .map(pattern => ({
-        old_url: pattern.path,
-        new_url: `/topic/legacy-${pattern.topicId}`, // Temporary URL pattern
-        url_type: 'topic' as const,
-        old_topic_id: pattern.topicId,
-        priority: 1,
-        status: 'pending' as const,
-        notes: `Auto-generated from sitemap. Original title: ${pattern.title || 'Unknown'}`
-      }));
+    try {
+      toast.info('Generating enhanced migrations with database lookups...');
+      
+      const { data, error } = await supabase.functions.invoke('process-sitemap', {
+        body: { 
+          sitemapUrl, 
+          generateMigrations: true,
+          batchSize: 500 
+        }
+      });
 
-    await bulkCreateMigrations.mutateAsync(migrations);
-    setSitemapData([]);
+      if (error) {
+        throw new Error(error.message || 'Failed to generate migrations');
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Unknown error generating migrations');
+      }
+
+      if (data.migrations && data.migrations.length > 0) {
+        await bulkCreateMigrations.mutateAsync(data.migrations);
+        toast.success(`Created ${data.migrations.length} enhanced migrations with SEO-friendly URLs`);
+      } else {
+        toast.warning('No migrations were generated from the sitemap data');
+      }
+      
+      setSitemapData([]);
+    } catch (error) {
+      console.error('Error creating enhanced migrations:', error);
+      toast.error(`Failed to create migrations: ${error.message}`);
+    }
   };
 
   const getStatusIcon = (status: string) => {
@@ -320,7 +337,7 @@ export const UrlMigrationManager = () => {
                     </p>
                     <Button onClick={handleBulkCreateFromSitemap}>
                       <Upload className="h-4 w-4 mr-2" />
-                      Create Migrations
+                      Create Enhanced Migrations
                     </Button>
                   </div>
 

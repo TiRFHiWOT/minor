@@ -21,6 +21,8 @@ export interface UrlMigration {
   updated_at: string;
   created_by?: string;
   notes?: string;
+  match_confidence?: number;
+  match_type?: 'exact' | 'title_similarity' | 'legacy_id' | 'generated';
 }
 
 // Fetch URL migrations
