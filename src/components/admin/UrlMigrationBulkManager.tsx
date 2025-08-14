@@ -182,7 +182,7 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
 
   const handleReprocessAllUrls = async () => {
     const confirmed = window.confirm(
-      'This will disable all existing migrations and reprocess the sitemap with improved logic. All new migrations will be set to "pending" for your manual review. Continue?'
+      'This will reprocess the sitemap with improved logic. Existing migrations will be overwritten with new ones set to "pending" for your review. Continue?'
     );
     
     if (!confirmed) return;
@@ -191,16 +191,11 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
     setProgress(0);
     
     try {
-      // Step 1: Disable all existing migrations
-      toast.info('Step 1: Disabling existing migrations...');
-      await bulkUpdate.mutateAsync({
-        ids: migrations.map(m => m.id),
-        updates: { status: 'disabled' }
-      });
-      setProgress(25);
+      // Skip the bulk disable step that was causing timeouts
+      // The edge function will use upsert to overwrite existing migrations
+      toast.info('Reprocessing sitemap with enhanced URL preservation...');
+      setProgress(10);
       
-      // Step 2: Reprocess sitemap with new logic
-      toast.info('Step 2: Reprocessing sitemap with enhanced URL preservation...');
       const { data, error } = await supabase.functions.invoke('process-sitemap', {
         body: { 
           sitemapUrl: 'https://gthl.ca/sitemap.xml',
