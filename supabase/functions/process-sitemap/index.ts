@@ -356,8 +356,10 @@ const generateMigrationForPattern = async (
           newUrl = `/general-youth-hockey-discussion/${slug}`;
         }
       } else {
-        // Last resort: use a generic URL with topic ID
-        newUrl = `/topics/legacy-topic-${pattern.topicId}`;
+        // Last resort: create a proper slug from the URL or ID
+        const cleanTitle = pattern.title || `Topic ${pattern.topicId}`;
+        const slug = generateSlug(cleanTitle);
+        newUrl = `/general-youth-hockey-discussion/${slug}`;
         confidence = 0.1;
       }
     }

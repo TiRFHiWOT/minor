@@ -243,13 +243,48 @@ export const UrlMigrationManager = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const pendingIds = migrations.filter(m => m.status === 'pending').map(m => m.id);
+                        if (pendingIds.length === 0) {
+                          toast.info('No pending migrations to approve');
+                          return;
+                        }
+                        pendingIds.forEach(id => {
+                          updateMigration.mutate({ id, updates: { status: 'active' } });
+                        });
+                        toast.success(`Approved ${pendingIds.length} migrations`);
+                      }}
+                    >
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Approve All Pending
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => {
+                        if (confirm('Delete all migrations? This cannot be undone.')) {
+                          migrations.forEach(m => deleteMigration.mutate(m.id));
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Clear All
+                    </Button>
+                  </div>
+                </div>
+                <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Old URL</TableHead>
                     <TableHead>New URL</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Match</TableHead>
                     <TableHead>Redirects</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
@@ -274,9 +309,47 @@ export const UrlMigrationManager = () => {
                           </Badge>
                         </div>
                       </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-1">
+                          {migration.match_type && (
+                            <Badge variant="secondary" className="text-xs">
+                              {migration.match_type}
+                            </Badge>
+                          )}
+                          {migration.match_confidence !== null && (
+                            <span className="text-xs text-muted-foreground">
+                              {Math.round(migration.match_confidence * 100)}%
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell>{migration.redirect_count}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
+                          {migration.status === 'pending' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => updateMigration.mutate({ 
+                                id: migration.id, 
+                                updates: { status: 'active' } 
+                              })}
+                            >
+                              <CheckCircle className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {migration.status === 'active' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => updateMigration.mutate({ 
+                                id: migration.id, 
+                                updates: { status: 'disabled' } 
+                              })}
+                            >
+                              <AlertCircle className="h-4 w-4" />
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="sm"

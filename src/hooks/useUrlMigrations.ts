@@ -178,7 +178,7 @@ export const useIncrementRedirectCount = () => {
   });
 };
 
-// Bulk create URL migrations
+// Bulk create URL migrations with duplicate handling
 export const useBulkCreateUrlMigrations = () => {
   const queryClient = useQueryClient();
   
@@ -186,7 +186,21 @@ export const useBulkCreateUrlMigrations = () => {
     mutationFn: async (migrations: Array<Omit<UrlMigration, 'id' | 'created_at' | 'updated_at' | 'redirect_count' | 'created_by'>>) => {
       const userId = (await supabase.auth.getUser()).data.user?.id;
       
-      const migrationsWithUser = migrations.map(migration => ({
+      // Check for existing URLs to avoid duplicates
+      const oldUrls = migrations.map(m => m.old_url);
+      const { data: existing } = await supabase
+        .from('url_migrations')
+        .select('old_url')
+        .in('old_url', oldUrls);
+      
+      const existingUrls = new Set(existing?.map(e => e.old_url) || []);
+      const newMigrations = migrations.filter(m => !existingUrls.has(m.old_url));
+      
+      if (newMigrations.length === 0) {
+        throw new Error('All URLs already exist in the database');
+      }
+      
+      const migrationsWithUser = newMigrations.map(migration => ({
         ...migration,
         created_by: userId
       }));
@@ -197,15 +211,19 @@ export const useBulkCreateUrlMigrations = () => {
         .select();
       
       if (error) throw error;
-      return data;
+      return { data, existingCount: existingUrls.size, newCount: newMigrations.length };
     },
-    onSuccess: (data) => {
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ['url-migrations'] });
-      toast.success(`${data.length} URL migrations created successfully`);
+      toast.success(`${result.newCount} new URL migrations created. ${result.existingCount} already existed.`);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Error creating URL migrations:', error);
-      toast.error('Failed to create URL migrations');
+      if (error.message.includes('All URLs already exist')) {
+        toast.error('All URLs already exist in the database');
+      } else {
+        toast.error('Failed to create URL migrations');
+      }
     }
   });
 };
