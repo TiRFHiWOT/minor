@@ -7,6 +7,17 @@ import { shouldWhitelistFromVPN, getBotInfo } from '@/utils/botDetection';
 const vpnCache = new Map<string, { isVPN: boolean; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+// Clear corrupted cache on errors
+const clearVPNCache = () => {
+  try {
+    vpnCache.clear();
+    localStorage.removeItem('vpn_detection_cache');
+    console.log('🧹 VPN cache cleared due to error recovery');
+  } catch (error) {
+    console.warn('Failed to clear VPN cache:', error);
+  }
+};
+
 export const useVPNDetection = () => {
   console.log('🔧 useVPNDetection hook initialized');
   const [isVPN, setIsVPN] = useState<boolean | null>(null);
@@ -138,9 +149,13 @@ export const useVPNDetection = () => {
       }
       
       console.error('🛡️ VPN detection error:', err);
+      
+      // Clear corrupted cache on persistent errors
+      clearVPNCache();
+      
       setError(err instanceof Error ? err.message : 'VPN detection failed');
       // CRITICAL: On error, default to allowing access (fail-safe approach)
-      console.log('🛡️ Error occurred - defaulting to allow access (revenue protection)');
+      console.log('🛡️ Error occurred - defaulting to allow access and clearing cache');
       setIsVPN(false);
     } finally {
       setIsLoading(false);
