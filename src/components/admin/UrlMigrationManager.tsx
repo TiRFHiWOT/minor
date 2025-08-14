@@ -23,7 +23,10 @@ import {
   CheckCircle,
   AlertCircle,
   Clock,
-  X
+  X,
+  ChevronUp,
+  ChevronDown,
+  Filter
 } from 'lucide-react';
 import { 
   useUrlMigrations, 
@@ -44,6 +47,11 @@ export const UrlMigrationManager = () => {
   const [sitemapData, setSitemapData] = useState<OldUrlPattern[]>([]);
   const [editingMigration, setEditingMigration] = useState<UrlMigration | null>(null);
   
+  // Filtering and sorting state
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('created_at');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  
   // Batch processing state
   const [batchProgress, setBatchProgress] = useState({
     isProcessing: false,
@@ -62,12 +70,43 @@ export const UrlMigrationManager = () => {
     notes: ''
   });
 
-  const { data: migrations = [], refetch } = useUrlMigrations();
+  // Apply filters to the query
+  const migrationFilters = {
+    status: statusFilter === 'all' ? undefined : statusFilter,
+    limit: 1000 // Increase limit for better table functionality
+  };
+  
+  const { data: migrations = [], refetch } = useUrlMigrations(migrationFilters);
   const { data: stats, refetch: refetchStats } = useUrlMigrationStats();
   const createMigration = useCreateUrlMigration();
   const updateMigration = useUpdateUrlMigration();
   const deleteMigration = useDeleteUrlMigration();
   const bulkCreateMigrations = useBulkCreateUrlMigrations();
+
+  // Sort migrations in memory
+  const sortedMigrations = [...migrations].sort((a, b) => {
+    let aValue: any = a[sortBy as keyof UrlMigration];
+    let bValue: any = b[sortBy as keyof UrlMigration];
+    
+    // Handle different data types
+    if (typeof aValue === 'string') {
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+    }
+    
+    if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const handleSort = (column: string) => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(column);
+      setSortOrder('asc');
+    }
+  };
 
   const handleProcessSitemap = async () => {
     if (!sitemapUrl.trim()) {
@@ -352,20 +391,91 @@ export const UrlMigrationManager = () => {
                     </Button>
                   </div>
                 </div>
+                
+                {/* Filters and Controls */}
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Showing {sortedMigrations.length} migrations
+                  </div>
+                </div>
+                
                 <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Old URL</TableHead>
-                    <TableHead>New URL</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('old_url')}
+                    >
+                      <div className="flex items-center gap-2">
+                        Old URL
+                        {sortBy === 'old_url' && (
+                          sortOrder === 'asc' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                        )}
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('new_url')}
+                    >
+                      <div className="flex items-center gap-2">
+                        New URL
+                        {sortBy === 'new_url' && (
+                          sortOrder === 'asc' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                        )}
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('url_type')}
+                    >
+                      <div className="flex items-center gap-2">
+                        Type
+                        {sortBy === 'url_type' && (
+                          sortOrder === 'asc' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                        )}
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('status')}
+                    >
+                      <div className="flex items-center gap-2">
+                        Status
+                        {sortBy === 'status' && (
+                          sortOrder === 'asc' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                        )}
+                      </div>
+                    </TableHead>
                     <TableHead>Match</TableHead>
-                    <TableHead>Redirects</TableHead>
+                    <TableHead 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('redirect_count')}
+                    >
+                      <div className="flex items-center gap-2">
+                        Redirects
+                        {sortBy === 'redirect_count' && (
+                          sortOrder === 'asc' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                        )}
+                      </div>
+                    </TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {migrations.map((migration) => (
+                  {sortedMigrations.map((migration) => (
                     <TableRow key={migration.id}>
                       <TableCell className="font-mono text-sm">
                         {migration.old_url}
