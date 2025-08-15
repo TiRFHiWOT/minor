@@ -35,6 +35,12 @@ export const useUrlMigrations = (filters?: {
   return useQuery({
     queryKey: ['url-migrations', filters],
     queryFn: async () => {
+      console.log('🔍 Fetching URL migrations with filters:', filters);
+      
+      // Check authentication status
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      console.log('👤 Current user:', user?.id, 'Auth error:', authError);
+      
       let query = supabase
         .from('url_migrations')
         .select('*')
@@ -58,7 +64,17 @@ export const useUrlMigrations = (filters?: {
 
       const { data, error } = await query;
       
-      if (error) throw error;
+      console.log('📊 URL migrations query result:', {
+        dataCount: data?.length || 0,
+        error,
+        filters,
+        sampleData: data?.slice(0, 3)
+      });
+      
+      if (error) {
+        console.error('❌ URL migrations query error:', error);
+        throw error;
+      }
       return data as UrlMigration[];
     }
   });

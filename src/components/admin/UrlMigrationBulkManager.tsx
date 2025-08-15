@@ -21,6 +21,7 @@ import {
   useBulkUpdateUrlMigrations,
   type UrlMigration 
 } from '@/hooks/useUrlMigrations';
+import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
 interface BulkManagerProps {
@@ -28,6 +29,7 @@ interface BulkManagerProps {
 }
 
 export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
+  const { user, isAdmin } = useAuth();
   const [selectedMigrations, setSelectedMigrations] = useState<Set<string>>(new Set());
   const [bulkAction, setBulkAction] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -38,7 +40,21 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
     confidenceRange: 'all'
   });
 
-  const { data: migrations = [] } = useUrlMigrations({ limit: 5000 });
+  const { data: migrations = [], error: migrationsError } = useUrlMigrations({ limit: 10000 });
+  
+  // Debug logging
+  console.log('🔧 Bulk Manager - Auth & Data Status:', {
+    user: user?.id,
+    isAdmin,
+    migrationsCount: migrations.length,
+    error: migrationsError,
+    sampleMigrations: migrations.slice(0, 3)
+  });
+  
+  // Show auth debug info in UI during development
+  if (!isAdmin) {
+    console.warn('⚠️ User is not admin - this may cause RLS issues');
+  }
   const bulkUpdate = useBulkUpdateUrlMigrations();
 
   // Filter migrations based on current filters
@@ -241,6 +257,28 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
 
   const undefinedCount = filteredMigrations.filter(m => m.new_url.includes('/undefined/')).length;
   const lowConfidenceCount = filteredMigrations.filter(m => (m.match_confidence || 0) < 0.50).length;
+
+  // Add admin verification warning
+  if (!isAdmin) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-center space-y-4">
+            <AlertTriangle className="h-12 w-12 text-destructive mx-auto" />
+            <div>
+              <h3 className="text-lg font-semibold">Admin Access Required</h3>
+              <p className="text-muted-foreground">
+                You need admin privileges to access URL migration management.
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Current user: {user?.id || 'Not authenticated'} | Admin status: {isAdmin ? 'Yes' : 'No'}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
