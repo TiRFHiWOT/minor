@@ -1,33 +1,35 @@
 import { htmlToText } from '@/utils/htmlToText';
 
-export const FORUM_NAME = 'Minor Hockey Forum';
+export const FORUM_NAME = 'Minor Hockey Forum'; // Legacy constant for backwards compatibility
 
 export interface AutoSeoOptions {
   topicTitle?: string;
   categoryName?: string;
   topicContent?: string;
   useAutoGeneration?: boolean;
+  forumName?: string;
+  separator?: string;
 }
 
 export const generateTopicTitle = (options: AutoSeoOptions): string => {
-  const { topicTitle, categoryName } = options;
+  const { topicTitle, categoryName, forumName = FORUM_NAME, separator = ' | ' } = options;
   
-  if (!topicTitle) return FORUM_NAME;
+  if (!topicTitle) return forumName;
   
   if (categoryName) {
-    return `${topicTitle} | ${FORUM_NAME} | ${categoryName}`;
+    return `${topicTitle}${separator}${forumName}${separator}${categoryName}`;
   }
   
-  return `${topicTitle} | ${FORUM_NAME}`;
+  return `${topicTitle}${separator}${forumName}`;
 };
 
-export const generateCategoryTitle = (categoryName: string): string => {
-  if (!categoryName) return FORUM_NAME;
-  return `${categoryName} | ${FORUM_NAME}`;
+export const generateCategoryTitle = (categoryName: string, forumName: string = FORUM_NAME, separator: string = ' | '): string => {
+  if (!categoryName) return forumName;
+  return `${categoryName}${separator}${forumName}`;
 };
 
 export const generateTopicDescription = (options: AutoSeoOptions): string => {
-  const { topicTitle, categoryName, topicContent } = options;
+  const { topicTitle, categoryName, topicContent, forumName = FORUM_NAME } = options;
   
   // If we have content, extract the first 150 characters
   if (topicContent) {
@@ -40,19 +42,19 @@ export const generateTopicDescription = (options: AutoSeoOptions): string => {
   
   // Fallback description
   if (topicTitle && categoryName) {
-    return `Join the discussion about ${topicTitle} in ${categoryName} on ${FORUM_NAME}.`;
+    return `Join the discussion about ${topicTitle} in ${categoryName} on ${forumName}.`;
   }
   
   if (topicTitle) {
-    return `Discuss ${topicTitle} with the ${FORUM_NAME} community.`;
+    return `Discuss ${topicTitle} with the ${forumName} community.`;
   }
   
-  return `Join the discussion on ${FORUM_NAME}.`;
+  return `Join the discussion on ${forumName}.`;
 };
 
-export const generateCategoryDescription = (categoryName: string): string => {
-  if (!categoryName) return `Explore discussions on ${FORUM_NAME}.`;
-  return `Explore ${categoryName} topics and join the discussion on ${FORUM_NAME}.`;
+export const generateCategoryDescription = (categoryName: string, forumName: string = FORUM_NAME): string => {
+  if (!categoryName) return `Explore discussions on ${forumName}.`;
+  return `Explore ${categoryName} topics and join the discussion on ${forumName}.`;
 };
 
 export const shouldUseAutoGeneration = (

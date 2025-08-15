@@ -18,15 +18,15 @@ export const SeoGlobalSettings: React.FC = () => {
   const [globalSettings, setGlobalSettings] = useState(() => ({
     auto_generation_enabled: true,
     forum_name_override: '',
-    default_separator: '|'
+    title_separator: ' | '
   }));
 
   React.useEffect(() => {
     if (!isLoading && settings) {
       setGlobalSettings({
-        auto_generation_enabled: getSetting('seo_auto_generation', true),
-        forum_name_override: getSetting('seo_forum_name_override', ''),
-        default_separator: getSetting('seo_default_separator', '|')
+        auto_generation_enabled: getSetting('seo_auto_generate_topic_titles', true),
+        forum_name_override: getSetting('forum_name_override', ''),
+        title_separator: getSetting('seo_title_separator', ' | ')
       });
     }
   }, [isLoading, settings]);
@@ -40,19 +40,19 @@ export const SeoGlobalSettings: React.FC = () => {
     try {
       const settingsToUpdate = [
         { 
-          key: 'seo_auto_generation', 
+          key: 'seo_auto_generate_topic_titles', 
           value: globalSettings.auto_generation_enabled, 
           description: 'Enable automatic SEO metadata generation' 
         },
         { 
-          key: 'seo_forum_name_override', 
+          key: 'forum_name_override', 
           value: globalSettings.forum_name_override, 
           description: 'Custom forum name for SEO (overrides default)' 
         },
         { 
-          key: 'seo_default_separator', 
-          value: globalSettings.default_separator, 
-          description: 'Default separator for SEO titles' 
+          key: 'seo_title_separator', 
+          value: globalSettings.title_separator, 
+          description: 'Separator used in SEO titles' 
         }
       ];
 
@@ -86,8 +86,8 @@ export const SeoGlobalSettings: React.FC = () => {
 
   const getPreviewTitle = () => {
     const forumName = getEffectiveForumName();
-    const sep = globalSettings.default_separator;
-    return `Sample Topic ${sep} ${forumName} ${sep} Sample Category`;
+    const sep = globalSettings.title_separator;
+    return `Sample Topic${sep}${forumName}${sep}Sample Category`;
   };
 
   return (
@@ -149,10 +149,10 @@ export const SeoGlobalSettings: React.FC = () => {
             <Label htmlFor="separator">Title Separator</Label>
             <Input
               id="separator"
-              placeholder="|"
-              value={globalSettings.default_separator}
-              onChange={(e) => handleChange('default_separator', e.target.value)}
-              className="max-w-20"
+              placeholder=" | "
+              value={globalSettings.title_separator}
+              onChange={(e) => handleChange('title_separator', e.target.value)}
+              className="max-w-32"
             />
             <p className="text-xs text-muted-foreground">
               Character used to separate title components
@@ -173,7 +173,7 @@ export const SeoGlobalSettings: React.FC = () => {
             </p>
             <Badge variant="outline" className="mb-2">Category Title Format</Badge>
             <p className="text-sm font-mono p-2 bg-background rounded border">
-              Sample Category {globalSettings.default_separator} {getEffectiveForumName()}
+              Sample Category{globalSettings.title_separator}{getEffectiveForumName()}
             </p>
           </div>
         </div>

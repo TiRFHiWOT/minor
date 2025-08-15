@@ -51,8 +51,10 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
   const { user } = useAuth();
   const [customMetadata, setCustomMetadata] = React.useState<PageMetadata>({});
   
-  // Get base title consistently
-  const baseTitle = getSetting('forum_name_override', getSetting('forum_name', 'Minor Hockey Forum'));
+  // Get forum settings for SEO
+  const forumName = getSetting('forum_name_override', 'Minor Hockey Talks');
+  const titleSeparator = getSetting('seo_title_separator', ' | ');
+  const autoGenerationEnabled = getSetting('seo_auto_generate_topic_titles', true);
 
   // Get category metadata if on category page
   const { data: categoryMetadata } = useQuery({
@@ -177,13 +179,11 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
 
   // Determine page metadata based on current route
   const getPageMetadata = (): PageMetadata => {
-    const baseSeparator = ' - ';
-    const autoGenerationEnabled = getSetting('seo_auto_generate_topic_titles', true);
 
     // Custom metadata takes highest priority
     if (Object.keys(customMetadata).length > 0) {
       return {
-        title: customMetadata.title ? `${customMetadata.title}${baseSeparator}${baseTitle}` : undefined,
+        title: customMetadata.title ? `${customMetadata.title}${titleSeparator}${forumName}` : undefined,
         ...customMetadata
       };
     }
@@ -193,15 +193,18 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       const catName = (topicMetadata as any).category_name || formatSlug(params.subcategorySlug || params.categorySlug || '');
       
       // Use database meta_title if it exists, otherwise auto-generate
-      const title = topicMetadata.meta_title || generateTopicTitle({
+      const title = topicMetadata.meta_title || (autoGenerationEnabled ? generateTopicTitle({
         topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
-        categoryName: catName
-      });
+        categoryName: catName,
+        forumName,
+        separator: titleSeparator
+      }) : `${topicMetadata.title || formatSlug(params.topicSlug!)}${titleSeparator}${forumName}`);
       
       const description = topicMetadata.meta_description || generateTopicDescription({
         topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
         categoryName: catName,
-        topicContent: topicMetadata.content
+        topicContent: topicMetadata.content,
+        forumName
       });
       
       return {
@@ -221,7 +224,9 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       const t = formatSlug(params.topicSlug);
       const fallbackTitle = generateTopicTitle({
         topicTitle: t,
-        categoryName: cat
+        categoryName: cat,
+        forumName,
+        separator: titleSeparator
       });
       
       // Set fallback title immediately for analytics
@@ -233,7 +238,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         title: fallbackTitle,
         description: generateTopicDescription({
           topicTitle: t,
-          categoryName: cat
+          categoryName: cat,
+          forumName
         })
       };
     }
@@ -243,8 +249,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       const categoryName = categoryMetadata.name || formatSlug(params.categorySlug);
       
       // Use database meta_title if it exists, otherwise auto-generate
-      const title = categoryMetadata.meta_title || generateCategoryTitle(categoryName);
-      const description = categoryMetadata.meta_description || generateCategoryDescription(categoryName);
+      const title = categoryMetadata.meta_title || generateCategoryTitle(categoryName, forumName, titleSeparator);
+      const description = categoryMetadata.meta_description || generateCategoryDescription(categoryName, forumName);
       
       return {
         title,
@@ -261,8 +267,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     if (params.categorySlug && !params.topicSlug) {
       const c = formatSlug(params.categorySlug);
       return {
-        title: generateCategoryTitle(c),
-        description: generateCategoryDescription(c)
+        title: generateCategoryTitle(c, forumName, titleSeparator),
+        description: generateCategoryDescription(c, forumName)
       };
     }
 
@@ -273,7 +279,7 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     // Home page
     if (path === '/') {
       return {
-        title: getSetting('seo_home_title', baseTitle),
+        title: getSetting('seo_home_title', forumName),
         description: getSetting('seo_home_description', 'Join the leading online community for minor hockey players, parents, and coaches.'),
         keywords: getSetting('seo_home_keywords', 'minor hockey, youth hockey, hockey community'),
         canonical: getSetting('seo_home_canonical_url', ''),
@@ -286,13 +292,13 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     // Search page
     if (path === '/search') {
       const title = searchQuery 
-        ? `Search results for "${searchQuery}"${baseSeparator}${baseTitle}`
-        : `Search${baseSeparator}${baseTitle}`;
+        ? `Search results for "${searchQuery}"${titleSeparator}${forumName}`
+        : `Search${titleSeparator}${forumName}`;
       return {
         title,
         description: searchQuery 
-          ? `Search results for "${searchQuery}" on ${baseTitle}`
-          : `Search topics and discussions on ${baseTitle}`
+          ? `Search results for "${searchQuery}" on ${forumName}`
+          : `Search topics and discussions on ${forumName}`
       };
     }
 
@@ -300,8 +306,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     if (path === '/profile') {
       const username = profileData?.username || 'User';
       return {
-        title: `${username}'s Profile${baseSeparator}${baseTitle}`,
-        description: `View ${username}'s profile, posts, and activity on ${baseTitle}`
+        title: `${username}'s Profile${titleSeparator}${forumName}`,
+        description: `View ${username}'s profile, posts, and activity on ${forumName}`
       };
     }
 
@@ -319,48 +325,48 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       
       const sectionTitle = adminSection ? sectionTitles[adminSection] || 'Dashboard' : 'Dashboard';
       return {
-        title: `Admin ${sectionTitle}${baseSeparator}${baseTitle}`,
-        description: `Admin panel - ${sectionTitle} for ${baseTitle}`
+        title: `Admin ${sectionTitle}${titleSeparator}${forumName}`,
+        description: `Admin panel - ${sectionTitle} for ${forumName}`
       };
     }
 
     // Static pages with comprehensive coverage
     const routeTitles: Record<string, { title: string; description: string }> = {
       '/topics': {
-        title: `All Topics${baseSeparator}${baseTitle}`,
-        description: `Browse all topics and discussions on ${baseTitle}`
+        title: `All Topics${titleSeparator}${forumName}`,
+        description: `Browse all topics and discussions on ${forumName}`
       },
       '/categories': {
-        title: `Categories${baseSeparator}${baseTitle}`,
-        description: `Browse all discussion categories on ${baseTitle}`
+        title: `Categories${titleSeparator}${forumName}`,
+        description: `Browse all discussion categories on ${forumName}`
       },
       '/settings': {
-        title: `Account Settings${baseSeparator}${baseTitle}`,
-        description: `Manage your account settings and preferences on ${baseTitle}`
+        title: `Account Settings${titleSeparator}${forumName}`,
+        description: `Manage your account settings and preferences on ${forumName}`
       },
       '/login': {
-        title: `Login${baseSeparator}${baseTitle}`,
-        description: `Sign in to your ${baseTitle} account`
+        title: `Login${titleSeparator}${forumName}`,
+        description: `Sign in to your ${forumName} account`
       },
       '/register': {
-        title: `Register${baseSeparator}${baseTitle}`,
-        description: `Create a new account on ${baseTitle}`
+        title: `Register${titleSeparator}${forumName}`,
+        description: `Create a new account on ${forumName}`
       },
       '/create': {
-        title: `Create Topic${baseSeparator}${baseTitle}`,
-        description: `Start a new discussion on ${baseTitle}`
+        title: `Create Topic${titleSeparator}${forumName}`,
+        description: `Start a new discussion on ${forumName}`
       },
       '/terms': {
-        title: `Terms of Service${baseSeparator}${baseTitle}`,
-        description: `Terms of service and user agreement for ${baseTitle}`
+        title: `Terms of Service${titleSeparator}${forumName}`,
+        description: `Terms of service and user agreement for ${forumName}`
       },
       '/privacy': {
-        title: `Privacy Policy${baseSeparator}${baseTitle}`,
-        description: `Privacy policy and data protection information for ${baseTitle}`
+        title: `Privacy Policy${titleSeparator}${forumName}`,
+        description: `Privacy policy and data protection information for ${forumName}`
       },
       '/blog': {
-        title: `Blog${baseSeparator}${baseTitle}`,
-        description: `Latest news and updates from ${baseTitle}`
+        title: `Blog${titleSeparator}${forumName}`,
+        description: `Latest news and updates from ${forumName}`
       }
     };
 
@@ -371,7 +377,7 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
 
     // Default fallback
     return {
-      title: baseTitle,
+      title: forumName,
       description: "Join the leading online community for minor hockey players, parents, and coaches."
     };
   };
@@ -395,14 +401,14 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         <link 
           rel="alternate" 
           type="application/rss+xml" 
-          title={`${baseTitle} RSS Feed`}
+          title={`${forumName} RSS Feed`}
           href="/rss" 
         />
         {params.categorySlug && (
           <link 
             rel="alternate" 
             type="application/rss+xml" 
-            title={`${baseTitle} - ${params.categorySlug} RSS Feed`}
+            title={`${forumName} - ${params.categorySlug} RSS Feed`}
             href={`/rss?category=${params.categorySlug}`}
           />
         )}
