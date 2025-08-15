@@ -15,7 +15,6 @@ export const ForumLayout = () => {
 
   const content = (
     <div className="min-h-screen bg-background overflow-x-hidden pb-16">
-      <RedirectHandler />
       <ForumHeader />
 
       <div className="w-full max-w-7xl mx-auto px-2 sm:px-3 py-1 sm:py-2 overflow-x-hidden">

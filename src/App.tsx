@@ -125,9 +125,9 @@ const App = () => (
                    {/* RSS Feed Route */}
                   <Route path="/rss" element={<RSSRedirect />} />
                   
-                  {/* Forum routes - wrapped in ForumLayout */}
-                  <Route path="/" element={<ForumLayout />}>
-                    <Route index element={<ForumHome />} />
+                   {/* Forum routes - wrapped in ForumLayout */}
+                   <Route path="/" element={<ForumLayout />}>
+                     <Route index element={<ForumHome />} />
                     {/* New hierarchical URL structure */}
                     <Route path=":categorySlug/:topicSlug" element={<TopicView />} />
                     <Route path=":categorySlug/:subcategorySlug/:topicSlug" element={<TopicView />} />
@@ -148,14 +148,20 @@ const App = () => (
                      <Route path="rules" element={<ForumRules />} />
                      <Route path="blog" element={<Blog />} />
                      <Route path="blog/:slug" element={<BlogPost />} />
-                     {/* Catch-all routes MUST be last */}
-                     <Route path=":categorySlug" element={<CategoryView />} />
-                     <Route path=":categorySlug/:subcategorySlug" element={<CategoryView />} />
-                  </Route>
-                  
-                  
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                        <Route path="*" element={<NotFound />} />
+                      {/* Catch-all routes MUST be last */}
+                      <Route path=":categorySlug" element={<CategoryView />} />
+                      <Route path=":categorySlug/:subcategorySlug" element={<CategoryView />} />
+                   </Route>
+                   
+                   
+                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                   {/* RedirectHandler for old URLs - must be before NotFound */}
+                   <Route path="*" element={
+                     <>
+                       <RedirectHandler />
+                       <NotFound />
+                     </>
+                   } />
                       </Routes>
                     </VPNGuard>
                   } />
