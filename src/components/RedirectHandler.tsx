@@ -18,6 +18,10 @@ export const RedirectHandler = () => {
 
   useEffect(() => {
     console.log('🔄 RedirectHandler triggered for path:', location.pathname);
+    console.log('🔍 Full URL:', window.location.href);
+    console.log('📍 Pathname:', location.pathname);
+    console.log('🎯 Params:', params);
+    
     const { categorySlug, subcategorySlug, topicSlug } = params;
     
     // Handle old URL database lookup first

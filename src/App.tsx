@@ -125,6 +125,11 @@ const App = () => (
                    {/* RSS Feed Route */}
                   <Route path="/rss" element={<RSSRedirect />} />
                   
+                   {/* OLD URL PATTERNS - MUST BE FIRST to catch before general routes */}
+                   <Route path="*-t*.html" element={<RedirectHandler />} />
+                   <Route path="*-p*.html" element={<RedirectHandler />} />
+                   <Route path="*topic-*.html" element={<RedirectHandler />} />
+                   
                    {/* Forum routes - wrapped in ForumLayout */}
                    <Route path="/" element={<ForumLayout />}>
                      <Route index element={<ForumHome />} />
@@ -147,11 +152,8 @@ const App = () => (
                      <Route path="privacy" element={<Privacy />} />
                      <Route path="rules" element={<ForumRules />} />
                      <Route path="blog" element={<Blog />} />
-                     <Route path="blog/:slug" element={<BlogPost />} />
-                      {/* Catch-all routes MUST be last */}
-                      <Route path=":categorySlug" element={<CategoryView />} />
-                      <Route path=":categorySlug/:subcategorySlug" element={<CategoryView />} />
-                   </Route>
+                      <Route path="blog/:slug" element={<BlogPost />} />
+                    </Route>
                    
                    
                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

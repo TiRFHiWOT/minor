@@ -24,3 +24,6 @@
 
 # Pattern-based redirects for common old URL formats (fallback)
 /*-t*.html /search?q=:splat 302
+
+# SPA catch-all - MUST be last rule
+/* /index.html 200

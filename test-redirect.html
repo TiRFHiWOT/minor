@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Redirect</title>
+</head>
+<body>
+    <h1>Testing Server-Side Redirects</h1>
+    <p>If you see this page, the server-side redirect from _redirects is NOT working.</p>
+    <p>Expected: This URL should redirect to the new forum URL.</p>
+    <script>
+        console.log('🔍 Current URL:', window.location.href);
+        console.log('⚠️ Server-side redirect failed - falling back to client-side');
+        
+        // Test the specific redirect
+        const testUrl = '/2014-omha-aa-t8764.html';
+        const expectedRedirect = '/ontario-youth-hockey-forum/ontario-2014-aa/2014-aa-omha-mcvuoruz';
+        
+        if (window.location.pathname === testUrl) {
+            console.log('🔄 Performing client-side redirect as fallback');
+            window.location.replace(expectedRedirect);
+        }
+    </script>
+</body>
+</html>

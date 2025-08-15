@@ -4,6 +4,7 @@ import { parseOldUrl } from './sitemapProcessor';
 // Migration utility to handle URL structure changes
 export const migrateUrl = (path: string): string | null => {
   console.log('🚀 migrateUrl called with path:', path);
+  console.log('🌐 Current URL:', typeof window !== 'undefined' ? window.location.href : 'Server side');
   
   // Remove leading slash for processing
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
