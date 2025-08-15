@@ -79,7 +79,7 @@ export const UrlMigrationManager = () => {
   // Apply filters to the query
   const migrationFilters = {
     status: statusFilter === 'all' ? undefined : statusFilter,
-    limit: 1000 // Increase limit for better table functionality
+    limit: 5000 // Increased limit to show more complete data while maintaining performance
   };
   
   const { data: migrations = [], refetch } = useUrlMigrations(migrationFilters);
@@ -294,13 +294,33 @@ export const UrlMigrationManager = () => {
     }
   };
 
-  // Use stats from dedicated hook, fallback to calculated stats if loading
-  const displayStats = stats || {
+  // Prioritize dedicated hook stats over calculated stats
+  const displayStats = stats ? {
+    ...stats,
+    disabled: stats.total - stats.active - stats.pending // Calculate disabled count
+  } : statsLoading ? {
+    total: '...',
+    active: '...',
+    pending: '...',
+    disabled: '...',
+    totalRedirects: '...'
+  } : {
+    // Only fallback to calculated stats when stats hook is not loading and no data
     total: migrations.length,
     active: migrations.filter(m => m.status === 'active').length,
     pending: migrations.filter(m => m.status === 'pending').length,
+    disabled: migrations.filter(m => m.status === 'disabled').length,
     totalRedirects: migrations.reduce((sum, m) => sum + m.redirect_count, 0)
   };
+
+  console.log('📊 DisplayStats source:', {
+    usingDedicatedHook: !!stats,
+    isLoading: statsLoading,
+    isFetching: statsFetching,
+    lastRefreshed,
+    displayStats,
+    migrationsArrayLength: migrations.length
+  });
 
   return (
     <div className="space-y-6">
@@ -323,7 +343,7 @@ export const UrlMigrationManager = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Migrations</CardTitle>
@@ -331,6 +351,7 @@ export const UrlMigrationManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{displayStats.total}</div>
+            {stats && <p className="text-xs text-success mt-1">Live Data</p>}
           </CardContent>
         </Card>
         <Card>
@@ -349,6 +370,15 @@ export const UrlMigrationManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{displayStats.pending}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Disabled</CardTitle>
+            <AlertCircle className="h-4 w-4 text-warning" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{displayStats.disabled}</div>
           </CardContent>
         </Card>
         <Card>
