@@ -1,5 +1,5 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -90,8 +90,27 @@ const SubcategoryCard = ({ subcat }: { subcat: any }) => {
 
 export const CategoryView = () => {
   const { categoryId, categorySlug, subcategorySlug } = useParams();
+  const navigate = useNavigate();
   
   console.log('CategoryView params:', { categoryId, categorySlug, subcategorySlug });
+  
+  // Check for old URL patterns and redirect immediately
+  useEffect(() => {
+    const currentSlug = categorySlug || categoryId;
+    if (currentSlug) {
+      const { isOldUrlPattern } = require('@/utils/oldUrlPatterns');
+      
+      if (isOldUrlPattern(currentSlug)) {
+        console.log('🔄 CategoryView detected old URL pattern:', currentSlug);
+        console.log('🚀 Forcing navigation to trigger RedirectHandler...');
+        
+        // Force navigate to the full path to trigger RedirectHandler
+        const fullPath = window.location.pathname;
+        navigate(fullPath, { replace: true });
+        return;
+      }
+    }
+  }, [categorySlug, categoryId, navigate]);
   
   // Handle both legacy UUID routing and new slug routing
   const isLegacyRoute = !!categoryId;

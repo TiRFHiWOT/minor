@@ -24,6 +24,13 @@ export const RedirectHandler = () => {
     
     const { categorySlug, subcategorySlug, topicSlug } = params;
     
+    // First check if this looks like an old URL pattern that should be redirected
+    const { isOldUrlPattern } = require('@/utils/oldUrlPatterns');
+    
+    if (isOldUrlPattern(location.pathname)) {
+      console.log('🎯 Detected old URL pattern in RedirectHandler:', location.pathname);
+    }
+    
     // Handle old URL database lookup first
     if (shouldCheckDatabase && urlMigration) {
       console.log('✅ Redirecting old URL:', oldUrlPath, '->', urlMigration.new_url);

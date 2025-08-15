@@ -125,11 +125,6 @@ const App = () => (
                    {/* RSS Feed Route */}
                   <Route path="/rss" element={<RSSRedirect />} />
                   
-                   {/* OLD URL PATTERNS - MUST BE FIRST to catch before general routes */}
-                   <Route path="*-t*.html" element={<RedirectHandler />} />
-                   <Route path="*-p*.html" element={<RedirectHandler />} />
-                   <Route path="*topic-*.html" element={<RedirectHandler />} />
-                   
                    {/* Forum routes - wrapped in ForumLayout */}
                    <Route path="/" element={<ForumLayout />}>
                      <Route index element={<ForumHome />} />

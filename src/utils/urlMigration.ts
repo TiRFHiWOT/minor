@@ -6,8 +6,14 @@ export const migrateUrl = (path: string): string | null => {
   console.log('🚀 migrateUrl called with path:', path);
   console.log('🌐 Current URL:', typeof window !== 'undefined' ? window.location.href : 'Server side');
   
-  // Remove leading slash for processing
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  const { isOldUrlPattern, getCleanPath } = require('@/utils/oldUrlPatterns');
+  const cleanPath = getCleanPath(path);
+  
+  if (isOldUrlPattern(cleanPath)) {
+    console.log('🎯 Old URL pattern detected:', cleanPath);
+    // Return special marker to indicate database lookup needed
+    return '__OLD_URL_LOOKUP__';
+  }
   const segments = cleanPath.split('/');
   
   // Check for old forum URL patterns first (e.g., "2011-aa-gthl-east-t5448.html")
