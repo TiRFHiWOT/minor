@@ -83,7 +83,14 @@ export const UrlMigrationManager = () => {
   };
   
   const { data: migrations = [], refetch } = useUrlMigrations(migrationFilters);
-  const { data: stats, refetch: refetchStats } = useUrlMigrationStats();
+  const { 
+    data: stats, 
+    refreshStats, 
+    invalidateStats, 
+    lastRefreshed,
+    isLoading: statsLoading,
+    isFetching: statsFetching
+  } = useUrlMigrationStats();
   const { data: qualityMetrics } = useUrlMigrationQualityMetrics();
   const createMigration = useCreateUrlMigration();
   const updateMigration = useUpdateUrlMigration();
@@ -302,9 +309,16 @@ export const UrlMigrationManager = () => {
           <h2 className="text-2xl font-bold tracking-tight">URL Migration Manager</h2>
           <p className="text-muted-foreground">Manage redirects for old forum URLs</p>
         </div>
-        <Button onClick={() => { refetch(); refetchStats(); }}>
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
+        <Button 
+          onClick={async () => { 
+            refetch(); 
+            await refreshStats(); 
+            await invalidateStats();
+          }}
+          disabled={statsLoading || statsFetching}
+        >
+          <RefreshCw className={`h-4 w-4 mr-2 ${statsFetching ? 'animate-spin' : ''}`} />
+          Refresh {statsFetching ? 'Stats...' : 'Data'}
         </Button>
       </div>
 
@@ -579,11 +593,19 @@ export const UrlMigrationManager = () => {
         </TabsContent>
 
         <TabsContent value="bulk-manager">
-          <UrlMigrationBulkManager onRefresh={() => { refetch(); refetchStats(); }} />
+          <UrlMigrationBulkManager onRefresh={async () => { 
+            refetch(); 
+            await refreshStats();
+            await invalidateStats();
+          }} />
         </TabsContent>
 
         <TabsContent value="review">
-          <UrlMigrationReviewInterface onRefresh={() => { refetch(); refetchStats(); }} />
+          <UrlMigrationReviewInterface onRefresh={async () => { 
+            refetch(); 
+            await refreshStats();
+            await invalidateStats();
+          }} />
         </TabsContent>
 
         <TabsContent value="quality">
