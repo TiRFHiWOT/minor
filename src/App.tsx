@@ -57,6 +57,7 @@ import { RSSRedirect } from "./components/RSSRedirect";
 import { SitemapRedirect } from "./components/SitemapRedirect";
 
 import { SessionTimeout } from "./components/security/SessionTimeout";
+import { OldUrlRedirectWrapper } from "./components/OldUrlRedirectWrapper";
 
 
 
@@ -125,8 +126,8 @@ const App = () => (
                    {/* RSS Feed Route */}
                   <Route path="/rss" element={<RSSRedirect />} />
                   
-                   {/* Forum routes - wrapped in ForumLayout */}
-                   <Route path="/" element={<ForumLayout />}>
+                   {/* Forum routes - wrapped in OldUrlRedirectWrapper and ForumLayout */}
+                   <Route path="/" element={<OldUrlRedirectWrapper><ForumLayout /></OldUrlRedirectWrapper>}>
                      <Route index element={<ForumHome />} />
                     {/* New hierarchical URL structure */}
                     <Route path=":categorySlug/:topicSlug" element={<TopicView />} />
