@@ -24,12 +24,16 @@ export interface OldUrlPattern {
 // Parse old URL patterns and extract identifiers
 export const parseOldUrl = (url: string): OldUrlPattern | null => {
   try {
+    console.log('🔍 parseOldUrl called with:', url);
     const urlObj = new URL(url);
     const path = urlObj.pathname;
     const filename = path.split('/').pop() || '';
     
+    console.log('📁 Extracted path:', path, 'filename:', filename);
+    
     // Topic pattern: ends with -t{number}.html
     const topicMatch = filename.match(/^(.+)-t(\d+)\.html$/);
+    console.log('🎯 Topic match result:', topicMatch);
     if (topicMatch) {
       const [, titlePart, topicId] = topicMatch;
       

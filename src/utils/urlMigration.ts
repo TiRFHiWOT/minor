@@ -3,18 +3,25 @@ import { parseOldUrl } from './sitemapProcessor';
 
 // Migration utility to handle URL structure changes
 export const migrateUrl = (path: string): string | null => {
+  console.log('🚀 migrateUrl called with path:', path);
+  
   // Remove leading slash for processing
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
   const segments = cleanPath.split('/');
   
   // Check for old forum URL patterns first (e.g., "2011-aa-gthl-east-t5448.html")
   const fullPath = path.endsWith('/') ? path.slice(0, -1) : path;
+  console.log('🔗 Checking fullPath for old pattern:', fullPath);
+  
   const oldPattern = parseOldUrl(`https://example.com${fullPath}`);
+  console.log('📋 parseOldUrl result:', oldPattern);
   
   if (oldPattern && (oldPattern.type === 'topic' || oldPattern.type === 'post')) {
     // This is an old forum URL that needs database lookup
     // Return a special marker to indicate database lookup is needed
-    return `__OLD_URL_LOOKUP__${fullPath}`;
+    const result = `__OLD_URL_LOOKUP__${fullPath}`;
+    console.log('✅ Returning database lookup marker:', result);
+    return result;
   }
   
   // Handle flat Level 3 category URLs that need to become hierarchical

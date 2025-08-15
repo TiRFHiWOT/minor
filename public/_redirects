@@ -8,3 +8,19 @@
 
 # RSS Feed redirect
 /rss.xml https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/rss-feed 200
+
+# Auto-generated URL migrations - Key redirects for SEO
+/2014-omha-aa-t8764.html /ontario-youth-hockey-forum/ontario-2014-aa/2014-aa-omha-mcvuoruz 301
+/here-s-the-truth-no-hockey-till-2022-at-best-t13.html /tournaments-hockey-forum/tournaments-usa/avoid-hockey-time-productions-tourneys-me092by4 301
+/99-hockey-captain-signs-with-ojhl-team-t16.html /canada-talk-hockey-forum/ontario-youth-hockey-forum/is-hockey-really-inclusive-enough-me1cqy38 301
+/2007-east-a-gthl-t17.html /ontario-youth-hockey-forum/ontario-2012-aa/2012-gthl-aa-east--mdzxqyvl 301
+/2009-gthl-aa-west-t29.html /ontario-youth-hockey-forum/ontario-2012-aa/2012-gthl-aa-east--mdzxqyvl 301
+/04-aaa-gthl-t42.html /ontario-youth-hockey-forum/ontario-2012-a/2012-gthl-a-mcxi4k9c 301
+/brick-hockey-tournament-t44.html /ontario-youth-hockey-forum/ontario-2015-aaa/the-brick-hockey-tournament-2b39e7bd 301
+/2002-aa-west-t49.html /ontario-youth-hockey-forum/ontario-2012-aaa/2012-omha-west-me0925cl 301
+/02-gthl-aaa-looking-for-players-due-to-injury-in-spring-t57.html /ontario-youth-hockey-forum/ontario-2010-aaa/2010-players-needed-great-development-opportunity-me73z0bc 301
+/who-s-more-disillusioned-parents-or-parent-coaches-t68.html /canada-talk-hockey-forum/general-hockey-talk-canada/-tips-for-new-hockey-parents-in-canadian-youth-leagues-mdwo1f9r 301
+/mississauga-summer-showcase-2006-aaa-t72.html /ontario-youth-hockey-forum/ontario-2008-aa/mississauga-beast-playoff-moves-2008-aa-md6aixu8 301
+
+# Pattern-based redirects for common old URL formats (fallback)
+/*-t*.html /search?q=:splat 302

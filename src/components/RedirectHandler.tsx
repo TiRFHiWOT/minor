@@ -17,11 +17,12 @@ export const RedirectHandler = () => {
   const { data: urlMigration } = useUrlMigrationByOldUrl(oldUrlPath);
 
   useEffect(() => {
+    console.log('🔄 RedirectHandler triggered for path:', location.pathname);
     const { categorySlug, subcategorySlug, topicSlug } = params;
     
     // Handle old URL database lookup first
     if (shouldCheckDatabase && urlMigration) {
-      console.log('Redirecting old URL:', oldUrlPath, '->', urlMigration.new_url);
+      console.log('✅ Redirecting old URL:', oldUrlPath, '->', urlMigration.new_url);
       
       // Increment redirect count for analytics
       incrementRedirectCount.mutate(urlMigration.id);
@@ -29,6 +30,11 @@ export const RedirectHandler = () => {
       // Perform 301 redirect
       navigate(urlMigration.new_url, { replace: true });
       return;
+    }
+    
+    // Log if we should check database but no migration found
+    if (shouldCheckDatabase && !urlMigration) {
+      console.log('⚠️ Should check database but no migration found for:', oldUrlPath);
     }
     
     // Check for URL migration patterns
