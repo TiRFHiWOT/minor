@@ -293,16 +293,16 @@ export const useUrlMigrationQualityMetrics = () => {
       // Calculate quality metrics
       const totalMigrations = data.length;
       const activeWithUndefined = data.filter(m => m.status === 'active' && m.new_url.includes('/undefined/')).length;
-      const highConfidenceActive = data.filter(m => m.status === 'active' && (m.match_confidence || 0) > 80).length;
-      const lowConfidenceActive = data.filter(m => m.status === 'active' && (m.match_confidence || 0) < 50).length;
+      const highConfidenceActive = data.filter(m => m.status === 'active' && (m.match_confidence || 0) > 0.80).length;
+      const lowConfidenceActive = data.filter(m => m.status === 'active' && (m.match_confidence || 0) < 0.50).length;
       
       // Group by confidence ranges
       const confidenceRanges = {
-        '90-100%': data.filter(m => (m.match_confidence || 0) >= 90).length,
-        '80-89%': data.filter(m => (m.match_confidence || 0) >= 80 && (m.match_confidence || 0) < 90).length,
-        '70-79%': data.filter(m => (m.match_confidence || 0) >= 70 && (m.match_confidence || 0) < 80).length,
-        '50-69%': data.filter(m => (m.match_confidence || 0) >= 50 && (m.match_confidence || 0) < 70).length,
-        'Below 50%': data.filter(m => (m.match_confidence || 0) < 50).length,
+        '90-100%': data.filter(m => (m.match_confidence || 0) >= 0.90).length,
+        '80-89%': data.filter(m => (m.match_confidence || 0) >= 0.80 && (m.match_confidence || 0) < 0.90).length,
+        '70-79%': data.filter(m => (m.match_confidence || 0) >= 0.70 && (m.match_confidence || 0) < 0.80).length,
+        '50-69%': data.filter(m => (m.match_confidence || 0) >= 0.50 && (m.match_confidence || 0) < 0.70).length,
+        'Below 50%': data.filter(m => (m.match_confidence || 0) < 0.50).length,
       };
       
       return {

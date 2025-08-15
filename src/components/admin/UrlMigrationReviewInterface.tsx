@@ -51,13 +51,13 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
     
     // Include high confidence active migrations that haven't been manually reviewed
     if (migration.status === 'active' && 
-        (migration.match_confidence || 0) >= 70 && 
+        (migration.match_confidence || 0) >= 0.70 && 
         !migration.notes?.includes('reviewed')) {
       return true;
     }
     
     // Include low confidence pending migrations
-    if (migration.status === 'pending' && (migration.match_confidence || 0) < 50) {
+    if (migration.status === 'pending' && (migration.match_confidence || 0) < 0.50) {
       return true;
     }
     
@@ -167,7 +167,7 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
 
       const updates = {
         new_url: fixedUrl,
-        match_confidence: 75, // Set a reasonable confidence for fixed URLs
+        match_confidence: 0.75, // Set a reasonable confidence for fixed URLs (75%)
         notes: `${currentMigration.notes || ''}\nURL fixed automatically from /undefined/`.trim()
       };
 
@@ -199,7 +199,7 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
     try {
       const updates = {
         new_url: editedUrl.trim(),
-        match_confidence: 85, // Manual edits get higher confidence
+        match_confidence: 0.85, // Manual edits get higher confidence (85%)
         notes: `${currentMigration.notes || ''}\nURL manually edited and corrected`.trim()
       };
 
@@ -248,7 +248,7 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
       issues.push('Contains /undefined/ in URL');
     }
     
-    if ((migration.match_confidence || 0) < 50) {
+    if ((migration.match_confidence || 0) < 0.50) {
       issues.push('Low confidence score');
     }
     
@@ -497,10 +497,10 @@ export const UrlMigrationReviewInterface = ({ onRefresh }: ReviewInterfaceProps)
             <div>
               <div className="text-sm font-medium">Confidence Score</div>
               <Badge variant={
-                (currentMigration.match_confidence || 0) >= 80 ? 'default' :
-                (currentMigration.match_confidence || 0) >= 50 ? 'outline' : 'destructive'
+                (currentMigration.match_confidence || 0) >= 0.80 ? 'default' :
+                (currentMigration.match_confidence || 0) >= 0.50 ? 'outline' : 'destructive'
               }>
-                {currentMigration.match_confidence || 0}%
+                {Math.round((currentMigration.match_confidence || 0) * 100)}%
               </Badge>
             </div>
             <div>

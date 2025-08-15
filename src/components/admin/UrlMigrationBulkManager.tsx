@@ -49,9 +49,9 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
     if (filters.confidenceRange !== 'all') {
       const confidence = migration.match_confidence || 0;
       switch (filters.confidenceRange) {
-        case 'high': return confidence >= 80;
-        case 'medium': return confidence >= 50 && confidence < 80;
-        case 'low': return confidence < 50;
+        case 'high': return confidence >= 0.80;
+        case 'medium': return confidence >= 0.50 && confidence < 0.80;
+        case 'low': return confidence < 0.50;
         default: return true;
       }
     }
@@ -234,13 +234,13 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
 
   const getConfidenceColor = (confidence?: number) => {
     if (!confidence) return 'secondary';
-    if (confidence >= 80) return 'default';
-    if (confidence >= 50) return 'outline';
+    if (confidence >= 0.80) return 'default';
+    if (confidence >= 0.50) return 'outline';
     return 'destructive';
   };
 
   const undefinedCount = filteredMigrations.filter(m => m.new_url.includes('/undefined/')).length;
-  const lowConfidenceCount = filteredMigrations.filter(m => (m.match_confidence || 0) < 50).length;
+  const lowConfidenceCount = filteredMigrations.filter(m => (m.match_confidence || 0) < 0.50).length;
 
   return (
     <div className="space-y-6">
@@ -428,7 +428,7 @@ export const UrlMigrationBulkManager = ({ onRefresh }: BulkManagerProps) => {
                     </Badge>
                     {migration.match_confidence && (
                       <Badge variant={getConfidenceColor(migration.match_confidence)}>
-                        {migration.match_confidence}%
+                        {Math.round(migration.match_confidence * 100)}%
                       </Badge>
                     )}
                     {migration.new_url.includes('/undefined/') && (
