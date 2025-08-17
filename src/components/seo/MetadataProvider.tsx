@@ -56,96 +56,76 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
   const titleSeparator = getSetting('seo_title_separator', ' | ');
   const autoGenerationEnabled = getSetting('seo_auto_generate_topic_titles', true);
 
-  // Get category metadata if on category page
-  const { data: categoryMetadata } = useQuery({
-    queryKey: ['category-metadata', params.categorySlug],
-    queryFn: async () => {
-      if (!params.categorySlug) return null;
-      
-      const { data, error } = await supabase
-        .from('categories')
-        .select('name, meta_title, meta_description, meta_keywords, canonical_url, og_title, og_description, og_image')
-        .eq('slug', params.categorySlug)
-        .single();
-      
-      if (error) return null;
-      return data;
-    },
-    enabled: !!params.categorySlug
-  });
-
-  // Get topic metadata if on topic page - using same logic as useTopicByPath
+  // Get topic metadata if on topic page
   const { data: topicMetadata } = useQuery({
-    queryKey: ['topic-metadata', params.categorySlug, params.subcategorySlug, params.topicSlug],
+    queryKey: ['topic-metadata', params.topicSlug],
     queryFn: async () => {
       console.log('MetadataProvider: Fetching topic metadata for:', { 
-        categorySlug: params.categorySlug, 
-        subcategorySlug: params.subcategorySlug, 
         topicSlug: params.topicSlug 
       });
       
-      if (!params.topicSlug || !params.categorySlug) return null;
+      if (!params.topicSlug) return null;
       
-      // Get category ID first - handle hierarchical structure like useTopicByPath
-      let categoryData;
-      let categoryError;
-      
-      if (params.subcategorySlug) {
-        // Hierarchical: validate parent-child relationship
-        const { data: parentCategory, error: parentError } = await supabase
-          .from('categories')
-          .select('id')
-          .eq('slug', params.categorySlug)
-          .single();
-        
-        if (parentError) {
-          console.error('MetadataProvider: Error fetching parent category:', parentError);
-          return null;
-        }
-        
-        const { data: childCategory, error: childError } = await supabase
-          .from('categories')
-          .select('id, parent_category_id, name')
-          .eq('slug', params.subcategorySlug)
-          .eq('parent_category_id', parentCategory.id)
-          .single();
-        
-        categoryData = childCategory;
-        categoryError = childError;
-      } else {
-        // Single category
-        const { data, error } = await supabase
-          .from('categories')
-          .select('id, parent_category_id, name')
-          .eq('slug', params.categorySlug)
-          .single();
-        
-        categoryData = data;
-        categoryError = error;
-      }
-      
-      if (categoryError) {
-        console.error('MetadataProvider: Error fetching category:', categoryError);
-        return null;
-      }
-      
-      // Get topic by slug and category
-      const { data: topicData, error: topicError } = await supabase
+      // Get topic by slug first, then get its category info
+      const { data: topic, error: topicError } = await supabase
         .from('topics')
-        .select('meta_title, meta_description, meta_keywords, canonical_url, og_title, og_description, og_image, title, content')
+        .select(`
+          id,
+          title,
+          content,
+          slug,
+          category_id,
+          meta_title,
+          meta_description,
+          meta_keywords,
+          canonical_url,
+          og_title,
+          og_description,
+          og_image,
+          categories!inner(id, name, slug)
+        `)
         .eq('slug', params.topicSlug)
-        .eq('category_id', categoryData.id)
         .single();
       
       if (topicError) {
         console.error('MetadataProvider: Error fetching topic:', topicError);
         return null;
       }
+
+      console.log('MetadataProvider: Found topic:', topic);
       
-      console.log('MetadataProvider: Successfully fetched topic metadata:', topicData);
-      return { ...topicData, category_name: (categoryData as any)?.name };
+      // Add category name to topic data for easy access
+      return {
+        ...topic,
+        category_name: topic.categories?.name
+      };
     },
-    enabled: !!params.categorySlug && !!params.topicSlug
+    enabled: !!params.topicSlug
+  });
+
+  // Get category metadata if on category page (and not topic page)
+  const { data: categoryMetadata } = useQuery({
+    queryKey: ['category-metadata', params.categorySlug, params.subcategorySlug],
+    queryFn: async () => {
+      if (!params.categorySlug || params.topicSlug) return null;
+      
+      // Handle hierarchical structure
+      let categorySlug = params.subcategorySlug || params.categorySlug;
+      
+      const { data, error } = await supabase
+        .from('categories')
+        .select('name, meta_title, meta_description, meta_keywords, canonical_url, og_title, og_description, og_image')
+        .eq('slug', categorySlug)
+        .single();
+      
+      if (error) {
+        console.error('MetadataProvider: Error fetching category:', error);
+        return null;
+      }
+      
+      return data;
+    },
+    enabled: !!params.categorySlug && !params.topicSlug
   });
 
   const setPageMetadata = (metadata: PageMetadata) => {
@@ -192,6 +172,14 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     if (topicMetadata && params.topicSlug) {
       const catName = (topicMetadata as any).category_name || formatSlug(params.subcategorySlug || params.categorySlug || '');
       
+      console.log('MetadataProvider: Generating topic title with:', {
+        topicTitle: topicMetadata.title,
+        categoryName: catName,
+        forumName,
+        separator: titleSeparator,
+        autoGenerationEnabled
+      });
+      
       // Use database meta_title if it exists, otherwise auto-generate
       const title = topicMetadata.meta_title || (autoGenerationEnabled ? generateTopicTitle({
         topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
@@ -206,6 +194,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         topicContent: topicMetadata.content,
         forumName
       });
+      
+      console.log('MetadataProvider: Generated topic metadata:', { title, description });
       
       return {
         title,
@@ -228,6 +218,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         forumName,
         separator: titleSeparator
       });
+      
+      console.log('MetadataProvider: Using fallback topic title:', fallbackTitle);
       
       // Set fallback title immediately for analytics
       if (document.title !== fallbackTitle) {
