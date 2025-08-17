@@ -631,6 +631,25 @@ export const TopicView = () => {
           <p className="text-muted-foreground text-center py-8 px-3">No replies yet. Be the first to reply!</p>
         )}
         
+        {/* Quick Reply */}
+        <div className="bg-card border rounded-lg mb-6">
+          <div className="p-3 md:p-6 border-b border-border">
+            <h3 className="text-base md:text-lg font-semibold text-foreground">
+              Quick Reply
+            </h3>
+          </div>
+          <div className="p-3 md:p-6">
+            <InlineReplyForm
+              topicId={topic.id || ''}
+              parentPostId={null}
+              parentPost={topic}
+              onCancel={() => {}}
+              onSuccess={() => {}}
+              isTopicReply={true}
+            />
+          </div>
+        </div>
+
         {/* Pagination Controls */}
         {totalPosts > 0 && (
           <PaginationControls
@@ -642,25 +661,6 @@ export const TopicView = () => {
             loading={postsLoading}
           />
         )}
-      </div>
-
-      {/* Quick Reply at Bottom */}
-      <div className="bg-card border rounded-lg">
-        <div className="p-3 md:p-6 border-b border-border">
-          <h3 className="text-base md:text-lg font-semibold text-foreground">
-            Quick Reply
-          </h3>
-        </div>
-        <div className="p-3 md:p-6">
-          <InlineReplyForm
-            topicId={topic.id || ''}
-            parentPostId={null}
-            parentPost={topic}
-            onCancel={() => {}}
-            onSuccess={() => {}}
-            isTopicReply={true}
-          />
-        </div>
       </div>
 
       <ReportModal

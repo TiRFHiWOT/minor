@@ -105,17 +105,16 @@ export const InlineReplyForm: React.FC<InlineReplyFormProps> = ({
 
   return (
     <div className={`w-full min-w-0 ${isTopicReply ? 'bg-primary/5 rounded-md p-4' : 'mt-3 bg-muted/30 rounded-md p-3'}`}>
-      {/* Enhanced reply context with quote preview */}
-      {parentPost && (
+      {/* Enhanced reply context with quote preview - only show for post replies, not topic replies */}
+      {parentPost && !isTopicReply && (
         <div className="mb-2">
           <div className="bg-slate-50 border-l-4 border-slate-300 rounded-r p-2 space-y-1">
             <div className="flex items-center gap-2 text-xs text-slate-500">
               <span>Replying to</span>
               <span className="font-medium text-slate-700">
-                {isTopicReply ? 'Original Post' : 
-                 `${parentPost.is_anonymous ? 'Guest' : (parentPost.profiles?.username || 'Unknown')}`}
+                {parentPost.is_anonymous ? 'Guest' : (parentPost.profiles?.username || 'Unknown')}
               </span>
-              {!isTopicReply && parentPost.created_at && (
+              {parentPost.created_at && (
                 <>
                   <span>•</span>
                   <span>{formatDistanceToNow(new Date(parentPost.created_at))} ago</span>
@@ -124,7 +123,7 @@ export const InlineReplyForm: React.FC<InlineReplyFormProps> = ({
             </div>
             <div className="text-xs text-slate-500 italic bg-white/50 rounded p-1">
               {(() => {
-                const text = isTopicReply ? parentPost.title : htmlToText(parentPost.content);
+                const text = htmlToText(parentPost.content);
                 return `"${text.length > 150 ? `${text.substring(0, 150)}...` : text}"`;
               })()}
             </div>
