@@ -82,10 +82,14 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
           og_title,
           og_description,
           og_image,
-          categories!inner(id, name, slug)
+          categories (
+            id,
+            name,
+            slug
+          )
         `)
         .eq('slug', params.topicSlug)
-        .single();
+        .maybeSingle();
       
       if (topicError) {
         console.error('MetadataProvider: Error fetching topic:', topicError);
