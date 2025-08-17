@@ -644,6 +644,24 @@ export const TopicView = () => {
         )}
       </div>
 
+      {/* Quick Reply at Bottom */}
+      <div className="bg-card border rounded-lg">
+        <div className="p-3 md:p-6 border-b border-border">
+          <h3 className="text-base md:text-lg font-semibold text-foreground">
+            Quick Reply
+          </h3>
+        </div>
+        <div className="p-3 md:p-6">
+          <InlineReplyForm
+            topicId={topic.id || ''}
+            parentPostId={null}
+            parentPost={topic}
+            onCancel={() => {}}
+            onSuccess={() => {}}
+            isTopicReply={true}
+          />
+        </div>
+      </div>
 
       <ReportModal
         isOpen={reportModal.isOpen}
