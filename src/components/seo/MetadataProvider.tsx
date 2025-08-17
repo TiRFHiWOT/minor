@@ -92,6 +92,11 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         return null;
       }
 
+      if (!topic) {
+        console.warn('MetadataProvider: No topic found for slug:', params.topicSlug);
+        return null;
+      }
+
       console.log('MetadataProvider: Found topic:', topic);
       
       // Add category name to topic data for easy access
