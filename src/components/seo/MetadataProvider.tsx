@@ -64,7 +64,7 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         return null;
       }
       
-      // Query topic with category join to match both slugs
+      // Query topic with category join using case-insensitive matching
       const { data: topic, error } = await supabase
         .from('topics')
         .select(`
@@ -77,13 +77,14 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
           og_title,
           og_description,
           og_image,
+          category_id,
           categories!inner (
             id,
             name,
             slug
           )
         `)
-        .eq('slug', params.topicSlug)
+        .ilike('slug', params.topicSlug)
         .eq('categories.slug', params.categorySlug)
         .maybeSingle();
       
