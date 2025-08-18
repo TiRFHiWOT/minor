@@ -56,43 +56,70 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
   const titleSeparator = getSetting('seo_title_separator', ' | ');
   const autoGenerationEnabled = getSetting('seo_auto_generate_topic_titles', true);
 
-  // Get topic metadata if on topic page
-  const { data: topicMetadata } = useQuery({
+  // Get topic metadata if on topic page - using the same approach as useTopicByPath
+  const { data: topicMetadata, isLoading: isTopicLoading, error: topicError } = useQuery({
     queryKey: ['topic-metadata', params.categorySlug, params.topicSlug],
     queryFn: async () => {
       if (!params.topicSlug || !params.categorySlug) {
         return null;
       }
       
-      // Query topic with category join using case-insensitive matching
-      const { data: topic, error } = await supabase
-        .from('topics')
-        .select(`
-          id,
-          title,
-          slug,
-          meta_title,
-          meta_description,
-          canonical_url,
-          og_title,
-          og_description,
-          og_image,
-          category_id,
-          categories!inner (
-            id,
-            name,
-            slug
-          )
-        `)
-        .ilike('slug', params.topicSlug)
-        .eq('categories.slug', params.categorySlug)
-        .maybeSingle();
+      console.log('MetadataProvider: Fetching topic metadata for:', {
+        topicSlug: params.topicSlug,
+        categorySlug: params.categorySlug
+      });
       
-      if (error || !topic) {
+      try {
+        // Step 1: Find the category ID (same as useTopicByPath)
+        const { data: category, error: categoryError } = await supabase
+          .from('categories')
+          .select('id, name')
+          .eq('slug', params.categorySlug)
+          .single();
+        
+        if (categoryError || !category) {
+          console.error('MetadataProvider: Category not found:', categoryError);
+          return null;
+        }
+
+        console.log('MetadataProvider: Found category:', category);
+
+        // Step 2: Find the topic using the category ID
+        const { data: topic, error: topicError } = await supabase
+          .from('topics')
+          .select(`
+            id,
+            title,
+            slug,
+            meta_title,
+            meta_description,
+            canonical_url,
+            og_title,
+            og_description,
+            og_image,
+            content,
+            category_id
+          `)
+          .eq('slug', params.topicSlug)
+          .eq('category_id', category.id)
+          .single();
+        
+        if (topicError || !topic) {
+          console.error('MetadataProvider: Topic not found:', topicError);
+          return null;
+        }
+
+        console.log('MetadataProvider: ✅ Found topic with metadata:', {
+          title: topic.title,
+          meta_title: topic.meta_title,
+          hasMetaTitle: !!topic.meta_title
+        });
+
+        return { ...topic, categories: category };
+      } catch (error) {
+        console.error('MetadataProvider: Error in topic query:', error);
         return null;
       }
-
-      return topic;
     },
     enabled: !!params.topicSlug && !!params.categorySlug
   });
@@ -209,8 +236,8 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       };
     }
 
-    // Fallback while topic/category data loads
-    if (params.topicSlug) {
+    // Fallback while topic/category data loads - only use if query failed or finished loading
+    if (params.topicSlug && !isTopicLoading && !topicMetadata) {
       const cat = formatSlug(params.subcategorySlug || params.categorySlug || '');
       const t = formatSlug(params.topicSlug);
       const fallbackTitle = generateTopicTitle({
@@ -220,12 +247,7 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         separator: titleSeparator
       });
       
-      console.log('MetadataProvider: Using fallback topic title:', fallbackTitle);
-      
-      // Set fallback title immediately for analytics
-      if (document.title !== fallbackTitle) {
-        document.title = fallbackTitle;
-      }
+      console.log('⚠️ MetadataProvider: Using fallback topic title (query finished, no data):', fallbackTitle);
       
       return {
         title: fallbackTitle,
@@ -234,6 +256,15 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
           categoryName: cat,
           forumName
         })
+      };
+    }
+
+    // Loading state for topic pages - minimal title to prevent flash
+    if (params.topicSlug && isTopicLoading) {
+      console.log('⏳ MetadataProvider: Topic query loading, using minimal title');
+      return {
+        title: forumName,
+        description: `Loading topic on ${forumName}...`
       };
     }
 
