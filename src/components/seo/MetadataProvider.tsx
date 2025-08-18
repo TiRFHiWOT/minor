@@ -60,11 +60,16 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
   const { data: topicMetadata } = useQuery({
     queryKey: ['topic-metadata', params.topicSlug],
     queryFn: async () => {
-      console.log('MetadataProvider: Fetching topic metadata for:', { 
-        topicSlug: params.topicSlug 
+      console.log('🔍 MetadataProvider: Fetching topic metadata for:', { 
+        topicSlug: params.topicSlug,
+        currentPath: location.pathname,
+        allParams: params
       });
       
-      if (!params.topicSlug) return null;
+      if (!params.topicSlug) {
+        console.log('❌ No topicSlug found in params');
+        return null;
+      }
       
       // Get topic by slug first, then get its category info
       const { data: topic, error: topicError } = await supabase
@@ -91,17 +96,71 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         .eq('slug', params.topicSlug)
         .maybeSingle();
       
+      console.log('📊 Supabase topic query result:', { 
+        data: topic, 
+        error: topicError,
+        searchedSlug: params.topicSlug 
+      });
+      
       if (topicError) {
-        console.error('MetadataProvider: Error fetching topic:', topicError);
+        console.error('❌ MetadataProvider: Error fetching topic:', topicError);
         return null;
       }
 
       if (!topic) {
-        console.warn('MetadataProvider: No topic found for slug:', params.topicSlug);
+        console.warn('⚠️ MetadataProvider: No topic found for slug:', params.topicSlug);
+        
+        // Try fallback search by title if slug doesn't match
+        console.log('🔄 Attempting fallback search by title...');
+        const titleSearch = params.topicSlug.split('-').join(' ');
+        
+        const { data: fallbackTopic, error: fallbackError } = await supabase
+          .from('topics')
+          .select(`
+            id,
+            title,
+            content,
+            slug,
+            category_id,
+            meta_title,
+            meta_description,
+            meta_keywords,
+            canonical_url,
+            og_title,
+            og_description,
+            og_image,
+            categories (
+              id,
+              name,
+              slug
+            )
+          `)
+          .ilike('title', `%${titleSearch}%`)
+          .limit(1)
+          .maybeSingle();
+          
+        console.log('📊 Fallback search result:', { 
+          data: fallbackTopic, 
+          error: fallbackError,
+          searchedTitle: titleSearch
+        });
+        
+        if (fallbackTopic) {
+          return {
+            ...fallbackTopic,
+            category_name: fallbackTopic.categories?.name
+          };
+        }
+        
         return null;
       }
 
-      console.log('MetadataProvider: Found topic:', topic);
+      console.log('✅ MetadataProvider: Found topic:', {
+        title: topic.title,
+        slug: topic.slug,
+        category: topic.categories?.name,
+        meta_title: topic.meta_title
+      });
       
       // Add category name to topic data for easy access
       return {
@@ -181,21 +240,32 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     if (topicMetadata && params.topicSlug) {
       const catName = (topicMetadata as any).category_name || formatSlug(params.subcategorySlug || params.categorySlug || '');
       
-      console.log('MetadataProvider: Generating topic title with:', {
+      console.log('🏷️ MetadataProvider: Generating topic title with components:', {
         topicTitle: topicMetadata.title,
         categoryName: catName,
         forumName,
         separator: titleSeparator,
+        existingMetaTitle: topicMetadata.meta_title,
         autoGenerationEnabled
       });
       
-      // Use database meta_title if it exists, otherwise auto-generate
-      const title = topicMetadata.meta_title || (autoGenerationEnabled ? generateTopicTitle({
-        topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
-        categoryName: catName,
-        forumName,
-        separator: titleSeparator
-      }) : `${topicMetadata.title || formatSlug(params.topicSlug!)}${titleSeparator}${forumName}`);
+      // Use database meta_title if it exists, otherwise auto-generate with all 3 components
+      let title;
+      if (topicMetadata.meta_title) {
+        title = topicMetadata.meta_title;
+        console.log('✅ Using database meta_title:', title);
+      } else if (autoGenerationEnabled) {
+        title = generateTopicTitle({
+          topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
+          categoryName: catName,
+          forumName,
+          separator: titleSeparator
+        });
+        console.log('✅ Auto-generated title with all components:', title);
+      } else {
+        title = `${topicMetadata.title || formatSlug(params.topicSlug!)}${titleSeparator}${forumName}`;
+        console.log('✅ Basic title (auto-generation disabled):', title);
+      }
       
       const description = topicMetadata.meta_description || generateTopicDescription({
         topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
@@ -204,7 +274,15 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
         forumName
       });
       
-      console.log('MetadataProvider: Generated topic metadata:', { title, description });
+      console.log('📄 Final topic metadata:', { 
+        title, 
+        description,
+        components: {
+          topicTitle: topicMetadata.title,
+          categoryName: catName,
+          forumName: forumName
+        }
+      });
       
       return {
         title,
@@ -389,6 +467,13 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
   console.log('🏷️ MetadataProvider computed metadata:', metadata);
   console.log('📄 Current document.title:', document.title);
   console.log('🔍 Current pathname:', location.pathname);
+  console.log('🔗 URL params:', { 
+    topicSlug: params.topicSlug, 
+    categorySlug: params.categorySlug, 
+    subcategorySlug: params.subcategorySlug 
+  });
+  console.log('💾 Topic metadata state:', !!topicMetadata ? 'LOADED' : 'NULL');
+  console.log('💾 Category metadata state:', !!categoryMetadata ? 'LOADED' : 'NULL');
 
   return (
     <MetadataContext.Provider value={{ setPageMetadata }}>
