@@ -58,117 +58,42 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
 
   // Get topic metadata if on topic page
   const { data: topicMetadata } = useQuery({
-    queryKey: ['topic-metadata', params.topicSlug],
+    queryKey: ['topic-metadata', params.categorySlug, params.topicSlug],
     queryFn: async () => {
-      console.log('🔍 MetadataProvider: Fetching topic metadata for:', { 
-        topicSlug: params.topicSlug,
-        currentPath: location.pathname,
-        allParams: params
-      });
-      
-      if (!params.topicSlug) {
-        console.log('❌ No topicSlug found in params');
+      if (!params.topicSlug || !params.categorySlug) {
         return null;
       }
       
-      // Get topic by slug first, then get its category info
-      const { data: topic, error: topicError } = await supabase
+      // Query topic with category join to match both slugs
+      const { data: topic, error } = await supabase
         .from('topics')
         .select(`
           id,
           title,
-          content,
           slug,
-          category_id,
           meta_title,
           meta_description,
-          meta_keywords,
           canonical_url,
           og_title,
           og_description,
           og_image,
-          categories (
+          categories!inner (
             id,
             name,
             slug
           )
         `)
         .eq('slug', params.topicSlug)
+        .eq('categories.slug', params.categorySlug)
         .maybeSingle();
       
-      console.log('📊 Supabase topic query result:', { 
-        data: topic, 
-        error: topicError,
-        searchedSlug: params.topicSlug 
-      });
-      
-      if (topicError) {
-        console.error('❌ MetadataProvider: Error fetching topic:', topicError);
+      if (error || !topic) {
         return null;
       }
 
-      if (!topic) {
-        console.warn('⚠️ MetadataProvider: No topic found for slug:', params.topicSlug);
-        
-        // Try fallback search by title if slug doesn't match
-        console.log('🔄 Attempting fallback search by title...');
-        const titleSearch = params.topicSlug.split('-').join(' ');
-        
-        const { data: fallbackTopic, error: fallbackError } = await supabase
-          .from('topics')
-          .select(`
-            id,
-            title,
-            content,
-            slug,
-            category_id,
-            meta_title,
-            meta_description,
-            meta_keywords,
-            canonical_url,
-            og_title,
-            og_description,
-            og_image,
-            categories (
-              id,
-              name,
-              slug
-            )
-          `)
-          .ilike('title', `%${titleSearch}%`)
-          .limit(1)
-          .maybeSingle();
-          
-        console.log('📊 Fallback search result:', { 
-          data: fallbackTopic, 
-          error: fallbackError,
-          searchedTitle: titleSearch
-        });
-        
-        if (fallbackTopic) {
-          return {
-            ...fallbackTopic,
-            category_name: fallbackTopic.categories?.name
-          };
-        }
-        
-        return null;
-      }
-
-      console.log('✅ MetadataProvider: Found topic:', {
-        title: topic.title,
-        slug: topic.slug,
-        category: topic.categories?.name,
-        meta_title: topic.meta_title
-      });
-      
-      // Add category name to topic data for easy access
-      return {
-        ...topic,
-        category_name: topic.categories?.name
-      };
+      return topic;
     },
-    enabled: !!params.topicSlug
+    enabled: !!params.topicSlug && !!params.categorySlug
   });
 
   // Get category metadata if on category page (and not topic page)
@@ -270,24 +195,12 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       const description = topicMetadata.meta_description || generateTopicDescription({
         topicTitle: topicMetadata.title || formatSlug(params.topicSlug!),
         categoryName: catName,
-        topicContent: topicMetadata.content,
         forumName
-      });
-      
-      console.log('📄 Final topic metadata:', { 
-        title, 
-        description,
-        components: {
-          topicTitle: topicMetadata.title,
-          categoryName: catName,
-          forumName: forumName
-        }
       });
       
       return {
         title,
         description,
-        keywords: topicMetadata.meta_keywords,
         canonical: topicMetadata.canonical_url,
         ogTitle: topicMetadata.og_title || title,
         ogDescription: topicMetadata.og_description || description,

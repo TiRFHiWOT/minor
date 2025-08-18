@@ -1,6 +1,6 @@
 import { htmlToText } from '@/utils/htmlToText';
 
-export const FORUM_NAME = 'Minor Hockey Forum'; // Legacy constant for backwards compatibility
+export const FORUM_NAME = 'Minor Hockey Talks'; // Legacy constant for backwards compatibility
 
 export interface AutoSeoOptions {
   topicTitle?: string;
