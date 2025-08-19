@@ -18,6 +18,7 @@ import { PaginationControls } from '@/components/ui/pagination-controls';
 import { TopicTable } from './TopicTable';
 import { ReportModal } from './ReportModal';
 import { QuickTopicModal } from './QuickTopicModal';
+import { ResponsiveAdBanner } from '@/components/ads/ResponsiveAdBanner';
 
 export const ForumHome = () => {
   const { user } = useAuth();
@@ -165,6 +166,11 @@ export const ForumHome = () => {
         })()}
       </div>
 
+      {/* Ad Banner - Above Content */}
+      <ResponsiveAdBanner 
+        slot="1234567890"
+        className="border-b border-border"
+      />
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
@@ -255,6 +261,12 @@ export const ForumHome = () => {
         </TabsContent>
       </Tabs>
 
+      {/* Ad Banner - Between Sections */}
+      <ResponsiveAdBanner 
+        slot="2345678901"
+        format="rectangle"
+        className="my-6"
+      />
 
       {/* Forums Section */}
       <div className="forum-spacing">
@@ -298,6 +310,12 @@ export const ForumHome = () => {
         )}
       </div>
 
+      {/* Ad Banner - Between Forum Sections */}
+      <ResponsiveAdBanner 
+        slot="3456789012"
+        format="horizontal"
+        className="my-6"
+      />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">

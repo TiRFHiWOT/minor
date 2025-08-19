@@ -27,6 +27,7 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { MoveTopicModal } from '@/components/admin/MoveTopicModal';
 import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
+import { ResponsiveAdBanner } from '@/components/ads/ResponsiveAdBanner';
 
 export const TopicView = () => {
   const { getSetting } = useForumSettings();
@@ -308,6 +309,12 @@ export const TopicView = () => {
 
   return (
     <div className="space-y-4 md:space-y-6">
+      {/* Ad Banner - Above Topic */}
+      <ResponsiveAdBanner 
+        slot="4567890123"
+        className="border-b border-border"
+      />
+
       {/* Breadcrumb - desktop only */}
       <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
         <Link to="/" className="hover:text-primary">Forum</Link>
@@ -616,12 +623,27 @@ export const TopicView = () => {
                   depth={0}
                   onReport={handleReport}
                 />
+                {/* Ad every 5 posts */}
+                {index > 0 && (index + 1) % 5 === 0 && (
+                  <ResponsiveAdBanner 
+                    slot="5678901234"
+                    format="rectangle"
+                    className="my-4"
+                  />
+                )}
               </React.Fragment>
             ))}
           </div>
         ) : (
           <p className="text-muted-foreground text-center py-8 px-3">No replies yet. Be the first to reply!</p>
         )}
+
+        {/* Ad Banner - Before Reply Form */}
+        <ResponsiveAdBanner 
+          slot="6789012345"
+          format="horizontal"
+          className="my-6 border-t border-border pt-4"
+        />
         
         {/* Quick Reply */}
         <div className="bg-card border rounded-lg mb-6">

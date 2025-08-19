@@ -11,6 +11,7 @@ import { useCategoryStats } from '@/hooks/useCategoryStats';
 import { useEnhancedForumStats } from '@/hooks/useEnhancedForumStats';
 import { QuickTopicModal } from './QuickTopicModal';
 import { cn } from '@/lib/utils';
+import { ResponsiveAdBanner } from '@/components/ads/ResponsiveAdBanner';
 
 // Component to display category stats
 const CategoryItem = ({ category }: { category: any }) => {
@@ -103,6 +104,12 @@ export const ForumSidebarNav = () => {
         </div>
       </Card>
 
+      {/* Sidebar Ad */}
+      <ResponsiveAdBanner 
+        slot="7890123456"
+        format="rectangle"
+        className="bg-card border border-border rounded-lg"
+      />
 
     </div>
   );
