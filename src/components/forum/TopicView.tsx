@@ -311,7 +311,7 @@ export const TopicView = () => {
     <div className="space-y-4 md:space-y-6">
       {/* Ad Banner - Above Topic */}
       <ResponsiveAdBanner 
-        slot="4567890123"
+        format="horizontal"
         className="border-b border-border"
       />
 
@@ -626,8 +626,7 @@ export const TopicView = () => {
                 {/* Ad every 5 posts */}
                 {index > 0 && (index + 1) % 5 === 0 && (
                   <ResponsiveAdBanner 
-                    slot="5678901234"
-                    format="rectangle"
+                    format="square"
                     className="my-4"
                   />
                 )}
@@ -640,7 +639,6 @@ export const TopicView = () => {
 
         {/* Ad Banner - Before Reply Form */}
         <ResponsiveAdBanner 
-          slot="6789012345"
           format="horizontal"
           className="my-6 border-t border-border pt-4"
         />

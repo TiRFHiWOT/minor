@@ -106,8 +106,7 @@ export const ForumSidebarNav = () => {
 
       {/* Sidebar Ad */}
       <ResponsiveAdBanner 
-        slot="7890123456"
-        format="rectangle"
+        format="vertical"
         className="bg-card border border-border rounded-lg"
       />
 

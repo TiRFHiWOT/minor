@@ -3,10 +3,8 @@ import { useForumSettings } from '@/hooks/useForumSettings';
 import { useCookieConsent } from '@/hooks/useCookieConsent';
 
 interface ResponsiveAdBannerProps {
-  slot: string;
+  format: 'square' | 'horizontal' | 'vertical';
   className?: string;
-  format?: 'auto' | 'rectangle' | 'horizontal' | 'vertical';
-  responsive?: boolean;
 }
 
 declare global {
@@ -16,17 +14,22 @@ declare global {
 }
 
 export const ResponsiveAdBanner: React.FC<ResponsiveAdBannerProps> = ({
-  slot,
-  className = '',
-  format = 'auto',
-  responsive = true
+  format,
+  className = ''
 }) => {
   const adRef = useRef<HTMLModElement>(null);
-  const { getSetting } = useForumSettings();
   const { hasConsent } = useCookieConsent();
   
-  const clientId = getSetting('google_adsense_client_id', '');
-  const canShowAds = hasConsent('analytics') && clientId;
+  // Ad slot mappings for your specific ad units
+  const adSlots = {
+    square: '2493498407',
+    horizontal: '6641175715', 
+    vertical: '2701930702'
+  };
+  
+  const slot = adSlots[format];
+  const clientId = 'ca-pub-5447109336224364';
+  const canShowAds = hasConsent('analytics');
 
   useEffect(() => {
     if (!canShowAds || !adRef.current) return;
@@ -47,16 +50,16 @@ export const ResponsiveAdBanner: React.FC<ResponsiveAdBannerProps> = ({
   }
 
   return (
-    <div className={`w-full flex justify-center py-4 ${className}`}>
-      <div className="text-xs text-muted-foreground mb-1 text-center">Advertisement</div>
+    <div className={`w-full flex flex-col items-center py-4 ${className}`}>
+      <div className="text-xs text-muted-foreground mb-2 text-center">Advertisement</div>
       <ins
         ref={adRef}
         className="adsbygoogle"
         style={{ display: 'block' }}
         data-ad-client={clientId}
         data-ad-slot={slot}
-        data-ad-format={format}
-        data-full-width-responsive={responsive.toString()}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
       />
     </div>
   );

@@ -168,7 +168,7 @@ export const ForumHome = () => {
 
       {/* Ad Banner - Above Content */}
       <ResponsiveAdBanner 
-        slot="1234567890"
+        format="horizontal"
         className="border-b border-border"
       />
 
@@ -263,8 +263,7 @@ export const ForumHome = () => {
 
       {/* Ad Banner - Between Sections */}
       <ResponsiveAdBanner 
-        slot="2345678901"
-        format="rectangle"
+        format="square"
         className="my-6"
       />
 
@@ -312,7 +311,6 @@ export const ForumHome = () => {
 
       {/* Ad Banner - Between Forum Sections */}
       <ResponsiveAdBanner 
-        slot="3456789012"
         format="horizontal"
         className="my-6"
       />
