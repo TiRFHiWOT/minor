@@ -9,8 +9,6 @@ const Privacy = () => {
         title="Privacy Policy"
         defaultContent=""
       />
-      {/* AdMetrics CMP Privacy Policy - required for privacy law compliance */}
-      <div id="ampCMP_privacyPolicy" className="mt-4"></div>
     </div>
   );
 };

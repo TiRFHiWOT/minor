@@ -281,8 +281,6 @@ export const Footer = () => {
         <div className="border-t mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} Minor Hockey Talks. All rights reserved.</p>
           <p>Built with ❤️ for the hockey community</p>
-          {/* AdMetrics CMP Footer - required for privacy law compliance */}
-          <div id="ampCMP_footer"></div>
         </div>
       </div>
     </footer>

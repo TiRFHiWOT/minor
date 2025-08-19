@@ -27,8 +27,6 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { MoveTopicModal } from '@/components/admin/MoveTopicModal';
 import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
-import { AdMetricsBanner } from '../ads/AdMetricsBanner';
-import { ContentBanner } from '../ads/ContentBanner';
 
 export const TopicView = () => {
   const { getSetting } = useForumSettings();
@@ -593,8 +591,6 @@ export const TopicView = () => {
         </div>
       )}
 
-      {/* AdMetrics Banner */}
-      <AdMetricsBanner />
 
       {/* Comments */}
       <div className="bg-card">
@@ -620,10 +616,6 @@ export const TopicView = () => {
                   depth={0}
                   onReport={handleReport}
                 />
-                {/* Content-Five Banner - Between posts (every 4th post) */}
-                {(index + 1) % 4 === 0 && index < posts.length - 1 && (
-                  <ContentBanner bannerId="five" />
-                )}
               </React.Fragment>
             ))}
           </div>

@@ -18,8 +18,6 @@ import { PaginationControls } from '@/components/ui/pagination-controls';
 import { TopicTable } from './TopicTable';
 import { ReportModal } from './ReportModal';
 import { QuickTopicModal } from './QuickTopicModal';
-import { AdMetricsBanner } from '../ads/AdMetricsBanner';
-import { ContentBanner } from '../ads/ContentBanner';
 
 export const ForumHome = () => {
   const { user } = useAuth();
@@ -167,8 +165,6 @@ export const ForumHome = () => {
         })()}
       </div>
 
-      {/* AdMetrics Banner */}
-      <AdMetricsBanner />
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
@@ -259,8 +255,6 @@ export const ForumHome = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Content-One Banner - Under pagination for hot topic tabs */}
-      <ContentBanner bannerId="one" />
 
       {/* Forums Section */}
       <div className="forum-spacing">
@@ -304,8 +298,6 @@ export const ForumHome = () => {
         )}
       </div>
 
-      {/* Content-Two Banner - Between main forums and province forums */}
-      <ContentBanner bannerId="two" />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
@@ -335,8 +327,6 @@ export const ForumHome = () => {
               
               return countries.map((country, index) => (
                 <div key={country.name}>
-                  {/* Content-Three Banner - Between Canada and USA forums */}
-                  {index === 1 && <ContentBanner bannerId="three" />}
                    
                   <div className="forum-spacing">
                     <h3 className="text-base font-semibold text-foreground border-b pb-1 forum-header">
@@ -370,8 +360,6 @@ export const ForumHome = () => {
                     </div>
                   </div>
                   
-                  {/* Content-Four Banner - After USA forums */}
-                  {index === countries.length - 1 && <ContentBanner bannerId="four" />}
                 </div>
               ));
             })()}
