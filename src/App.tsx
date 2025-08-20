@@ -84,7 +84,8 @@ const App = () => (
                   <CookieDebugPanel />
                   <ScrollToTop />
                   <MetadataProvider>
-                  <MaintenanceWrapper>
+                   <ErrorBoundary>
+                    <MaintenanceWrapper>
                  <Routes>
                     {/* Static redirects handled by _redirects file, not React */}
                     
@@ -164,7 +165,8 @@ const App = () => (
                     </VPNGuard>
                   } />
                 </Routes>
-                  </MaintenanceWrapper>
+                   </MaintenanceWrapper>
+                   </ErrorBoundary>
                 </MetadataProvider>
                 </IPTrackingWrapper>
               </AnalyticsProvider>
