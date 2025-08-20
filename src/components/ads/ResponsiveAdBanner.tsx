@@ -28,18 +28,59 @@ export const ResponsiveAdBanner: React.FC<ResponsiveAdBannerProps> = ({
   const clientId = 'ca-pub-5447109336224364';
 
   useEffect(() => {
-    if (!adRef.current) return;
-
-    try {
-      // Initialize adsbygoogle array if it doesn't exist
-      window.adsbygoogle = window.adsbygoogle || [];
-      
-      // Push the ad configuration
-      window.adsbygoogle.push({});
-    } catch (error) {
-      console.error('Error loading AdSense ad:', error);
+    if (!adRef.current) {
+      console.log(`AdSense ${format}: No ad element found`);
+      return;
     }
-  }, [slot]);
+
+    // Wait for AdSense script to be loaded
+    const initializeAd = () => {
+      try {
+        console.log(`AdSense ${format}: Initializing ad with slot ${slot}`);
+        
+        // Initialize adsbygoogle array if it doesn't exist
+        window.adsbygoogle = window.adsbygoogle || [];
+        
+        // Clear any existing ad content
+        if (adRef.current) {
+          adRef.current.innerHTML = '';
+        }
+        
+        // Push the ad configuration
+        window.adsbygoogle.push({});
+        
+        console.log(`AdSense ${format}: Ad pushed to queue`);
+      } catch (error) {
+        console.error(`AdSense ${format}: Error loading ad:`, error);
+      }
+    };
+
+    // Check if AdSense script is already loaded
+    if (window.adsbygoogle) {
+      // Add a small delay to ensure DOM is fully ready
+      const timer = setTimeout(initializeAd, 100);
+      return () => clearTimeout(timer);
+    } else {
+      // Wait for AdSense script to load
+      const checkAdSense = setInterval(() => {
+        if (window.adsbygoogle) {
+          clearInterval(checkAdSense);
+          initializeAd();
+        }
+      }, 100);
+      
+      // Cleanup after 10 seconds if AdSense doesn't load
+      const timeout = setTimeout(() => {
+        clearInterval(checkAdSense);
+        console.warn(`AdSense ${format}: Script didn't load within 10 seconds`);
+      }, 10000);
+      
+      return () => {
+        clearInterval(checkAdSense);
+        clearTimeout(timeout);
+      };
+    }
+  }, [slot, format]);
 
   return (
     <div className={`w-full flex flex-col items-center py-4 ${className}`}>
