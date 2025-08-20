@@ -1,6 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { useForumSettings } from '@/hooks/useForumSettings';
-import { useCookieConsent } from '@/hooks/useCookieConsent';
 
 interface ResponsiveAdBannerProps {
   format: 'square' | 'horizontal' | 'vertical';
@@ -18,7 +16,6 @@ export const ResponsiveAdBanner: React.FC<ResponsiveAdBannerProps> = ({
   className = ''
 }) => {
   const adRef = useRef<HTMLModElement>(null);
-  const { hasConsent } = useCookieConsent();
   
   // Ad slot mappings for your specific ad units
   const adSlots = {
@@ -29,10 +26,9 @@ export const ResponsiveAdBanner: React.FC<ResponsiveAdBannerProps> = ({
   
   const slot = adSlots[format];
   const clientId = 'ca-pub-5447109336224364';
-  const canShowAds = hasConsent('analytics');
 
   useEffect(() => {
-    if (!canShowAds || !adRef.current) return;
+    if (!adRef.current) return;
 
     try {
       // Initialize adsbygoogle array if it doesn't exist
@@ -43,11 +39,7 @@ export const ResponsiveAdBanner: React.FC<ResponsiveAdBannerProps> = ({
     } catch (error) {
       console.error('Error loading AdSense ad:', error);
     }
-  }, [canShowAds, slot]);
-
-  if (!canShowAds) {
-    return null;
-  }
+  }, [slot]);
 
   return (
     <div className={`w-full flex flex-col items-center py-4 ${className}`}>
