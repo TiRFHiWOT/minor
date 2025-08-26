@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface ResponsiveAdBannerProps {
   format: 'square' | 'horizontal' | 'vertical';
@@ -15,40 +15,51 @@ export const ResponsiveAdBanner: React.FC<ResponsiveAdBannerProps> = ({
   format,
   className = ''
 }) => {
-  // Ad slot mappings for your specific ad units
   const adSlots = {
     square: '2493498407',
-    horizontal: '6641175715', 
+    horizontal: '6641175715',
     vertical: '2701930702'
   };
-  
   const slot = adSlots[format];
   const clientId = 'ca-pub-5447109336224364';
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [canRender, setCanRender] = useState(false);
+
   useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (error) {
-      console.error('AdSense error:', error);
-    }
+    const checkWidth = () => {
+      if (containerRef.current && containerRef.current.offsetWidth > 0) {
+        setCanRender(true);
+      }
+    };
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
   }, []);
 
+  useEffect(() => {
+    if (canRender) {
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (error) {
+        console.error('AdSense error:', error);
+      }
+    }
+  }, [canRender]);
+
   return (
-    <div className={`w-full flex flex-col items-center py-4 ${className}`}>
+    <div ref={containerRef} className={`w-full flex flex-col items-center py-4 ${className}`}>
       <div className="text-xs text-muted-foreground mb-2 text-center">Advertisement</div>
-      <ins
-        className="adsbygoogle"
-        style={{ display: 'block' }}
-        data-ad-client={clientId}
-        data-ad-slot={slot}
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      />
-      <script 
-        dangerouslySetInnerHTML={{
-          __html: "(adsbygoogle = window.adsbygoogle || []).push({});"
-        }}
-      />
+      {canRender && (
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'block' }}
+          data-ad-client={clientId}
+          data-ad-slot={slot}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+      )}
     </div>
   );
 };
