@@ -131,13 +131,32 @@ const App = () => (
                    <Route path="/" element={<OldUrlRedirectWrapper><ForumLayout /></OldUrlRedirectWrapper>}>
                      <Route index element={<ForumHome />} />
                     {/* New hierarchical URL structure */}
-                    <Route path=":categorySlug/:topicSlug" element={<TopicView />} />
-                    <Route path=":categorySlug/:subcategorySlug/:topicSlug" element={<TopicView />} />
-                    <Route path=":categorySlug" element={<CategoryView />} />
-                    <Route path=":categorySlug/:subcategorySlug" element={<CategoryView />} />
+                    <Route path=":categorySlug/:topicSlug" element={
+                        <MetadataProvider>
+                          <TopicView />
+                        </MetadataProvider>
+                    } />
+                    <Route path=":categorySlug/:subcategorySlug/:topicSlug" element={
+                        <MetadataProvider>
+                          <TopicView />
+                        </MetadataProvider>} />
+                    <Route path=":categorySlug" element={
+                      <MetadataProvider>
+                        <CategoryView />
+                      </MetadataProvider>
+                    } />
+                    <Route path=":categorySlug/:subcategorySlug" element={
+                      <MetadataProvider>
+                        <CategoryView />
+                      </MetadataProvider>
+                    } />
                     {/* Legacy UUID-based redirects */}
                     <Route path="topic/:topicId" element={<TopicView />} />
-                    <Route path="category/:categoryId" element={<CategoryView />} />
+                    <Route path="category/:categoryId" element={
+                      <MetadataProvider>
+                        <CategoryView />
+                      </MetadataProvider>
+                    } />
                      <Route path="create" element={<CreateTopic />} />
                      <Route path="topics" element={<Topics />} />
                      <Route path="categories" element={<Categories />} />

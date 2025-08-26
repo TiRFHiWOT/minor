@@ -19,7 +19,7 @@ const CategoryItem = ({ category }: { category: any }) => {
   
   return (
     <Link
-      to={`/category/${category.slug}`}
+      to={`/${category.slug}`}
       className="flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors hover:bg-muted/50 group"
     >
       <div className="flex items-center space-x-2">
