@@ -28,6 +28,7 @@ import ForumRules from "./pages/ForumRules";
 
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Sitemap from "./pages/Sitemap";
 import Topics from "./pages/Topics";
 import Bookmarks from "./pages/Bookmarks";
 import { Categories } from "./pages/Categories";
@@ -169,8 +170,9 @@ const App = () => (
                      <Route path="terms" element={<Terms />} />
                      <Route path="privacy" element={<Privacy />} />
                      <Route path="rules" element={<ForumRules />} />
-                     <Route path="blog" element={<Blog />} />
-                      <Route path="blog/:slug" element={<BlogPost />} />
+                      <Route path="blog" element={<Blog />} />
+                       <Route path="blog/:slug" element={<BlogPost />} />
+                      <Route path="sitemap" element={<Sitemap />} />
                     </Route>
                    
                    

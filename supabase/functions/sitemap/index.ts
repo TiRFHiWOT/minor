@@ -29,6 +29,7 @@ function generateSitemapXML(urls: SitemapUrl[]): string {
   }).join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urlElements}
 </urlset>`;
@@ -45,6 +46,7 @@ function generateSitemapIndexXML(sitemaps: { loc: string; lastmod?: string }[]):
   }).join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemapElements}
 </sitemapindex>`;
