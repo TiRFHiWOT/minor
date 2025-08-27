@@ -57,20 +57,37 @@ export function SitemapManager() {
   const testSitemap = async (type?: string) => {
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('sitemap', {
-        body: type ? { type } : undefined
+      // Use direct fetch to test the actual sitemap endpoints
+      const functionUrl = `https://rscowwmoeycyxmfslhme.supabase.co/functions/v1/sitemap${type ? `?type=${type}` : ''}`;
+      
+      const response = await fetch(functionUrl, {
+        method: 'GET',
+        headers: {
+          'x-custom-domain': String(siteUrl).replace('https://', '').replace('http://', ''),
+          'Accept': 'application/xml',
+        },
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const xmlContent = await response.text();
+      console.log(`Sitemap ${type || 'index'} response preview:`, xmlContent.substring(0, 300));
+
+      // Validate XML structure
+      if (!xmlContent.includes('<?xml') || (!xmlContent.includes('<urlset') && !xmlContent.includes('<sitemapindex'))) {
+        throw new Error('Invalid XML response format');
+      }
 
       // Count URLs in the response
-      const urlCount = data ? (data.match(/<url>/g) || []).length : 0;
-      const sitemapCount = data ? (data.match(/<sitemap>/g) || []).length : 0;
+      const urlCount = (xmlContent.match(/<url>/g) || []).length;
+      const sitemapCount = (xmlContent.match(/<sitemap>/g) || []).length;
       
       setTestResults(prev => ({
         ...prev,
         [type || 'index']: { 
-          status: 200, 
+          status: response.status, 
           urls: type === 'index' ? sitemapCount : urlCount 
         }
       }));

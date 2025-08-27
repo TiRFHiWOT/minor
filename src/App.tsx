@@ -90,11 +90,12 @@ const App = () => (
                     {/* Static redirects handled by _redirects file, not React */}
                     
                     {/* Sitemap routes - force hard redirect to edge functions */}
-                    <Route path="/sitemap.xml" element={<SitemapRedirect type="index" />} />
-                    <Route path="/sitemap-static.xml" element={<SitemapRedirect type="static" />} />
-                    <Route path="/sitemap-categories.xml" element={<SitemapRedirect type="categories" />} />
-                    <Route path="/sitemap-topics.xml" element={<SitemapRedirect type="topics" />} />
-                    <Route path="/sitemap-blog.xml" element={<SitemapRedirect type="blog" />} />
+                     <Route path="/sitemap.xml" element={<SitemapRedirect type="index" />} />
+                     <Route path="/sitemap-index.xml" element={<SitemapRedirect type="index" />} />
+                     <Route path="/sitemap-static.xml" element={<SitemapRedirect type="static" />} />
+                     <Route path="/sitemap-categories.xml" element={<SitemapRedirect type="categories" />} />
+                     <Route path="/sitemap-topics.xml" element={<SitemapRedirect type="topics" />} />
+                     <Route path="/sitemap-blog.xml" element={<SitemapRedirect type="blog" />} />
                     
                     {/* VPN blocked page - outside VPN guard */}
                     <Route path="/vpn-blocked" element={<VPNBlocked />} />
@@ -125,7 +126,8 @@ const App = () => (
                   </Route>
                   
                    {/* RSS Feed Route */}
-                  <Route path="/rss" element={<RSSRedirect />} />
+                   <Route path="/rss" element={<RSSRedirect />} />
+                   
                   
                    {/* Forum routes - wrapped in OldUrlRedirectWrapper and ForumLayout */}
                    <Route path="/" element={<OldUrlRedirectWrapper><ForumLayout /></OldUrlRedirectWrapper>}>
