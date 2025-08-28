@@ -53,14 +53,23 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
     return pages;
   };
 
-  const handlePageClick = (page: number) => {
+  const handlePageClick = (page: number, event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
     if (page >= 1 && page <= totalPages && !loading) {
       onPageChange(page);
     }
   };
 
+  const getPageHref = (page: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', page.toString());
+    return url.toString();
+  };
+
   return (
-    <div className="flex flex-col items-center gap-4 py-4">
+    <div className="flex flex-col items-center gap-4 py-4" style={{ minHeight: '120px' }}>
       <div className="text-sm text-muted-foreground">
         Showing {startItem}-{endItem} of {totalItems} items
       </div>
@@ -69,7 +78,8 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious 
-              onClick={() => handlePageClick(currentPage - 1)}
+              href={currentPage > 1 ? getPageHref(currentPage - 1) : undefined}
+              onClick={(e) => handlePageClick(currentPage - 1, e)}
               className={`${
                 currentPage <= 1 || loading 
                   ? 'pointer-events-none opacity-50' 
@@ -84,7 +94,8 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
                 <PaginationEllipsis />
               ) : (
                 <PaginationLink
-                  onClick={() => handlePageClick(page as number)}
+                  href={getPageHref(page as number)}
+                  onClick={(e) => handlePageClick(page as number, e)}
                   isActive={currentPage === page}
                   className={`cursor-pointer ${
                     loading ? 'pointer-events-none opacity-50' : 'hover:bg-accent'
@@ -98,7 +109,8 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
 
           <PaginationItem>
             <PaginationNext 
-              onClick={() => handlePageClick(currentPage + 1)}
+              href={currentPage < totalPages ? getPageHref(currentPage + 1) : undefined}
+              onClick={(e) => handlePageClick(currentPage + 1, e)}
               className={`${
                 currentPage >= totalPages || loading 
                   ? 'pointer-events-none opacity-50' 

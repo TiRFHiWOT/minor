@@ -9,15 +9,20 @@ interface AdMetricsProBannerProps {
 
 export const AdMetricsProBanner: React.FC<AdMetricsProBannerProps> = ({
   adId,
-  minWidth = 300,
-  minHeight = 50,
+  minWidth = 250,
+  minHeight = 250,
   className = "",
 }) => {
   return (
     <div
       id={adId}
-      style={{ minWidth, minHeight }}
-      className={`flex justify-center items-center rounded-lg my-4 border border-gray-200 ${className}`}
+      style={{
+        width: '100%',
+        minWidth: `${minWidth}px`,
+        minHeight: `${minHeight}px`,
+        height: `${minHeight}px`,
+      }}
+      className={`flex justify-center items-center rounded-lg my-4 border border-border bg-muted/20 ${className}`}
     />
   );
 };

@@ -112,7 +112,7 @@ export const ForumSidebarNav = () => {
       /> */}
 
       {/* Sidebar Left */}
-      <AdMetricsProBanner adId="div-gpt-ad-1752247623844-0" minWidth={250} minHeight={250} />
+  <AdMetricsProBanner adId="div-gpt-ad-1752247623844-0" className="w-full max-w-full" minHeight={250} />
 
     </div>
   );
