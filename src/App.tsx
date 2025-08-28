@@ -55,7 +55,7 @@ import { VPNBlocked } from "./pages/VPNBlocked";
 import { VPNGuard } from "./components/VPNGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { RSSRedirect } from "./components/RSSRedirect";
-import { SitemapRedirect } from "./components/SitemapRedirect";
+
 
 import { SessionTimeout } from "./components/security/SessionTimeout";
 import { OldUrlRedirectWrapper } from "./components/OldUrlRedirectWrapper";
@@ -90,13 +90,6 @@ const App = () => (
                  <Routes>
                     {/* Static redirects handled by _redirects file, not React */}
                     
-                    {/* Sitemap routes - force hard redirect to edge functions */}
-                     <Route path="/sitemap.xml" element={<SitemapRedirect type="index" />} />
-                     <Route path="/sitemap-index.xml" element={<SitemapRedirect type="index" />} />
-                     <Route path="/sitemap-static.xml" element={<SitemapRedirect type="static" />} />
-                     <Route path="/sitemap-categories.xml" element={<SitemapRedirect type="categories" />} />
-                     <Route path="/sitemap-topics.xml" element={<SitemapRedirect type="topics" />} />
-                     <Route path="/sitemap-blog.xml" element={<SitemapRedirect type="blog" />} />
                     
                     {/* VPN blocked page - outside VPN guard */}
                     <Route path="/vpn-blocked" element={<VPNBlocked />} />
