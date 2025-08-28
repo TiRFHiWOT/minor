@@ -19,4 +19,24 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // split admin pages into a separate chunk
+          admin: [
+            './src/pages/admin/AdminPage.tsx',
+            './src/pages/admin/AdminUsers.tsx',
+            './src/pages/admin/AdminContent.tsx',
+            './src/pages/admin/AdminModeration.tsx',
+            './src/pages/admin/AdminSpam.tsx',
+            './src/pages/admin/AdminSEO.tsx',
+            './src/pages/admin/AdminSettings.tsx',
+            './src/pages/admin/AdminBlog.tsx',
+          ],
+        },
+      },
+    },
+  },
 }));
