@@ -7,7 +7,7 @@ interface ResponsiveAdBannerProps {
 
 declare global {
   interface Window {
-    adsbygoogle?: any[];
+    adsbygoogle?: unknown[];
   }
 }
 
@@ -47,13 +47,25 @@ export const ResponsiveAdBanner: React.FC<ResponsiveAdBannerProps> = ({
     }
   }, [canRender]);
 
+  // Reserve space for each ad format to prevent layout shift
+  const minHeights: Record<string, number> = {
+    square: 300,      // 300px for square
+    horizontal: 90,   // 90px for horizontal (e.g., 728x90)
+    vertical: 600     // 600px for vertical (e.g., 160x600)
+  };
+  const minHeight = minHeights[format] || 90;
+
   return (
-    <div ref={containerRef} className={`w-full flex flex-col items-center py-4 ${className}`}>
+    <div
+      ref={containerRef}
+      className={`w-full flex flex-col items-center py-4 ${className}`}
+      style={{ minHeight }}
+    >
       <div className="text-xs text-muted-foreground mb-2 text-center">Advertisement</div>
       {canRender && (
         <ins
           className="adsbygoogle"
-          style={{ display: 'block' }}
+          style={{ display: 'block', minHeight }}
           data-ad-client={clientId}
           data-ad-slot={slot}
           data-ad-format="auto"

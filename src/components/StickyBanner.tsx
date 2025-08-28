@@ -77,28 +77,32 @@ export const StickyBanner: React.FC = () => {
   };
 
   return (
-    <div 
-      className={`fixed top-0 left-0 right-0 z-[100] border-b transition-all duration-300 ${getStyleClasses()}`}
-      style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999 }}
-    >
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex-1 text-sm font-medium text-center md:text-left">
-            {message}
+    <>
+      {/* Spacer to reserve space for the fixed banner only when visible */}
+      <div style={{ height: 56 }} aria-hidden="true" />
+      <div 
+        className={`fixed top-0 left-0 right-0 z-[100] border-b transition-all duration-300 ${getStyleClasses()}`}
+        style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999 }}
+      >
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1 text-sm font-medium text-center md:text-left">
+              {message}
+            </div>
+            {isDismissible && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDismiss}
+                className="flex-shrink-0 h-6 w-6 p-0 hover:bg-black/10 dark:hover:bg-white/10"
+                aria-label="Dismiss banner"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
           </div>
-          {isDismissible && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleDismiss}
-              className="flex-shrink-0 h-6 w-6 p-0 hover:bg-black/10 dark:hover:bg-white/10"
-              aria-label="Dismiss banner"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
