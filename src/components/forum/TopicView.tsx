@@ -28,6 +28,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { MoveTopicModal } from '@/components/admin/MoveTopicModal';
 import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
 import { ResponsiveAdBanner } from '@/components/ads/ResponsiveAdBanner';
+import AdMetricsProBanner from '../AdMetricsProBannerProps/AdMetricsProBannerProps';
 
 export const TopicView = () => {
   const { getSetting } = useForumSettings();
@@ -310,10 +311,10 @@ export const TopicView = () => {
   return (
     <div className="space-y-4 md:space-y-6">
       {/* Ad Banner - Above Topic */}
-      <ResponsiveAdBanner 
+      {/* <ResponsiveAdBanner 
         format="horizontal"
         className="border-b border-border"
-      />
+      /> */}
 
       {/* Breadcrumb - desktop only */}
       <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
@@ -598,6 +599,9 @@ export const TopicView = () => {
         </div>
       )}
 
+      {/* Leaderboard Top */}
+       <AdMetricsProBanner adId="div-gpt-ad-1715358540790-0" minWidth={300} minHeight={50} />
+
 
       {/* Comments */}
       <div className="bg-card">
@@ -614,35 +618,70 @@ export const TopicView = () => {
             ))}
           </div>
         ) : posts && posts.length > 0 ? (
-          <div className="space-y-1">
-            {organizeReplies(posts).map((reply, index) => (
-              <React.Fragment key={reply.id}>
-                <PostComponent
-                  post={reply}
-                  topicId={topic.id || ''}
-                  depth={0}
-                  onReport={handleReport}
-                />
-                {/* Ad every 5 posts */}
-                {index > 0 && (index + 1) % 5 === 0 && (
-                  <ResponsiveAdBanner 
-                    format="square"
-                    className="my-4"
-                  />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+       <div className="space-y-1">
+        {organizeReplies(posts).map((reply, index) => (
+          <React.Fragment key={reply.id}>
+            <PostComponent
+              post={reply}
+              topicId={topic.id || ''}
+              depth={0}
+              onReport={handleReport}
+            />
+
+            {/* Show Content One after the 3rd post */}
+            {index === 3 && (
+              <AdMetricsProBanner
+                adId="div-gpt-ad-1715358598569-0"
+                minWidth={300}
+                minHeight={50}
+                className="my-4"
+              />
+            )}
+
+            {/* Show Content Two after the 7th post */}
+            {index === 7 && (
+              <AdMetricsProBanner
+                adId="div-gpt-ad-1715358620345-0" 
+                minWidth={300}
+                minHeight={50}
+                className="my-4"
+              />
+            )}
+
+            {/* Show Content Three after the 11th post */}
+            {index === 11 && (
+              <AdMetricsProBanner
+                adId="div-gpt-ad-1753889678213-0"
+                minWidth={300}
+                minHeight={50}
+                className="my-4"
+              />
+            )}
+
+            {/* Show Content Four after the 15th post */}
+            {index === 15 && (
+              <AdMetricsProBanner
+                adId="div-gpt-ad-1753889948554-0"
+                minWidth={300}
+                minHeight={50}
+                className="my-4"
+              />
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+
         ) : (
           <p className="text-muted-foreground text-center py-8 px-3">No replies yet. Be the first to reply!</p>
         )}
 
         {/* Ad Banner - Before Reply Form */}
-        <ResponsiveAdBanner 
+        {/* <ResponsiveAdBanner 
           format="horizontal"
           className="my-6 border-t border-border pt-4"
         />
-        
+         */}
+
         {/* Quick Reply */}
         <div className="bg-card border rounded-lg mb-6">
           <div className="p-3 md:p-6 border-b border-border">
@@ -674,6 +713,9 @@ export const TopicView = () => {
           />
         )}
       </div>
+
+      {/* Content Five */}
+      <AdMetricsProBanner adId="div-gpt-ad-1753890381531-0" minWidth={300} minHeight={50} />
 
       <ReportModal
         isOpen={reportModal.isOpen}

@@ -19,6 +19,7 @@ import { TopicTable } from './TopicTable';
 import { ReportModal } from './ReportModal';
 import { QuickTopicModal } from './QuickTopicModal';
 import { ResponsiveAdBanner } from '@/components/ads/ResponsiveAdBanner';
+import AdMetricsProBanner from '../AdMetricsProBannerProps/AdMetricsProBannerProps';
 
 export const ForumHome = () => {
   const { user } = useAuth();
@@ -167,10 +168,13 @@ export const ForumHome = () => {
       </div>
 
       {/* Ad Banner - Above Content */}
-      <ResponsiveAdBanner 
+      {/* <ResponsiveAdBanner 
         format="horizontal"
         className="border-b border-border"
-      />
+      /> */}
+
+      {/* Leaderboard Top */}
+      <AdMetricsProBanner adId="div-gpt-ad-1715358540790-0" minWidth={300} minHeight={50} />
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
@@ -262,10 +266,13 @@ export const ForumHome = () => {
       </Tabs>
 
       {/* Ad Banner - Between Sections */}
-      <ResponsiveAdBanner 
+      {/* <ResponsiveAdBanner 
         format="square"
         className="my-6"
-      />
+      /> */}
+
+      {/* Content One */}
+      <AdMetricsProBanner adId="div-gpt-ad-1715358598569-0" minWidth={300} minHeight={50} />
 
       {/* Forums Section */}
       <div className="forum-spacing">
@@ -310,10 +317,13 @@ export const ForumHome = () => {
       </div>
 
       {/* Ad Banner - Between Forum Sections */}
-      <ResponsiveAdBanner 
+      {/* <ResponsiveAdBanner 
         format="horizontal"
         className="my-6"
-      />
+      /> */}
+
+      {/* Content Two */}
+      <AdMetricsProBanner adId="div-gpt-ad-1715358620345-0" minWidth={300} minHeight={50} />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
@@ -375,8 +385,18 @@ export const ForumHome = () => {
                       ))}
                     </div>
                   </div>
-                  
+                     {index === 0 && (
+                      <div>
+                        {/* Content Three */}
+                        <AdMetricsProBanner
+                          adId="div-gpt-ad-1753889678213-0"
+                          minWidth={300}
+                          minHeight={50}
+                        />
+                      </div>
+                    )}
                 </div>
+                
               ));
             })()}
           </div>
