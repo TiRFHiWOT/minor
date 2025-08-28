@@ -310,10 +310,10 @@ export const TopicView = () => {
   return (
     <div className="space-y-4 md:space-y-6">
       {/* Ad Banner - Above Topic */}
-      <ResponsiveAdBanner 
+      {/* <ResponsiveAdBanner 
         format="horizontal"
         className="border-b border-border"
-      />
+      /> */}
 
       {/* Breadcrumb - desktop only */}
       <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
@@ -598,6 +598,14 @@ export const TopicView = () => {
         </div>
       )}
 
+      {/* Leaderboard-Top */}
+      <div
+         id='div-gpt-ad-1715358540790-0' 
+        style={{ minWidth: "300px", minHeight: "50px" }}
+        className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+        >   
+        <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+        </div>
 
       {/* Comments */}
       <div className="bg-card">
@@ -624,12 +632,55 @@ export const TopicView = () => {
                   onReport={handleReport}
                 />
                 {/* Ad every 5 posts */}
-                {index > 0 && (index + 1) % 5 === 0 && (
-                  <ResponsiveAdBanner 
+                
+                  {/* <ResponsiveAdBanner 
                     format="square"
                     className="my-4"
-                  />
-                )}
+                   /> */}
+                    
+                    {/* Content-One  */}
+                    {index === 3 && (
+                      <div
+                        id='div-gpt-ad-1715358598569-0'
+                        style={{ minWidth: "300px", minHeight: "50px" }}
+                      className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+                      >   
+                      <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+                      </div>
+                    )}
+                       
+                    {/* Content-Two  */}
+                    {index === 7 && (
+                      <div
+                        id='div-gpt-ad-1715358620345-0'
+                        style={{ minWidth: "300px", minHeight: "50px" }}
+                        className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+                      >   
+                      <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+                      </div>
+                    )}
+
+                    {/* Content-Three  */}
+                    {index === 11 && (
+                      <div
+                        id='div-gpt-ad-1753889678213-0'
+                        style={{ minWidth: "300px", minHeight: "50px" }}
+                        className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+                      >   
+                      <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+                      </div>
+                    )}
+
+                    {/* Content-Four  */}
+                    {index === 15 && (
+                      <div
+                        id='div-gpt-ad-1753889948554-0'
+                        style={{ minWidth: "300px", minHeight: "50px" }}
+                        className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+                      >   
+                      <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+                      </div>
+                    )}
               </React.Fragment>
             ))}
           </div>
@@ -638,10 +689,10 @@ export const TopicView = () => {
         )}
 
         {/* Ad Banner - Before Reply Form */}
-        <ResponsiveAdBanner 
+        {/* <ResponsiveAdBanner 
           format="horizontal"
           className="my-6 border-t border-border pt-4"
-        />
+        /> */}
         
         {/* Quick Reply */}
         <div className="bg-card border rounded-lg mb-6">
@@ -673,6 +724,15 @@ export const TopicView = () => {
             loading={postsLoading}
           />
         )}
+      </div>
+
+       {/* Content-Five  */}
+        <div
+          id='div-gpt-ad-1753890381531-0'
+          style={{ minWidth: "300px", minHeight: "50px" }}
+          className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+      >   
+      <div className="text-xs text-muted-foreground text-center">Advertisement</div>
       </div>
 
       <ReportModal

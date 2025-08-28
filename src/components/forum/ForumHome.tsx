@@ -167,10 +167,20 @@ export const ForumHome = () => {
       </div>
 
       {/* Ad Banner - Above Content */}
-      <ResponsiveAdBanner 
+      {/* <ResponsiveAdBanner 
         format="horizontal"
         className="border-b border-border"
-      />
+      /> */}
+
+      {/* Leaderboard-Top */}
+      <div
+         id='div-gpt-ad-1715358540790-0' 
+        style={{ minWidth: "300px", minHeight: "50px" }}
+        className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+      >   
+      <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+      </div>
+
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
@@ -262,10 +272,19 @@ export const ForumHome = () => {
       </Tabs>
 
       {/* Ad Banner - Between Sections */}
-      <ResponsiveAdBanner 
+      {/* <ResponsiveAdBanner 
         format="square"
         className="my-6"
-      />
+      /> */}
+
+        {/* Content-One  */}
+        <div
+          id='div-gpt-ad-1715358598569-0'
+          style={{ minWidth: "300px", minHeight: "50px" }}
+          className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+    >   
+    <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+    </div>
 
       {/* Forums Section */}
       <div className="forum-spacing">
@@ -310,10 +329,19 @@ export const ForumHome = () => {
       </div>
 
       {/* Ad Banner - Between Forum Sections */}
-      <ResponsiveAdBanner 
+      {/* <ResponsiveAdBanner 
         format="horizontal"
         className="my-6"
-      />
+      /> */}
+
+       {/* Content-Two  */}
+        <div
+          id='div-gpt-ad-1715358620345-0'
+          style={{ minWidth: "300px", minHeight: "50px" }}
+          className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+      >   
+      <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+      </div>
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
@@ -375,7 +403,18 @@ export const ForumHome = () => {
                       ))}
                     </div>
                   </div>
-                  
+ 
+                  {/* Insert ad card after Canada if USA exists */} 
+                  {country.name === 'Canada' && countries.length > 1 && (  
+                    // Content-Three     
+                   <div
+                      id='div-gpt-ad-1753889678213-0'
+                      style={{ minWidth: "300px", minHeight: "50px" }}
+                      className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+                     >   
+                  <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+                  </div>
+                  )}
                 </div>
               ));
             })()}

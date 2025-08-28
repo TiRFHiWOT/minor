@@ -9,6 +9,7 @@ const Privacy = () => {
         title="Privacy Policy"
         defaultContent=""
       />
+      <div id="ampCMP_privacyPolicy"></div>
     </div>
   );
 };

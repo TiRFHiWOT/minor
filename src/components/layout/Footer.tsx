@@ -283,6 +283,8 @@ export const Footer = () => {
           <p>Built with ❤️ for the hockey community</p>
         </div>
       </div>
+      {/* CMP Consent Footer Div for Privacy Compliance */}
+      <div id="ampCMP_footer"></div>
     </footer>
   );
 };

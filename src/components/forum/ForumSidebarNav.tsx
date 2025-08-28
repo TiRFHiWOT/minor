@@ -105,11 +105,19 @@ export const ForumSidebarNav = () => {
       </Card>
 
       {/* Sidebar Ad */}
-      <ResponsiveAdBanner 
+      {/* <ResponsiveAdBanner 
         format="vertical"
         className="bg-card border border-border rounded-lg"
-      />
+      /> */}
 
+      {/* Sidebar-Left */}
+      <div
+          id='div-gpt-ad-1752247623844-0'
+          style={{ minWidth: "250px", minHeight: "250px" }}
+          className="bg-card border border-border rounded-lg my-2 flex justify-center items-center"
+      >   
+      <div className="text-xs text-muted-foreground text-center">Advertisement</div>
+      </div>
     </div>
   );
 };
