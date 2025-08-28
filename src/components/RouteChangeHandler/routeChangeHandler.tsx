@@ -11,7 +11,6 @@ export default function RouteChangeHandler() {
   const location = useLocation();
 
   useEffect(() => {
-     // Inject video script once
     if (!document.getElementById("c764d7beef4b4321984c2aaa46dd9689")) {
       const script = document.createElement("script");
       script.id = "c764d7beef4b4321984c2aaa46dd9689";
@@ -21,7 +20,6 @@ export default function RouteChangeHandler() {
   }, []);
 
   useEffect(() => {
-    // Defensive wrapper for ad refresh
     const safeRefreshAds = () => {
       if (typeof window.amp_refreshAllSlots === "function") {
         try {
@@ -34,7 +32,7 @@ export default function RouteChangeHandler() {
         console.log("amp_refreshAllSlots not ready yet");
       }
     };
-    const timeout = setTimeout(safeRefreshAds, 500); // 500ms delay to allow DOM to update
+    const timeout = setTimeout(safeRefreshAds, 500);
     return () => clearTimeout(timeout);
   }, [location.pathname]);
 
