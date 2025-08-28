@@ -1,16 +1,8 @@
 import React from 'react';
-import { InlineContentEditor } from '@/components/admin/InlineContentEditor';
+import PrivacyPolicy from './PrivacyPolicy';
 
 const Privacy = () => {
-  return (
-    <div>
-      <InlineContentEditor
-        settingKey="privacy_content"
-        title="Privacy Policy"
-        defaultContent=""
-      />
-    </div>
-  );
+  return <PrivacyPolicy />;
 };
 
 export default Privacy;

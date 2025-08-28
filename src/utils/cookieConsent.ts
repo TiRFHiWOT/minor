@@ -13,7 +13,7 @@ const CONSENT_VERSION = '1.0';
 
 export const defaultConsent: CookieConsent = {
   essential: true, // Always true - required for basic functionality
-  analytics: true, // Default to true for opt-out model
+  analytics: false, // Default to false for true opt-in model
   functional: false,
   timestamp: Date.now(),
   version: CONSENT_VERSION,

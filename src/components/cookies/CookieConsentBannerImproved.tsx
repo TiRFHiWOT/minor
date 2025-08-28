@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Settings, BarChart3 } from 'lucide-react';
+import { X, Settings, Cookie } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
@@ -22,20 +22,21 @@ export const CookieConsentBannerImproved: React.FC<CookieConsentBannerProps> = (
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex-1">
             <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
-              Analytics Active
+              <Cookie className="h-5 w-5" />
+              We use cookies to improve your experience
             </h3>
             <p className="text-sm text-muted-foreground mb-2">
-              We're using analytics to improve your experience by tracking page visits and interactions. 
-              No personal information is collected.
+              We'd like to use cookies to understand how you use our site and make it better for everyone. 
+              This helps us improve our content and features.
             </p>
             <p className="text-xs text-muted-foreground">
-              You can opt out anytime. Analytics help us understand usage patterns and improve our site.{' '}
+              Your privacy matters to us. See our{' '}
               <Button variant="link" className="p-0 h-auto text-xs" asChild>
                 <a href="/privacy" target="_blank" rel="noopener noreferrer">
                   Privacy Policy
                 </a>
               </Button>
+              {' '}for details about what we track and why.
             </p>
           </div>
           
@@ -45,10 +46,10 @@ export const CookieConsentBannerImproved: React.FC<CookieConsentBannerProps> = (
               Customize
             </Button>
             <Button variant="outline" size="sm" onClick={onRejectAll}>
-              Opt Out
+              Decline
             </Button>
             <Button size="sm" onClick={onAcceptAll} className="bg-primary hover:bg-primary/90">
-              Continue
+              Accept
             </Button>
           </div>
         </div>
