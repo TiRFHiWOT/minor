@@ -59,7 +59,6 @@ import { RSSRedirect } from "./components/RSSRedirect";
 
 import { SessionTimeout } from "./components/security/SessionTimeout";
 import { OldUrlRedirectWrapper } from "./components/OldUrlRedirectWrapper";
-import RouteChangeHandler from "./components/RouteChangeHandler/routeChangeHandler";
 
 
 
@@ -85,7 +84,6 @@ const App = () => (
                 <IPTrackingWrapper>
                   <CookieDebugPanel />
                   <ScrollToTop />
-                  <RouteChangeHandler />
                   <MetadataProvider>
                    <ErrorBoundary>
                     <MaintenanceWrapper>
