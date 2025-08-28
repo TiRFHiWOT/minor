@@ -272,7 +272,6 @@ const PrivacyPolicy = () => {
           </CardContent>
         </Card>
       </div>
-       <div id="ampCMP_privacyPolicy"></div>
     </div>
   );
 };
