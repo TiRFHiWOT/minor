@@ -1,5 +1,5 @@
 import React from 'react';
-import { InlineContentEditor } from '@/components/admin/InlineContentEditor';
+import PrivacyPolicy from './PrivacyPolicy';
 
 const Privacy = () => {
   return (

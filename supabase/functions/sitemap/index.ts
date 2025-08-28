@@ -125,14 +125,16 @@ Deno.serve(async (req) => {
 
       case 'static':
         const staticUrls: SitemapUrl[] = [
-          { loc: baseUrl, priority: 1.0, changefreq: 'daily' },
-          { loc: `${baseUrl}/categories`, priority: 0.9, changefreq: 'daily' },
-          { loc: `${baseUrl}/blog`, priority: 0.8, changefreq: 'daily' },
-          { loc: `${baseUrl}/login`, priority: 0.3, changefreq: 'monthly' },
-          { loc: `${baseUrl}/register`, priority: 0.3, changefreq: 'monthly' },
-          { loc: `${baseUrl}/terms`, priority: 0.2, changefreq: 'yearly' },
-          { loc: `${baseUrl}/privacy`, priority: 0.2, changefreq: 'yearly' },
-          { loc: `${baseUrl}/rules`, priority: 0.4, changefreq: 'monthly' },
+          { loc: baseUrl, priority: 1.0, changefreq: 'daily', lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/categories`, priority: 0.9, changefreq: 'daily', lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/topics`, priority: 0.8, changefreq: 'daily', lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/blog`, priority: 0.8, changefreq: 'weekly', lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/search`, priority: 0.6, changefreq: 'daily', lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/login`, priority: 0.3, changefreq: 'monthly', lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/register`, priority: 0.3, changefreq: 'monthly', lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/terms`, priority: 0.2, changefreq: 'yearly', lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/privacy`, priority: 0.2, changefreq: 'yearly', lastmod: new Date().toISOString() },
+          { loc: `${baseUrl}/rules`, priority: 0.4, changefreq: 'monthly', lastmod: new Date().toISOString() },
         ];
         xmlContent = generateSitemapXML(staticUrls);
         break;
@@ -232,8 +234,10 @@ Deno.serve(async (req) => {
     return new Response(xmlContent, {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/xml',
-        'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+        'Content-Type': 'application/xml; charset=utf-8',
+        'Cache-Control': 'public, max-age=3600, s-maxage=7200', // Cache for 1 hour, CDN for 2 hours
+        'X-Robots-Tag': type === 'index' ? 'noindex' : 'all',
+        'Vary': 'Accept-Encoding',
       },
     });
 

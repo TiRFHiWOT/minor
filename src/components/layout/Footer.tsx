@@ -161,9 +161,9 @@ export const Footer = () => {
               <Link to="/blog" className="hover:text-primary transition-colors">
                 Blog
               </Link>
-              <a href="/sitemap.xml" className="hover:text-primary transition-colors">
+              <Link to="/sitemap" className="hover:text-primary transition-colors">
                 Sitemap
-              </a>
+              </Link>
               {isRssEnabled && (
                 <a 
                   href="/rss" 

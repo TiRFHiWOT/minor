@@ -28,6 +28,7 @@ import ForumRules from "./pages/ForumRules";
 
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Sitemap from "./pages/Sitemap";
 import Topics from "./pages/Topics";
 import Bookmarks from "./pages/Bookmarks";
 import { Categories } from "./pages/Categories";
@@ -54,7 +55,7 @@ import { VPNBlocked } from "./pages/VPNBlocked";
 import { VPNGuard } from "./components/VPNGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { RSSRedirect } from "./components/RSSRedirect";
-import { SitemapRedirect } from "./components/SitemapRedirect";
+
 
 import { SessionTimeout } from "./components/security/SessionTimeout";
 import { OldUrlRedirectWrapper } from "./components/OldUrlRedirectWrapper";
@@ -91,12 +92,6 @@ const App = () => (
                  <Routes>
                     {/* Static redirects handled by _redirects file, not React */}
                     
-                    {/* Sitemap routes - force hard redirect to edge functions */}
-                    <Route path="/sitemap.xml" element={<SitemapRedirect type="index" />} />
-                    <Route path="/sitemap-static.xml" element={<SitemapRedirect type="static" />} />
-                    <Route path="/sitemap-categories.xml" element={<SitemapRedirect type="categories" />} />
-                    <Route path="/sitemap-topics.xml" element={<SitemapRedirect type="topics" />} />
-                    <Route path="/sitemap-blog.xml" element={<SitemapRedirect type="blog" />} />
                     
                     {/* VPN blocked page - outside VPN guard */}
                     <Route path="/vpn-blocked" element={<VPNBlocked />} />
@@ -127,7 +122,8 @@ const App = () => (
                   </Route>
                   
                    {/* RSS Feed Route */}
-                  <Route path="/rss" element={<RSSRedirect />} />
+                   <Route path="/rss" element={<RSSRedirect />} />
+                   
                   
                    {/* Forum routes - wrapped in OldUrlRedirectWrapper and ForumLayout */}
                    <Route path="/" element={<OldUrlRedirectWrapper><ForumLayout /></OldUrlRedirectWrapper>}>
@@ -169,8 +165,9 @@ const App = () => (
                      <Route path="terms" element={<Terms />} />
                      <Route path="privacy" element={<Privacy />} />
                      <Route path="rules" element={<ForumRules />} />
-                     <Route path="blog" element={<Blog />} />
-                      <Route path="blog/:slug" element={<BlogPost />} />
+                      <Route path="blog" element={<Blog />} />
+                       <Route path="blog/:slug" element={<BlogPost />} />
+                      <Route path="sitemap" element={<Sitemap />} />
                     </Route>
                    
                    

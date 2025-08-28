@@ -13,4 +13,18 @@ Allow: /
 User-agent: *
 Allow: /
 
+# Block admin and sensitive areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /functions/
+
+# Allow important pages
+Allow: /sitemap*.xml
+Allow: /rss
+
+# Sitemap location
 Sitemap: https://minorhockeytalks.com/sitemap.xml
+Sitemap: https://minorhockeytalks.com/sitemap-index.xml
+
+# Crawl delay (optional - be respectful)
+Crawl-delay: 1
