@@ -69,7 +69,7 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 py-4">
+    <div className="flex flex-col items-center gap-4 py-4" style={{ minHeight: '120px' }}>
       <div className="text-sm text-muted-foreground">
         Showing {startItem}-{endItem} of {totalItems} items
       </div>

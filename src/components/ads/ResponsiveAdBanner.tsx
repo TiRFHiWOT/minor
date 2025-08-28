@@ -47,19 +47,43 @@ export const ResponsiveAdBanner: React.FC<ResponsiveAdBannerProps> = ({
     }
   }, [canRender]);
 
+  const getDimensions = () => {
+    switch (format) {
+      case 'square':
+        return { width: 300, height: 250 };
+      case 'vertical':
+        return { width: 160, height: 600 };
+      case 'horizontal':
+      default:
+        return { width: 728, height: 90 };
+    }
+  };
+
+  const { width, height } = getDimensions();
+
   return (
     <div ref={containerRef} className={`w-full flex flex-col items-center py-4 ${className}`}>
       <div className="text-xs text-muted-foreground mb-2 text-center">Advertisement</div>
-      {canRender && (
-        <ins
-          className="adsbygoogle"
-          style={{ display: 'block' }}
-          data-ad-client={clientId}
-          data-ad-slot={slot}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
-      )}
+      <div
+        style={{
+          width: `${width}px`,
+          height: `${height}px`,
+          minWidth: `${width}px`,
+          minHeight: `${height}px`
+        }}
+        className="flex justify-center items-center bg-muted/20 border border-border rounded-lg"
+      >
+        {canRender && (
+          <ins
+            className="adsbygoogle"
+            style={{ display: 'block', width: '100%', height: '100%' }}
+            data-ad-client={clientId}
+            data-ad-slot={slot}
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          />
+        )}
+      </div>
     </div>
   );
 };

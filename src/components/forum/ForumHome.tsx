@@ -280,17 +280,17 @@ export const ForumHome = () => {
           <h2 className="text-lg font-bold text-foreground">Browse Main Forums</h2>
         </div>
         
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" style={{ minHeight: '200px' }}>
           {level1Forums?.map((forum) => (
             <Link
               key={forum.id}
               to={`/category/${forum.slug}`}
               className="block"
             >
-              <Card className="p-3 hover:bg-forum-row-hover transition-colors cursor-pointer border border-forum-border-subtle">
+              <Card className="p-3 hover:bg-forum-row-hover transition-colors cursor-pointer border border-forum-border-subtle" style={{ minHeight: '80px' }}>
                 <div className="flex items-center space-x-2 mb-2">
                   <div 
-                    className="w-3 h-3 rounded-full"
+                    className="w-3 h-3 rounded-full flex-shrink-0"
                     style={{ backgroundColor: forum.color }}
                   />
                   <h3 className="font-medium text-foreground group-hover:text-primary transition-colors text-sm">
