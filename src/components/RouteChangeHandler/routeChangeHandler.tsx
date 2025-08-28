@@ -21,17 +21,21 @@ export default function RouteChangeHandler() {
   }, []);
 
   useEffect(() => {
-     // Refresh all ads on route change
-    const refreshAds = () => {
+    // Defensive wrapper for ad refresh
+    const safeRefreshAds = () => {
       if (typeof window.amp_refreshAllSlots === "function") {
-        window.amp_refreshAllSlots();
-        console.log("Ads refreshed on route change:", location.pathname);
+        try {
+          window.amp_refreshAllSlots();
+          console.log("Ads refreshed on route change:", location.pathname);
+        } catch (err) {
+          console.error("amp_refreshAllSlots threw an error:", err);
+        }
       } else {
         console.log("amp_refreshAllSlots not ready yet");
       }
     };
-
-    refreshAds();
+    const timeout = setTimeout(safeRefreshAds, 500); // 500ms delay to allow DOM to update
+    return () => clearTimeout(timeout);
   }, [location.pathname]);
 
   return null;
