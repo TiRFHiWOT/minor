@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
+import { AdManagerContext, AdManagerContextType } from "../ads/AdManager";
 
 declare global {
   interface Window {
@@ -9,6 +10,7 @@ declare global {
 
 export default function RouteChangeHandler() {
   const location = useLocation();
+  const adManager = useContext(AdManagerContext) as AdManagerContextType | null;
 
   useEffect(() => {
     if (!document.getElementById("c764d7beef4b4321984c2aaa46dd9689")) {
@@ -21,20 +23,20 @@ export default function RouteChangeHandler() {
 
   useEffect(() => {
     const safeRefreshAds = () => {
-      if (typeof window.amp_refreshAllSlots === "function") {
+      if (adManager && typeof adManager.refreshAllAds === "function") {
         try {
-          window.amp_refreshAllSlots();
+          adManager.refreshAllAds();
           console.log("Ads refreshed on route change:", location.pathname);
         } catch (err) {
-          console.error("amp_refreshAllSlots threw an error:", err);
+          console.error("refreshAllAds threw an error:", err);
         }
       } else {
-        console.log("amp_refreshAllSlots not ready yet");
+        console.log("refreshAllAds not ready yet");
       }
     };
     const timeout = setTimeout(safeRefreshAds, 500);
     return () => clearTimeout(timeout);
-  }, [location.pathname]);
+  }, [location.pathname, adManager]);
 
   return null;
 }

@@ -3,10 +3,19 @@ import { createPortal } from 'react-dom';
 import AdMetricsProBanner from '../AdMetricsProBannerProps/AdMetricsProBannerProps';
 
 // Context to register ad slots
-const AdManagerContext = createContext(null);
+export interface AdManagerContextType {
+  slots: Record<string, Element>;
+  registerSlot: (name: string, element: Element) => void;
+  unregisterSlot: (name: string) => void;
+  refreshAllSlots: () => void;
+  refreshAllAds: () => void;
+}
+
+export const AdManagerContext = createContext<AdManagerContextType | null>(null);
 
 export function AdManagerProvider({ children }) {
   const slots = useRef({});
+  const [refreshKey, setRefreshKey] = useState(0);
   const [_, forceUpdate] = useState(0);
 
   // Register a slot by name
@@ -20,12 +29,24 @@ export function AdManagerProvider({ children }) {
     forceUpdate((n) => n + 1);
   };
 
+  // Refresh all ad slots (force rerender of all AdContent)
+  const refreshAllSlots = () => {
+    setRefreshKey((k) => k + 1);
+  };
+
+  // Call the global amp_refreshAllSlots if available
+  const refreshAllAds = () => {
+    if (typeof window !== 'undefined' && typeof window.amp_refreshAllSlots === 'function') {
+      window.amp_refreshAllSlots();
+    }
+  };
+
   return (
-    <AdManagerContext.Provider value={{ slots: slots.current, registerSlot, unregisterSlot }}>
+    <AdManagerContext.Provider value={{ slots: slots.current, registerSlot, unregisterSlot, refreshAllSlots, refreshAllAds }}>
       {children}
       {/* Render persistent ads into their slots using portals */}
       {Object.entries(slots.current).map(([name, el]) =>
-        el ? createPortal(<AdContent name={name} />, el as Element) : null
+        el ? createPortal(<AdContent name={name} key={name + refreshKey} />, el as Element) : null
       )}
     </AdManagerContext.Provider>
   );
