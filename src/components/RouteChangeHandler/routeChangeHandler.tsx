@@ -17,10 +17,18 @@ export default function RouteChangeHandler() {
       script.id = "admetricspro-script";
       script.src = "https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js";
       script.async = true;
+      
+      script.onerror = (error) => {
+        console.warn("[RouteChangeHandler] AdMetricsPro script failed to load:", error);
+      };
+      
+      script.onload = () => {
+        console.log("[RouteChangeHandler] AdMetricsPro script loaded successfully");
+      };
+      
       document.body.appendChild(script);
       console.log("[RouteChangeHandler] AdMetricsPro script injected");
     }
-
   }, []);
 
   useEffect(() => {
@@ -56,10 +64,14 @@ export default function RouteChangeHandler() {
 
   useEffect(() => {
     if (!document.getElementById("c764d7beef4b4321984c2aaa46dd9689")) {
-      const script = document.createElement("script");
-      script.id = "c764d7beef4b4321984c2aaa46dd9689";
-      script.innerHTML = `console.log("Connatix in-content script loaded.");`;
-      document.body.appendChild(script);
+      try {
+        const script = document.createElement("script");
+        script.id = "c764d7beef4b4321984c2aaa46dd9689";
+        script.innerHTML = `console.log("Connatix in-content script loaded.");`;
+        document.body.appendChild(script);
+      } catch (error) {
+        console.warn("[RouteChangeHandler] Connatix script error:", error);
+      }
     }
   }, []);
 
