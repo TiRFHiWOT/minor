@@ -17,28 +17,10 @@ export default function RouteChangeHandler() {
       script.id = "admetricspro-script";
       script.src = "https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js";
       script.async = true;
-      script.crossOrigin = "anonymous";
-      
-      script.onload = () => {
-        console.log("[RouteChangeHandler] AdMetricsPro script loaded successfully");
-        // Safely check for available functions
-        try {
-          const ampFunctions = Object.keys(window).filter(key => key.includes('amp'));
-          console.log("[RouteChangeHandler] Available AMP functions:", ampFunctions);
-        } catch (e) {
-          console.log("[RouteChangeHandler] Could not enumerate window functions");
-        }
-      };
-      
-      script.onerror = (error) => {
-        console.error("[RouteChangeHandler] Failed to load AdMetricsPro script:", error);
-        // Prevent the script error from propagating
-        return true;
-      };
-      
       document.body.appendChild(script);
       console.log("[RouteChangeHandler] AdMetricsPro script injected");
     }
+
   }, []);
 
   useEffect(() => {
@@ -67,25 +49,17 @@ export default function RouteChangeHandler() {
       }
     };
     
-    // 3 second delay to ensure script is fully loaded before attempting refresh
-    const timeoutId = setTimeout(tryRefresh, 3000);
+    // Delay to ensure DOM is ready after route change
+    const timeoutId = setTimeout(tryRefresh, 1000);
     return () => clearTimeout(timeoutId);
   }, [location.pathname]);
 
   useEffect(() => {
-    try {
-      if (!document.getElementById("c764d7beef4b4321984c2aaa46dd9689")) {
-        const script = document.createElement("script");
-        script.id = "c764d7beef4b4321984c2aaa46dd9689";
-        script.innerHTML = `console.log("Connatix in-content script loaded.");`;
-        script.onerror = () => {
-          console.error("[RouteChangeHandler] Connatix script error");
-          return true; // Prevent error propagation
-        };
-        document.body.appendChild(script);
-      }
-    } catch (error) {
-      console.error("[RouteChangeHandler] Error setting up Connatix script:", error);
+    if (!document.getElementById("c764d7beef4b4321984c2aaa46dd9689")) {
+      const script = document.createElement("script");
+      script.id = "c764d7beef4b4321984c2aaa46dd9689";
+      script.innerHTML = `console.log("Connatix in-content script loaded.");`;
+      document.body.appendChild(script);
     }
   }, []);
 
