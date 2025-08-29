@@ -1,7 +1,10 @@
 // Global error handler to prevent external script errors from crashing the app
 export const setupGlobalErrorHandler = () => {
+  console.log('🛡️ [GlobalErrorHandler] Setting up global error handling...');
+  
   // Handle uncaught JavaScript errors
   window.addEventListener('error', (event) => {
+    console.log('🚨 [GlobalErrorHandler] Error caught:', event);
     const { message, filename, lineno, colno, error } = event;
     
     // Filter out cross-origin script errors that we can't control
