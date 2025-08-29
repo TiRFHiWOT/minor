@@ -17,52 +17,29 @@ export default function RouteChangeHandler() {
       script.id = "admetricspro-script";
       script.src = "https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js";
       script.async = true;
-      
-      // Add error handler to prevent script errors from crashing the app
-      script.onerror = (error) => {
-        console.warn("[RouteChangeHandler] AdMetricsPro script failed to load:", error);
-      };
-      
-      // Add onload handler to verify successful loading
-      script.onload = () => {
-        console.log("[RouteChangeHandler] AdMetricsPro script loaded successfully");
-      };
-      
       document.body.appendChild(script);
       console.log("[RouteChangeHandler] AdMetricsPro script injected");
     }
+
   }, []);
 
   useEffect(() => {
     let attempts = 0;
     const maxAttempts = 10;
     const tryRefresh = () => {
-      try {
-        if (typeof window.amp_refreshAllSlots === "function") {
-          // Check if any ad slots exist before calling refresh
-          const adSlots = document.querySelectorAll('[id*="div-gpt-ad"]');
-          if (adSlots.length > 0) {
-            window.amp_refreshAllSlots();
-            console.log("[RouteChangeHandler] amp_refreshAllSlots called on route change:", location.pathname);
-          } else {
-            console.log("[RouteChangeHandler] No ad slots found, skipping refresh");
-          }
-        } else {
-          attempts++;
-          console.log(`[RouteChangeHandler] amp_refreshAllSlots not ready on route change (attempt ${attempts})`);
-          if (attempts < maxAttempts) {
-            setTimeout(tryRefresh, 500);
-          }
+      if (typeof window.amp_refreshAllSlots === "function") {
+        window.amp_refreshAllSlots();
+        console.log("[RouteChangeHandler] amp_refreshAllSlots called on route change:", location.pathname);
+      } else {
+        attempts++;
+        console.log(`[RouteChangeHandler] amp_refreshAllSlots not ready on route change (attempt ${attempts})`);
+        if (attempts < maxAttempts) {
+          setTimeout(tryRefresh, 500);
         }
-      } catch (error) {
-        // Silently handle ad refresh errors to prevent app crashes
-        console.warn("[RouteChangeHandler] Ad refresh failed, continuing silently:", error);
       }
     };
-    
-    // Delay to ensure DOM is ready after route change
-    const timeoutId = setTimeout(tryRefresh, 1000);
-    return () => clearTimeout(timeoutId);
+    tryRefresh();
+    return () => {};
   }, [location.pathname]);
 
   useEffect(() => {
