@@ -13,7 +13,6 @@ export const AdMetricsProBanner: React.FC<AdMetricsProBannerProps> = ({
   minHeight = 250,
   className = "",
 }) => {
-
   return (
     <div
       id={adId}
@@ -21,11 +20,10 @@ export const AdMetricsProBanner: React.FC<AdMetricsProBannerProps> = ({
         width: '100%',
         minWidth: `${minWidth}px`,
         minHeight: `${minHeight}px`,
-        height: `100%`,
+        height: `${minHeight}px`,
       }}
-      className={`flex justify-center items-center rounded-lg my-4 bg-muted/20 ${className}`}
-    >
-    </div>
+      className={`flex justify-center items-center rounded-lg my-4 border border-border bg-muted/20 ${className}`}
+    />
   );
 };
 
