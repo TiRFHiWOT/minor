@@ -17,18 +17,10 @@ export default function RouteChangeHandler() {
       script.id = "admetricspro-script";
       script.src = "https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js";
       script.async = true;
-      
-      script.onerror = (error) => {
-        console.warn("[RouteChangeHandler] AdMetricsPro script failed to load:", error);
-      };
-      
-      script.onload = () => {
-        console.log("[RouteChangeHandler] AdMetricsPro script loaded successfully");
-      };
-      
       document.body.appendChild(script);
       console.log("[RouteChangeHandler] AdMetricsPro script injected");
     }
+
   }, []);
 
   useEffect(() => {
@@ -36,18 +28,9 @@ export default function RouteChangeHandler() {
     const maxAttempts = 10;
     const tryRefresh = () => {
       if (typeof window.amp_refreshAllSlots === "function") {
-        // Check if any ad slots exist before calling refresh
-        const adSlots = document.querySelectorAll('[id*="div-gpt-ad"]');
-        if (adSlots.length > 0) {
-          try {
-            window.amp_refreshAllSlots();
-            console.log("[RouteChangeHandler] amp_refreshAllSlots called on route change:", location.pathname);
-          } catch (error) {
-            console.error("[RouteChangeHandler] Error calling amp_refreshAllSlots:", error);
-          }
-        } else {
-          console.log("[RouteChangeHandler] No ad slots found, skipping refresh");
-        }
+        window.amp_refreshAllSlots();
+         console.log("[RouteChangeHandler]war",  window.amp_refreshAllSlots())
+        console.log("[RouteChangeHandler] amp_refreshAllSlots called on route change:", location.pathname);
       } else {
         attempts++;
         console.log(`[RouteChangeHandler] amp_refreshAllSlots not ready on route change (attempt ${attempts})`);
@@ -56,22 +39,16 @@ export default function RouteChangeHandler() {
         }
       }
     };
-    
-    // Delay to ensure DOM is ready after route change
-    const timeoutId = setTimeout(tryRefresh, 3000);
-    return () => clearTimeout(timeoutId);
+    tryRefresh();
+    return () => {};
   }, [location.pathname]);
 
   useEffect(() => {
     if (!document.getElementById("c764d7beef4b4321984c2aaa46dd9689")) {
-      try {
-        const script = document.createElement("script");
-        script.id = "c764d7beef4b4321984c2aaa46dd9689";
-        script.innerHTML = `console.log("Connatix in-content script loaded.");`;
-        document.body.appendChild(script);
-      } catch (error) {
-        console.warn("[RouteChangeHandler] Connatix script error:", error);
-      }
+      const script = document.createElement("script");
+      script.id = "c764d7beef4b4321984c2aaa46dd9689";
+      script.innerHTML = `console.log("Connatix in-content script loaded.");`;
+      document.body.appendChild(script);
     }
   }, []);
 
