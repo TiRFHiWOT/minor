@@ -13,6 +13,7 @@ import { QuickTopicModal } from './QuickTopicModal';
 import { cn } from '@/lib/utils';
 import { ResponsiveAdBanner } from '@/components/ads/ResponsiveAdBanner';
 import AdMetricsProBanner from '../AdMetricsProBannerProps/AdMetricsProBannerProps';
+import { AdSlot } from '../ads/AdManager';
 
 // Component to display category stats
 const CategoryItem = ({ category }: { category: any }) => {
@@ -112,7 +113,7 @@ export const ForumSidebarNav = () => {
       /> */}
 
       {/* Sidebar Left */}
-  <AdMetricsProBanner adId="div-gpt-ad-1752247623844-0" className="w-full max-w-full" minHeight={250} />
+     <AdSlot name="sidebar-left" />
 
     </div>
   );

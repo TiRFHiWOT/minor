@@ -29,6 +29,7 @@ import { MoveTopicModal } from '@/components/admin/MoveTopicModal';
 import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
 import { ResponsiveAdBanner } from '@/components/ads/ResponsiveAdBanner';
 import AdMetricsProBanner from '../AdMetricsProBannerProps/AdMetricsProBannerProps';
+import { AdSlot } from '@/components/ads/AdManager';
 
 export const TopicView = () => {
   const { getSetting } = useForumSettings();
@@ -600,8 +601,7 @@ export const TopicView = () => {
       )}
 
       {/* Leaderboard Top */}
-       <AdMetricsProBanner adId="div-gpt-ad-1715358540790-0" minWidth={300} minHeight={50} />
-
+      <AdSlot name="banner-top" />
 
       {/* Comments */}
       <div className="bg-card">
@@ -630,42 +630,22 @@ export const TopicView = () => {
 
             {/* Show Content One after the 3rd post */}
             {index === 3 && (
-              <AdMetricsProBanner
-                adId="div-gpt-ad-1715358598569-0"
-                minWidth={300}
-                minHeight={50}
-                className="my-4"
-              />
+              <AdSlot name="content-one" />
             )}
 
             {/* Show Content Two after the 7th post */}
             {index === 7 && (
-              <AdMetricsProBanner
-                adId="div-gpt-ad-1715358620345-0" 
-                minWidth={300}
-                minHeight={50}
-                className="my-4"
-              />
+              <AdSlot name="content-two" />
             )}
 
             {/* Show Content Three after the 11th post */}
             {index === 11 && (
-              <AdMetricsProBanner
-                adId="div-gpt-ad-1753889678213-0"
-                minWidth={300}
-                minHeight={50}
-                className="my-4"
-              />
+              <AdSlot name="content-three" />
             )}
 
             {/* Show Content Four after the 15th post */}
             {index === 15 && (
-              <AdMetricsProBanner
-                adId="div-gpt-ad-1753889948554-0"
-                minWidth={300}
-                minHeight={50}
-                className="my-4"
-              />
+              <AdSlot name="content-four" />
             )}
           </React.Fragment>
         ))}
@@ -715,7 +695,7 @@ export const TopicView = () => {
       </div>
 
       {/* Content Five */}
-      <AdMetricsProBanner adId="div-gpt-ad-1753890381531-0" minWidth={300} minHeight={50} />
+      <AdSlot name="content-five" />
 
       <ReportModal
         isOpen={reportModal.isOpen}

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -7,14 +7,9 @@ declare global {
   }
 }
 
-function notifyNoAds() {
-  if (window && window.document) {
-    toast.warning("No ads to be rendered or AdMetricsPro is not available.");
-  }
-}
-
 export default function RouteChangeHandler() {
-  // Video ad slot injection (Connatix or similar)
+  const location = useLocation();
+
   useEffect(() => {
     if (!document.getElementById("c764d7beef4b4321984c2aaa46dd9689")) {
       const script = document.createElement("script");
@@ -22,30 +17,24 @@ export default function RouteChangeHandler() {
       script.innerHTML = `console.log("Connatix in-content script loaded.");`;
       document.body.appendChild(script);
     }
-    // After the video ad slot is injected, try to refresh ads
-    let attempts = 0;
-    const maxAttempts = 10;
-    function tryRefresh() {
+  }, []);
+
+  useEffect(() => {
+    const safeRefreshAds = () => {
       if (typeof window.amp_refreshAllSlots === "function") {
         try {
           window.amp_refreshAllSlots();
-          console.log("[RouteChangeHandler] amp_refreshAllSlots called for video ad slot");
+          console.log("Ads refreshed on route change:", location.pathname);
         } catch (err) {
-          console.error("[RouteChangeHandler] amp_refreshAllSlots error:", err);
-          notifyNoAds();
+          console.error("amp_refreshAllSlots threw an error:", err);
         }
       } else {
-        attempts++;
-        if (attempts < maxAttempts) {
-          setTimeout(tryRefresh, 2000);
-        } else {
-          console.warn("[AdMetricsProBanner] amp_refreshAllSlots not available after max attempts");
-          notifyNoAds();
-        }
+        console.log("amp_refreshAllSlots not ready yet");
       }
-    }
-    tryRefresh();
-  }, []);
+    };
+    const timeout = setTimeout(safeRefreshAds, 500);
+    return () => clearTimeout(timeout);
+  }, [location.pathname]);
 
   return null;
 }

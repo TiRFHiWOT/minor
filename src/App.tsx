@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { ToastErrorBoundary } from "./components/ToastErrorBoundary";
@@ -60,7 +59,8 @@ import { RSSRedirect } from "./components/RSSRedirect";
 import { SessionTimeout } from "./components/security/SessionTimeout";
 import { OldUrlRedirectWrapper } from "./components/OldUrlRedirectWrapper";
 import RouteChangeHandler from "./components/RouteChangeHandler/routeChangeHandler";
-
+import { AdManagerProvider } from "./components/ads/AdManager";
+import { AdSlot } from "./components/ads/AdManager";
 
 
 const queryClient = new QueryClient();
@@ -71,129 +71,131 @@ const App = () => (
       <TooltipProvider>
         <AuthProvider>
           <OnlineUsersProvider>
-            
-            <SessionTimeout timeoutDuration={30} warningTime={5} />
-            <StickyBanner />
-            
-            <CookieConsent />
-            <ToastErrorBoundary>
-              <Toaster />
-              <Sonner />
-            </ToastErrorBoundary>
-            <BrowserRouter>
-              <AnalyticsProvider>
-                <IPTrackingWrapper>
-                  <CookieDebugPanel />
-                  <ScrollToTop />
-                  <RouteChangeHandler />
-                  <MetadataProvider>
-                   <ErrorBoundary>
-                    <MaintenanceWrapper>
-                 <Routes>
-                    {/* Static redirects handled by _redirects file, not React */}
-                    
-                    
-                    {/* VPN blocked page - outside VPN guard */}
-                    <Route path="/vpn-blocked" element={<VPNBlocked />} />
-                   
-                   {/* All other routes wrapped in VPN guard */}
-                   <Route path="/*" element={
-                      <VPNGuard>
-                       <Routes>
-                           {/* Special routes */}
+            <AdManagerProvider>
+              <SessionTimeout timeoutDuration={30} warningTime={5} />
+              <StickyBanner />
+              <CookieConsent />
+              <ToastErrorBoundary>
+                <Toaster />
+                <Sonner />
+              </ToastErrorBoundary>
+              <BrowserRouter>
+                <AnalyticsProvider>
+                  <IPTrackingWrapper>
+                    <CookieDebugPanel />
+                    <ScrollToTop />
+                    <RouteChangeHandler />
+                    <MetadataProvider>
+                      <ErrorBoundary>
+                        <MaintenanceWrapper>
+                          {/* Example: persistent ad slot at the top of the app */}
+                          <AdSlot name="banner-top" />
+                          <Routes>
+                            {/* Static redirects handled by _redirects file, not React */}
+                            
+                            
+                            {/* VPN blocked page - outside VPN guard */}
+                            <Route path="/vpn-blocked" element={<VPNBlocked />} />
+                           
+                           {/* All other routes wrapped in VPN guard */}
+                           <Route path="/*" element={
+                              <VPNGuard>
+                               <Routes>
+                                   {/* Special routes */}
+                                  
+                                 
+                                 {/* Authentication routes - standalone pages */}
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/register" element={<Register />} />
+                                <Route path="/reset-password" element={<ResetPassword />} />
                           
+                        {/* Admin routes - wrapped in AdminLayout */}
+                        <Route path="/admin" element={<AdminLayout />}>
+                          <Route index element={<AdminPage />} />
+                          <Route path="users" element={<AdminUsers />} />
+                          <Route path="content" element={<AdminContent />} />
+                          <Route path="blog" element={<AdminBlogPage />} />
+                          <Route path="moderation" element={<AdminModeration />} />
+                          <Route path="spam" element={<AdminSpam />} />
+                          
+                          <Route path="seo" element={<AdminSEO />} />
+                          <Route path="settings" element={<AdminSettings />} />
+                        </Route>
+                        
+                         {/* RSS Feed Route */}
+                         <Route path="/rss" element={<RSSRedirect />} />
                          
-                         {/* Authentication routes - standalone pages */}
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/reset-password" element={<ResetPassword />} />
-                  
-                  {/* Admin routes - wrapped in AdminLayout */}
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route index element={<AdminPage />} />
-                    <Route path="users" element={<AdminUsers />} />
-                    <Route path="content" element={<AdminContent />} />
-                    <Route path="blog" element={<AdminBlogPage />} />
-                    <Route path="moderation" element={<AdminModeration />} />
-                    <Route path="spam" element={<AdminSpam />} />
-                    
-                    <Route path="seo" element={<AdminSEO />} />
-                    <Route path="settings" element={<AdminSettings />} />
-                  </Route>
-                  
-                   {/* RSS Feed Route */}
-                   <Route path="/rss" element={<RSSRedirect />} />
-                   
-                  
-                   {/* Forum routes - wrapped in OldUrlRedirectWrapper and ForumLayout */}
-                   <Route path="/" element={<OldUrlRedirectWrapper><ForumLayout /></OldUrlRedirectWrapper>}>
-                     <Route index element={<ForumHome />} />
-                    {/* New hierarchical URL structure */}
-                    <Route path=":categorySlug/:topicSlug" element={
-                        <MetadataProvider>
-                          <TopicView />
-                        </MetadataProvider>
-                    } />
-                    <Route path=":categorySlug/:subcategorySlug/:topicSlug" element={
-                        <MetadataProvider>
-                          <TopicView />
-                        </MetadataProvider>} />
-                    <Route path=":categorySlug" element={
-                      <MetadataProvider>
-                        <CategoryView />
-                      </MetadataProvider>
-                    } />
-                    <Route path=":categorySlug/:subcategorySlug" element={
-                      <MetadataProvider>
-                        <CategoryView />
-                      </MetadataProvider>
-                    } />
-                    {/* Legacy UUID-based redirects */}
-                    <Route path="topic/:topicId" element={<TopicView />} />
-                    <Route path="category/:categoryId" element={
-                      <MetadataProvider>
-                        <CategoryView />
-                      </MetadataProvider>
-                    } />
-                     <Route path="create" element={<CreateTopic />} />
-                     <Route path="topics" element={<Topics />} />
-                     <Route path="categories" element={<Categories />} />
-                     <Route path="search" element={<Search />} />
-                     <Route path="profile" element={<Profile />} />
-                     <Route path="bookmarks" element={<Bookmarks />} />
-                     <Route path="settings" element={<Settings />} />
-                     <Route path="terms" element={<Terms />} />
-                     <Route path="privacy" element={<Privacy />} />
-                     <Route path="rules" element={<ForumRules />} />
-                      <Route path="blog" element={<Blog />} />
-                       <Route path="blog/:slug" element={<BlogPost />} />
-                      <Route path="sitemap" element={<Sitemap />} />
-                    </Route>
-                   
-                   
-                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                   {/* RedirectHandler for old URLs - must be before NotFound */}
-                   <Route path="*" element={
-                     <>
-                       <RedirectHandler />
-                       <NotFound />
-                     </>
-                   } />
+                        
+                         {/* Forum routes - wrapped in OldUrlRedirectWrapper and ForumLayout */}
+                         <Route path="/" element={<OldUrlRedirectWrapper><ForumLayout /></OldUrlRedirectWrapper>}>
+                           <Route index element={<ForumHome />} />
+                          {/* New hierarchical URL structure */}
+                          <Route path=":categorySlug/:topicSlug" element={
+                              <MetadataProvider>
+                                <TopicView />
+                              </MetadataProvider>
+                          } />
+                          <Route path=":categorySlug/:subcategorySlug/:topicSlug" element={
+                              <MetadataProvider>
+                                <TopicView />
+                              </MetadataProvider>} />
+                          <Route path=":categorySlug" element={
+                            <MetadataProvider>
+                              <CategoryView />
+                            </MetadataProvider>
+                          } />
+                          <Route path=":categorySlug/:subcategorySlug" element={
+                            <MetadataProvider>
+                              <CategoryView />
+                            </MetadataProvider>
+                          } />
+                          {/* Legacy UUID-based redirects */}
+                          <Route path="topic/:topicId" element={<TopicView />} />
+                          <Route path="category/:categoryId" element={
+                            <MetadataProvider>
+                              <CategoryView />
+                            </MetadataProvider>
+                          } />
+                           <Route path="create" element={<CreateTopic />} />
+                           <Route path="topics" element={<Topics />} />
+                           <Route path="categories" element={<Categories />} />
+                           <Route path="search" element={<Search />} />
+                           <Route path="profile" element={<Profile />} />
+                           <Route path="bookmarks" element={<Bookmarks />} />
+                           <Route path="settings" element={<Settings />} />
+                           <Route path="terms" element={<Terms />} />
+                           <Route path="privacy" element={<Privacy />} />
+                           <Route path="rules" element={<ForumRules />} />
+                            <Route path="blog" element={<Blog />} />
+                             <Route path="blog/:slug" element={<BlogPost />} />
+                            <Route path="sitemap" element={<Sitemap />} />
+                          </Route>
+                         
+                         
+                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                         {/* RedirectHandler for old URLs - must be before NotFound */}
+                         <Route path="*" element={
+                           <>
+                             <RedirectHandler />
+                             <NotFound />
+                           </>
+                         } />
+                            </Routes>
+                          </VPNGuard>
+                        } />
                       </Routes>
-                    </VPNGuard>
-                  } />
-                </Routes>
-                   </MaintenanceWrapper>
-                   </ErrorBoundary>
-                </MetadataProvider>
-                </IPTrackingWrapper>
-              </AnalyticsProvider>
-            </BrowserRouter>
-          </OnlineUsersProvider>
-        </AuthProvider>
-      </TooltipProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
-);
+                         </MaintenanceWrapper>
+                         </ErrorBoundary>
+                       </MetadataProvider>
+                       </IPTrackingWrapper>
+                     </AnalyticsProvider>
+                   </BrowserRouter>
+                 </AdManagerProvider>
+               </OnlineUsersProvider>
+           </AuthProvider>
+         </TooltipProvider>
+       </HelmetProvider>
+     </QueryClientProvider>
+   );
 
 export default App;

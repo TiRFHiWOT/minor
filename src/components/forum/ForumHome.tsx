@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
@@ -14,6 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCategories } from '@/hooks/useCategories';
 import { useForumSettings } from '@/hooks/useForumSettings';
 import { PaginationControls } from '@/components/ui/pagination-controls';
+import { AdSlot } from '@/components/ads/AdManager';
 
 import { TopicTable } from './TopicTable';
 import { ReportModal } from './ReportModal';
@@ -174,7 +174,7 @@ export const ForumHome = () => {
       /> */}
 
       {/* Leaderboard Top */}
-      <AdMetricsProBanner adId="div-gpt-ad-1715358540790-0" minWidth={300} minHeight={50} />
+      <AdSlot name="banner-top" />
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
@@ -272,7 +272,7 @@ export const ForumHome = () => {
       /> */}
 
       {/* Content One */}
-      <AdMetricsProBanner adId="div-gpt-ad-1715358598569-0" minWidth={300} minHeight={50} />
+      <AdSlot name="content-one" />
 
       {/* Forums Section */}
       <div className="forum-spacing">
@@ -323,7 +323,7 @@ export const ForumHome = () => {
       /> */}
 
       {/* Content Two */}
-      <AdMetricsProBanner adId="div-gpt-ad-1715358620345-0" minWidth={300} minHeight={50} />
+      <AdSlot name="content-two" />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
@@ -388,11 +388,7 @@ export const ForumHome = () => {
                      {index === 0 && (
                       <div>
                         {/* Content Three */}
-                        <AdMetricsProBanner
-                          adId="div-gpt-ad-1753889678213-0"
-                          minWidth={300}
-                          minHeight={50}
-                        />
+                        <AdSlot name="content-three" />
                       </div>
                     )}
                 </div>
