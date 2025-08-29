@@ -28,9 +28,18 @@ export default function RouteChangeHandler() {
     const maxAttempts = 10;
     const tryRefresh = () => {
       if (typeof window.amp_refreshAllSlots === "function") {
-        window.amp_refreshAllSlots();
-         console.log("[RouteChangeHandler]war",  window.amp_refreshAllSlots())
-        console.log("[RouteChangeHandler] amp_refreshAllSlots called on route change:", location.pathname);
+        try {
+          // Check if any ad slot elements exist before refreshing
+          const adSlots = document.querySelectorAll('[id^="div-gpt-ad-"]');
+          if (adSlots.length > 0) {
+            window.amp_refreshAllSlots();
+            console.log("[RouteChangeHandler] amp_refreshAllSlots called on route change:", location.pathname);
+          } else {
+            console.log("[RouteChangeHandler] No ad slots found, skipping refresh on:", location.pathname);
+          }
+        } catch (error) {
+          console.error("[RouteChangeHandler] Error calling amp_refreshAllSlots:", error);
+        }
       } else {
         attempts++;
         console.log(`[RouteChangeHandler] amp_refreshAllSlots not ready on route change (attempt ${attempts})`);
@@ -39,7 +48,9 @@ export default function RouteChangeHandler() {
         }
       }
     };
-    tryRefresh();
+    
+    // Delay the refresh to ensure DOM is ready
+    setTimeout(tryRefresh, 1000);
     return () => {};
   }, [location.pathname]);
 
