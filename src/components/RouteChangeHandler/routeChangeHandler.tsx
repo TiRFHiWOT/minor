@@ -58,8 +58,8 @@ export default function RouteChangeHandler() {
       }
     };
     
-    // Delay to ensure DOM is ready after route change
-    const timeoutId = setTimeout(tryRefresh, 1000);
+    // 3 second delay to ensure script is fully loaded before attempting refresh
+    const timeoutId = setTimeout(tryRefresh, 3000);
     return () => clearTimeout(timeoutId);
   }, [location.pathname]);
 
