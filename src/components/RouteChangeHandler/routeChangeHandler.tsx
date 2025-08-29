@@ -39,7 +39,7 @@ export default function RouteChangeHandler() {
         if (attempts < maxAttempts) {
           setTimeout(tryRefresh, 2000);
         } else {
-          console.warn("[AdMetricsProBanner] amp_refreshAllSlots not available after max attempts");
+          console.warn("[RouteChangeHandler] amp_refreshAllSlots not available after max attempts");
           notifyNoAds();
         }
       }
