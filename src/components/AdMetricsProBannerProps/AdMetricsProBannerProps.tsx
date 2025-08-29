@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 interface AdMetricsProBannerProps {
   adId: string;
@@ -13,6 +13,16 @@ export const AdMetricsProBanner: React.FC<AdMetricsProBannerProps> = ({
   minHeight = 250,
   className = "",
 }) => {
+  const hasRefreshed = useRef(false);
+
+  useEffect(() => {
+    // Only refresh ads after the div is mounted and only once
+    if (!hasRefreshed.current && typeof window.amp_refreshAllSlots === "function") {
+      window.amp_refreshAllSlots();
+      hasRefreshed.current = true;
+      console.log(`[AdMetricsProBanner] amp_refreshAllSlots called for adId: ${adId}`);
+    }
+  }, [adId]);
 
   return (
     <div
