@@ -41,7 +41,7 @@ export default function RouteChangeHandler() {
       } else {
         attempts++;
         if (attempts < maxAttempts) {
-          setTimeout(tryRefresh, 500);
+          setTimeout(tryRefresh, 2000);
         } else {
           console.warn("[RouteChangeHandler] amp_refreshAllSlots not available after max attempts");
         }
