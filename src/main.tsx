@@ -1,14 +1,8 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { setupGlobalErrorHandler } from './utils/globalErrorHandler'
 
 console.log('🚀 [main.tsx] Starting app initialization...');
-
-// Setup global error handling before anything else
-setupGlobalErrorHandler();
-
-console.log('🛡️ [main.tsx] Global error handler set up');
 
 const root = document.getElementById("root");
 if (!root) {
