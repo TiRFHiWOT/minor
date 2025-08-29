@@ -85,7 +85,7 @@ const App = () => (
                 <IPTrackingWrapper>
                   <CookieDebugPanel />
                   <ScrollToTop />
-                  <RouteChangeHandler /> 
+                  {/* <RouteChangeHandler /> Temporarily disabled for debugging */}
                   <MetadataProvider>
                    <ErrorBoundary>
                     <MaintenanceWrapper>
