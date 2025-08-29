@@ -17,10 +17,19 @@ export default function RouteChangeHandler() {
       script.id = "admetricspro-script";
       script.src = "https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js";
       script.async = true;
+      
+      script.onload = () => {
+        console.log("[RouteChangeHandler] AdMetricsPro script loaded successfully");
+        console.log("[RouteChangeHandler] Available functions:", Object.keys(window).filter(key => key.includes('amp')));
+      };
+      
+      script.onerror = () => {
+        console.error("[RouteChangeHandler] Failed to load AdMetricsPro script");
+      };
+      
       document.body.appendChild(script);
       console.log("[RouteChangeHandler] AdMetricsPro script injected");
     }
-
   }, []);
 
   useEffect(() => {
