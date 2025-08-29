@@ -7,26 +7,9 @@ declare global {
   }
 }
 
-function injectAdMetricsProScript() {
-  if (!document.getElementById("admetricspro-script")) {
-    const script = document.createElement("script");
-    script.id = "admetricspro-script";
-    script.src = "https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js";
-    script.async = true;
-    document.head.appendChild(script);
-    console.log("[RouteChangeHandler] AdMetricsPro script injected");
-  }
-}
-
 export default function RouteChangeHandler() {
   const location = useLocation();
 
-  // Inject AdMetricsPro script on mount if not present
-  useEffect(() => {
-    injectAdMetricsProScript();
-  }, []);
-
-  // Always try to refresh ads on initial mount and route changes
   useEffect(() => {
     let attempts = 0;
     const maxAttempts = 10;
@@ -50,19 +33,6 @@ export default function RouteChangeHandler() {
     tryRefresh();
     return () => {};
   }, [location.pathname]);
-
-  // (Optional) Inject Connatix script if needed
-  useEffect(() => {
-    if (!document.getElementById("admetricspro-script")) {
-      const script = document.createElement("script");
-      script.id = "admetricspro-script";
-      script.src = "https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js";
-      script.async = true;
-      document.body.appendChild(script);
-      console.log("[RouteChangeHandler] AdMetricsPro script injected");
-    }
-
-  }, []);
 
   return null;
 }
