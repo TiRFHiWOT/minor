@@ -12,10 +12,14 @@ export default function RouteChangeHandler() {
 
   useEffect(() => {
     if (!document.getElementById("c764d7beef4b4321984c2aaa46dd9689")) {
-      const script = document.createElement("script");
-      script.id = "c764d7beef4b4321984c2aaa46dd9689";
-      script.innerHTML = `console.log("Connatix in-content script loaded.");`;
-      document.body.appendChild(script);
+      try {
+        const script = document.createElement("script");
+        script.id = "c764d7beef4b4321984c2aaa46dd9689";
+        script.innerHTML = `console.log("Connatix in-content script loaded.");`;
+        document.body.appendChild(script);
+      } catch (error) {
+        console.warn("[RouteChangeHandler] Connatix script error:", error);
+      }
     }
   }, []);
 
