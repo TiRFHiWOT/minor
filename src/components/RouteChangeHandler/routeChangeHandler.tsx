@@ -10,34 +10,53 @@ declare global {
 export default function RouteChangeHandler() {
   const location = useLocation();
 
+  // Inject the AdMetricsPro loader script if not already loaded
   useEffect(() => {
-    if (!document.getElementById("c764d7beef4b4321984c2aaa46dd9689")) {
-      try {
-        const script = document.createElement("script");
-        script.id = "c764d7beef4b4321984c2aaa46dd9689";
-        script.innerHTML = `console.log("Connatix in-content script loaded.");`;
-        document.body.appendChild(script);
-      } catch (error) {
-        console.warn("[RouteChangeHandler] Connatix script error:", error);
-      }
+    if (!document.getElementById("admetrics-loader")) {
+      const script = document.createElement("script");
+      script.src = "https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js";
+      script.id = "admetrics-loader";
+      script.async = true;
+
+      script.onload = () => {
+        console.log("[AdMetrics] Loader script loaded.");
+      };
+
+      script.onerror = () => {
+        console.error("[AdMetrics] Failed to load loader script.");
+      };
+
+      document.head.appendChild(script);
     }
   }, []);
 
+  // Refresh ads when route changes
   useEffect(() => {
-    const safeRefreshAds = () => {
+    const refreshAds = () => {
       if (typeof window.amp_refreshAllSlots === "function") {
         try {
           window.amp_refreshAllSlots();
-          console.log("Ads refreshed on route change:", location.pathname);
+          console.log("[AdMetrics] Ads refreshed on route change:", location.pathname);
+          return true;
         } catch (err) {
-          console.error("amp_refreshAllSlots threw an error:", err);
+          console.error("[AdMetrics] Error refreshing ads:", err);
         }
-      } else {
-        console.log("amp_refreshAllSlots not ready yet");
       }
+      return false;
     };
-    const timeout = setTimeout(safeRefreshAds, 500);
-    return () => clearTimeout(timeout);
+
+    let attempts = 0;
+    const maxAttempts = 10;
+    const interval = setInterval(() => {
+      attempts++;
+      if (refreshAds() || attempts >= maxAttempts) {
+        clearInterval(interval);
+      } else {
+        console.log(`[AdMetrics] Waiting for amp_refreshAllSlots... (Attempt ${attempts})`);
+      }
+    }, 500);
+
+    return () => clearInterval(interval);
   }, [location.pathname]);
 
   return null;
