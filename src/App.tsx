@@ -55,7 +55,7 @@ import { VPNBlocked } from "./pages/VPNBlocked";
 import { VPNGuard } from "./components/VPNGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { RSSRedirect } from "./components/RSSRedirect";
-
+import { AdErrorBoundary } from "./components/AdErrorBoundary";
 
 import { SessionTimeout } from "./components/security/SessionTimeout";
 import { OldUrlRedirectWrapper } from "./components/OldUrlRedirectWrapper";
@@ -66,11 +66,12 @@ import RouteChangeHandler from "./components/RouteChangeHandler/routeChangeHandl
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <HelmetProvider>
-      <TooltipProvider>
-        <AuthProvider>
-          <OnlineUsersProvider>
+  <AdErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <HelmetProvider>
+        <TooltipProvider>
+          <AuthProvider>
+            <OnlineUsersProvider>
             
             <SessionTimeout timeoutDuration={30} warningTime={5} />
             <StickyBanner />
@@ -189,11 +190,12 @@ const App = () => (
                 </IPTrackingWrapper>
               </AnalyticsProvider>
             </BrowserRouter>
-          </OnlineUsersProvider>
-        </AuthProvider>
-      </TooltipProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
-);
+             </OnlineUsersProvider>
+           </AuthProvider>
+         </TooltipProvider>
+       </HelmetProvider>
+     </QueryClientProvider>
+   </AdErrorBoundary>
+ );
 
 export default App;
