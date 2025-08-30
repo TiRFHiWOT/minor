@@ -158,12 +158,12 @@ export const Footer = () => {
                 Privacy Policy
               </Link>
               <ContactFormModal />
-              <Link to="/blog" className="hover:text-primary transition-colors">
+              <Link to="/blogs" className="hover:text-primary transition-colors">
                 Blog
               </Link>
-              <Link to="/sitemap" className="hover:text-primary transition-colors">
+              <a href="/sitemap" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                 Sitemap
-              </Link>
+              </a>
               {isRssEnabled && (
                 <a 
                   href="/rss" 
