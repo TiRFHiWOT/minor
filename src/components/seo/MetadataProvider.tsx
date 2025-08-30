@@ -153,6 +153,34 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
     setCustomMetadata(metadata);
   };
 
+  // Get blog post metadata for blog post pages
+  const { data: blogPostMetadata } = useQuery({
+    queryKey: ['blog-post-metadata', params.slug],
+    queryFn: async () => {
+      if (!params.slug || !location.pathname.startsWith('/blog/')) return null;
+      
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select(`
+          title,
+          excerpt,
+          content,
+          featured_image,
+          category
+        `)
+        .eq('slug', params.slug)
+        .single();
+      
+      if (error) {
+        console.error('MetadataProvider: Error fetching blog post:', error);
+        return null;
+      }
+      
+      return data;
+    },
+    enabled: !!params.slug && location.pathname.startsWith('/blog/')
+  });
+
   // Get user profile data for profile page
   const { data: profileData } = useQuery({
     queryKey: ['profile-metadata', user?.id],
@@ -265,6 +293,32 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       return {
         title: forumName,
         description: `Loading topic on ${forumName}...`
+      };
+    }
+
+    // Blog post metadata - Database first approach
+    if (blogPostMetadata && params.slug && location.pathname.startsWith('/blog/')) {
+      console.log('📝 MetadataProvider: Generating blog post metadata for:', params.slug);
+      
+      // Auto-generate title since blog posts don't have meta fields
+      const title = `${blogPostMetadata.title}${titleSeparator}${forumName}`;
+      
+      // Use excerpt, fallback to content excerpt or generated description
+      let description = blogPostMetadata.excerpt;
+      if (!description && blogPostMetadata.content) {
+        const textContent = htmlToText(blogPostMetadata.content);
+        description = truncate(textContent, 150);
+      }
+      if (!description) {
+        description = `Read "${blogPostMetadata.title}" on ${forumName} blog.`;
+      }
+      
+      return {
+        title,
+        description,
+        ogTitle: title,
+        ogDescription: description,
+        ogImage: blogPostMetadata.featured_image
       };
     }
 
@@ -391,6 +445,10 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
       '/blog': {
         title: `Blog${titleSeparator}${forumName}`,
         description: `Latest news and updates from ${forumName}`
+      },
+      '/blogs': {
+        title: `Blog${titleSeparator}${forumName}`,
+        description: `Latest news and updates from ${forumName}`
       }
     };
 
@@ -419,6 +477,7 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({ children }) 
   });
   console.log('💾 Topic metadata state:', !!topicMetadata ? 'LOADED' : 'NULL');
   console.log('💾 Category metadata state:', !!categoryMetadata ? 'LOADED' : 'NULL');
+  console.log('💾 Blog post metadata state:', !!blogPostMetadata ? 'LOADED' : 'NULL');
 
   return (
     <MetadataContext.Provider value={{ setPageMetadata }}>
