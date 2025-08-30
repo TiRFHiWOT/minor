@@ -1,4 +1,4 @@
-/sitemap.xml https://hockey.minorhockeytalks.com/functions/v1/sitemap 200
+# /sitemap.xml https://hockey.minorhockeytalks.com/functions/v1/sitemap 200
 
 # Pretty sitemap endpoints
 /sitemap-static.xml https://hockey.minorhockeytalks.com/functions/v1/sitemap?type=static 200

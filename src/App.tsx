@@ -151,7 +151,7 @@ const App = () => (
                           } />
                           {/* Legacy UUID-based redirects */}
                           <Route path="topic/:topicId" element={<TopicView />} />
-                          <Route path="category/:categoryId" element={
+                          <Route path="category/:categorySlug" element={
                             <MetadataProvider>
                               <CategoryView />
                             </MetadataProvider>
@@ -166,8 +166,16 @@ const App = () => (
                            <Route path="terms" element={<Terms />} />
                            <Route path="privacy" element={<Privacy />} />
                            <Route path="rules" element={<ForumRules />} />
-                            <Route path="blog" element={<Blog />} />
-                             <Route path="blog/:slug" element={<BlogPost />} />
+                            <Route path="blogs" element={
+                              <MetadataProvider>
+                                <Blog />
+                              </MetadataProvider>
+                            } />
+                             <Route path="blog/:slug" element={
+                              <MetadataProvider>
+                                <BlogPost />
+                              </MetadataProvider>
+                             } />
                             <Route path="sitemap" element={<Sitemap />} />
                           </Route>
                          

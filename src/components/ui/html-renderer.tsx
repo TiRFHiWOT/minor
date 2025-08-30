@@ -8,7 +8,8 @@ function linkify(text: string): string {
     if (!href.startsWith('http')) {
       href = 'https://' + href;
     }
-    return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    // Add Tailwind blue color class
+    return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800">${url}</a>`;
   });
 }
 import { cn } from '@/lib/utils';

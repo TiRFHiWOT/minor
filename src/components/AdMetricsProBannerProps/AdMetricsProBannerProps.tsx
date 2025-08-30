@@ -21,7 +21,6 @@ export const AdMetricsProBanner: React.FC<AdMetricsProBannerProps> = ({
         width: '100%',
         minWidth: `${minWidth}px`,
         minHeight: `${minHeight}px`,
-        height: `100%`,
       }}
       className={`flex justify-center items-center rounded-lg my-4 bg-muted/20 ${className}`}
     >
