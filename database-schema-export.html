@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Database Schema Export</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .table-section { margin-bottom: 40px; page-break-inside: avoid; }
+        h1 { color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px; }
+        h2 { color: #1e40af; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #d1d5db; padding: 8px; text-align: left; }
+        th { background-color: #f3f4f6; font-weight: bold; }
+        .nullable { color: #ef4444; }
+        .not-nullable { color: #10b981; }
+        .default-value { font-style: italic; color: #6b7280; }
+        @media print { .table-section { page-break-inside: avoid; } }
+    </style>
+</head>
+<body>
+    <h1>Database Schema - Complete Table Structure</h1>
+    <p><strong>Generated:</strong> <span id="generated-date"></span></p>
+    
+    <div class="table-section">
+        <h2>Authentication & User Management Tables</h2>
+        
+        <h3>profiles</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td>-</td><td>Primary key, references auth.users</td></tr>
+                <tr><td>username</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Unique username</td></tr>
+                <tr><td>avatar_url</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Profile picture URL</td></tr>
+                <tr><td>bio</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>User biography</td></tr>
+                <tr><td>reputation</td><td>integer</td><td class="nullable">Yes</td><td class="default-value">0</td><td>User reputation score</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td class="default-value">now()</td><td>Account creation time</td></tr>
+                <tr><td>updated_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td class="default-value">now()</td><td>Last profile update</td></tr>
+            </tbody>
+        </table>
+
+        <h3>temporary_users</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>session_id</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Anonymous session identifier</td></tr>
+                <tr><td>display_name</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Display name for guest user</td></tr>
+                <tr><td>guest_number</td><td>integer</td><td class="not-nullable">No</td><td class="default-value">nextval('guest_number_seq')</td><td>Sequential guest number</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Session creation time</td></tr>
+                <tr><td>expires_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now() + 12 hours</td><td>Session expiration</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-section">
+        <h2>Forum Content Tables</h2>
+        
+        <h3>categories</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>name</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Category name</td></tr>
+                <tr><td>description</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Category description</td></tr>
+                <tr><td>slug</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>URL-friendly identifier</td></tr>
+                <tr><td>color</td><td>text</td><td class="nullable">Yes</td><td class="default-value">#3b82f6</td><td>Category color theme</td></tr>
+                <tr><td>parent_category_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Parent category reference</td></tr>
+                <tr><td>level</td><td>integer</td><td class="not-nullable">No</td><td class="default-value">1</td><td>Category hierarchy level</td></tr>
+                <tr><td>sort_order</td><td>integer</td><td class="nullable">Yes</td><td class="default-value">0</td><td>Display order</td></tr>
+                <tr><td>is_active</td><td>boolean</td><td class="nullable">Yes</td><td class="default-value">true</td><td>Category status</td></tr>
+                <tr><td>requires_moderation</td><td>boolean</td><td class="nullable">Yes</td><td class="default-value">false</td><td>Content moderation flag</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td class="default-value">now()</td><td>Creation time</td></tr>
+                <tr><td>meta_title</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>SEO title</td></tr>
+                <tr><td>meta_description</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>SEO description</td></tr>
+                <tr><td>meta_keywords</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>SEO keywords</td></tr>
+                <tr><td>canonical_url</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Canonical URL</td></tr>
+                <tr><td>og_title</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Open Graph title</td></tr>
+                <tr><td>og_description</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Open Graph description</td></tr>
+                <tr><td>og_image</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Open Graph image</td></tr>
+                <tr><td>birth_year</td><td>integer</td><td class="nullable">Yes</td><td>-</td><td>Birth year filter</td></tr>
+                <tr><td>region</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Geographic region</td></tr>
+                <tr><td>play_level</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Skill level filter</td></tr>
+            </tbody>
+        </table>
+
+        <h3>topics</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>title</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Topic title</td></tr>
+                <tr><td>content</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Topic content</td></tr>
+                <tr><td>slug</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>URL-friendly identifier</td></tr>
+                <tr><td>author_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Author reference</td></tr>
+                <tr><td>category_id</td><td>uuid</td><td class="not-nullable">No</td><td>-</td><td>Category reference</td></tr>
+                <tr><td>is_pinned</td><td>boolean</td><td class="nullable">Yes</td><td class="default-value">false</td><td>Pinned status</td></tr>
+                <tr><td>is_locked</td><td>boolean</td><td class="nullable">Yes</td><td class="default-value">false</td><td>Locked status</td></tr>
+                <tr><td>is_anonymous</td><td>boolean</td><td class="nullable">Yes</td><td class="default-value">false</td><td>Anonymous post flag</td></tr>
+                <tr><td>view_count</td><td>integer</td><td class="nullable">Yes</td><td class="default-value">0</td><td>View count</td></tr>
+                <tr><td>reply_count</td><td>integer</td><td class="nullable">Yes</td><td class="default-value">0</td><td>Reply count</td></tr>
+                <tr><td>moderation_status</td><td>text</td><td class="nullable">Yes</td><td class="default-value">approved</td><td>Moderation status</td></tr>
+                <tr><td>ip_address</td><td>inet</td><td class="not-nullable">No</td><td>-</td><td>Author IP address</td></tr>
+                <tr><td>legacy_topic_id</td><td>integer</td><td class="nullable">Yes</td><td>-</td><td>Legacy system ID</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td class="default-value">now()</td><td>Creation time</td></tr>
+                <tr><td>updated_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td class="default-value">now()</td><td>Last update time</td></tr>
+                <tr><td>last_reply_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td class="default-value">now()</td><td>Last reply time</td></tr>
+                <tr><td>meta_title</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>SEO title</td></tr>
+                <tr><td>meta_description</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>SEO description</td></tr>
+                <tr><td>meta_keywords</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>SEO keywords</td></tr>
+                <tr><td>canonical_url</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Canonical URL</td></tr>
+                <tr><td>og_title</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Open Graph title</td></tr>
+                <tr><td>og_description</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Open Graph description</td></tr>
+                <tr><td>og_image</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Open Graph image</td></tr>
+            </tbody>
+        </table>
+
+        <h3>posts</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>content</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Post content</td></tr>
+                <tr><td>author_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Author reference</td></tr>
+                <tr><td>topic_id</td><td>uuid</td><td class="not-nullable">No</td><td>-</td><td>Topic reference</td></tr>
+                <tr><td>parent_post_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Reply to post reference</td></tr>
+                <tr><td>is_anonymous</td><td>boolean</td><td class="nullable">Yes</td><td class="default-value">false</td><td>Anonymous post flag</td></tr>
+                <tr><td>moderation_status</td><td>text</td><td class="nullable">Yes</td><td class="default-value">approved</td><td>Moderation status</td></tr>
+                <tr><td>ip_address</td><td>inet</td><td class="not-nullable">No</td><td>-</td><td>Author IP address</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td class="default-value">now()</td><td>Creation time</td></tr>
+                <tr><td>updated_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td class="default-value">now()</td><td>Last update time</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-section">
+        <h2>Blog System Tables</h2>
+        
+        <h3>blog_posts</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>title</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Blog post title</td></tr>
+                <tr><td>content</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Blog post content</td></tr>
+                <tr><td>excerpt</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Short summary</td></tr>
+                <tr><td>slug</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>URL-friendly identifier</td></tr>
+                <tr><td>category</td><td>text</td><td class="not-nullable">No</td><td class="default-value">General</td><td>Blog category</td></tr>
+                <tr><td>featured_image</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Featured image URL</td></tr>
+                <tr><td>published_status</td><td>text</td><td class="not-nullable">No</td><td class="default-value">draft</td><td>Publication status</td></tr>
+                <tr><td>published_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td>-</td><td>Publication date</td></tr>
+                <tr><td>author_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Author reference</td></tr>
+                <tr><td>view_count</td><td>integer</td><td class="nullable">Yes</td><td class="default-value">0</td><td>View count</td></tr>
+                <tr><td>read_time</td><td>integer</td><td class="nullable">Yes</td><td>-</td><td>Reading time (minutes)</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Creation time</td></tr>
+                <tr><td>updated_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Last update time</td></tr>
+                <tr><td>meta_title</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>SEO title</td></tr>
+                <tr><td>meta_description</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>SEO description</td></tr>
+                <tr><td>meta_keywords</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>SEO keywords</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-section">
+        <h2>Polls System Tables</h2>
+        
+        <h3>polls</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>question</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Poll question</td></tr>
+                <tr><td>description</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Poll description</td></tr>
+                <tr><td>topic_id</td><td>uuid</td><td class="not-nullable">No</td><td>-</td><td>Associated topic</td></tr>
+                <tr><td>created_by</td><td>uuid</td><td class="not-nullable">No</td><td>-</td><td>Poll creator</td></tr>
+                <tr><td>is_multiple_choice</td><td>boolean</td><td class="not-nullable">No</td><td class="default-value">false</td><td>Multiple selection allowed</td></tr>
+                <tr><td>allow_anonymous_votes</td><td>boolean</td><td class="not-nullable">No</td><td class="default-value">false</td><td>Anonymous voting allowed</td></tr>
+                <tr><td>expires_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td>-</td><td>Poll expiration</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Creation time</td></tr>
+                <tr><td>updated_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Last update time</td></tr>
+            </tbody>
+        </table>
+
+        <h3>poll_options</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>poll_id</td><td>uuid</td><td class="not-nullable">No</td><td>-</td><td>Poll reference</td></tr>
+                <tr><td>option_text</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Option text</td></tr>
+                <tr><td>display_order</td><td>integer</td><td class="not-nullable">No</td><td class="default-value">0</td><td>Display order</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Creation time</td></tr>
+            </tbody>
+        </table>
+
+        <h3>poll_votes</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>poll_id</td><td>uuid</td><td class="not-nullable">No</td><td>-</td><td>Poll reference</td></tr>
+                <tr><td>option_id</td><td>uuid</td><td class="not-nullable">No</td><td>-</td><td>Selected option</td></tr>
+                <tr><td>voter_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Voter reference</td></tr>
+                <tr><td>voter_ip</td><td>inet</td><td class="nullable">Yes</td><td>-</td><td>Voter IP address</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Vote time</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-section">
+        <h2>Moderation & Security Tables</h2>
+        
+        <h3>reports</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>reason</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Report reason</td></tr>
+                <tr><td>description</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Detailed description</td></tr>
+                <tr><td>reporter_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Reporter reference</td></tr>
+                <tr><td>reporter_ip_address</td><td>inet</td><td class="nullable">Yes</td><td>-</td><td>Reporter IP</td></tr>
+                <tr><td>reported_post_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Reported post</td></tr>
+                <tr><td>reported_topic_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Reported topic</td></tr>
+                <tr><td>status</td><td>text</td><td class="not-nullable">No</td><td class="default-value">pending</td><td>Report status</td></tr>
+                <tr><td>reviewed_by</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Reviewing moderator</td></tr>
+                <tr><td>reviewed_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td>-</td><td>Review time</td></tr>
+                <tr><td>admin_notes</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Moderator notes</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Report time</td></tr>
+            </tbody>
+        </table>
+
+        <h3>banned_ips</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>ip_address</td><td>inet</td><td class="not-nullable">No</td><td>-</td><td>Banned IP address</td></tr>
+                <tr><td>ip_range</td><td>cidr</td><td class="nullable">Yes</td><td>-</td><td>IP range (CIDR)</td></tr>
+                <tr><td>ban_type</td><td>text</td><td class="not-nullable">No</td><td class="default-value">temporary</td><td>Ban type</td></tr>
+                <tr><td>reason</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Ban reason</td></tr>
+                <tr><td>expires_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td>-</td><td>Ban expiration</td></tr>
+                <tr><td>is_active</td><td>boolean</td><td class="not-nullable">No</td><td class="default-value">true</td><td>Ban status</td></tr>
+                <tr><td>created_by</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Ban creator</td></tr>
+                <tr><td>admin_notes</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Admin notes</td></tr>
+                <tr><td>appeal_status</td><td>text</td><td class="nullable">Yes</td><td class="default-value">none</td><td>Appeal status</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Ban creation time</td></tr>
+                <tr><td>updated_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Last update time</td></tr>
+            </tbody>
+        </table>
+
+        <h3>banned_words</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>word_pattern</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Banned word pattern</td></tr>
+                <tr><td>match_type</td><td>text</td><td class="not-nullable">No</td><td class="default-value">exact</td><td>Pattern match type</td></tr>
+                <tr><td>severity</td><td>text</td><td class="not-nullable">No</td><td class="default-value">moderate</td><td>Severity level</td></tr>
+                <tr><td>category</td><td>text</td><td class="not-nullable">No</td><td class="default-value">general</td><td>Word category</td></tr>
+                <tr><td>action</td><td>text</td><td class="not-nullable">No</td><td class="default-value">block</td><td>Action to take</td></tr>
+                <tr><td>replacement_text</td><td>text</td><td class="nullable">Yes</td><td class="default-value">*Not Allowed*</td><td>Replacement text</td></tr>
+                <tr><td>is_active</td><td>boolean</td><td class="not-nullable">No</td><td class="default-value">true</td><td>Rule status</td></tr>
+                <tr><td>expires_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td>-</td><td>Rule expiration</td></tr>
+                <tr><td>created_by</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Rule creator</td></tr>
+                <tr><td>notes</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Admin notes</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Creation time</td></tr>
+                <tr><td>updated_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Last update time</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-section">
+        <h2>Analytics & Tracking Tables</h2>
+        
+        <h3>ip_activity_log</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>ip_address</td><td>inet</td><td class="not-nullable">No</td><td>-</td><td>IP address</td></tr>
+                <tr><td>session_id</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Session identifier</td></tr>
+                <tr><td>activity_type</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Activity type</td></tr>
+                <tr><td>content_id</td><td>uuid</td><td class="nullable">Yes</td><td>-</td><td>Related content ID</td></tr>
+                <tr><td>content_type</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Content type</td></tr>
+                <tr><td>action_data</td><td>jsonb</td><td class="nullable">Yes</td><td>-</td><td>Additional action data</td></tr>
+                <tr><td>is_blocked</td><td>boolean</td><td class="nullable">Yes</td><td class="default-value">false</td><td>Blocked status</td></tr>
+                <tr><td>blocked_reason</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Block reason</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="nullable">Yes</td><td class="default-value">now()</td><td>Activity time</td></tr>
+            </tbody>
+        </table>
+
+        <h3>peak_users_tracking</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>peak_count</td><td>integer</td><td class="not-nullable">No</td><td class="default-value">0</td><td>Peak user count</td></tr>
+                <tr><td>peak_date</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Peak date/time</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Record creation time</td></tr>
+                <tr><td>updated_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Last update time</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-section">
+        <h2>Configuration & Settings Tables</h2>
+        
+        <h3>forum_settings</h3>
+        <table>
+            <thead>
+                <tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>uuid</td><td class="not-nullable">No</td><td class="default-value">gen_random_uuid()</td><td>Primary key</td></tr>
+                <tr><td>setting_key</td><td>text</td><td class="not-nullable">No</td><td>-</td><td>Setting identifier</td></tr>
+                <tr><td>setting_value</td><td>jsonb</td><td class="nullable">Yes</td><td>-</td><td>Setting value (JSON)</td></tr>
+                <tr><td>setting_type</td><td>text</td><td class="not-nullable">No</td><td class="default-value">string</td><td>Data type</td></tr>
+                <tr><td>category</td><td>text</td><td class="not-nullable">No</td><td class="default-value">general</td><td>Setting category</td></tr>
+                <tr><td>description</td><td>text</td><td class="nullable">Yes</td><td>-</td><td>Setting description</td></tr>
+                <tr><td>is_public</td><td>boolean</td><td class="nullable">Yes</td><td class="default-value">false</td><td>Public visibility</td></tr>
+                <tr><td>created_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Creation time</td></tr>
+                <tr><td>updated_at</td><td>timestamp with time zone</td><td class="not-nullable">No</td><td class="default-value">now()</td><td>Last update time</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('generated-date').textContent = new Date().toLocaleString();
+        
+        // Print functionality
+        function printSchema() {
+            window.print();
+        }
+        
+        // Add print button
+        const printButton = document.createElement('button');
+        printButton.textContent = 'Print to PDF';
+        printButton.style.cssText = 'background: #2563eb; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-bottom: 20px; cursor: pointer; font-size: 16px;';
+        printButton.onclick = printSchema;
+        document.body.insertBefore(printButton, document.querySelector('h1'));
+    </script>
+</body>
+</html>
