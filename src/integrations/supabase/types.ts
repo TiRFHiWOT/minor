@@ -1663,6 +1663,10 @@ export type Database = {
         Args: { p_content_id: string; p_content_type: string }
         Returns: Json
       }
+      check_new_user_rate_limit: {
+        Args: { user_id: string }
+        Returns: Json
+      }
       check_previous_report_status: {
         Args: { p_post_id?: string; p_topic_id?: string }
         Returns: Json
