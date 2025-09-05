@@ -1,8 +1,3 @@
-# ads.txt for Minor Hockey Talks
-# Source: https://dashboard.admetricspro.com/adstxt/Minor_Hockey_Talks/ads.txt
-
-admetricspro.com, 12345, DIRECT, f08c47fec0942fa0
-admetricspro.com, 67890, RESELLER, f08c47fec0942fa0
 # Ads.txt file for minorhockeytalks.com, pucktalk.com, theteslaforums.com, cryptocointalks.com
 # Unique Entries
 
