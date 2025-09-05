@@ -90,7 +90,7 @@ export function AdSlot({ name, className = "" }) {
   return <div ref={ref} className={className} />;
 }
 
-// The actual ad content (persistent, only rendered once per slot name)
+// The actual ad content (persistent only rendered once per slot name)
 function AdContent({ name }) {
   const adMap = {
     "banner-top": "div-gpt-ad-1715358540790-0",
