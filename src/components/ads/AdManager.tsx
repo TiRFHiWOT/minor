@@ -1,6 +1,12 @@
-import React, { createContext, useContext, useRef, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import AdMetricsProBanner from '../AdMetricsProBannerProps/AdMetricsProBannerProps';
+import React, {
+  createContext,
+  useContext,
+  useRef,
+  useEffect,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
+import AdMetricsProBanner from "../AdMetricsProBannerProps/AdMetricsProBannerProps";
 
 // Context to register ad slots
 export interface AdManagerContextType {
@@ -11,7 +17,9 @@ export interface AdManagerContextType {
   refreshAllAds: () => void;
 }
 
-export const AdManagerContext = createContext<AdManagerContextType | null>(null);
+export const AdManagerContext = createContext<AdManagerContextType | null>(
+  null
+);
 
 export function AdManagerProvider({ children }) {
   const slots = useRef({});
@@ -36,17 +44,33 @@ export function AdManagerProvider({ children }) {
 
   // Call the global amp_refreshAllSlots if available
   const refreshAllAds = () => {
-    if (typeof window !== 'undefined' && typeof window.amp_refreshAllSlots === 'function') {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.amp_refreshAllSlots === "function"
+    ) {
       window.amp_refreshAllSlots();
     }
   };
 
   return (
-    <AdManagerContext.Provider value={{ slots: slots.current, registerSlot, unregisterSlot, refreshAllSlots, refreshAllAds }}>
+    <AdManagerContext.Provider
+      value={{
+        slots: slots.current,
+        registerSlot,
+        unregisterSlot,
+        refreshAllSlots,
+        refreshAllAds,
+      }}
+    >
       {children}
       {/* Render persistent ads into their slots using portals */}
       {Object.entries(slots.current).map(([name, el]) =>
-        el ? createPortal(<AdContent name={name} key={name + refreshKey} />, el as Element) : null
+        el
+          ? createPortal(
+              <AdContent name={name} key={name + refreshKey} />,
+              el as Element
+            )
+          : null
       )}
     </AdManagerContext.Provider>
   );
@@ -69,20 +93,31 @@ export function AdSlot({ name, className = "" }) {
 // The actual ad content (persistent, only rendered once per slot name)
 function AdContent({ name }) {
   const adMap = {
-    'banner-top': 'div-gpt-ad-1715358540790-0',
-    'content-one': 'div-gpt-ad-1715358598569-0',
-    'content-two': 'div-gpt-ad-1715358620345-0',
-    'sidebar-left': 'div-gpt-ad-1752247623844-0',
-    'sidebar-left2': 'div-gpt-ad-1752247724892-0',
-    'content-three': 'div-gpt-ad-1753889678213-0',
-    'content-four': 'div-gpt-ad-1753889948554-0',
-    'content-five': 'div-gpt-ad-1753890381531-0',
+    "banner-top": "div-gpt-ad-1715358540790-0",
+    "content-one": "div-gpt-ad-1715358598569-0",
+    "content-two": "div-gpt-ad-1715358620345-0",
+    "sidebar-left": "div-gpt-ad-1752247623844-0",
+    "sidebar-left2": "div-gpt-ad-1752247724892-0",
+    "content-three": "div-gpt-ad-1753889678213-0",
+    "content-four": "div-gpt-ad-1753889948554-0",
+    "content-five": "div-gpt-ad-1753890381531-0",
   };
   const adId = adMap[name];
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.amp_refreshAllSlots === "function"
+    ) {
+      window.amp_refreshAllSlots();
+    }
+  }, []);
+
   if (adId) {
-    // Use minHeight 250 for sidebar, 50 for others
-    const minHeight = name.startsWith('sidebar') ? 250 : 20;
-    return <AdMetricsProBanner adId={adId} minWidth={300} minHeight={minHeight} />;
+    const minHeight = name.startsWith("sidebar") ? 250 : 20;
+    return (
+      <AdMetricsProBanner adId={adId} minWidth={300} minHeight={minHeight} />
+    );
   }
   return null;
 }
