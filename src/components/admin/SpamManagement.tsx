@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { BannedWordsManager } from './BannedWordsManager';
 import { BannedIPsManager } from './BannedIPsManager';
 import { IPActivityDetails } from './IPActivityDetails';
+import { AutoSpamBlocker } from './AutoSpamBlocker';
 import { useAllSuspiciousIPs } from '@/hooks/useComprehensiveIPActivity';
 
 interface SpamReport {
@@ -160,7 +161,7 @@ export const SpamManagement = () => {
       </div>
 
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="reports" className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
             Reports
@@ -176,6 +177,10 @@ export const SpamManagement = () => {
           <TabsTrigger value="monitoring" className="flex items-center gap-2">
             <Activity className="h-4 w-4" />
             Live Monitor
+          </TabsTrigger>
+          <TabsTrigger value="auto-blocker" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Auto-Blocker
           </TabsTrigger>
           <TabsTrigger value="banned-words" className="flex items-center gap-2">
             <Filter className="h-4 w-4" />
@@ -440,6 +445,10 @@ export const SpamManagement = () => {
               </div>
             </div>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="auto-blocker">
+          <AutoSpamBlocker />
         </TabsContent>
 
         <TabsContent value="banned-words">

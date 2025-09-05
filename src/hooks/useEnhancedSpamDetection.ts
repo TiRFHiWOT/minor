@@ -143,6 +143,11 @@ export const useEnhancedSpamDetection = () => {
         indicators: Record<string, any>;
       };
 
+      // If high confidence spam detected, automatically report and track
+      if (result.is_spam && result.confidence >= 0.8) {
+        await autoReportSpam(content, contentType, result);
+      }
+
       return {
         allowed: !result.is_spam,
         reason: result.is_spam ? 'spam_detected' : undefined,
@@ -155,6 +160,48 @@ export const useEnhancedSpamDetection = () => {
     } catch (error) {
       console.error('Error analyzing content:', error);
       return { allowed: true }; // Fail open
+    }
+  }, []);
+
+  const autoReportSpam = useCallback(async (
+    content: string,
+    contentType: 'post' | 'topic',
+    analysis: { confidence: number; indicators: Record<string, any> }
+  ) => {
+    try {
+      const userIP = await getUserIPWithFallback();
+      
+      // Auto-report as spam
+      await supabase.from('spam_reports').insert({
+        content_type: contentType,
+        content_id: 'pending', // Will be updated when content is created
+        reporter_id: null,
+        reporter_ip: userIP,
+        report_reason: `Automated detection: ${Object.keys(analysis.indicators).join(', ')}`,
+        automated_detection: true,
+        confidence_score: analysis.confidence
+      });
+
+      // Check for mass spam activity from this IP
+      const { data: recentSpam } = await supabase
+        .from('spam_reports')
+        .select('id')
+        .eq('reporter_ip', userIP)
+        .eq('automated_detection', true)
+        .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString()); // Last hour
+
+      if (recentSpam && recentSpam.length >= 3) {
+        // Auto-ban IP for mass spam
+        await supabase.from('banned_ips').insert({
+          ip_address: userIP,
+          ban_type: 'temporary',
+          reason: 'Automated ban: Multiple spam attempts detected',
+          admin_notes: `Auto-banned after ${recentSpam.length} spam attempts in 1 hour`,
+          expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+        });
+      }
+    } catch (error) {
+      console.error('Error auto-reporting spam:', error);
     }
   }, []);
 
