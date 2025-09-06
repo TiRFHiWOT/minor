@@ -105,13 +105,19 @@ function AdContent({ name }) {
   const adId = adMap[name];
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      typeof window.amp_refreshAllSlots === "function"
-    ) {
-      window.amp_refreshAllSlots();
-    }
-  }, []);
+    const timeout = setTimeout(() => {
+      if (
+        typeof window !== "undefined" &&
+        typeof window.amp_refreshAllSlots === "function"
+      ) {
+        // Only refresh if the ad slot is visible
+        if (document.getElementById(adId)) {
+          window.amp_refreshAllSlots();
+        }
+      }
+    }, 500); // delay by 500ms
+    return () => clearTimeout(timeout);
+  }, [adId]);
 
   if (adId) {
     const minHeight = name.startsWith("sidebar") ? 250 : 20;
