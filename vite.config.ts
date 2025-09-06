@@ -9,11 +9,9 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  plugins: [
-    react(),
-    mode === 'development' &&
-    componentTagger(),
-  ].filter(Boolean),
+  plugins: [react(), mode === "development" && componentTagger()].filter(
+    Boolean
+  ),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -24,16 +22,16 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
-          // split admin pages into a separate chunk
+          // split admin pages
           admin: [
-            './src/pages/admin/AdminPage.tsx',
-            './src/pages/admin/AdminUsers.tsx',
-            './src/pages/admin/AdminContent.tsx',
-            './src/pages/admin/AdminModeration.tsx',
-            './src/pages/admin/AdminSpam.tsx',
-            './src/pages/admin/AdminSEO.tsx',
-            './src/pages/admin/AdminSettings.tsx',
-            './src/pages/admin/AdminBlog.tsx',
+            "./src/pages/admin/AdminPage.tsx",
+            "./src/pages/admin/AdminUsers.tsx",
+            "./src/pages/admin/AdminContent.tsx",
+            "./src/pages/admin/AdminModeration.tsx",
+            "./src/pages/admin/AdminSpam.tsx",
+            "./src/pages/admin/AdminSEO.tsx",
+            "./src/pages/admin/AdminSettings.tsx",
+            "./src/pages/admin/AdminBlog.tsx",
           ],
         },
       },
