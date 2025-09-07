@@ -1,19 +1,31 @@
-
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { WysiwygEditor } from '@/components/ui/wysiwyg-editor';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
-import { MessageSquare, Plus } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import { useCreateTopic } from '@/hooks/useCreateTopic';
-import { useTempUser } from '@/hooks/useTempUser';
-import { useCategoryById } from '@/hooks/useCategories';
-import { HierarchicalCategorySelector } from './HierarchicalCategorySelector';
-import { toast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { WysiwygEditor } from "@/components/ui/wysiwyg-editor";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { MessageSquare, Plus } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useCreateTopic } from "@/hooks/useCreateTopic";
+import { useTempUser } from "@/hooks/useTempUser";
+import { useCategoryById } from "@/hooks/useCategories";
+import { HierarchicalCategorySelector } from "./HierarchicalCategorySelector";
+import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface QuickTopicModalProps {
   preselectedCategoryId?: string;
@@ -21,38 +33,48 @@ interface QuickTopicModalProps {
   size?: "sm" | "default" | "lg";
 }
 
-export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "default" }: QuickTopicModalProps) => {
+export const QuickTopicModal = ({
+  preselectedCategoryId,
+  trigger,
+  size = "default",
+}: QuickTopicModalProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    category_id: preselectedCategoryId || ''
+    title: "",
+    content: "",
+    category_id: preselectedCategoryId || "",
   });
   const [contentErrors, setContentErrors] = useState<string[]>([]);
   const [navigationPath, setNavigationPath] = useState({
-    level1Id: '',
-    level2Id: '',
-    level3Id: ''
+    level1Id: "",
+    level2Id: "",
+    level3Id: "",
   });
 
   const createTopicMutation = useCreateTopic();
   const tempUser = useTempUser();
-  const { data: currentSelectedCategory } = useCategoryById(formData.category_id || preselectedCategoryId || '');
-  
+  const { data: currentSelectedCategory } = useCategoryById(
+    formData.category_id || preselectedCategoryId || ""
+  );
+
   // Get category data for breadcrumb path
   const { data: level1Category } = useCategoryById(navigationPath.level1Id);
   const { data: level2Category } = useCategoryById(navigationPath.level2Id);
   const { data: level3Category } = useCategoryById(navigationPath.level3Id);
 
-  const handlePathChange = (path: { level1Id: string; level2Id: string; level3Id: string }) => {
+  const handlePathChange = (path: {
+    level1Id: string;
+    level2Id: string;
+    level3Id: string;
+  }) => {
     setNavigationPath(path);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.title || !formData.content || !formData.category_id) {
       toast({
         title: "Error",
@@ -67,7 +89,8 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
       if (!tempUser.canPost) {
         toast({
           title: "Rate limit exceeded",
-          description: "You've reached the limit of 5 posts per 12 hours for anonymous users",
+          description:
+            "You've reached the limit of 5 posts per 12 hours for anonymous users",
           variant: "destructive",
         });
         return;
@@ -78,7 +101,7 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
         setContentErrors(validation.errors);
         toast({
           title: "Content not allowed",
-          description: validation.errors.join(', '),
+          description: validation.errors.join(", "),
           variant: "destructive",
         });
         return;
@@ -98,14 +121,14 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
         title: "Success",
         description: "Topic created successfully!",
       });
-      
+
       setOpen(false);
       setFormData({
-        title: '',
-        content: '',
-        category_id: preselectedCategoryId || ''
+        title: "",
+        content: "",
+        category_id: preselectedCategoryId || "",
       });
-      
+
       // Navigate using slug-based URL if available, fallback to UUID
       if (topic.slug && topic.categories?.slug) {
         navigate(`/${topic.categories.slug}/${topic.slug}`);
@@ -113,10 +136,11 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
         navigate(`/topic/${topic.id}`);
       }
     } catch (error) {
-      console.error('Error creating topic:', error);
+      console.error("Error creating topic:", error);
       toast({
         title: "Error",
-        description: "Failed to create topic. Please try again.",
+        description:
+          error?.message || "Failed to create topic. Please try again.",
         variant: "destructive",
       });
     }
@@ -131,9 +155,7 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || defaultTrigger}
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="w-[95vw] max-w-[600px] max-h-[90vh] overflow-x-hidden overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
@@ -148,10 +170,9 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
             <div className="text-sm text-blue-800">
               <div className="font-medium">Posting as: Guest</div>
               <div className="text-xs mt-1">
-                {tempUser.canPost 
+                {tempUser.canPost
                   ? `${tempUser.remainingPosts} posts remaining in the next 12 hours`
-                  : 'Rate limit reached (5 posts per 12 hours)'
-                }
+                  : "Rate limit reached (5 posts per 12 hours)"}
               </div>
               <div className="text-xs mt-2 text-blue-600">
                 <a href="/register" className="underline hover:no-underline">
@@ -163,9 +184,14 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
         )}
 
         {/* Show current forum selection when any category is selected */}
-        {(level1Category || level2Category || level3Category || (formData.category_id && currentSelectedCategory)) && (
+        {(level1Category ||
+          level2Category ||
+          level3Category ||
+          (formData.category_id && currentSelectedCategory)) && (
           <div className="bg-muted/50 p-3 rounded-md border w-full overflow-hidden">
-            <div className="text-sm text-muted-foreground mb-2">Posting in:</div>
+            <div className="text-sm text-muted-foreground mb-2">
+              Posting in:
+            </div>
             <Breadcrumb className="overflow-hidden">
               <BreadcrumbList className="flex-wrap">
                 {/* Show navigation path if it exists */}
@@ -173,22 +199,24 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
                   <>
                     <BreadcrumbItem>
                       <BreadcrumbPage className="flex items-center gap-2 truncate">
-                        <div 
-                          className="w-3 h-3 rounded-full flex-shrink-0" 
+                        <div
+                          className="w-3 h-3 rounded-full flex-shrink-0"
                           style={{ backgroundColor: level1Category.color }}
                         />
                         <span className="truncate">{level1Category.name}</span>
                       </BreadcrumbPage>
                     </BreadcrumbItem>
-                    {(level2Category || level3Category) && <BreadcrumbSeparator />}
+                    {(level2Category || level3Category) && (
+                      <BreadcrumbSeparator />
+                    )}
                   </>
                 )}
                 {level2Category && (
                   <>
                     <BreadcrumbItem>
                       <BreadcrumbPage className="flex items-center gap-2 truncate">
-                        <div 
-                          className="w-3 h-3 rounded-full flex-shrink-0" 
+                        <div
+                          className="w-3 h-3 rounded-full flex-shrink-0"
                           style={{ backgroundColor: level2Category.color }}
                         />
                         <span className="truncate">{level2Category.name}</span>
@@ -200,8 +228,8 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
                 {level3Category && (
                   <BreadcrumbItem>
                     <BreadcrumbPage className="flex items-center gap-2 font-semibold truncate">
-                      <div 
-                        className="w-3 h-3 rounded-full flex-shrink-0" 
+                      <div
+                        className="w-3 h-3 rounded-full flex-shrink-0"
                         style={{ backgroundColor: level3Category.color }}
                       />
                       <span className="truncate">{level3Category.name}</span>
@@ -209,17 +237,25 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
                   </BreadcrumbItem>
                 )}
                 {/* Fallback for when final category is selected but no navigation path */}
-                {!level1Category && !level2Category && !level3Category && formData.category_id && currentSelectedCategory && (
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="flex items-center gap-2 font-semibold truncate">
-                      <div 
-                        className="w-3 h-3 rounded-full flex-shrink-0" 
-                        style={{ backgroundColor: currentSelectedCategory.color }}
-                      />
-                      <span className="truncate">{currentSelectedCategory.name}</span>
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
-                )}
+                {!level1Category &&
+                  !level2Category &&
+                  !level3Category &&
+                  formData.category_id &&
+                  currentSelectedCategory && (
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="flex items-center gap-2 font-semibold truncate">
+                        <div
+                          className="w-3 h-3 rounded-full flex-shrink-0"
+                          style={{
+                            backgroundColor: currentSelectedCategory.color,
+                          }}
+                        />
+                        <span className="truncate">
+                          {currentSelectedCategory.name}
+                        </span>
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                  )}
               </BreadcrumbList>
             </Breadcrumb>
             <div className="text-xs text-muted-foreground mt-2">
@@ -228,14 +264,19 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-full overflow-hidden">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 w-full max-w-full overflow-hidden"
+        >
           <div className="space-y-2">
             <Label htmlFor="title">Topic Title</Label>
             <Input
               id="title"
               placeholder="Enter a descriptive title for your topic"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               required
             />
           </div>
@@ -245,7 +286,11 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
             <WysiwygEditor
               value={formData.content}
               onChange={(value) => setFormData({ ...formData, content: value })}
-              placeholder={user ? "Write your topic content here..." : "Write your topic content here (no images or links allowed for anonymous users)..."}
+              placeholder={
+                user
+                  ? "Write your topic content here..."
+                  : "Write your topic content here (no images or links allowed for anonymous users)..."
+              }
               height={200}
               allowImages={!!user}
               hideToolbar={!user}
@@ -263,27 +308,31 @@ export const QuickTopicModal = ({ preselectedCategoryId, trigger, size = "defaul
 
           <HierarchicalCategorySelector
             value={formData.category_id}
-            onChange={(value) => setFormData({ ...formData, category_id: value })}
+            onChange={(value) =>
+              setFormData({ ...formData, category_id: value })
+            }
             preselectedCategoryId={preselectedCategoryId}
             onPathChange={handlePathChange}
             required
           />
 
           <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
-            <Button 
-              type="button" 
+            <Button
+              type="button"
               variant="outline"
               onClick={() => setOpen(false)}
               className="w-full sm:w-auto"
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              disabled={createTopicMutation.isPending || (!user && !tempUser.canPost)}
+            <Button
+              type="submit"
+              disabled={
+                createTopicMutation.isPending || (!user && !tempUser.canPost)
+              }
               className="w-full sm:w-auto"
             >
-              {createTopicMutation.isPending ? 'Creating...' : 'Create Topic'}
+              {createTopicMutation.isPending ? "Creating..." : "Create Topic"}
             </Button>
           </div>
         </form>
