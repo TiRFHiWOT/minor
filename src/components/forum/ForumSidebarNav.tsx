@@ -1,31 +1,38 @@
-
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Clock, Star, Plus, Home, Users, Bookmark } from 'lucide-react';
-import { useCategories } from '@/hooks/useCategories';
-import { useCategoriesByActivity } from '@/hooks/useCategoriesByActivity';
-import { useCategoryStats } from '@/hooks/useCategoryStats';
-import { useEnhancedForumStats } from '@/hooks/useEnhancedForumStats';
-import { QuickTopicModal } from './QuickTopicModal';
-import { cn } from '@/lib/utils';
-import { ResponsiveAdBanner } from '@/components/ads/ResponsiveAdBanner';
-import AdMetricsProBanner from '../AdMetricsProBannerProps/AdMetricsProBannerProps';
-import { AdSlot } from '../ads/AdManager';
+import React, { useMemo } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  TrendingUp,
+  Clock,
+  Star,
+  Plus,
+  Home,
+  Users,
+  Bookmark,
+} from "lucide-react";
+import { useCategories } from "@/hooks/useCategories";
+import { useCategoriesByActivity } from "@/hooks/useCategoriesByActivity";
+import { useCategoryStats } from "@/hooks/useCategoryStats";
+import { useEnhancedForumStats } from "@/hooks/useEnhancedForumStats";
+import { QuickTopicModal } from "./QuickTopicModal";
+import { cn } from "@/lib/utils";
+import { ResponsiveAdBanner } from "@/components/ads/ResponsiveAdBanner";
+import AdMetricsProBanner from "../AdMetricsProBannerProps/AdMetricsProBannerProps";
+import { AdSlot } from "../ads/AdManager";
 
 // Component to display category stats
 const CategoryItem = ({ category }: { category: any }) => {
   const { data: stats, isLoading } = useCategoryStats(category.id);
-  
+
   return (
     <Link
       to={`/${category.slug}`}
       className="flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors hover:bg-muted/50 group"
     >
       <div className="flex items-center space-x-2">
-        <div 
+        <div
           className="w-3 h-3 rounded-full"
           style={{ backgroundColor: category.color }}
         />
@@ -34,7 +41,7 @@ const CategoryItem = ({ category }: { category: any }) => {
         </span>
       </div>
       <Badge variant="secondary" className="text-xs">
-        {isLoading ? '...' : (stats?.topic_count || 0)}
+        {isLoading ? "..." : stats?.topic_count || 0}
       </Badge>
     </Link>
   );
@@ -44,20 +51,22 @@ export const ForumSidebarNav = () => {
   const location = useLocation();
   const { data: categories } = useCategoriesByActivity(); // All active categories by activity
   const { data: forumStats } = useEnhancedForumStats();
-  
+
   const isActive = (path: string) => location.pathname === path;
 
-  const navItems = [
-    { label: 'Home', path: '/', icon: Home },
-    { label: 'Hot', path: '/?sort=hot', icon: TrendingUp },
-    { label: 'New', path: '/?sort=new', icon: Clock },
-    { label: 'Top', path: '/?sort=top', icon: Star },
-    { label: 'Bookmarks', path: '/bookmarks', icon: Bookmark },
-  ];
+  const navItems = useMemo(
+    () => [
+      { label: "Home", path: "/", icon: Home },
+      { label: "Hot", path: "/?sort=hot", icon: TrendingUp },
+      { label: "New", path: "/?sort=new", icon: Clock },
+      { label: "Top", path: "/?sort=top", icon: Star },
+      { label: "Bookmarks", path: "/bookmarks", icon: Bookmark },
+    ],
+    []
+  );
 
   return (
     <div className="space-y-4">
-
       {/* Navigation */}
       <Card className="p-4">
         <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-3">
@@ -69,10 +78,10 @@ export const ForumSidebarNav = () => {
               key={item.path}
               to={item.path}
               className={cn(
-                'flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-colors',
+                "flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-colors",
                 isActive(item.path)
-                  ? 'bg-primary/10 text-primary font-medium'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -91,7 +100,7 @@ export const ForumSidebarNav = () => {
           {categories?.slice(0, 8).map((category) => (
             <CategoryItem key={category.id} category={category} />
           ))}
-          
+
           {categories && categories.length > 8 && (
             <Link to="/categories">
               <Button
@@ -113,8 +122,22 @@ export const ForumSidebarNav = () => {
       /> */}
 
       {/* Sidebar Left */}
-     <AdSlot name="sidebar-left" />
+      <div
+        aria-label="Sidebar Ad Slot 1"
+        role="complementary"
+        style={{ marginBottom: 16 }}
+      >
+        <AdSlot name="sidebar-left" />
+      </div>
 
+      {/* Sidebar Left 2 */}
+      <div
+        aria-label="Sidebar Ad Slot 2"
+        role="complementary"
+        style={{ marginBottom: 16 }}
+      >
+        <AdSlot name="sidebar-left2" />
+      </div>
     </div>
   );
 };
