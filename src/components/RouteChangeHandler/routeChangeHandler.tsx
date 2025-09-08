@@ -22,20 +22,32 @@ export default function RouteChangeHandler() {
   }, []);
 
   useEffect(() => {
-    const safeRefreshAds = () => {
-      if (adManager && typeof adManager.refreshAllAds === "function") {
+    let tries = 0;
+    const interval = setInterval(() => {
+      if (
+        adManager &&
+        adManager.slots &&
+        Object.keys(adManager.slots).length > 0
+      ) {
         try {
           adManager.refreshAllAds();
-          console.log("Ads refreshed on route change:", location.pathname);
+          console.log(
+            "Ads refreshed after slots ready on route:",
+            location.pathname
+          );
         } catch (err) {
           console.error("refreshAllAds threw an error:", err);
         }
+        clearInterval(interval);
       } else {
-        console.log("refreshAllAds not ready yet");
+        tries++;
+        if (tries > 20) {
+          clearInterval(interval);
+          console.log("Timeout waiting for ad slots to be ready");
+        }
       }
-    };
-    const timeout = setTimeout(safeRefreshAds, 500);
-    return () => clearTimeout(timeout);
+    }, 100);
+    return () => clearInterval(interval);
   }, [location.pathname, adManager]);
 
   return null;
