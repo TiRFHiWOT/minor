@@ -1,32 +1,31 @@
-
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { WysiwygEditor } from '@/components/ui/wysiwyg-editor';
-import { useAuth } from '@/hooks/useAuth';
-import { useCreateTopic } from '@/hooks/useCreateTopic';
-import { useCreatePoll } from '@/hooks/useCreatePoll';
-import { useTempUser } from '@/hooks/useTempUser';
-import { useEnhancedSpamDetection } from '@/hooks/useEnhancedSpamDetection';
-import { SmartCategorySelector } from './SmartCategorySelector';
-import { PollCreator } from './PollCreator';
-import { toast } from '@/hooks/use-toast';
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { WysiwygEditor } from "@/components/ui/wysiwyg-editor";
+import { useAuth } from "@/hooks/useAuth";
+import { useCreateTopic } from "@/hooks/useCreateTopic";
+import { useCreatePoll } from "@/hooks/useCreatePoll";
+import { useTempUser } from "@/hooks/useTempUser";
+import { useEnhancedSpamDetection } from "@/hooks/useEnhancedSpamDetection";
+import { SmartCategorySelector } from "./SmartCategorySelector";
+import { PollCreator } from "./PollCreator";
+import { toast } from "@/hooks/use-toast";
 
 export const CreateTopic = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user, loading } = useAuth();
-  
+
   // Debug auth state
-  console.log('CreateTopic auth state:', { user, loading, userExists: !!user });
+  console.log("CreateTopic auth state:", { user, loading, userExists: !!user });
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    category_id: ''
+    title: "",
+    content: "",
+    category_id: "",
   });
   const [contentErrors, setContentErrors] = useState<string[]>([]);
   const [showPollCreator, setShowPollCreator] = useState(false);
@@ -38,23 +37,26 @@ export const CreateTopic = () => {
 
   // Pre-select category if passed in URL
   useEffect(() => {
-    const categoryFromUrl = searchParams.get('category');
+    const categoryFromUrl = searchParams.get("category");
     if (categoryFromUrl) {
-      setFormData(prev => ({ ...prev, category_id: categoryFromUrl }));
+      setFormData((prev) => ({ ...prev, category_id: categoryFromUrl }));
     }
   }, [searchParams]);
 
   // Stable callback to prevent WysiwygEditor re-renders
   const handleContentChange = useCallback((content: string) => {
-    setFormData(prev => ({ ...prev, content }));
+    setFormData((prev) => ({ ...prev, content }));
   }, []);
 
-  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, title: e.target.value }));
-  }, []);
+  const handleTitleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, title: e.target.value }));
+    },
+    []
+  );
 
   const handleCategoryChange = useCallback((category_id: string) => {
-    setFormData(prev => ({ ...prev, category_id }));
+    setFormData((prev) => ({ ...prev, category_id }));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,9 +73,14 @@ export const CreateTopic = () => {
     // Enhanced validation for anonymous users - RATE LIMITS REMOVED
     if (!user) {
       // Still check for spam content but remove rate limiting
-      const contentAnalysis = await spamDetection.analyzeContent(formData.content, 'topic');
+      const contentAnalysis = await spamDetection.analyzeContent(
+        formData.content,
+        "topic"
+      );
       if (!contentAnalysis.allowed) {
-        setContentErrors([contentAnalysis.message || 'Content flagged as spam']);
+        setContentErrors([
+          contentAnalysis.message || "Content flagged as spam",
+        ]);
         toast({
           title: "Content Blocked",
           description: contentAnalysis.message,
@@ -88,7 +95,7 @@ export const CreateTopic = () => {
         setContentErrors(validation.errors);
         toast({
           title: "Content not allowed",
-          description: validation.errors.join(', '),
+          description: validation.errors.join(", "),
           variant: "destructive",
         });
         return;
@@ -116,7 +123,7 @@ export const CreateTopic = () => {
         navigate(`/topic/${topic.id}`);
       }
     } catch (error) {
-      console.error('Error creating topic:', error);
+      console.error("Error creating topic:", error);
       toast({
         title: "Error",
         description: "Failed to create topic. Please try again.",
@@ -138,18 +145,18 @@ export const CreateTopic = () => {
 
     try {
       const topic = await createTopicMutation.mutateAsync(formData);
-      
+
       // Then create the poll
       await createPollMutation.mutateAsync({
         topicId: topic.id,
-        pollData
+        pollData,
       });
 
       toast({
         title: "Success",
         description: "Topic and poll created successfully!",
       });
-      
+
       // Navigate to the topic
       if (topic.slug && topic.categories?.slug) {
         navigate(`/${topic.categories.slug}/${topic.slug}`);
@@ -157,7 +164,7 @@ export const CreateTopic = () => {
         navigate(`/topic/${topic.id}`);
       }
     } catch (error) {
-      console.error('Error creating topic with poll:', error);
+      console.error("Error creating topic with poll:", error);
       toast({
         title: "Error",
         description: "Failed to create topic with poll. Please try again.",
@@ -171,7 +178,7 @@ export const CreateTopic = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">Create New Topic</h1>
-          <Button variant="outline" onClick={() => navigate('/')}>
+          <Button variant="outline" onClick={() => navigate("/")}>
             Cancel
           </Button>
         </div>
@@ -190,7 +197,7 @@ export const CreateTopic = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Create New Topic</h1>
-        <Button variant="outline" onClick={() => navigate('/')}>
+        <Button variant="outline" onClick={() => navigate("/")}>
           Cancel
         </Button>
       </div>
@@ -198,7 +205,8 @@ export const CreateTopic = () => {
       {/* DEBUG: Show auth state */}
       <div className="p-3 bg-yellow-100 border border-yellow-300 rounded-md">
         <div className="text-sm">
-          <strong>Debug Auth State:</strong> {JSON.stringify({ user: !!user, loading, userId: user?.id })}
+          <strong>Debug Auth State:</strong>{" "}
+          {JSON.stringify({ user: !!user, loading, userId: user?.id })}
         </div>
       </div>
 
@@ -232,7 +240,7 @@ export const CreateTopic = () => {
           <SmartCategorySelector
             value={formData.category_id}
             onChange={handleCategoryChange}
-            currentCategoryId={searchParams.get('category') || undefined}
+            currentCategoryId={searchParams.get("category") || undefined}
             required
           />
 
@@ -241,7 +249,11 @@ export const CreateTopic = () => {
             <WysiwygEditor
               value={formData.content}
               onChange={handleContentChange}
-              placeholder={user ? "Write your topic content here..." : "Write your topic content here (no images or links allowed for anonymous users)..."}
+              placeholder={
+                user
+                  ? "Write your topic content here..."
+                  : "Write your topic content here (no images or links allowed for anonymous users)..."
+              }
               height={300}
               allowImages={!!user}
               hideToolbar={!user}
@@ -272,25 +284,32 @@ export const CreateTopic = () => {
                 <PollCreator
                   onCreatePoll={handleCreatePoll}
                   onCancel={() => setShowPollCreator(false)}
-                  isLoading={createTopicMutation.isPending || createPollMutation.isPending}
+                  isLoading={
+                    createTopicMutation.isPending ||
+                    createPollMutation.isPending
+                  }
                 />
               )}
             </div>
           )}
 
           <div className="flex justify-end space-x-2">
-            <Button 
-              type="button" 
+            <Button
+              type="button"
               variant="outline"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
             >
               Cancel
             </Button>
             {showPollCreator ? (
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 onClick={() => {
-                  if (formData.title && formData.content && formData.category_id) {
+                  if (
+                    formData.title &&
+                    formData.content &&
+                    formData.category_id
+                  ) {
                     // Poll creation is handled in PollCreator component
                   } else {
                     toast({
@@ -300,16 +319,17 @@ export const CreateTopic = () => {
                     });
                   }
                 }}
-                disabled={createTopicMutation.isPending || createPollMutation.isPending}
+                disabled={
+                  createTopicMutation.isPending || createPollMutation.isPending
+                }
               >
-                {createTopicMutation.isPending || createPollMutation.isPending ? 'Creating...' : 'Create Topic with Poll'}
+                {createTopicMutation.isPending || createPollMutation.isPending
+                  ? "Creating..."
+                  : "Create Topic with Poll"}
               </Button>
             ) : (
-              <Button 
-                type="submit" 
-                disabled={createTopicMutation.isPending}
-              >
-                {createTopicMutation.isPending ? 'Creating...' : 'Create Topic'}
+              <Button type="submit" disabled={createTopicMutation.isPending}>
+                {createTopicMutation.isPending ? "Creating..." : "Create Topic"}
               </Button>
             )}
           </div>
