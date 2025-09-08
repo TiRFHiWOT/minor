@@ -1,0 +1,7 @@
+ssh giduijaod4wj@50.63.133.234 -p 22
+
+F2ZO6b#6#1l9
+
+cd public_html/minorhockeytalks.com
+
+./deploy.sh
