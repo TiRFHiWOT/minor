@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { sessionManager, TempUser } from '@/utils/sessionManager';
-import { validateAnonymousContent } from '@/utils/anonymousUtils';
+import { useState, useEffect } from "react";
+import { sessionManager, TempUser } from "@/utils/sessionManager";
+import { validateAnonymousContent } from "@/utils/anonymousUtils";
 
 interface TempUserState {
   tempUser: TempUser | null;
@@ -14,7 +14,7 @@ export const useTempUser = () => {
     tempUser: null,
     isLoading: true,
     canPost: false,
-    remainingPosts: 0
+    remainingPosts: 0,
   });
 
   useEffect(() => {
@@ -23,40 +23,42 @@ export const useTempUser = () => {
 
   const initializeTempUser = async () => {
     try {
-      setState(prev => ({ ...prev, isLoading: true }));
-      
+      setState((prev) => ({ ...prev, isLoading: true }));
       // Initialize session and get temp user ID
       await sessionManager.initializeSession();
-      
       // Get temp user data
       const tempUser = await sessionManager.getTempUserData();
-      
-      // Check rate limit
-      const { canPost, remainingPosts } = await sessionManager.checkRateLimit();
-      
+      // Force canPost: true and remainingPosts: 999999 for new sessions
       setState({
         tempUser,
         isLoading: false,
-        canPost,
-        remainingPosts
+        canPost: true,
+        remainingPosts: 999999,
       });
+      console.debug(
+        "[useTempUser] Forced canPost: true, remainingPosts: 999999 for new session",
+        tempUser
+      );
     } catch (error) {
-      console.error('Error initializing temp user:', error);
-      setState(prev => ({
+      console.error("Error initializing temp user:", error);
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         canPost: false,
-        remainingPosts: 0
+        remainingPosts: 0,
       }));
     }
   };
 
   const refreshRateLimit = async () => {
     try {
-      const { canPost, remainingPosts } = await sessionManager.checkRateLimit();
-      setState(prev => ({ ...prev, canPost, remainingPosts }));
+      // Always allow unlimited posting for anonymous users
+      setState((prev) => ({ ...prev, canPost: true, remainingPosts: 999999 }));
+      console.debug(
+        "[useTempUser] Forced canPost: true, remainingPosts: 999999 in refreshRateLimit"
+      );
     } catch (error) {
-      console.error('Error refreshing rate limit:', error);
+      console.error("Error refreshing rate limit:", error);
     }
   };
 
@@ -77,6 +79,6 @@ export const useTempUser = () => {
     refreshRateLimit,
     validateContent,
     getTempUserId,
-    recordPost
+    recordPost,
   };
 };
