@@ -120,7 +120,7 @@ function AdContent({ name }) {
   }, [adId]);
 
   if (adId) {
-    const minHeight = name.startsWith("sidebar") ? 250 : 100;
+    const minHeight = name.startsWith("sidebar") ? 250 : 50;
     return (
       <AdMetricsProBanner
         className="z-50"
