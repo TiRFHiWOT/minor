@@ -45,6 +45,7 @@ const CategoryItem = ({ category }: { category: any }) => {
 
 export const ForumSidebarNav = () => {
   const location = useLocation();
+  const [uniqueKey] = React.useState(() => Date.now().toString());
   const { data: categories } = useCategoriesByActivity(); // All active categories by activity
   const { data: forumStats } = useEnhancedForumStats();
 
@@ -117,7 +118,7 @@ export const ForumSidebarNav = () => {
         role="complementary"
         style={{ marginBottom: 16 }}
       >
-        <AdSlot name="sidebar-left" />
+        <AdSlot name="sidebar-left" key={location.pathname + uniqueKey} />
       </div>
 
       {/* Sidebar Left 2 */}
@@ -126,7 +127,7 @@ export const ForumSidebarNav = () => {
         role="complementary"
         style={{ marginBottom: 16 }}
       >
-        <AdSlot name="sidebar-left2" key={location.pathname} />
+        <AdSlot name="sidebar-left2" key={location.pathname + uniqueKey} />
       </div>
     </div>
   );

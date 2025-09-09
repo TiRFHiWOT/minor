@@ -34,6 +34,7 @@ export const ForumHome = () => {
   const { getSetting } = useForumSettings();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const [uniqueKey] = useState(() => Date.now().toString());
   const [reportModal, setReportModal] = useState<{
     isOpen: boolean;
     topicId?: string;
@@ -192,14 +193,8 @@ export const ForumHome = () => {
         })()}
       </div>
 
-      {/* Ad Banner - Above Content */}
-      {/* <ResponsiveAdBanner 
-        format="horizontal"
-        className="border-b border-border"
-      /> */}
-
       {/* Leaderboard Top */}
-      <AdSlot name="banner-top" key={location.pathname} />
+      <AdSlot name="banner-top" key={location.pathname + uniqueKey} />
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
@@ -293,14 +288,8 @@ export const ForumHome = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Ad Banner - Between Sections */}
-      {/* <ResponsiveAdBanner 
-        format="square"
-        className="my-6"
-      /> */}
-
       {/* Content One */}
-      <AdSlot name="content-one" key={location.pathname} />
+      <AdSlot name="content-one" key={location.pathname + uniqueKey} />
 
       {/* Forums Section */}
       <div className="forum-spacing">
@@ -356,14 +345,8 @@ export const ForumHome = () => {
         )}
       </div>
 
-      {/* Ad Banner - Between Forum Sections */}
-      {/* <ResponsiveAdBanner 
-        format="horizontal"
-        className="my-6"
-      /> */}
-
       {/* Content Two */}
-      <AdSlot name="content-two" key={location.pathname} />
+      <AdSlot name="content-two" key={location.pathname + uniqueKey} />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
@@ -437,7 +420,10 @@ export const ForumHome = () => {
                   {index === 0 && (
                     <div>
                       {/* Content Three */}
-                      <AdSlot name="content-three" key={location.pathname} />
+                      <AdSlot
+                        name="content-three"
+                        key={location.pathname + uniqueKey}
+                      />
                     </div>
                   )}
                 </div>

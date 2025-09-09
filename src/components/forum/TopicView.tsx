@@ -49,6 +49,7 @@ import { useCanMoveTopic } from "@/hooks/useCanMoveTopic";
 import { AdSlot } from "@/components/ads/AdManager";
 
 export const TopicView = () => {
+  const [uniqueKey] = useState(() => Date.now().toString());
   const location = useLocation();
   const { getSetting } = useForumSettings();
 
@@ -383,12 +384,6 @@ export const TopicView = () => {
 
   return (
     <div className="space-y-4 md:space-y-6">
-      {/* Ad Banner - Above Topic */}
-      {/* <ResponsiveAdBanner 
-        format="horizontal"
-        className="border-b border-border"
-      /> */}
-
       {/* Breadcrumb - desktop only */}
       <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
         <Link to="/" className="hover:text-primary">
@@ -708,7 +703,7 @@ export const TopicView = () => {
       )}
 
       {/* Leaderboard Top */}
-      <AdSlot name="banner-top" key={location.pathname} />
+      <AdSlot name="banner-top" key={location.pathname + uniqueKey} />
 
       {/* Comments */}
       <div className="bg-card">
@@ -740,22 +735,34 @@ export const TopicView = () => {
 
                 {/* Show Content One after the 3rd post */}
                 {index === 3 && (
-                  <AdSlot name="content-one" key={location.pathname} />
+                  <AdSlot
+                    name="content-one"
+                    key={location.pathname + uniqueKey}
+                  />
                 )}
 
                 {/* Show Content Two after the 7th post */}
                 {index === 7 && (
-                  <AdSlot name="content-two" key={location.pathname} />
+                  <AdSlot
+                    name="content-two"
+                    key={location.pathname + uniqueKey}
+                  />
                 )}
 
                 {/* Show Content Three after the 11th post */}
                 {index === 11 && (
-                  <AdSlot name="content-three" key={location.pathname} />
+                  <AdSlot
+                    name="content-three"
+                    key={location.pathname + uniqueKey}
+                  />
                 )}
 
                 {/* Show Content Four after the 15th post */}
                 {index === 15 && (
-                  <AdSlot name="content-four" key={location.pathname} />
+                  <AdSlot
+                    name="content-four"
+                    key={location.pathname + uniqueKey}
+                  />
                 )}
               </React.Fragment>
             ))}
@@ -765,13 +772,6 @@ export const TopicView = () => {
             No replies yet. Be the first to reply!
           </p>
         )}
-
-        {/* Ad Banner - Before Reply Form */}
-        {/* <ResponsiveAdBanner 
-          format="horizontal"
-          className="my-6 border-t border-border pt-4"
-        />
-         */}
 
         {/* Quick Reply */}
         <div className="bg-card border rounded-lg mb-6">
@@ -806,7 +806,7 @@ export const TopicView = () => {
       </div>
 
       {/* Content Five */}
-      <AdSlot name="content-five" key={location.pathname} />
+      <AdSlot name="content-five" key={location.pathname + uniqueKey} />
 
       <ReportModal
         isOpen={reportModal.isOpen}
