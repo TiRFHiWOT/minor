@@ -1,55 +1,70 @@
-import React, { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Clock, Star, MessageSquare, User as UserIcon, Facebook, Instagram, Twitter, Youtube, Rss } from 'lucide-react';
-import { useHotTopics } from '@/hooks/useHotTopics';
-import { useTopics } from '@/hooks/useTopics';
-import { useHotTopicsLegacy } from '@/hooks/useHotTopicsLegacy';
-import { useMostCommentedTopics } from '@/hooks/useMostCommentedTopics';
-import { useMostViewedTopics } from '@/hooks/useMostViewedTopics';
-import { useAuth } from '@/hooks/useAuth';
-import { useCategories } from '@/hooks/useCategories';
-import { useForumSettings } from '@/hooks/useForumSettings';
-import { PaginationControls } from '@/components/ui/pagination-controls';
-import { AdSlot } from '@/components/ads/AdManager';
+import React, { useState } from "react";
+import { Link, useSearchParams, useLocation } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  TrendingUp,
+  Clock,
+  Star,
+  MessageSquare,
+  User as UserIcon,
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+  Rss,
+} from "lucide-react";
+import { useHotTopics } from "@/hooks/useHotTopics";
+import { useTopics } from "@/hooks/useTopics";
+import { useHotTopicsLegacy } from "@/hooks/useHotTopicsLegacy";
+import { useMostCommentedTopics } from "@/hooks/useMostCommentedTopics";
+import { useMostViewedTopics } from "@/hooks/useMostViewedTopics";
+import { useAuth } from "@/hooks/useAuth";
+import { useCategories } from "@/hooks/useCategories";
+import { useForumSettings } from "@/hooks/useForumSettings";
+import { PaginationControls } from "@/components/ui/pagination-controls";
+import { AdSlot } from "@/components/ads/AdManager";
 
-import { TopicTable } from './TopicTable';
-import { ReportModal } from './ReportModal';
-import { QuickTopicModal } from './QuickTopicModal';
-import { ResponsiveAdBanner } from '@/components/ads/ResponsiveAdBanner';
-import AdMetricsProBanner from '../AdMetricsProBannerProps/AdMetricsProBannerProps';
+import { TopicTable } from "./TopicTable";
+import { ReportModal } from "./ReportModal";
 
 export const ForumHome = () => {
   const { user } = useAuth();
   const { getSetting } = useForumSettings();
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const [reportModal, setReportModal] = useState<{
     isOpen: boolean;
     topicId?: string;
   }>({
     isOpen: false,
   });
-  
+
   // Pagination state for each tab
   const [hotPage, setHotPage] = useState(1);
   const [newPage, setNewPage] = useState(1);
   const [topPage, setTopPage] = useState(1);
-  
-  const sortBy = searchParams.get('sort') || 'new';
-  
+
+  const sortBy = searchParams.get("sort") || "new";
+
   // Paginated data hooks
-  const { data: hotTopicsData, isLoading: hotTopicsLoading } = useMostCommentedTopics(hotPage, 10);
-  const { data: newTopicsData, isLoading: newTopicsLoading } = useTopics(undefined, newPage, 10, 'last_reply_at');
-  const { data: topTopicsData, isLoading: topTopicsLoading } = useMostViewedTopics(topPage, 10);
-  
+  const { data: hotTopicsData, isLoading: hotTopicsLoading } =
+    useMostCommentedTopics(hotPage, 10);
+  const { data: newTopicsData, isLoading: newTopicsLoading } = useTopics(
+    undefined,
+    newPage,
+    10,
+    "last_reply_at"
+  );
+  const { data: topTopicsData, isLoading: topTopicsLoading } =
+    useMostViewedTopics(topPage, 10);
+
   const { data: level1Forums } = useCategories(null, 1); // Only Level 1 forums
   const { data: level2Forums } = useCategories(undefined, 2); // Province/State forums
-  
 
   const handleSortChange = (value: string) => {
-    if (value === 'new') {
+    if (value === "new") {
       setSearchParams({});
     } else {
       setSearchParams({ sort: value });
@@ -74,29 +89,34 @@ export const ForumHome = () => {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-foreground">
-          {getSetting('forum_name', 'Minor Hockey Talks')}
+          {getSetting("forum_name", "Minor Hockey Talks")}
         </h1>
         <p className="text-muted-foreground">
-          {getSetting('forum_description', 'A community forum for minor hockey discussions')}
+          {getSetting(
+            "forum_description",
+            "A community forum for minor hockey discussions"
+          )}
         </p>
-        
+
         {/* Social Media Links */}
         {(() => {
           // Clean URLs by removing JSON encoding quotes
           const cleanUrl = (url: string) => {
-            if (!url || typeof url !== 'string') return '';
-            return url.replace(/^"(.*)"$/, '$1').trim();
+            if (!url || typeof url !== "string") return "";
+            return url.replace(/^"(.*)"$/, "$1").trim();
           };
 
-          const facebookUrl = cleanUrl(getSetting('social_facebook', ''));
-          const twitterUrl = cleanUrl(getSetting('social_twitter', ''));
-          const instagramUrl = cleanUrl(getSetting('social_instagram', ''));
-          const youtubeUrl = cleanUrl(getSetting('social_youtube', ''));
-          const isRssEnabled = getSetting('rss_enabled', false);
+          const facebookUrl = cleanUrl(getSetting("social_facebook", ""));
+          const twitterUrl = cleanUrl(getSetting("social_twitter", ""));
+          const instagramUrl = cleanUrl(getSetting("social_instagram", ""));
+          const youtubeUrl = cleanUrl(getSetting("social_youtube", ""));
+          const isRssEnabled = getSetting("rss_enabled", false);
 
           // Validate URLs start with http/https
           const isValidUrl = (url: string) => {
-            return url && (url.startsWith('http://') || url.startsWith('https://'));
+            return (
+              url && (url.startsWith("http://") || url.startsWith("https://"))
+            );
           };
 
           const validFacebook = isValidUrl(facebookUrl);
@@ -105,7 +125,12 @@ export const ForumHome = () => {
           const validYoutube = isValidUrl(youtubeUrl);
 
           // Only show if at least one valid social link exists or RSS is enabled
-          const hasValidSocialLinks = validFacebook || validTwitter || validInstagram || validYoutube || isRssEnabled;
+          const hasValidSocialLinks =
+            validFacebook ||
+            validTwitter ||
+            validInstagram ||
+            validYoutube ||
+            isRssEnabled;
 
           if (!hasValidSocialLinks) return null;
 
@@ -174,7 +199,7 @@ export const ForumHome = () => {
       /> */}
 
       {/* Leaderboard Top */}
-      <AdSlot name="banner-top" />
+      <AdSlot name="banner-top" key={location.pathname} />
 
       {/* Sort Tabs */}
       <Tabs value={sortBy} onValueChange={handleSortChange}>
@@ -195,7 +220,7 @@ export const ForumHome = () => {
 
         {/* Hot Posts */}
         <TabsContent value="hot" className="forum-spacing">
-          <TopicTable 
+          <TopicTable
             topics={hotTopicsData?.data || []}
             loading={hotTopicsLoading}
             showCategory={true}
@@ -214,22 +239,25 @@ export const ForumHome = () => {
 
         {/* New Posts */}
         <TabsContent value="new" className="forum-spacing">
-          <TopicTable 
-            topics={newTopicsData?.data?.map(topic => ({
-              ...topic,
-              username: topic.profiles?.username || null,
-              avatar_url: topic.profiles?.avatar_url || null,
-              category_name: topic.categories?.name || 'General',
-              category_color: topic.categories?.color || '#3b82f6',
-              category_slug: topic.categories?.slug || '',
-              slug: topic.slug,
-              hot_score: 0,
-              last_post_id: topic.last_post_id,
-              parent_category_id: topic.categories?.parent_category_id || null,
-              parent_category_slug: null,
-              last_reply_username: topic.last_reply_username,
-              last_reply_avatar: topic.last_reply_avatar
-            })) || []}
+          <TopicTable
+            topics={
+              newTopicsData?.data?.map((topic) => ({
+                ...topic,
+                username: topic.profiles?.username || null,
+                avatar_url: topic.profiles?.avatar_url || null,
+                category_name: topic.categories?.name || "General",
+                category_color: topic.categories?.color || "#3b82f6",
+                category_slug: topic.categories?.slug || "",
+                slug: topic.slug,
+                hot_score: 0,
+                last_post_id: topic.last_post_id,
+                parent_category_id:
+                  topic.categories?.parent_category_id || null,
+                parent_category_slug: null,
+                last_reply_username: topic.last_reply_username,
+                last_reply_avatar: topic.last_reply_avatar,
+              })) || []
+            }
             loading={newTopicsLoading}
             showCategory={true}
           />
@@ -247,7 +275,7 @@ export const ForumHome = () => {
 
         {/* Top Posts */}
         <TabsContent value="top" className="forum-spacing">
-          <TopicTable 
+          <TopicTable
             topics={topTopicsData?.data || []}
             loading={topTopicsLoading}
             showCategory={true}
@@ -272,24 +300,32 @@ export const ForumHome = () => {
       /> */}
 
       {/* Content One */}
-      <AdSlot name="content-one" />
+      <AdSlot name="content-one" key={location.pathname} />
 
       {/* Forums Section */}
       <div className="forum-spacing">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-foreground">Browse Main Forums</h2>
+          <h2 className="text-lg font-bold text-foreground">
+            Browse Main Forums
+          </h2>
         </div>
-        
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" style={{ minHeight: '200px' }}>
+
+        <div
+          className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"
+          style={{ minHeight: "200px" }}
+        >
           {level1Forums?.map((forum) => (
             <Link
               key={forum.id}
               to={`/category/${forum.slug}`}
               className="block"
             >
-              <Card className="p-3 hover:bg-forum-row-hover transition-colors cursor-pointer border border-forum-border-subtle" style={{ minHeight: '80px' }}>
+              <Card
+                className="p-3 hover:bg-forum-row-hover transition-colors cursor-pointer border border-forum-border-subtle"
+                style={{ minHeight: "80px" }}
+              >
                 <div className="flex items-center space-x-2 mb-2">
-                  <div 
+                  <div
                     className="w-3 h-3 rounded-full flex-shrink-0"
                     style={{ backgroundColor: forum.color }}
                   />
@@ -306,12 +342,16 @@ export const ForumHome = () => {
             </Link>
           ))}
         </div>
-        
+
         {(!level1Forums || level1Forums.length === 0) && (
           <Card className="p-6 text-center">
             <MessageSquare className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-            <h3 className="text-base font-semibold mb-2">No forums available</h3>
-            <p className="text-muted-foreground text-sm">Forums will appear here once they are created.</p>
+            <h3 className="text-base font-semibold mb-2">
+              No forums available
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              Forums will appear here once they are created.
+            </p>
           </Card>
         )}
       </div>
@@ -323,37 +363,46 @@ export const ForumHome = () => {
       /> */}
 
       {/* Content Two */}
-      <AdSlot name="content-two" />
+      <AdSlot name="content-two" key={location.pathname} />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-foreground">Browse Province / State Forums</h2>
+          <h2 className="text-lg font-bold text-foreground">
+            Browse Province / State Forums
+          </h2>
         </div>
-        
+
         {level2Forums && level2Forums.length > 0 ? (
           <div className="forum-spacing">
             {(() => {
               // Filter out tournament forums and group by country using parent_category_id
-              const canadianForums = level2Forums.filter(forum => 
-                forum.parent_category_id === '11111111-1111-1111-1111-111111111111'
-              ).sort((a, b) => (a.region || '').localeCompare(b.region || ''));
-              
-              const usaForums = level2Forums.filter(forum => 
-                forum.parent_category_id === '22222222-2222-2222-2222-222222222222'
-              ).sort((a, b) => (a.region || '').localeCompare(b.region || ''));
-              
+              const canadianForums = level2Forums
+                .filter(
+                  (forum) =>
+                    forum.parent_category_id ===
+                    "11111111-1111-1111-1111-111111111111"
+                )
+                .sort((a, b) => (a.region || "").localeCompare(b.region || ""));
+
+              const usaForums = level2Forums
+                .filter(
+                  (forum) =>
+                    forum.parent_category_id ===
+                    "22222222-2222-2222-2222-222222222222"
+                )
+                .sort((a, b) => (a.region || "").localeCompare(b.region || ""));
+
               const countries = [];
               if (canadianForums.length > 0) {
-                countries.push({ name: 'Canada', forums: canadianForums });
+                countries.push({ name: "Canada", forums: canadianForums });
               }
               if (usaForums.length > 0) {
-                countries.push({ name: 'USA', forums: usaForums });
+                countries.push({ name: "USA", forums: usaForums });
               }
-              
+
               return countries.map((country, index) => (
                 <div key={country.name}>
-                   
                   <div className="forum-spacing">
                     <h3 className="text-base font-semibold text-foreground border-b pb-1 forum-header">
                       {country.name}
@@ -367,7 +416,7 @@ export const ForumHome = () => {
                         >
                           <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer">
                             <div className="flex items-center space-x-2 mb-2">
-                              <div 
+                              <div
                                 className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: forum.color }}
                               />
@@ -385,22 +434,25 @@ export const ForumHome = () => {
                       ))}
                     </div>
                   </div>
-                     {index === 0 && (
-                      <div>
-                        {/* Content Three */}
-                        <AdSlot name="content-three" />
-                      </div>
-                    )}
+                  {index === 0 && (
+                    <div>
+                      {/* Content Three */}
+                      <AdSlot name="content-three" key={location.pathname} />
+                    </div>
+                  )}
                 </div>
-                
               ));
             })()}
           </div>
         ) : (
           <Card className="p-8 text-center">
             <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No province/state forums available</h3>
-            <p className="text-muted-foreground">Province and state forums will appear here once they are created.</p>
+            <h3 className="text-lg font-semibold mb-2">
+              No province/state forums available
+            </h3>
+            <p className="text-muted-foreground">
+              Province and state forums will appear here once they are created.
+            </p>
           </Card>
         )}
       </div>

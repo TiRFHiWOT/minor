@@ -12,14 +12,10 @@ import {
   Users,
   Bookmark,
 } from "lucide-react";
-import { useCategories } from "@/hooks/useCategories";
 import { useCategoriesByActivity } from "@/hooks/useCategoriesByActivity";
 import { useCategoryStats } from "@/hooks/useCategoryStats";
 import { useEnhancedForumStats } from "@/hooks/useEnhancedForumStats";
-import { QuickTopicModal } from "./QuickTopicModal";
 import { cn } from "@/lib/utils";
-import { ResponsiveAdBanner } from "@/components/ads/ResponsiveAdBanner";
-import AdMetricsProBanner from "../AdMetricsProBannerProps/AdMetricsProBannerProps";
 import { AdSlot } from "../ads/AdManager";
 
 // Component to display category stats
@@ -115,12 +111,6 @@ export const ForumSidebarNav = () => {
         </div>
       </Card>
 
-      {/* Sidebar Ad */}
-      {/* <ResponsiveAdBanner 
-        format="vertical"
-        className="bg-card border border-border rounded-lg"
-      /> */}
-
       {/* Sidebar Left */}
       <div
         aria-label="Sidebar Ad Slot 1"
@@ -136,7 +126,7 @@ export const ForumSidebarNav = () => {
         role="complementary"
         style={{ marginBottom: 16 }}
       >
-        <AdSlot name="sidebar-left2" />
+        <AdSlot name="sidebar-left2" key={location.pathname} />
       </div>
     </div>
   );
