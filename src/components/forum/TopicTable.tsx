@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Pin, Lock, TrendingUp, MessageSquare, Eye, User, Clock, ChevronRight, ArrowRight } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { AdminControls } from './AdminControls';
-import { MoveTopicModal } from '@/components/admin/MoveTopicModal';
-import { useCanMoveTopic } from '@/hooks/useCanMoveTopic';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Pin,
+  Lock,
+  TrendingUp,
+  MessageSquare,
+  Eye,
+  User,
+  Clock,
+  ChevronRight,
+  ArrowRight,
+} from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AdminControls } from "./AdminControls";
+import { MoveTopicModal } from "@/components/admin/MoveTopicModal";
+import { useCanMoveTopic } from "@/hooks/useCanMoveTopic";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+declare global {
+  interface Window {
+    googletag: any;
+  }
+}
 
 interface TopicTableProps {
   topics: any[];
@@ -16,13 +33,14 @@ interface TopicTableProps {
   loading?: boolean;
 }
 
-export const TopicTable: React.FC<TopicTableProps> = ({ 
-  topics, 
-  categorySlug, 
+export const TopicTable: React.FC<TopicTableProps> = ({
+  topics,
+  categorySlug,
   showCategory = false,
-  loading 
+  loading,
 }) => {
   const { canMoveTopic } = useCanMoveTopic();
+  const isMobile = useIsMobile();
   const [moveTopicModal, setMoveTopicModal] = useState<{
     isOpen: boolean;
     topic: any;
@@ -45,7 +63,9 @@ export const TopicTable: React.FC<TopicTableProps> = ({
       <div className="text-center py-8 bg-card rounded-lg border">
         <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
         <h3 className="text-lg font-semibold mb-2">No topics yet</h3>
-        <p className="text-muted-foreground">Be the first to start a discussion!</p>
+        <p className="text-muted-foreground">
+          Be the first to start a discussion!
+        </p>
       </div>
     );
   }
@@ -65,278 +85,336 @@ export const TopicTable: React.FC<TopicTableProps> = ({
       <div className="forum-spacing">
         {topics.map((topic, index) => {
           const isHot = topic.hot_score > 10;
-          const isNew = new Date(topic.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000);
-          
+          const isNew =
+            new Date(topic.created_at) >
+            new Date(Date.now() - 24 * 60 * 60 * 1000);
+
           return (
-            <div key={topic.id} className="topic-row px-2 md:px-3 py-2">
-              {/* Mobile Layout */}
-              <div className="md:hidden">
-                <div className="flex flex-col space-y-2">
-                  {/* Topic Header */}
-                  <div className="flex items-start gap-2">
-                    {/* Status Icons */}
-                    <div className="flex items-center gap-1 mt-0.5 flex-shrink-0">
-                      {topic.is_pinned && (
-                        <Pin className="h-3 w-3 forum-status-pinned" />
-                      )}
-                      {topic.is_locked && (
-                        <Lock className="h-3 w-3 forum-status-locked" />
-                      )}
-                      {isHot && (
-                        <TrendingUp className="h-3 w-3 forum-status-hot" />
-                      )}
-                    </div>
-
-                    {/* Topic Title and Category */}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <Link
-                          to={topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}
-                          className="font-medium text-foreground hover:text-primary transition-colors text-sm min-w-0 flex-1 line-clamp-2"
-                          title={topic.title}
-                        >
-                          {topic.title}
-                        </Link>
-                        {isNew && (
-                          <Badge variant="secondary" className="text-xs px-1 py-0 forum-status-new flex-shrink-0">
-                            NEW
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      {/* Category */}
-                      {showCategory && (topic.category_name || topic.categories?.name) && (
-                        <div className="text-xs text-muted-foreground mb-1">
-                          <Link 
-                            to={`/category/${topic.category_slug || topic.categories?.slug}`}
-                            className="hover:text-primary transition-colors"
-                          >
-                            {topic.category_name || topic.categories?.name}
-                          </Link>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Mobile Admin Controls */}
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      {canMoveTopic(topic) && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setMoveTopicModal({
-                            isOpen: true,
-                            topic: {
-                              id: topic.id,
-                              title: topic.title,
-                              currentCategoryId: topic.category_id,
-                              currentCategoryName: topic.category_name || topic.categories?.name
-                            }
-                          })}
-                          className="h-6 w-6 p-0"
-                          title="Move topic"
-                        >
-                          <ArrowRight className="h-3 w-3" />
-                        </Button>
-                      )}
-                      <AdminControls 
-                        content={topic} 
-                        contentType="topic"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Stats and Last Activity */}
-                  <div className="flex items-center justify-between text-xs">
-                    {/* Stats */}
-                    <div className="flex items-center gap-3 text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <MessageSquare className="h-3 w-3" />
-                        <span>{topic.reply_count || 0}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Eye className="h-3 w-3" />
-                        <span>{topic.view_count || 0}</span>
-                      </div>
-                    </div>
-
-                    {/* Last Activity */}
-                    {topic.last_reply_at ? (
-                      <Link 
-                        to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
-                        className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        <Avatar className="h-3 w-3">
-                          <AvatarImage src={topic.last_reply_avatar} />
-                          <AvatarFallback className="text-xs">
-                            {(topic.last_reply_username || 'A').charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="truncate max-w-20">
-                          {topic.last_reply_username || 'Anonymous'}
-                        </span>
-                        <span>•</span>
-                        <span>{formatDistanceToNow(new Date(topic.last_reply_at))} ago</span>
-                      </Link>
-                    ) : (
-                      <span className="text-muted-foreground">No replies</span>
-                    )}
-                  </div>
-
-                  {/* Latest Post Button for Mobile */}
-                  {topic.last_reply_at && (
-                    <div className="mt-2 flex justify-end">
-                      <Button
-                        asChild
-                        variant="ghost"
-                        size="sm"
-                        className="text-xs px-3 py-1 h-7"
-                      >
-                        <Link 
-                          to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
-                        >
-                          Latest Post
-                          <ChevronRight className="h-3 w-3 ml-1" />
-                        </Link>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Desktop Layout */}
-              <div className="hidden md:block">
-                <div className="grid grid-cols-12 gap-2 items-start">
-                  {/* Topic Info */}
-                  <div className="col-span-10 min-w-0">
-                    <div className="flex items-start gap-2">
+            <React.Fragment key={topic.id}>
+              <div className="topic-row px-2 md:px-3 py-1">
+                {/* Mobile Layout */}
+                <div className="md:hidden">
+                  <div className="flex flex-col space-y-1">
+                    {/* Topic Header */}
+                    <div className="flex items-start gap-1">
                       {/* Status Icons */}
-                      <div className="flex items-center gap-1 mt-0.5 flex-shrink-0">
+                      <div className="flex items-center gap-0.5 mt-0.5 flex-shrink-0">
                         {topic.is_pinned && (
-                          <Pin className="h-3 w-3 forum-status-pinned" />
+                          <Pin className="h-2.5 w-2.5 forum-status-pinned" />
                         )}
                         {topic.is_locked && (
-                          <Lock className="h-3 w-3 forum-status-locked" />
+                          <Lock className="h-2.5 w-2.5 forum-status-locked" />
                         )}
                         {isHot && (
-                          <TrendingUp className="h-3 w-3 forum-status-hot" />
+                          <TrendingUp className="h-2.5 w-2.5 forum-status-hot" />
                         )}
                       </div>
 
-                      {/* Topic Details */}
+                      {/* Topic Title and Category */}
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center justify-between gap-1">
                           <Link
-                            to={topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}
-                            className="font-medium text-foreground hover:text-primary transition-colors text-sm min-w-0 flex-1"
+                            to={
+                              topic.slug
+                                ? `/${categorySlug || topic.category_slug}/${
+                                    topic.slug
+                                  }`
+                                : `/topic/${topic.id}`
+                            }
+                            className="font-medium text-foreground hover:text-primary transition-colors text-sm min-w-0 flex-1 line-clamp-2"
                             title={topic.title}
                           >
                             {topic.title}
                           </Link>
                           {isNew && (
-                            <Badge variant="secondary" className="text-xs px-1 py-0 forum-status-new flex-shrink-0">
+                            <Badge
+                              variant="secondary"
+                              className="text-xs px-1 py-0 forum-status-new flex-shrink-0"
+                            >
                               NEW
                             </Badge>
                           )}
                         </div>
-                        
-                        {/* Category and Last Activity */}
-                        <div className="mt-1 space-y-1">
-                          {showCategory && (topic.category_name || topic.categories?.name) && (
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <Link 
-                                to={`/category/${topic.category_slug || topic.categories?.slug}`}
+
+                        {/* Category */}
+                        {showCategory &&
+                          (topic.category_name || topic.categories?.name) && (
+                            <div className="text-xs text-muted-foreground">
+                              <Link
+                                to={`/category/${
+                                  topic.category_slug || topic.categories?.slug
+                                }`}
                                 className="hover:text-primary transition-colors"
                               >
                                 {topic.category_name || topic.categories?.name}
                               </Link>
                             </div>
                           )}
-                          
-                          {/* Last Activity */}
-                          {topic.last_reply_at ? (
-                            <Link 
-                              to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
-                              className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              <Avatar className="h-4 w-4 flex-shrink-0">
-                                <AvatarImage src={topic.last_reply_avatar} />
-                                <AvatarFallback className="text-xs">
-                                  {(topic.last_reply_username || 'A').charAt(0).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span>
-                                {topic.last_reply_username || 'Anonymous'} • {formatDistanceToNow(new Date(topic.last_reply_at))} ago
-                              </span>
-                            </Link>
-                          ) : (
-                            <div className="text-xs text-muted-foreground">No replies yet</div>
-                          )}
+                      </div>
+
+                      {/* Mobile Admin Controls */}
+                      <div className="flex items-center gap-0.5 flex-shrink-0">
+                        {canMoveTopic(topic) && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              setMoveTopicModal({
+                                isOpen: true,
+                                topic: {
+                                  id: topic.id,
+                                  title: topic.title,
+                                  currentCategoryId: topic.category_id,
+                                  currentCategoryName:
+                                    topic.category_name ||
+                                    topic.categories?.name,
+                                },
+                              })
+                            }
+                            className="h-5 w-5 p-0"
+                            title="Move topic"
+                          >
+                            <ArrowRight className="h-2.5 w-2.5" />
+                          </Button>
+                        )}
+                        <AdminControls content={topic} contentType="topic" />
+                      </div>
+                    </div>
+
+                    {/* Compact Stats and Last Activity with Latest Post Button */}
+                    <div className="flex items-center justify-between text-xs">
+                      {/* Stats */}
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <div className="flex items-center gap-0.5">
+                          <MessageSquare className="h-2.5 w-2.5" />
+                          <span>{topic.reply_count || 0}</span>
+                        </div>
+                        <div className="flex items-center gap-0.5">
+                          <Eye className="h-2.5 w-2.5" />
+                          <span>{topic.view_count || 0}</span>
                         </div>
                       </div>
 
-                      {/* Move Topic Button */}
-                      {canMoveTopic(topic) && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setMoveTopicModal({
-                            isOpen: true,
-                            topic: {
-                              id: topic.id,
-                              title: topic.title,
-                              currentCategoryId: topic.category_id,
-                              currentCategoryName: topic.category_name || topic.categories?.name
-                            }
-                          })}
-                          className="h-6 w-6 p-0 flex-shrink-0"
-                          title="Move topic"
-                        >
-                          <ArrowRight className="h-3 w-3" />
-                        </Button>
+                      {/* Last Activity with Latest Post Button */}
+                      {topic.last_reply_at ? (
+                        <div className="flex items-center gap-1">
+                          <Link
+                            to={`${
+                              topic.slug
+                                ? `/${categorySlug || topic.category_slug}/${
+                                    topic.slug
+                                  }`
+                                : `/topic/${topic.id}`
+                            }${
+                              topic.last_post_id
+                                ? `#post-${topic.last_post_id}`
+                                : ""
+                            }`}
+                            className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
+                          >
+                            <Avatar className="h-2.5 w-2.5">
+                              <AvatarImage src={topic.last_reply_avatar} />
+                              <AvatarFallback className="text-xs">
+                                {(topic.last_reply_username || "A")
+                                  .charAt(0)
+                                  .toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="truncate max-w-16 text-xs">
+                              {topic.last_reply_username || "Latest post"}
+                            </span>
+                            <span>•</span>
+                            <span className="text-xs">
+                              {formatDistanceToNow(
+                                new Date(topic.last_reply_at),
+                                { addSuffix: false }
+                              )}
+                            </span>
+                          </Link>
+                          <Button
+                            asChild
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs px-1 py-0 h-5 ml-1"
+                          >
+                            <Link
+                              to={`${
+                                topic.slug
+                                  ? `/${categorySlug || topic.category_slug}/${
+                                      topic.slug
+                                    }`
+                                  : `/topic/${topic.id}`
+                              }${
+                                topic.last_post_id
+                                  ? `#post-${topic.last_post_id}`
+                                  : ""
+                              }`}
+                            >
+                              <ChevronRight className="h-2.5 w-2.5" />
+                            </Link>
+                          </Button>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground text-xs">
+                          No replies
+                        </span>
                       )}
-
-                      {/* Admin Controls */}
-                      <AdminControls 
-                        content={topic} 
-                        contentType="topic"
-                      />
                     </div>
                   </div>
+                </div>
 
-                  {/* Replies and Views with Latest Post Button */}
-                  <div className="col-span-2">
-                    <div className="grid grid-cols-2 gap-2">
-                      {/* Replies */}
-                      <div className="text-center">
-                        <div className="text-sm font-medium">{topic.reply_count || 0}</div>
-                      </div>
-                      
-                      {/* Views */}
-                      <div className="text-center">
-                        <div className="text-sm text-muted-foreground">{topic.view_count || 0}</div>
+                {/* Desktop Layout */}
+                <div className="hidden md:block">
+                  <div className="grid grid-cols-12 gap-1 items-center">
+                    {/* Topic Info */}
+                    <div className="col-span-10 min-w-0">
+                      <div className="flex items-center gap-1">
+                        {/* Status Icons */}
+                        <div className="flex items-center gap-0.5 flex-shrink-0">
+                          {topic.is_pinned && (
+                            <Pin className="h-2.5 w-2.5 forum-status-pinned" />
+                          )}
+                          {topic.is_locked && (
+                            <Lock className="h-2.5 w-2.5 forum-status-locked" />
+                          )}
+                          {isHot && (
+                            <TrendingUp className="h-2.5 w-2.5 forum-status-hot" />
+                          )}
+                        </div>
+
+                        {/* Topic Details */}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-1">
+                            <Link
+                              to={
+                                topic.slug
+                                  ? `/${categorySlug || topic.category_slug}/${
+                                      topic.slug
+                                    }`
+                                  : `/topic/${topic.id}`
+                              }
+                              className="font-medium text-foreground hover:text-primary transition-colors text-sm min-w-0 flex-1"
+                              title={topic.title}
+                            >
+                              {topic.title}
+                            </Link>
+                            {isNew && (
+                              <Badge
+                                variant="secondary"
+                                className="text-xs px-1 py-0 forum-status-new flex-shrink-0"
+                              >
+                                NEW
+                              </Badge>
+                            )}
+                          </div>
+
+                          {/* Category and Last Activity - Inline */}
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            {showCategory &&
+                              (topic.category_name ||
+                                topic.categories?.name) && (
+                                <>
+                                  <Link
+                                    to={`/category/${
+                                      topic.category_slug ||
+                                      topic.categories?.slug
+                                    }`}
+                                    className="hover:text-primary transition-colors"
+                                  >
+                                    {topic.category_name ||
+                                      topic.categories?.name}
+                                  </Link>
+                                  <span>•</span>
+                                </>
+                              )}
+
+                            {/* Last Activity with Latest Post Navigation */}
+                            {topic.last_reply_at ? (
+                              <Link
+                                to={`${
+                                  topic.slug
+                                    ? `/${
+                                        categorySlug || topic.category_slug
+                                      }/${topic.slug}`
+                                    : `/topic/${topic.id}`
+                                }${
+                                  topic.last_post_id
+                                    ? `#post-${topic.last_post_id}`
+                                    : ""
+                                }`}
+                                className="flex items-center gap-1 hover:text-primary transition-colors"
+                                title="Go to latest post"
+                              >
+                                <Avatar className="h-3 w-3 flex-shrink-0">
+                                  <AvatarImage src={topic.last_reply_avatar} />
+                                  <AvatarFallback className="text-xs">
+                                    {(topic.last_reply_username || "A")
+                                      .charAt(0)
+                                      .toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span>
+                                  {topic.last_reply_username || "Latest post"} •{" "}
+                                  {formatDistanceToNow(
+                                    new Date(topic.last_reply_at),
+                                    { addSuffix: false }
+                                  )}
+                                </span>
+                                <ChevronRight className="h-2.5 w-2.5 ml-1" />
+                              </Link>
+                            ) : (
+                              <span>No replies yet</span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Admin Controls */}
+                        <div className="flex items-center gap-0.5 flex-shrink-0">
+                          {canMoveTopic(topic) && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                setMoveTopicModal({
+                                  isOpen: true,
+                                  topic: {
+                                    id: topic.id,
+                                    title: topic.title,
+                                    currentCategoryId: topic.category_id,
+                                    currentCategoryName:
+                                      topic.category_name ||
+                                      topic.categories?.name,
+                                  },
+                                })
+                              }
+                              className="h-5 w-5 p-0"
+                              title="Move topic"
+                            >
+                              <ArrowRight className="h-2.5 w-2.5" />
+                            </Button>
+                          )}
+                          <AdminControls content={topic} contentType="topic" />
+                        </div>
                       </div>
                     </div>
-                    
-                    {/* Latest Post Button spanning both columns */}
-                    {topic.last_reply_at && (
-                      <Button
-                        asChild
-                        variant="ghost"
-                        size="sm"
-                        className="text-xs px-2 py-1 h-6 w-full mt-2"
-                      >
-                        <Link 
-                          to={`${topic.slug ? `/${categorySlug || topic.category_slug}/${topic.slug}` : `/topic/${topic.id}`}${topic.last_post_id ? `#post-${topic.last_post_id}` : ''}`}
-                        >
-                          Latest Post
-                          <ChevronRight className="h-3 w-3" />
-                        </Link>
-                      </Button>
-                    )}
+
+                    {/* Compact Replies and Views */}
+                    <div className="col-span-2">
+                      <div className="grid grid-cols-2 gap-1 text-center">
+                        {/* Replies */}
+                        <div className="text-xs font-medium">
+                          {topic.reply_count || 0}
+                        </div>
+                        {/* Views */}
+                        <div className="text-xs text-muted-foreground">
+                          {topic.view_count || 0}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </React.Fragment>
           );
         })}
       </div>

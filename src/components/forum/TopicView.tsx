@@ -4,8 +4,8 @@ import {
   Link,
   useNavigate,
   useSearchParams,
-  useLocation,
 } from "react-router-dom";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -46,11 +46,10 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MoveTopicModal } from "@/components/admin/MoveTopicModal";
 import { useCanMoveTopic } from "@/hooks/useCanMoveTopic";
-import { AdSlot } from "@/components/ads/AdManager";
+import { InContentAd } from "@/components/ads/InContentAd";
+import { VideoAd } from "@/components/ads/VideoAd";
 
 export const TopicView = () => {
-  const [uniqueKey] = useState(() => Date.now().toString());
-  const location = useLocation();
   const { getSetting } = useForumSettings();
 
   const { topicId, categorySlug, subcategorySlug, topicSlug } = useParams();
@@ -702,8 +701,8 @@ export const TopicView = () => {
         </div>
       )}
 
-      {/* Leaderboard Top */}
-      <AdSlot name="banner-top" key={location.pathname + uniqueKey} />
+      {/* Video Ad - High-value placement for topics with multiple posts */}
+      {totalPosts > 10 && <VideoAd id="topic-video-ad" className="my-6" />}
 
       {/* Comments */}
       <div className="bg-card">
@@ -733,35 +732,11 @@ export const TopicView = () => {
                   onReport={handleReport}
                 />
 
-                {/* Show Content One after the 3rd post */}
-                {index === 3 && (
-                  <AdSlot
-                    name="content-one"
-                    key={location.pathname + uniqueKey}
-                  />
-                )}
-
-                {/* Show Content Two after the 7th post */}
-                {index === 7 && (
-                  <AdSlot
-                    name="content-two"
-                    key={location.pathname + uniqueKey}
-                  />
-                )}
-
-                {/* Show Content Three after the 11th post */}
-                {index === 11 && (
-                  <AdSlot
-                    name="content-three"
-                    key={location.pathname + uniqueKey}
-                  />
-                )}
-
-                {/* Show Content Four after the 15th post */}
-                {index === 15 && (
-                  <AdSlot
-                    name="content-four"
-                    key={location.pathname + uniqueKey}
+                {/* Add in-content ads every 3-4 posts */}
+                {(index + 1) % 4 === 0 && (
+                  <InContentAd
+                    id={`in-content-${Math.floor((index + 1) / 4)}`}
+                    className="my-4"
                   />
                 )}
               </React.Fragment>
@@ -804,9 +779,6 @@ export const TopicView = () => {
           />
         )}
       </div>
-
-      {/* Content Five */}
-      <AdSlot name="content-five" key={location.pathname + uniqueKey} />
 
       <ReportModal
         isOpen={reportModal.isOpen}

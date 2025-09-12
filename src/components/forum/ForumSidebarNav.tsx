@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,12 @@ import {
   Users,
   Bookmark,
 } from "lucide-react";
+import { useCategories } from "@/hooks/useCategories";
 import { useCategoriesByActivity } from "@/hooks/useCategoriesByActivity";
 import { useCategoryStats } from "@/hooks/useCategoryStats";
 import { useEnhancedForumStats } from "@/hooks/useEnhancedForumStats";
+import { QuickTopicModal } from "./QuickTopicModal";
 import { cn } from "@/lib/utils";
-import { AdSlot } from "../ads/AdManager";
 
 // Component to display category stats
 const CategoryItem = ({ category }: { category: any }) => {
@@ -45,22 +46,18 @@ const CategoryItem = ({ category }: { category: any }) => {
 
 export const ForumSidebarNav = () => {
   const location = useLocation();
-  const [uniqueKey] = React.useState(() => Date.now().toString());
   const { data: categories } = useCategoriesByActivity(); // All active categories by activity
   const { data: forumStats } = useEnhancedForumStats();
 
   const isActive = (path: string) => location.pathname === path;
 
-  const navItems = useMemo(
-    () => [
-      { label: "Home", path: "/", icon: Home },
-      { label: "Hot", path: "/?sort=hot", icon: TrendingUp },
-      { label: "New", path: "/?sort=new", icon: Clock },
-      { label: "Top", path: "/?sort=top", icon: Star },
-      { label: "Bookmarks", path: "/bookmarks", icon: Bookmark },
-    ],
-    []
-  );
+  const navItems = [
+    { label: "Home", path: "/", icon: Home },
+    { label: "Hot", path: "/?sort=hot", icon: TrendingUp },
+    { label: "New", path: "/?sort=new", icon: Clock },
+    { label: "Top", path: "/?sort=top", icon: Star },
+    { label: "Bookmarks", path: "/bookmarks", icon: Bookmark },
+  ];
 
   return (
     <div className="space-y-4">
@@ -112,22 +109,50 @@ export const ForumSidebarNav = () => {
         </div>
       </Card>
 
-      {/* Sidebar Left */}
-      <div
-        aria-label="Sidebar Ad Slot 1"
-        role="complementary"
-        style={{ marginBottom: 16 }}
-      >
-        <AdSlot name="sidebar-left" key={location.pathname + uniqueKey} />
+      {/* Sidebar Ads */}
+
+      {/* First 300x250 Ad */}
+      <div className="bg-card border border-border rounded-lg p-2">
+        <p className="text-xs text-muted-foreground mb-2 text-center">
+          Advertisement
+        </p>
+        <div
+          id="300x250-1"
+          className="w-full h-[250px] flex items-center justify-center"
+        >
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.googletag = window.googletag || { cmd: [] };
+                googletag.cmd.push(function () {
+                  googletag.display('300x250-1');
+                });
+              `,
+            }}
+          />
+        </div>
       </div>
 
-      {/* Sidebar Left 2 */}
-      <div
-        aria-label="Sidebar Ad Slot 2"
-        role="complementary"
-        style={{ marginBottom: 16 }}
-      >
-        <AdSlot name="sidebar-left2" key={location.pathname + uniqueKey} />
+      {/* Second 300x250 Ad */}
+      <div className="bg-card border border-border rounded-lg p-2">
+        <p className="text-xs text-muted-foreground mb-2 text-center">
+          Advertisement
+        </p>
+        <div
+          id="300x250-2"
+          className="w-full h-[250px] flex items-center justify-center"
+        >
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.googletag = window.googletag || { cmd: [] };
+                googletag.cmd.push(function () {
+                  googletag.display('300x250-2');
+                });
+              `,
+            }}
+          />
+        </div>
       </div>
     </div>
   );
