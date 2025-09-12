@@ -134,67 +134,81 @@
       content="/lovable-uploads/d27f0c5d-529f-45bd-9e66-45b3a46ab1a6.png?v=2"
     />
 
-    <!-- Start AdMetricsPro Head Code for minorhockeytalks.com -->
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-RFQVZPVL0N"
+    ></script>
     <script>
-      // Add error handling for ad scripts to prevent site crashes
-      (function () {
-        const originalAddEventListener = EventTarget.prototype.addEventListener;
-        const adScript = document.createElement("script");
-        adScript.defer = true;
-        adScript.src =
-          "https://qd.admetricspro.com/js/minorhockeytalks/new-layout-loader.js";
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-        // Add error handling
-        adScript.onerror = function (e) {
-          console.warn(
-            "AdMetricsPro script failed to load, continuing without ads"
-          );
-        };
-
-        // Catch any errors from the ad script
-        window.addEventListener(
-          "error",
-          function (e) {
-            // Handle generic "Script error" from cross-origin scripts
-            if (
-              e.message === "Script error." &&
-              e.filename === "" &&
-              e.lineno === 0
-            ) {
-              console.warn(
-                "Generic script error caught (likely from ad scripts), preventing site crash"
-              );
-              e.preventDefault();
-              return true;
-            }
-
-            // Handle specific ad script errors
-            if (
-              e.filename &&
-              (e.filename.includes("admetricspro") ||
-                e.filename.includes("amazon-adsystem") ||
-                e.filename.includes("hadron") ||
-                e.filename.includes("adagio") ||
-                e.filename.includes("id5-sync") ||
-                e.filename.includes("crwdcntrl") ||
-                e.filename.includes("fastclick") ||
-                e.filename.includes("4dex.io"))
-            ) {
-              console.warn(
-                "Ad script error caught, preventing site crash:",
-                e.message
-              );
-              e.preventDefault();
-              return true;
-            }
-          },
-          true
-        );
-
-        document.head.appendChild(adScript);
-      })();
+      gtag("config", "G-RFQVZPVL0N");
     </script>
-    <!-- End AdMetricsPro Head Code for minorhockeytalks.com -->
+
+    <!-- Google Ad Manager - Ad Plus Network -->
+    <script
+      async
+      src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      window.googletag = window.googletag || { cmd: [] };
+      var anchorSlot, interstitialSlot, sidebarSlot1, sidebarSlot2;
+      googletag.cmd.push(function () {
+        // Define Premium Sticky Anchor (Ad Plus best performer)
+        anchorSlot = googletag.defineOutOfPageSlot(
+          "/21849154601,423899568/Ad.Plus-Anchor",
+          googletag.enums.OutOfPageFormat.TOP_ANCHOR
+        );
+        anchorSlot.addService(googletag.pubads());
+
+        // Define Interstitial ads (Ad Plus other top performer)
+        interstitialSlot = googletag.defineOutOfPageSlot(
+          "/21849154601,423899568/Ad.Plus-Interstitial",
+          googletag.enums.OutOfPageFormat.INTERSTITIAL
+        );
+        interstitialSlot.addService(googletag.pubads());
+
+        // Define sidebar ads with correct Ad Plus units
+        sidebarSlot1 = googletag
+          .defineSlot(
+            "/21849154601,423899568/Ad.Plus-300x250",
+            [300, 250],
+            "300x250-1"
+          )
+          .addService(googletag.pubads());
+        sidebarSlot2 = googletag
+          .defineSlot(
+            "/21849154601,423899568/Ad.Plus-300x250-2",
+            [300, 250],
+            "300x250-2"
+          )
+          .addService(googletag.pubads());
+
+        // Configure responsive ads for mobile-first approach
+        googletag.pubads().enableSingleRequest();
+        googletag.pubads().collapseEmptyDivs();
+        googletag.enableServices();
+
+        // Display anchor and interstitial ads immediately
+        googletag.display(anchorSlot);
+        googletag.display(interstitialSlot);
+      });
+
+      // Refresh ads every 30 seconds for better revenue
+      setInterval(function () {
+        googletag
+          .pubads()
+          .refresh([anchorSlot, interstitialSlot, sidebarSlot1, sidebarSlot2]);
+      }, 30000);
+    </script>
+
+    <!-- Google AdSense -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5447109336224364" crossorigin="anonymous"></script> -->
   </head>
 
   <body>
