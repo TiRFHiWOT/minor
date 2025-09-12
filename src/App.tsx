@@ -171,7 +171,7 @@ const App = () => (
                                       }
                                     >
                                       <Route index element={<ForumHome />} />
-                                      {/* New hierarchical URL structure */}
+                                      {/* New hierarchical URL structure  */}
                                       <Route
                                         path=":categorySlug/:topicSlug"
                                         element={
