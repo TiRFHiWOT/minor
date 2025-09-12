@@ -1,40 +1,16 @@
 import React, { useState } from "react";
-import { Link, useSearchParams, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  TrendingUp,
-  Clock,
-  Star,
-  MessageSquare,
-  User as UserIcon,
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
-  Rss,
-} from "lucide-react";
-import { useHotTopics } from "@/hooks/useHotTopics";
+import { MessageSquare } from "lucide-react";
 import { useTopics } from "@/hooks/useTopics";
-import { useHotTopicsLegacy } from "@/hooks/useHotTopicsLegacy";
-import { useMostCommentedTopics } from "@/hooks/useMostCommentedTopics";
-import { useMostViewedTopics } from "@/hooks/useMostViewedTopics";
-import { useAuth } from "@/hooks/useAuth";
 import { useCategories } from "@/hooks/useCategories";
 import { useForumSettings } from "@/hooks/useForumSettings";
 import { PaginationControls } from "@/components/ui/pagination-controls";
-import { AdSlot } from "@/components/ads/AdManager";
-
 import { TopicTable } from "./TopicTable";
 import { ReportModal } from "./ReportModal";
 
 export const ForumHome = () => {
-  const { user } = useAuth();
   const { getSetting } = useForumSettings();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-  const [uniqueKey] = useState(() => Date.now().toString());
   const [reportModal, setReportModal] = useState<{
     isOpen: boolean;
     topicId?: string;
@@ -42,39 +18,19 @@ export const ForumHome = () => {
     isOpen: false,
   });
 
-  // Pagination state for each tab
-  const [hotPage, setHotPage] = useState(1);
+  // Pagination state for new topics
   const [newPage, setNewPage] = useState(1);
-  const [topPage, setTopPage] = useState(1);
 
-  const sortBy = searchParams.get("sort") || "new";
-
-  // Paginated data hooks
-  const { data: hotTopicsData, isLoading: hotTopicsLoading } =
-    useMostCommentedTopics(hotPage, 10);
+  // Paginated data hooks - only new topics
   const { data: newTopicsData, isLoading: newTopicsLoading } = useTopics(
     undefined,
     newPage,
     10,
     "last_reply_at"
   );
-  const { data: topTopicsData, isLoading: topTopicsLoading } =
-    useMostViewedTopics(topPage, 10);
 
   const { data: level1Forums } = useCategories(null, 1); // Only Level 1 forums
   const { data: level2Forums } = useCategories(undefined, 2); // Province/State forums
-
-  const handleSortChange = (value: string) => {
-    if (value === "new") {
-      setSearchParams({});
-    } else {
-      setSearchParams({ sort: value });
-    }
-    // Reset pagination when changing sort
-    setHotPage(1);
-    setNewPage(1);
-    setTopPage(1);
-  };
 
   const handleReport = (topicId: string) => {
     setReportModal({
@@ -82,8 +38,6 @@ export const ForumHome = () => {
       topicId,
     });
   };
-
-  const isLoading = hotTopicsLoading || newTopicsLoading || topTopicsLoading;
 
   return (
     <div className="forum-spacing relative w-full overflow-x-hidden max-w-5xl mx-auto">
@@ -98,198 +52,74 @@ export const ForumHome = () => {
             "A community forum for minor hockey discussions"
           )}
         </p>
-
-        {/* Social Media Links */}
-        {(() => {
-          // Clean URLs by removing JSON encoding quotes
-          const cleanUrl = (url: string) => {
-            if (!url || typeof url !== "string") return "";
-            return url.replace(/^"(.*)"$/, "$1").trim();
-          };
-
-          const facebookUrl = cleanUrl(getSetting("social_facebook", ""));
-          const twitterUrl = cleanUrl(getSetting("social_twitter", ""));
-          const instagramUrl = cleanUrl(getSetting("social_instagram", ""));
-          const youtubeUrl = cleanUrl(getSetting("social_youtube", ""));
-          const isRssEnabled = getSetting("rss_enabled", false);
-
-          // Validate URLs start with http/https
-          const isValidUrl = (url: string) => {
-            return (
-              url && (url.startsWith("http://") || url.startsWith("https://"))
-            );
-          };
-
-          const validFacebook = isValidUrl(facebookUrl);
-          const validTwitter = isValidUrl(twitterUrl);
-          const validInstagram = isValidUrl(instagramUrl);
-          const validYoutube = isValidUrl(youtubeUrl);
-
-          // Only show if at least one valid social link exists or RSS is enabled
-          const hasValidSocialLinks =
-            validFacebook ||
-            validTwitter ||
-            validInstagram ||
-            validYoutube ||
-            isRssEnabled;
-
-          if (!hasValidSocialLinks) return null;
-
-          return (
-            <div className="flex items-center gap-3 mt-3">
-              <span className="text-sm text-muted-foreground">Follow us:</span>
-              {validFacebook && (
-                <a
-                  href={facebookUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Facebook className="h-5 w-5" />
-                </a>
-              )}
-              {validTwitter && (
-                <a
-                  href={twitterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Twitter className="h-5 w-5" />
-                </a>
-              )}
-              {validInstagram && (
-                <a
-                  href={instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Instagram className="h-5 w-5" />
-                </a>
-              )}
-              {validYoutube && (
-                <a
-                  href={youtubeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Youtube className="h-5 w-5" />
-                </a>
-              )}
-              {isRssEnabled && (
-                <a
-                  href="/rss"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Rss className="h-5 w-5" />
-                </a>
-              )}
-            </div>
-          );
-        })()}
       </div>
 
-      {/* Leaderboard Top */}
-      <AdSlot name="banner-top" key={location.pathname + uniqueKey} />
-
-      {/* Sort Tabs */}
-      <Tabs value={sortBy} onValueChange={handleSortChange}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="new" className="flex items-center space-x-2">
-            <Clock className="h-4 w-4" />
-            <span>New</span>
-          </TabsTrigger>
-          <TabsTrigger value="hot" className="flex items-center space-x-2">
-            <TrendingUp className="h-4 w-4" />
-            <span>Hot</span>
-          </TabsTrigger>
-          <TabsTrigger value="top" className="flex items-center space-x-2">
-            <Star className="h-4 w-4" />
-            <span>Top</span>
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Hot Posts */}
-        <TabsContent value="hot" className="forum-spacing">
-          <TopicTable
-            topics={hotTopicsData?.data || []}
-            loading={hotTopicsLoading}
-            showCategory={true}
+      {/* Banner Ad Above Tabs */}
+      <div className="bg-card border border-border rounded-lg p-2 my-4">
+        <p className="text-xs text-muted-foreground mb-2 text-center">
+          Advertisement
+        </p>
+        <div
+          id="home-banner-ad"
+          className="w-full flex items-center justify-center h-[90px] md:h-[90px] sm:h-[50px]"
+        >
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                if (typeof window !== 'undefined' && window.googletag) {
+                  window.googletag.cmd.push(function () {
+                    var adSlot;
+                    if (window.innerWidth <= 640) {
+                      adSlot = window.googletag.defineSlot('/21849154601,423899568/Ad.Plus-Mobile-Banner', [320, 50], 'home-banner-ad');
+                    } else {
+                      adSlot = window.googletag.defineSlot('/21849154601,423899568/Ad.Plus-Desktop-Banner', [728, 90], 'home-banner-ad');
+                    }
+                    if (adSlot) {
+                      adSlot.addService(window.googletag.pubads());
+                    }
+                    window.googletag.display('home-banner-ad');
+                  });
+                }
+              `,
+            }}
           />
-          {hotTopicsData && hotTopicsData.data.length > 0 && (
-            <PaginationControls
-              currentPage={hotPage}
-              totalPages={hotTopicsData.totalPages}
-              totalItems={hotTopicsData.totalCount}
-              itemsPerPage={10}
-              onPageChange={setHotPage}
-              loading={hotTopicsLoading}
-            />
-          )}
-        </TabsContent>
+        </div>
+      </div>
 
-        {/* New Posts */}
-        <TabsContent value="new" className="forum-spacing">
-          <TopicTable
-            topics={
-              newTopicsData?.data?.map((topic) => ({
-                ...topic,
-                username: topic.profiles?.username || null,
-                avatar_url: topic.profiles?.avatar_url || null,
-                category_name: topic.categories?.name || "General",
-                category_color: topic.categories?.color || "#3b82f6",
-                category_slug: topic.categories?.slug || "",
-                slug: topic.slug,
-                hot_score: 0,
-                last_post_id: topic.last_post_id,
-                parent_category_id:
-                  topic.categories?.parent_category_id || null,
-                parent_category_slug: null,
-                last_reply_username: topic.last_reply_username,
-                last_reply_avatar: topic.last_reply_avatar,
-              })) || []
-            }
+      {/* New Topics Section */}
+      <div className="forum-spacing">
+        <TopicTable
+          topics={
+            newTopicsData?.data?.map((topic) => ({
+              ...topic,
+              username: topic.profiles?.username || null,
+              avatar_url: topic.profiles?.avatar_url || null,
+              category_name: topic.categories?.name || "General",
+              category_color: topic.categories?.color || "#3b82f6",
+              category_slug: topic.categories?.slug || "",
+              slug: topic.slug,
+              hot_score: 0,
+              last_post_id: topic.last_post_id,
+              parent_category_id: topic.categories?.parent_category_id || null,
+              parent_category_slug: null,
+              last_reply_username: topic.last_reply_username,
+              last_reply_avatar: topic.last_reply_avatar,
+            })) || []
+          }
+          loading={newTopicsLoading}
+          showCategory={true}
+        />
+        {newTopicsData && newTopicsData.data.length > 0 && (
+          <PaginationControls
+            currentPage={newPage}
+            totalPages={newTopicsData.totalPages}
+            totalItems={newTopicsData.totalCount}
+            itemsPerPage={10}
+            onPageChange={setNewPage}
             loading={newTopicsLoading}
-            showCategory={true}
           />
-          {newTopicsData && newTopicsData.data.length > 0 && (
-            <PaginationControls
-              currentPage={newPage}
-              totalPages={newTopicsData.totalPages}
-              totalItems={newTopicsData.totalCount}
-              itemsPerPage={10}
-              onPageChange={setNewPage}
-              loading={newTopicsLoading}
-            />
-          )}
-        </TabsContent>
-
-        {/* Top Posts */}
-        <TabsContent value="top" className="forum-spacing">
-          <TopicTable
-            topics={topTopicsData?.data || []}
-            loading={topTopicsLoading}
-            showCategory={true}
-          />
-          {topTopicsData && topTopicsData.data.length > 0 && (
-            <PaginationControls
-              currentPage={topPage}
-              totalPages={topTopicsData.totalPages}
-              totalItems={topTopicsData.totalCount}
-              itemsPerPage={10}
-              onPageChange={setTopPage}
-              loading={topTopicsLoading}
-            />
-          )}
-        </TabsContent>
-      </Tabs>
-
-      {/* Content One */}
-      <AdSlot name="content-one" key={location.pathname + uniqueKey} />
+        )}
+      </div>
 
       {/* Forums Section */}
       <div className="forum-spacing">
@@ -344,9 +174,6 @@ export const ForumHome = () => {
           </Card>
         )}
       </div>
-
-      {/* Content Two */}
-      <AdSlot name="content-two" key={location.pathname + uniqueKey} />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
@@ -417,15 +244,7 @@ export const ForumHome = () => {
                       ))}
                     </div>
                   </div>
-                  {index === 0 && (
-                    <div>
-                      {/* Content Three */}
-                      <AdSlot
-                        name="content-three"
-                        key={location.pathname + uniqueKey}
-                      />
-                    </div>
-                  )}
+                  {index === 0 && <div></div>}
                 </div>
               ));
             })()}
