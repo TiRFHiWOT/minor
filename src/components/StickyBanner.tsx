@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import { useForumSettings } from '@/hooks/useForumSettings';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import { useForumSettings } from "@/hooks/useForumSettings";
+import { Button } from "@/components/ui/button";
 
 export const StickyBanner: React.FC = () => {
   const { getSetting, isLoading } = useForumSettings();
   const [isDismissed, setIsDismissed] = useState(false);
 
-  const isEnabled = getSetting('banner_enabled', false);
-  const message = getSetting('banner_message', '');
-  const style = getSetting('banner_style', 'info');
-  const isDismissible = getSetting('banner_dismissible', true);
+  const isEnabled = getSetting("banner_enabled", false);
+  const message = getSetting("banner_message", "");
+  const style = getSetting("banner_style", "info");
+  const isDismissible = getSetting("banner_dismissible", true);
 
-  console.log('StickyBanner values:', {
+  console.log("StickyBanner values:", {
     isEnabled,
     message,
     style,
     isDismissible,
     messageLength: message?.length,
-    messageType: typeof message
+    messageType: typeof message,
   });
 
   // Check localStorage for dismissal status
@@ -28,11 +28,15 @@ export const StickyBanner: React.FC = () => {
       if (!isDismissible) {
         localStorage.removeItem(`banner-dismissed-${message}`);
         setIsDismissed(false);
-        console.log('Banner is not dismissible, cleared localStorage');
+        console.log("Banner is not dismissible, cleared localStorage");
       } else {
         const dismissed = localStorage.getItem(`banner-dismissed-${message}`);
-        setIsDismissed(dismissed === 'true');
-        console.log('Banner dismissal check:', { message, dismissed, isDismissed: dismissed === 'true' });
+        setIsDismissed(dismissed === "true");
+        console.log("Banner dismissal check:", {
+          message,
+          dismissed,
+          isDismissed: dismissed === "true",
+        });
       }
     }
   }, [message, isDismissible]);
@@ -40,49 +44,54 @@ export const StickyBanner: React.FC = () => {
   const handleDismiss = () => {
     setIsDismissed(true);
     if (isDismissible) {
-      localStorage.setItem(`banner-dismissed-${message}`, 'true');
+      localStorage.setItem(`banner-dismissed-${message}`, "true");
     }
   };
 
   // Don't render if loading, not enabled, or dismissed
-  console.log('Banner render check:', { 
-    isLoading, 
-    isEnabled, 
-    hasMessage: !!message, 
-    message: message?.substring(0, 50) + '...', 
+  console.log("Banner render check:", {
+    isLoading,
+    isEnabled,
+    hasMessage: !!message,
+    message: message?.substring(0, 50) + "...",
     isDismissed,
-    style 
+    style,
   });
-  
+
   if (isLoading || !isEnabled || !message || isDismissed) {
-    console.log('Banner not showing because:', { isLoading, isEnabled, hasMessage: !!message, isDismissed });
+    console.log("Banner not showing because:", {
+      isLoading,
+      isEnabled,
+      hasMessage: !!message,
+      isDismissed,
+    });
     return null;
   }
 
-  console.log('Banner should be rendering now!');
+  console.log("Banner should be rendering now!");
 
   const getStyleClasses = () => {
     switch (style) {
-      case 'warning':
-        return 'bg-yellow-500/10 border-yellow-500/20 text-yellow-800 dark:text-yellow-200';
-      case 'success':
-        return 'bg-green-500/10 border-green-500/20 text-green-800 dark:text-green-200';
-      case 'error':
-        return 'bg-red-500/10 border-red-500/20 text-red-800 dark:text-red-200';
-      case 'announcement':
-        return 'bg-purple-500/10 border-purple-500/20 text-purple-800 dark:text-purple-200';
+      case "warning":
+        return "bg-yellow-500/10 border-yellow-500/20 text-yellow-800 dark:text-yellow-200";
+      case "success":
+        return "bg-green-500/10 border-green-500/20 text-green-800 dark:text-green-200";
+      case "error":
+        return "bg-red-500/10 border-red-500/20 text-red-800 dark:text-red-200";
+      case "announcement":
+        return "bg-purple-500/10 border-purple-500/20 text-purple-800 dark:text-purple-200";
       default: // info
-        return 'bg-blue-500/10 border-blue-500/20 text-blue-800 dark:text-blue-200';
+        return "bg-blue-500/10 border-blue-500/20 text-blue-800 dark:text-blue-200";
     }
   };
 
   return (
     <>
       {/* Spacer to reserve space for the fixed banner only when visible */}
-      <div style={{ height: 56 }} aria-hidden="true" />
-      <div 
+      <div aria-hidden="true" />
+      <div
         className={`fixed top-0 left-0 right-0 z-[100] border-b transition-all duration-300 ${getStyleClasses()}`}
-        style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999 }}
+        style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 9999 }}
       >
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
