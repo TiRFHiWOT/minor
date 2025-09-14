@@ -1,3 +1,7 @@
+/* Center Mediago ad containers by ID */
+[id^="mgcontainer-"] {
+  margin: auto !important;
+}
 /* Make all Google ad iframes and their containers auto height */
 [id^="google_ads_iframe_"] {
   height: auto !important;
