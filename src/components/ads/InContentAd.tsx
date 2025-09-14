@@ -67,8 +67,7 @@ export const InContentAd: React.FC<InContentAdProps> = ({
       </p>
       <div
         id={id}
-        style={{ width: "100%", minHeight: isMobile ? 100 : 250 }}
-        className="flex items-center justify-center mx-auto"
+        className={`flex items-center justify-center mx-auto w-full`}
       ></div>
     </div>
   );
