@@ -32,7 +32,19 @@ export const InContentAd: React.FC<InContentAdProps> = ({
         );
 
         if (!existingSlot) {
-          adSlot = window.googletag.defineSlot(unitPath, id);
+          adSlot = window.googletag.defineSlot(
+            unitPath,
+            isMobile
+              ? [
+                  [320, 100],
+                  [300, 250],
+                ]
+              : [
+                  [300, 250],
+                  [728, 90],
+                ],
+            id
+          );
           if (adSlot) {
             adSlot.addService(window.googletag.pubads());
           }

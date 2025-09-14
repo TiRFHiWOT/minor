@@ -1,3 +1,9 @@
+/* Center items inside ad slot with id starting 'in-content-' */
+[id^="in-content-"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
 /* Make all Google ad iframes and their containers auto height */
 [id^="google_ads_iframe_"] {
   height: auto !important;

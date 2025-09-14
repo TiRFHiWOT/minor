@@ -43,9 +43,6 @@ export const VideoAd: React.FC<VideoAdProps> = ({ id, className }) => {
         className || ""
       }`}
     >
-      <p className="text-xs text-muted-foreground mb-2 text-center">
-        Sponsored Video
-      </p>
       <div id={id} className="w-full flex items-center justify-center"></div>
     </div>
   );
