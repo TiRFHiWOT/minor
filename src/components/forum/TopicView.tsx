@@ -733,15 +733,17 @@ export const TopicView = () => {
                 />
 
                 {/* Add in-content ads every 3-4 posts */}
-                {(index + 1) % 4 === 0 && (
-                  <InContentAd
-                    id={`in-content-${Math.floor((index + 1) / 4)}`}
-                    unitPath={`/21849154601,423899568/Ad.Plus-InContent-${Math.floor(
-                      (index + 1) / 4
-                    )}`}
-                    className="my-4"
-                  />
-                )}
+                <div className="flex justify-center ">
+                  {(index + 1) % 4 === 0 && (
+                    <InContentAd
+                      id={`in-content-${Math.floor((index + 1) / 4)}`}
+                      unitPath={`/21849154601,423899568/Ad.Plus-InContent-${Math.floor(
+                        (index + 1) / 4
+                      )}`}
+                      className="my-4"
+                    />
+                  )}
+                </div>
               </React.Fragment>
             ))}
           </div>
