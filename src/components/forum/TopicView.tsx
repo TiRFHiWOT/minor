@@ -733,7 +733,7 @@ export const TopicView = () => {
                 />
 
                 {/* Add in-content ads every 3-4 posts */}
-                <div className="flex justify-center ">
+                <div className="flex justify-center w-full">
                   {(index + 1) % 4 === 0 && (
                     <InContentAd
                       id={`in-content-${Math.floor((index + 1) / 4)}`}
