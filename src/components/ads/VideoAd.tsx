@@ -48,8 +48,8 @@ export const VideoAd: React.FC<VideoAdProps> = ({ id, className }) => {
       </p>
       <div
         id={id}
-        className="w-full h-[500px] flex items-center justify-center"
-      />
+        className="w-full h-[360px] flex items-center justify-center"
+      ></div>
     </div>
   );
 };
