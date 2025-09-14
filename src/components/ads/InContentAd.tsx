@@ -58,14 +58,14 @@ export const InContentAd: React.FC<InContentAdProps> = ({
 
   return (
     <div
-      className={`bg-card border border-border rounded-lg p-2 my-4 w-full flex flex-col items-center justify-center ${
+      className={`bg-card border border-border rounded-lg p-2 my-4 w-full ${
         className || ""
       }`}
     >
       <p className="text-xs text-muted-foreground mb-2 text-center">
         Advertisement
       </p>
-      <div id={id} className={`w-full flex items-center justify-center`} />
+      <div id={id} className={`flex items-center justify-center mx-auto`}></div>
     </div>
   );
 };
