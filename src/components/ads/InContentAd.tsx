@@ -9,10 +9,15 @@ declare global {
 
 interface InContentAdProps {
   id: string;
+  unitPath: string;
   className?: string;
 }
 
-export const InContentAd: React.FC<InContentAdProps> = ({ id, className }) => {
+export const InContentAd: React.FC<InContentAdProps> = ({
+  id,
+  unitPath,
+  className,
+}) => {
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -27,28 +32,19 @@ export const InContentAd: React.FC<InContentAdProps> = ({ id, className }) => {
         );
 
         if (!existingSlot) {
-          if (isMobile) {
-            // Mobile: 320x100 or 300x250
-            adSlot = window.googletag.defineSlot(
-              "/21849154601,423899568/Ad.Plus-Mobile-Content",
-              [
-                [320, 100],
-                [300, 250],
-              ],
-              id
-            );
-          } else {
-            // Desktop: 300x250 or 728x90
-            adSlot = window.googletag.defineSlot(
-              "/21849154601,423899568/Ad.Plus-Desktop-Content",
-              [
-                [300, 250],
-                [728, 90],
-              ],
-              id
-            );
-          }
-
+          adSlot = window.googletag.defineSlot(
+            unitPath,
+            isMobile
+              ? [
+                  [320, 100],
+                  [300, 250],
+                ]
+              : [
+                  [300, 250],
+                  [728, 90],
+                ],
+            id
+          );
           if (adSlot) {
             adSlot.addService(window.googletag.pubads());
           }
@@ -58,7 +54,7 @@ export const InContentAd: React.FC<InContentAdProps> = ({ id, className }) => {
         window.googletag.display(id);
       });
     }
-  }, [id, isMobile]);
+  }, [id, unitPath, isMobile]);
 
   return (
     <div
