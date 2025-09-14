@@ -61,7 +61,7 @@ export const ForumHome = () => {
         </p>
         <div
           id="home-banner-ad"
-          className="w-full flex items-center justify-center h-[90px] md:h-[90px] sm:h-[50px]"
+          className="w-full flex items-center justify-center"
         >
           <script
             dangerouslySetInnerHTML={{

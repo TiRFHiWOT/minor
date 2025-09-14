@@ -116,10 +116,7 @@ export const ForumSidebarNav = () => {
         <p className="text-xs text-muted-foreground mb-2 text-center">
           Advertisement
         </p>
-        <div
-          id="300x250-1"
-          className="w-full h-[250px] flex items-center justify-center"
-        >
+        <div id="300x250-1" className="w-full flex items-center justify-center">
           <script
             dangerouslySetInnerHTML={{
               __html: `
@@ -138,10 +135,7 @@ export const ForumSidebarNav = () => {
         <p className="text-xs text-muted-foreground mb-2 text-center">
           Advertisement
         </p>
-        <div
-          id="300x250-2"
-          className="w-full h-[250px] flex items-center justify-center"
-        >
+        <div id="300x250-2" className="w-full flex items-center justify-center">
           <script
             dangerouslySetInnerHTML={{
               __html: `
