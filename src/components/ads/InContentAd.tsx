@@ -58,7 +58,7 @@ export const InContentAd: React.FC<InContentAdProps> = ({
 
   return (
     <div
-      className={`bg-card border border-border rounded-lg p-2 my-4 ${
+      className={`bg-card border border-border rounded-lg p-2 my-4 w-full ${
         className || ""
       }`}
     >
