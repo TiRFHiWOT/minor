@@ -1,8 +1,3 @@
-/* Center GoogleActiveViewElement with flexbox */
-.GoogleActiveViewElement {
-  display: flex !important;
-  justify-content: center !important;
-}
 /* Make all Google ad iframes and their containers auto height */
 [id^="google_ads_iframe_"] {
   height: auto !important;

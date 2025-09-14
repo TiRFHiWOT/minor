@@ -65,7 +65,11 @@ export const InContentAd: React.FC<InContentAdProps> = ({
       <p className="text-xs text-muted-foreground mb-2 text-center">
         Advertisement
       </p>
-      <div id={id} className={`flex items-center justify-center mx-auto`}></div>
+      <div
+        id={id}
+        style={{ width: "100%", minHeight: isMobile ? 100 : 250 }}
+        className="flex items-center justify-center mx-auto"
+      ></div>
     </div>
   );
 };
