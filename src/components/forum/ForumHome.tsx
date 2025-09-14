@@ -66,10 +66,20 @@ export const ForumHome = () => {
           <script
             dangerouslySetInnerHTML={{
               __html: `
-                  window.googletag = window.googletag || { cmd: [] };
-                    googletag.cmd.push(function () {
-                    googletag.display('home-banner-ad');
-                });
+                if (typeof window !== 'undefined' && window.googletag) {
+                  window.googletag.cmd.push(function () {
+                    var adSlot;
+                    if (window.innerWidth <= 640) {
+                      adSlot = window.googletag.defineSlot('/21849154601,423899568/Ad.Plus-Mobile-Banner', [320, 50], 'home-banner-ad');
+                    } else {
+                      adSlot = window.googletag.defineSlot('/21849154601,423899568/Ad.Plus-Desktop-Banner', [728, 90], 'home-banner-ad');
+                    }
+                    if (adSlot) {
+                      adSlot.addService(window.googletag.pubads());
+                    }
+                    window.googletag.display('home-banner-ad');
+                  });
+                }
               `,
             }}
           />
