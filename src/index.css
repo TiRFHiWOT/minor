@@ -259,17 +259,4 @@ All colors MUST be HSL.
   .post-card-compact {
     @apply p-2 border-b border-forum-border-subtle hover:bg-forum-row-hover transition-colors;
   }
-
-  /* Make all Google ad iframes and their containers auto height */
-  [id^="google_ads_iframe_"] {
-    height: auto !important;
-    width: 100% !important;
-    display: block;
-  }
-
-  [id^="google_ads_iframe_"] iframe {
-    height: auto !important;
-    width: 100% !important;
-    display: block;
-  }
 }
