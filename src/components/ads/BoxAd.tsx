@@ -44,10 +44,10 @@ export const BoxAd: React.FC<BoxAdProps> = ({ id, unitPath, className }) => {
 
   return (
     <div
-      className={`bg-card border border-border rounded-lg p-2 w-full my-2 ${
+      className={`bg-card border border-border rounded-lg p-2 w-full ${
         className || ""
       }`}
-      style={{ maxWidth: "288px", margin: "0 auto" }}
+      style={{ maxWidth: "288px", margin: "10px auto" }}
     >
       <p className="text-xs text-muted-foreground mb-2 text-center">
         Advertisement
