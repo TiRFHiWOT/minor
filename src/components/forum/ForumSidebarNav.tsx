@@ -18,6 +18,7 @@ import { useCategoryStats } from "@/hooks/useCategoryStats";
 import { useEnhancedForumStats } from "@/hooks/useEnhancedForumStats";
 import { QuickTopicModal } from "./QuickTopicModal";
 import { cn } from "@/lib/utils";
+import { BoxAd } from "../ads/BoxAd";
 
 // Component to display category stats
 const CategoryItem = ({ category }: { category: any }) => {
@@ -112,42 +113,10 @@ export const ForumSidebarNav = () => {
       {/* Sidebar Ads */}
 
       {/* First 300x250 Ad */}
-      <div className="bg-card border border-border rounded-lg p-2">
-        <p className="text-xs text-muted-foreground mb-2 text-center">
-          Advertisement
-        </p>
-        <div id="300x250-1" className="w-full flex items-center justify-center">
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                window.googletag = window.googletag || { cmd: [] };
-                googletag.cmd.push(function () {
-                  googletag.display('300x250-1');
-                });
-              `,
-            }}
-          />
-        </div>
-      </div>
+      <BoxAd id="300x250-1" unitPath="/21849154601,423899568/Ad.Plus-Box-1" />
 
       {/* Second 300x250 Ad */}
-      <div className="bg-card border border-border rounded-lg p-2">
-        <p className="text-xs text-muted-foreground mb-2 text-center">
-          Advertisement
-        </p>
-        <div id="300x250-2" className="w-full flex items-center justify-center">
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                window.googletag = window.googletag || { cmd: [] };
-                googletag.cmd.push(function () {
-                  googletag.display('300x250-2');
-                });
-              `,
-            }}
-          />
-        </div>
-      </div>
+      <BoxAd id="300x250-2" unitPath="/21849154601,423899568/Ad.Plus-Box-2" />
     </div>
   );
 };
