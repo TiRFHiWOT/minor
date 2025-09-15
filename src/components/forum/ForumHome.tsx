@@ -8,6 +8,7 @@ import { useForumSettings } from "@/hooks/useForumSettings";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { TopicTable } from "./TopicTable";
 import { ReportModal } from "./ReportModal";
+import { BannerAd } from "../ads/BannerAd";
 
 export const ForumHome = () => {
   const { getSetting } = useForumSettings();
@@ -55,36 +56,11 @@ export const ForumHome = () => {
       </div>
 
       {/* Banner Ad Above Tabs */}
-      <div className="bg-card border border-border rounded-lg p-2 my-4">
-        <p className="text-xs text-muted-foreground mb-2 text-center">
-          Advertisement
-        </p>
-        <div
-          id="home-banner-ad"
-          className="w-full flex items-center justify-center"
-        >
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                if (typeof window !== 'undefined' && window.googletag) {
-                  window.googletag.cmd.push(function () {
-                    var adSlot;
-                    if (window.innerWidth <= 640) {
-                      adSlot = window.googletag.defineSlot('/21849154601,423899568/Ad.Plus-Mobile-Banner', [320, 50], 'home-banner-ad');
-                    } else {
-                      adSlot = window.googletag.defineSlot('/21849154601,423899568/Ad.Plus-Desktop-Banner', [728, 90], 'home-banner-ad');
-                    }
-                    if (adSlot) {
-                      adSlot.addService(window.googletag.pubads());
-                    }
-                    window.googletag.display('home-banner-ad');
-                  });
-                }
-              `,
-            }}
-          />
-        </div>
-      </div>
+      <BannerAd
+        id="home-banner-ad"
+        mobileUnitPath="/21849154601,423899568/Ad.Plus-Mobile-Banner"
+        desktopUnitPath="/21849154601,423899568/Ad.Plus-Desktop-Banner"
+      />
 
       {/* New Topics Section */}
       <div className="forum-spacing">
