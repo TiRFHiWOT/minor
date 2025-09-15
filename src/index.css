@@ -264,3 +264,7 @@ All colors MUST be HSL.
 iframe[id^="google_ads_iframe_"] {
   height: inherit !important;
 }
+
+[id^="google_ads_iframe_/21849154601,423899568/Ad.Plus-300x250"] {
+  width: inherit !important;
+}
