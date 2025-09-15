@@ -260,3 +260,7 @@ All colors MUST be HSL.
     @apply p-2 border-b border-forum-border-subtle hover:bg-forum-row-hover transition-colors;
   }
 }
+
+iframe[id^="google_ads_iframe_"] {
+  height: unset !important;
+}
