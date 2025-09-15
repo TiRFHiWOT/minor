@@ -262,5 +262,5 @@ All colors MUST be HSL.
 }
 
 iframe[id^="google_ads_iframe_"] {
-  height: unset !important;
+  height: inherit !important;
 }
