@@ -1,26 +1,40 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { useEnhancedForumStats } from '@/hooks/useEnhancedForumStats';
-import { useForumSettings } from '@/hooks/useForumSettings';
-import { useVisitors24h } from '@/hooks/useVisitors24h';
-import { usePeakDailyVisitors } from '@/hooks/usePeakDailyVisitors';
-import { useAutoPeakUpdate } from '@/hooks/useAutoPeakUpdate';
-import { Facebook, Twitter, Instagram, Youtube, Users, Calendar, Rss } from 'lucide-react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useEnhancedForumStats } from "@/hooks/useEnhancedForumStats";
+import { useForumSettings } from "@/hooks/useForumSettings";
+import { useVisitors24h } from "@/hooks/useVisitors24h";
+import { usePeakDailyVisitors } from "@/hooks/usePeakDailyVisitors";
+import { useAutoPeakUpdate } from "@/hooks/useAutoPeakUpdate";
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Youtube,
+  Users,
+  Calendar,
+  Rss,
+} from "lucide-react";
 
 const ContactFormModal = () => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -30,9 +44,12 @@ const ContactFormModal = () => {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
-        body: formData
-      });
+      const { data, error } = await supabase.functions.invoke(
+        "send-contact-email",
+        {
+          body: formData,
+        }
+      );
 
       if (error) {
         throw error;
@@ -42,11 +59,11 @@ const ContactFormModal = () => {
         title: "Message sent!",
         description: "Thank you for your message. We'll get back to you soon.",
       });
-      
-      setFormData({ name: '', email: '', subject: '', message: '' });
+
+      setFormData({ name: "", email: "", subject: "", message: "" });
       setOpen(false);
     } catch (error: any) {
-      console.error('Contact form error:', error);
+      console.error("Contact form error:", error);
       toast({
         title: "Error",
         description: "Failed to send message. Please try again.",
@@ -74,7 +91,9 @@ const ContactFormModal = () => {
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               required
             />
           </div>
@@ -84,7 +103,9 @@ const ContactFormModal = () => {
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
             />
           </div>
@@ -93,7 +114,9 @@ const ContactFormModal = () => {
             <Input
               id="subject"
               value={formData.subject}
-              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, subject: e.target.value })
+              }
               required
             />
           </div>
@@ -102,17 +125,23 @@ const ContactFormModal = () => {
             <Textarea
               id="message"
               value={formData.message}
-              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, message: e.target.value })
+              }
               rows={4}
               required
             />
           </div>
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Sending...' : 'Send Message'}
+              {isSubmitting ? "Sending..." : "Send Message"}
             </Button>
           </div>
         </form>
@@ -126,11 +155,11 @@ export const Footer = () => {
   const { getSetting } = useForumSettings();
   const { data: visitors24h } = useVisitors24h();
   const { data: peakData } = usePeakDailyVisitors();
-  
+
   // Auto-update peak when current visitors exceed stored peak
   useAutoPeakUpdate();
-  
-  const isRssEnabled = getSetting('rss_enabled', false);
+
+  const isRssEnabled = getSetting("rss_enabled", false);
 
   return (
     <footer className="bg-card border-t mt-auto">
@@ -148,25 +177,42 @@ export const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-medium">Quick Links</h4>
             <div className="flex flex-col space-y-2 text-sm">
-              <Link to="/rules" className="hover:text-primary transition-colors">
+              <Link
+                to="/rules"
+                className="hover:text-primary transition-colors"
+              >
                 Forum Rules
               </Link>
-              <Link to="/terms" className="hover:text-primary transition-colors">
+              <Link
+                to="/terms"
+                className="hover:text-primary transition-colors"
+              >
                 Terms & Conditions
               </Link>
-              <Link to="/privacy" className="hover:text-primary transition-colors">
+              <Link
+                to="/privacy"
+                className="hover:text-primary transition-colors"
+              >
                 Privacy Policy
               </Link>
               <ContactFormModal />
-              <Link to="/blogs" className="hover:text-primary transition-colors">
+              <Link
+                to="/blogs"
+                className="hover:text-primary transition-colors"
+              >
                 Blog
               </Link>
-              <a href="/sitemap" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+              <a
+                href="/sitemap.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors"
+              >
                 Sitemap
               </a>
               {isRssEnabled && (
-                <a 
-                  href="/rss" 
+                <a
+                  href="/rss"
                   className="hover:text-primary transition-colors flex items-center space-x-1"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -183,59 +229,83 @@ export const Footer = () => {
             <h4 className="font-medium">Follow Us</h4>
             <div className="flex space-x-3">
               {(() => {
-                const facebookUrl = getSetting('social_facebook', '');
-                const cleanUrl = typeof facebookUrl === 'string' ? facebookUrl.replace(/^"(.*)"$/, '$1') : '';
-                return cleanUrl && cleanUrl !== '' && (
-                  <a
-                    href={cleanUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Facebook className="h-5 w-5" />
-                  </a>
+                const facebookUrl = getSetting("social_facebook", "");
+                const cleanUrl =
+                  typeof facebookUrl === "string"
+                    ? facebookUrl.replace(/^"(.*)"$/, "$1")
+                    : "";
+                return (
+                  cleanUrl &&
+                  cleanUrl !== "" && (
+                    <a
+                      href={cleanUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Facebook className="h-5 w-5" />
+                    </a>
+                  )
                 );
               })()}
               {(() => {
-                const twitterUrl = getSetting('social_twitter', '');
-                const cleanUrl = typeof twitterUrl === 'string' ? twitterUrl.replace(/^"(.*)"$/, '$1') : '';
-                return cleanUrl && cleanUrl !== '' && (
-                  <a
-                    href={cleanUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Twitter className="h-5 w-5" />
-                  </a>
+                const twitterUrl = getSetting("social_twitter", "");
+                const cleanUrl =
+                  typeof twitterUrl === "string"
+                    ? twitterUrl.replace(/^"(.*)"$/, "$1")
+                    : "";
+                return (
+                  cleanUrl &&
+                  cleanUrl !== "" && (
+                    <a
+                      href={cleanUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Twitter className="h-5 w-5" />
+                    </a>
+                  )
                 );
               })()}
               {(() => {
-                const instagramUrl = getSetting('social_instagram', '');
-                const cleanUrl = typeof instagramUrl === 'string' ? instagramUrl.replace(/^"(.*)"$/, '$1') : '';
-                return cleanUrl && cleanUrl !== '' && (
-                  <a
-                    href={cleanUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Instagram className="h-5 w-5" />
-                  </a>
+                const instagramUrl = getSetting("social_instagram", "");
+                const cleanUrl =
+                  typeof instagramUrl === "string"
+                    ? instagramUrl.replace(/^"(.*)"$/, "$1")
+                    : "";
+                return (
+                  cleanUrl &&
+                  cleanUrl !== "" && (
+                    <a
+                      href={cleanUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Instagram className="h-5 w-5" />
+                    </a>
+                  )
                 );
               })()}
               {(() => {
-                const youtubeUrl = getSetting('social_youtube', '');
-                const cleanUrl = typeof youtubeUrl === 'string' ? youtubeUrl.replace(/^"(.*)"$/, '$1') : '';
-                return cleanUrl && cleanUrl !== '' && (
-                  <a
-                    href={cleanUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Youtube className="h-5 w-5" />
-                  </a>
+                const youtubeUrl = getSetting("social_youtube", "");
+                const cleanUrl =
+                  typeof youtubeUrl === "string"
+                    ? youtubeUrl.replace(/^"(.*)"$/, "$1")
+                    : "";
+                return (
+                  cleanUrl &&
+                  cleanUrl !== "" && (
+                    <a
+                      href={cleanUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Youtube className="h-5 w-5" />
+                    </a>
+                  )
                 );
               })()}
               {isRssEnabled && (
@@ -279,11 +349,14 @@ export const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Minor Hockey Talks. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Minor Hockey Talks. All rights
+            reserved.
+          </p>
           <p>Built with ❤️ for the hockey community</p>
         </div>
       </div>
-       <div id="ampCMP_footer"></div>
+      <div id="ampCMP_footer"></div>
     </footer>
   );
 };

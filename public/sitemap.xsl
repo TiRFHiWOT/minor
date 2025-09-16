@@ -178,12 +178,12 @@
               </span>
               <div class="stat-label">Visible URLs</div>
             </div>
-            <div class="stat">
+            <!-- <div class="stat">
               <span class="stat-number">
                 <xsl:value-of select="format-date(current-date(), '[D] [MNn] [Y]')"/>
               </span>
               <div class="stat-label">Generated</div>
-            </div>
+            </div> -->
           </div>
           
           <div class="search-container">
