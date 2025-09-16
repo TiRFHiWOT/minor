@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
     <loc>https://minorhockeytalks.com</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
@@ -3178,7 +3177,7 @@
   </url>
   <url>
     <loc>https://minorhockeytalks.com/blogs</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
