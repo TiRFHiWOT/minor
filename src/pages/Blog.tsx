@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
+import { BannerAd } from "@/components/ads/BannerAd";
 
 const categories = [
   "All",
@@ -32,6 +33,13 @@ const Blog = () => {
           Insights, tips, and stories from the world of minor hockey
         </p>
       </div>
+
+      {/* Banner Ad Above Tabs */}
+      <BannerAd
+        id="blog-banner-ad"
+        mobileUnitPath="/21849154601,423899568/Ad.Plus-Mobile-Blog-Banner"
+        desktopUnitPath="/21849154601,423899568/Ad.Plus-Desktop-Blog-Banner"
+      />
 
       {/* Category Filter */}
       <div className="flex flex-wrap justify-center gap-2 mb-8">

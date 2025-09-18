@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useBlogPost } from "@/hooks/useBlogPosts";
 import { Link } from "react-router-dom";
+import { BannerAd } from "@/components/ads/BannerAd";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -95,6 +96,13 @@ const BlogPost = () => {
             </div>
           </div>
         </div>
+
+        {/* Banner Ad Above Tabs */}
+        <BannerAd
+          id="blog-post-banner-ad"
+          mobileUnitPath="/21849154601,423899568/Ad.Plus-Mobile-Blog-Post-Banner"
+          desktopUnitPath="/21849154601,423899568/Ad.Plus-Desktop-Blog-Post-Banner"
+        />
 
         {/* Featured Image */}
         {post.featured_image && (
