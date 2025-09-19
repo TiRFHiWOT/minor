@@ -40,3 +40,17 @@ jobs:
           git add public/sitemap*.xml
           git commit -m 'chore: update sitemap.xml [auto]' || echo "No changes to commit"
           git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload sitemap.xml to GoDaddy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: ./public
+          server-dir: /
+          protocol: ftp
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
