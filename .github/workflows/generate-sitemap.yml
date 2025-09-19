@@ -2,6 +2,7 @@
 name: Generate and Update Sitemap
 
 on:
+  push:
   repository_dispatch:
   workflow_dispatch:
 
