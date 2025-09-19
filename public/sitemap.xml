@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
     <loc>https://minorhockeytalks.com</loc>
-    <lastmod>2025-09-16</lastmod>
+    <lastmod>2025-09-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
@@ -3178,13 +3177,37 @@
   </url>
   <url>
     <loc>https://minorhockeytalks.com/blogs</loc>
-    <lastmod>2025-09-16</lastmod>
+    <lastmod>2025-09-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://minorhockeytalks.com/blog/hydration-nutrition-key-guidelines-for-young-players</loc>
     <lastmod>2025-08-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/blog/national-coaches-week-autumn-kickoff-celebrating-the-mentors-who-shape-minor-hockey</loc>
+    <lastmod>2025-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/blog/office-training-tips-warmup-to-agility</loc>
+    <lastmod>2025-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/blog/essential-youth-hockey-gear-checklist-safety-fit-for-ages-518</loc>
+    <lastmod>2025-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/blog/building-strong-hockey-teams-bonding-mental-skills</loc>
+    <lastmod>2025-09-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
