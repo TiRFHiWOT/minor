@@ -33,6 +33,10 @@ jobs:
       - name: Generate sitemap
         run: node scripts/generate-sitemap.js
 
+      - name: Add XSL link to sitemap
+        run: |
+          sed -i '1 a <?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>' public/sitemap.xml
+          
       - name: Commit and push sitemap changes
         run: |
           git config --global user.name 'github-actions[bot]'
