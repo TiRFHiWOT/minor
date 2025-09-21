@@ -38,6 +38,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/category/test-category</loc>
+    <lastmod>2025-09-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/category/general-talk-hockey-forum</loc>
     <lastmod>2025-07-03</lastmod>
     <changefreq>weekly</changefreq>
