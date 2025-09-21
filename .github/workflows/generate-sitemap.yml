@@ -33,9 +33,13 @@ jobs:
       - name: Generate sitemap
         run: node scripts/generate-sitemap.js
 
-      - name: Add XSL link to sitemap
+      - name: Add XSL link to all sitemaps safely
         run: |
-          sed -i '1 a <?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>' public/sitemap.xml
+          for file in public/sitemap*.xml; do
+            { head -n 1 "$file"; echo '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>'; tail -n +2 "$file"; } > "$file.tmp"
+            mv "$file.tmp" "$file"
+          done
+
           
       - name: Commit and push sitemap changes
         run: |
