@@ -50,19 +50,16 @@ async function fetchTeamNames() {
     await browser.close();
     return [];
   }
-  // Adjust selector as needed based on actual page structure
+  // Updated selector for associations page structure
   const teamNames = await page.evaluate(() => {
-    const names = [];
-    document.querySelectorAll("table tr").forEach((row) => {
-      const cols = row.querySelectorAll("td");
-      if (cols.length > 1) {
-        const name = cols[1].innerText.trim();
-        if (name && name !== "Team") {
-          names.push(name);
-        }
-      }
-    });
-    return names;
+    // Find all anchor tags that link to /association-info?a=...
+    const anchors = Array.from(
+      document.querySelectorAll('a[href^="/association-info?a="]')
+    );
+    // Get the visible text of each anchor, filter out empty or duplicate names
+    const names = anchors.map((a) => a.textContent.trim()).filter(Boolean);
+    // Remove duplicates (some associations may appear more than once)
+    return Array.from(new Set(names));
   });
   await browser.close();
   return teamNames;
@@ -70,12 +67,38 @@ async function fetchTeamNames() {
 
 async function createTopic(title, category_id) {
   const slug = slugify(title);
+  // Format content as: Let's talk about [team], [city], [state]
+  let content = "";
+  const parts = title.split(",").map((s) => s.trim());
+  if (parts.length >= 3) {
+    const state = parts[parts.length - 1];
+    const city = parts[parts.length - 2];
+    const team = parts.slice(0, -2).join(", ");
+    content = `Let's talk about ${team}, ${city}, ${state}`;
+  } else if (parts.length === 2) {
+    // Assume: [team and city], [state]  => split last word of first part as city
+    const teamAndCity = parts[0].trim();
+    const state = parts[1].trim();
+    const teamCityParts = teamAndCity.split(" ");
+    if (teamCityParts.length >= 2) {
+      const city = teamCityParts[teamCityParts.length - 1];
+      const team = teamCityParts.slice(0, -1).join(" ").trim();
+      content = `Let's talk about ${team},${city}, ${state}`.replace(
+        /,\s*/,
+        ", "
+      );
+    } else {
+      content = `Let's talk about ${teamAndCity}, ${state}`;
+    }
+  } else {
+    content = `Let's talk about ${title}`;
+  }
   const { data, error } = await supabase
     .from("topics")
     .insert({
       title,
       slug,
-      content: "",
+      content,
       category_id,
       moderation_status: "approved",
       is_anonymous: false,
@@ -92,12 +115,33 @@ async function createTopic(title, category_id) {
 }
 
 async function main() {
-  const teamNames = await fetchTeamNames();
-  console.log(`Found ${teamNames.length} teams.`);
-  for (const name of teamNames) {
+  let teamNames = await fetchTeamNames();
+  // Exclude topics that already exist in Supabase (by title, normalized)
+  function normalize(str) {
+    return str.replace(/\s+/g, " ").replace(/\n/g, "").trim();
+  }
+  // Fetch all existing topic titles in this category
+  const { data: existingTopics, error: fetchError } = await supabase
+    .from("topics")
+    .select("title")
+    .eq("category_id", CATEGORY_ID);
+  let existingTitles = [];
+  if (fetchError) {
+    console.error("Error fetching existing topics:", fetchError.message);
+  } else if (existingTopics) {
+    existingTitles = existingTopics.map((t) => normalize(t.title));
+  }
+  teamNames = teamNames.filter(
+    (name) => !existingTitles.includes(normalize(name))
+  );
+  console.log(
+    `Found ${teamNames.length} teams after excluding already-created topics.`
+  );
+  // Only create two topics for testing
+  for (const name of teamNames.slice(0, 2)) {
     await createTopic(name, CATEGORY_ID);
   }
-  console.log("Done!");
+  console.log("Done! (Created 2 topics for testing)");
 }
 
 main();
