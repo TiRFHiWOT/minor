@@ -55,6 +55,14 @@ async function generateSitemap() {
   const safeTopics = topics || [];
   const safeBlogPosts = blogPosts || [];
 
+  // Build a map of category id to slug for quick lookup
+  const categoryIdToSlug = {};
+  safeCategories.forEach((cat) => {
+    if (cat.id && cat.slug) {
+      categoryIdToSlug[cat.id] = cat.slug;
+    }
+  });
+
   let urls = [];
 
   urls.push({
@@ -74,12 +82,16 @@ async function generateSitemap() {
   });
 
   safeTopics.forEach((topic) => {
-    urls.push({
-      loc: `${BASE_URL}/${topic.category_slug}/${topic.slug}`,
-      lastmod: formatDate(topic.updated_at || topic.created_at),
-      changefreq: "monthly",
-      priority: 0.6,
-    });
+    // Use category_id to look up the slug
+    const catSlug = categoryIdToSlug[topic.category_id];
+    if (catSlug && topic.slug) {
+      urls.push({
+        loc: `${BASE_URL}/${catSlug}/${topic.slug}`,
+        lastmod: formatDate(topic.updated_at || topic.created_at),
+        changefreq: "monthly",
+        priority: 0.6,
+      });
+    }
   });
 
   urls.push({
