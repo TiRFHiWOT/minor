@@ -67,14 +67,19 @@ async function fetchTeamNames() {
 
 async function createTopic(title, category_id) {
   const slug = slugify(title);
-  // Format content as: Let's talk about [team], [city], [state]
+  // Format content as: Let's talk about [team] Association, [city], [state]
   let content = "";
+  // Remove any trailing '| Girls Only' or similar tags from the state part
   const parts = title.split(",").map((s) => s.trim());
+  // Clean up the last part (state) if it contains a pipe and extra info
+  if (parts.length > 1) {
+    parts[parts.length - 1] = parts[parts.length - 1].split("|")[0].trim();
+  }
   if (parts.length >= 3) {
     const state = parts[parts.length - 1];
     const city = parts[parts.length - 2];
     const team = parts.slice(0, -2).join(", ");
-    content = `Let's talk about ${team}, ${city}, ${state}`;
+    content = `Let's talk about ${team} Association, ${city}, ${state}`;
   } else if (parts.length === 2) {
     // Assume: [team and city], [state]  => split last word of first part as city
     const teamAndCity = parts[0].trim();
@@ -83,15 +88,12 @@ async function createTopic(title, category_id) {
     if (teamCityParts.length >= 2) {
       const city = teamCityParts[teamCityParts.length - 1];
       const team = teamCityParts.slice(0, -1).join(" ").trim();
-      content = `Let's talk about ${team},${city}, ${state}`.replace(
-        /,\s*/,
-        ", "
-      );
+      content = `Let's talk about ${team} Association, ${city}, ${state}`;
     } else {
-      content = `Let's talk about ${teamAndCity}, ${state}`;
+      content = `Let's talk about ${teamAndCity} Association, ${state}`;
     }
   } else {
-    content = `Let's talk about ${title}`;
+    content = `Let's talk about ${title} Association`;
   }
   const { data, error } = await supabase
     .from("topics")
@@ -137,11 +139,11 @@ async function main() {
   console.log(
     `Found ${teamNames.length} teams after excluding already-created topics.`
   );
-  // Only create two topics for testing
-  for (const name of teamNames.slice(0, 2)) {
+  // Create all topics
+  for (const name of teamNames) {
     await createTopic(name, CATEGORY_ID);
   }
-  console.log("Done! (Created 2 topics for testing)");
+  console.log(`Done! (Created ${teamNames.length} topics)`);
 }
 
 main();
