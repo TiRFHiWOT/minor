@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build website
+        run: npm run build
+
       - name: Copy .env file
         run: |
           if [ -f .env ]; then cp .env scripts/.env; fi
@@ -48,7 +51,21 @@ jobs:
           git commit -m 'chore: update sitemap.xml [auto]' || echo "No changes to commit"
           git push origin HEAD:${{ github.ref_name }}
 
-      - name: Upload sitemap.xml to GoDaddy via FTP
+      - name: Upload dist and sitemap files to GoDaddy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: ./dist/
+          server-dir: /
+          protocol: ftp
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+
+      - name: Upload sitemap.xml files to GoDaddy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
