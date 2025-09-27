@@ -51,8 +51,7 @@ export const useTopicsLegacy = (
       const to = from + pageSize - 1;
 
       // Get total count first
-      let countQuery = supabasegit reset --soft HEAD~1
-
+      let countQuery = supabase
         .from("topics")
         .select("id", { count: "exact", head: true })
         .eq("moderation_status", "approved");
