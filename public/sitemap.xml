@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
@@ -5384,12 +5385,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2015-aaa/2015-aaa-md3d2aa4</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/teams-and-associations/des-moines-jr-bucs-des-moines-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
@@ -5398,6 +5393,12 @@
   <url>
     <loc>https://minorhockeytalks.com/teams-and-associations/champaign-urbana-chiefs-champaign-il</loc>
     <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2015-aaa/2015-aaa-md3d2aa4</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -5966,6 +5967,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/ontario-2014-aa/gthl-2014-aa-west-mfbnte9p</loc>
+    <lastmod>2025-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/ontario-2012-aaa/2012-gthl-aaa-1e4de855</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
@@ -5984,12 +5991,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aa/gthl-2014-aa-west-mfbnte9p</loc>
-    <lastmod>2025-09-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/ontario-2013-aaa/2013-aaa-gthl-mdnyyrgs</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
@@ -6002,12 +6003,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aaa/2014-gthl-aaa-mhtog-mf3ft9ok</loc>
-    <lastmod>2025-09-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/ontario-2012-aa/2012-gthl-aa-east--mdzxqyvl</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
@@ -6016,6 +6011,12 @@
   <url>
     <loc>https://minorhockeytalks.com/ontario-2008-aa/why-do-parents-think-the-team-revolves-around-their-kid-mfxy5h5k</loc>
     <lastmod>2025-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2014-aaa/2014-gthl-aaa-mhtog-mf3ft9ok</loc>
+    <lastmod>2025-09-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
