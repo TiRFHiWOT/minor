@@ -9,6 +9,7 @@ import { PaginationControls } from "@/components/ui/pagination-controls";
 import { TopicTable } from "./TopicTable";
 import { ReportModal } from "./ReportModal";
 import { BannerAd } from "../ads/BannerAd";
+import { AdSlot300x250 } from "../ads/AdSlot300x250";
 
 export const ForumHome = () => {
   const { getSetting } = useForumSettings();
@@ -97,6 +98,9 @@ export const ForumHome = () => {
         )}
       </div>
 
+      {/* Ad Slot 300x250 */}
+      <AdSlot300x250 slotId="300x250-4" />
+
       {/* Forums Section */}
       <div className="forum-spacing">
         <div className="flex items-center justify-between">
@@ -150,6 +154,9 @@ export const ForumHome = () => {
           </Card>
         )}
       </div>
+
+      {/* Ad Slot 300x250 */}
+      <AdSlot300x250 slotId="300x250-5" />
 
       {/* Province/State Forums Section */}
       <div className="forum-spacing">
@@ -220,7 +227,7 @@ export const ForumHome = () => {
                       ))}
                     </div>
                   </div>
-                  {index === 0 && <div></div>}
+                  {index === 0 && <AdSlot300x250 slotId="300x250-6" />}
                 </div>
               ));
             })()}
