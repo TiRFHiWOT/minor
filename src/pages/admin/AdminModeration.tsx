@@ -1,8 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -10,30 +10,47 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { AlertTriangle, Ban, CheckCircle, Clock, UserX, Wifi, WifiOff, Eye, X, Trash2, Users, FileText, Shield, ShieldCheck } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/use-toast';
-import { formatDistanceToNow } from 'date-fns';
-import { CategoryRequestsManager } from '@/components/admin/CategoryRequestsManager';
-import { AppealsManager } from '@/components/admin/AppealsManager';
-import { ReportDetailsModal } from '@/components/admin/ReportDetailsModal';
-import { ModerationItemDetailsModal } from '@/components/admin/ModerationItemDetailsModal';
-import { useAppealsCount } from '@/hooks/useAppeals';
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  AlertTriangle,
+  Ban,
+  CheckCircle,
+  Clock,
+  UserX,
+  Wifi,
+  WifiOff,
+  Eye,
+  X,
+  Trash2,
+  Users,
+  FileText,
+  Shield,
+  ShieldCheck,
+} from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
+import { formatDistanceToNow } from "date-fns";
+import { CategoryRequestsManager } from "@/components/admin/CategoryRequestsManager";
+import { AppealsManager } from "@/components/admin/AppealsManager";
+import { ReportDetailsModal } from "@/components/admin/ReportDetailsModal";
+import { ModerationItemDetailsModal } from "@/components/admin/ModerationItemDetailsModal";
+import { useAppealsCount } from "@/hooks/useAppeals";
+import { BannedIPsManager } from "@/components/admin/BannedIPsManager";
+import { BannedWordsManager } from "@/components/admin/BannedWordsManager";
 
 interface ModerationItem {
   id: string;
-  type: 'topic' | 'post';
+  type: "topic" | "post";
   title: string;
   content: string;
   author: string;
   created_at: string;
   reported_count: number;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   is_anonymous?: boolean;
   ip_address?: string | null;
   slug?: string;
@@ -47,42 +64,49 @@ const ReportsTab = () => {
   const queryClient = useQueryClient();
   const [selectedReport, setSelectedReport] = React.useState<any>(null);
   const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
-  const [activeTab, setActiveTab] = React.useState('active');
-  const [selectedReports, setSelectedReports] = React.useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = React.useState("active");
+  const [selectedReports, setSelectedReports] = React.useState<Set<string>>(
+    new Set()
+  );
 
   // Bulk delete functionality
   const handleBulkDelete = async () => {
     if (selectedReports.size === 0) {
       toast({
-        title: 'No Reports Selected',
-        description: 'Please select reports to delete',
-        variant: 'destructive',
+        title: "No Reports Selected",
+        description: "Please select reports to delete",
+        variant: "destructive",
       });
       return;
     }
 
-    if (!confirm(`Are you sure you want to permanently delete ${selectedReports.size} selected reports?`)) return;
+    if (
+      !confirm(
+        `Are you sure you want to permanently delete ${selectedReports.size} selected reports?`
+      )
+    )
+      return;
 
     try {
       const { error } = await supabase
-        .from('reports')
+        .from("reports")
         .delete()
-        .in('id', Array.from(selectedReports));
+        .in("id", Array.from(selectedReports));
 
       if (error) throw error;
 
       toast({
-        title: 'Reports Deleted',
+        title: "Reports Deleted",
         description: `${selectedReports.size} reports have been permanently deleted`,
       });
 
       setSelectedReports(new Set());
-      queryClient.invalidateQueries({ queryKey: ['reports'] });
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to delete reports',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to delete reports",
+        variant: "destructive",
       });
     }
   };
@@ -99,11 +123,11 @@ const ReportsTab = () => {
 
   const handleSelectAll = () => {
     if (!currentReports) return;
-    
+
     if (selectedReports.size === currentReports.length) {
       setSelectedReports(new Set());
     } else {
-      setSelectedReports(new Set(currentReports.map(r => r.id)));
+      setSelectedReports(new Set(currentReports.map((r) => r.id)));
     }
   };
 
@@ -112,84 +136,85 @@ const ReportsTab = () => {
     try {
       if (report.reported_post_id) {
         const { error } = await supabase
-          .from('posts')
-          .update({ moderation_status: 'approved' })
-          .eq('id', report.reported_post_id);
+          .from("posts")
+          .update({ moderation_status: "approved" })
+          .eq("id", report.reported_post_id);
         if (error) throw error;
       } else if (report.reported_topic_id) {
         const { error } = await supabase
-          .from('topics')
-          .update({ moderation_status: 'approved' })
-          .eq('id', report.reported_topic_id);
+          .from("topics")
+          .update({ moderation_status: "approved" })
+          .eq("id", report.reported_topic_id);
         if (error) throw error;
       }
 
       // Mark report as resolved
       await supabase
-        .from('reports')
+        .from("reports")
         .update({
-          status: 'resolved',
+          status: "resolved",
           reviewed_at: new Date().toISOString(),
-          admin_notes: 'Content approved - report dismissed'
+          admin_notes: "Content approved - report dismissed",
         })
-        .eq('id', report.id);
+        .eq("id", report.id);
 
       toast({
-        title: 'Content Approved',
-        description: 'Reported content has been approved and report resolved',
+        title: "Content Approved",
+        description: "Reported content has been approved and report resolved",
       });
 
-      queryClient.invalidateQueries({ queryKey: ['reports'] });
-      queryClient.invalidateQueries({ queryKey: ['moderation-queue'] });
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
+      queryClient.invalidateQueries({ queryKey: ["moderation-queue"] });
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to approve content',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to approve content",
+        variant: "destructive",
       });
     }
   };
 
   const handleRejectReportedContent = async (report: any) => {
-    if (!confirm('Are you sure you want to reject this reported content?')) return;
+    if (!confirm("Are you sure you want to reject this reported content?"))
+      return;
 
     try {
       if (report.reported_post_id) {
         const { error } = await supabase
-          .from('posts')
-          .update({ moderation_status: 'rejected' })
-          .eq('id', report.reported_post_id);
+          .from("posts")
+          .update({ moderation_status: "rejected" })
+          .eq("id", report.reported_post_id);
         if (error) throw error;
       } else if (report.reported_topic_id) {
         const { error } = await supabase
-          .from('topics')
-          .update({ moderation_status: 'rejected' })
-          .eq('id', report.reported_topic_id);
+          .from("topics")
+          .update({ moderation_status: "rejected" })
+          .eq("id", report.reported_topic_id);
         if (error) throw error;
       }
 
       // Mark report as resolved
       await supabase
-        .from('reports')
+        .from("reports")
         .update({
-          status: 'resolved',
+          status: "resolved",
           reviewed_at: new Date().toISOString(),
-          admin_notes: 'Content rejected based on report'
+          admin_notes: "Content rejected based on report",
         })
-        .eq('id', report.id);
+        .eq("id", report.id);
 
       toast({
-        title: 'Content Rejected',
-        description: 'Reported content has been rejected and report resolved',
+        title: "Content Rejected",
+        description: "Reported content has been rejected and report resolved",
       });
 
-      queryClient.invalidateQueries({ queryKey: ['reports'] });
-      queryClient.invalidateQueries({ queryKey: ['moderation-queue'] });
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
+      queryClient.invalidateQueries({ queryKey: ["moderation-queue"] });
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to reject content',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to reject content",
+        variant: "destructive",
       });
     }
   };
@@ -209,33 +234,40 @@ const ReportsTab = () => {
       }
       return `/topic/${report.topic.id}`;
     }
-    return '#';
+    return "#";
   };
 
   // Query for active reports (pending status)
-  const { data: activeReports, isLoading: activeLoading, refetch: refetchActive } = useQuery({
-    queryKey: ['reports', 'active'],
+  const {
+    data: activeReports,
+    isLoading: activeLoading,
+    refetch: refetchActive,
+  } = useQuery({
+    queryKey: ["reports", "active"],
     queryFn: async () => {
       const { data: reportsData, error: reportsError } = await supabase
-        .from('reports')
-        .select('*, admin_notes, reporter_ip_address')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
+        .from("reports")
+        .select("*, admin_notes, reporter_ip_address")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
 
       if (reportsError) throw reportsError;
 
       // Fetch reporter profiles
-      const reporterIds = reportsData.map(r => r.reporter_id).filter(Boolean);
+      const reporterIds = reportsData.map((r) => r.reporter_id).filter(Boolean);
       const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, username')
-        .in('id', reporterIds);
+        .from("profiles")
+        .select("id, username")
+        .in("id", reporterIds);
 
       // Fetch posts with topic and category info for navigation
-      const postIds = reportsData.map(r => r.reported_post_id).filter(Boolean);
+      const postIds = reportsData
+        .map((r) => r.reported_post_id)
+        .filter(Boolean);
       const { data: posts } = await supabase
-        .from('posts')
-        .select(`
+        .from("posts")
+        .select(
+          `
           id, 
           content, 
           author_id, 
@@ -251,14 +283,18 @@ const ReportsTab = () => {
               slug
             )
           )
-        `)
-        .in('id', postIds);
+        `
+        )
+        .in("id", postIds);
 
       // Fetch topics with category info for navigation
-      const topicIds = reportsData.map(r => r.reported_topic_id).filter(Boolean);
+      const topicIds = reportsData
+        .map((r) => r.reported_topic_id)
+        .filter(Boolean);
       const { data: topics } = await supabase
-        .from('topics')
-        .select(`
+        .from("topics")
+        .select(
+          `
           id, 
           title, 
           content, 
@@ -269,30 +305,35 @@ const ReportsTab = () => {
           categories!inner (
             slug
           )
-        `)
-        .in('id', topicIds);
+        `
+        )
+        .in("id", topicIds);
 
       // Get author profiles for reported content
       const allAuthorIds = [
-        ...(posts?.map(p => p.author_id) || []),
-        ...(topics?.map(t => t.author_id) || [])
+        ...(posts?.map((p) => p.author_id) || []),
+        ...(topics?.map((t) => t.author_id) || []),
       ].filter(Boolean);
 
       const { data: authorProfiles } = await supabase
-        .from('profiles')
-        .select('id, username')
-        .in('id', allAuthorIds);
+        .from("profiles")
+        .select("id, username")
+        .in("id", allAuthorIds);
 
       // Combine the data
-      const enrichedReports = reportsData.map(report => ({
+      const enrichedReports = reportsData.map((report) => ({
         ...report,
-        reporter: profiles?.find(p => p.id === report.reporter_id),
-        post: posts?.find(p => p.id === report.reported_post_id),
-        topic: topics?.find(t => t.id === report.reported_topic_id),
-        contentAuthor: authorProfiles?.find(p => 
-          p.id === (posts?.find(po => po.id === report.reported_post_id)?.author_id || 
-                   topics?.find(to => to.id === report.reported_topic_id)?.author_id)
-        )
+        reporter: profiles?.find((p) => p.id === report.reporter_id),
+        post: posts?.find((p) => p.id === report.reported_post_id),
+        topic: topics?.find((t) => t.id === report.reported_topic_id),
+        contentAuthor: authorProfiles?.find(
+          (p) =>
+            p.id ===
+            (posts?.find((po) => po.id === report.reported_post_id)
+              ?.author_id ||
+              topics?.find((to) => to.id === report.reported_topic_id)
+                ?.author_id)
+        ),
       }));
 
       return enrichedReports;
@@ -300,29 +341,36 @@ const ReportsTab = () => {
   });
 
   // Query for resolved reports (resolved, dismissed, closed status)
-  const { data: resolvedReports, isLoading: resolvedLoading, refetch: refetchResolved } = useQuery({
-    queryKey: ['reports', 'resolved'],
+  const {
+    data: resolvedReports,
+    isLoading: resolvedLoading,
+    refetch: refetchResolved,
+  } = useQuery({
+    queryKey: ["reports", "resolved"],
     queryFn: async () => {
       const { data: reportsData, error: reportsError } = await supabase
-        .from('reports')
-        .select('*, admin_notes, reporter_ip_address')
-        .in('status', ['resolved', 'dismissed', 'closed'])
-        .order('reviewed_at', { ascending: false });
+        .from("reports")
+        .select("*, admin_notes, reporter_ip_address")
+        .in("status", ["resolved", "dismissed", "closed"])
+        .order("reviewed_at", { ascending: false });
 
       if (reportsError) throw reportsError;
 
       // Fetch reporter profiles
-      const reporterIds = reportsData.map(r => r.reporter_id).filter(Boolean);
+      const reporterIds = reportsData.map((r) => r.reporter_id).filter(Boolean);
       const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, username')
-        .in('id', reporterIds);
+        .from("profiles")
+        .select("id, username")
+        .in("id", reporterIds);
 
       // Fetch posts with topic and category info for navigation
-      const postIds = reportsData.map(r => r.reported_post_id).filter(Boolean);
+      const postIds = reportsData
+        .map((r) => r.reported_post_id)
+        .filter(Boolean);
       const { data: posts } = await supabase
-        .from('posts')
-        .select(`
+        .from("posts")
+        .select(
+          `
           id, 
           content, 
           author_id, 
@@ -338,14 +386,18 @@ const ReportsTab = () => {
               slug
             )
           )
-        `)
-        .in('id', postIds);
+        `
+        )
+        .in("id", postIds);
 
       // Fetch topics with category info for navigation
-      const topicIds = reportsData.map(r => r.reported_topic_id).filter(Boolean);
+      const topicIds = reportsData
+        .map((r) => r.reported_topic_id)
+        .filter(Boolean);
       const { data: topics } = await supabase
-        .from('topics')
-        .select(`
+        .from("topics")
+        .select(
+          `
           id, 
           title, 
           content, 
@@ -356,63 +408,72 @@ const ReportsTab = () => {
           categories!inner (
             slug
           )
-        `)
-        .in('id', topicIds);
+        `
+        )
+        .in("id", topicIds);
 
       // Get author profiles for reported content
       const allAuthorIds = [
-        ...(posts?.map(p => p.author_id) || []),
-        ...(topics?.map(t => t.author_id) || [])
+        ...(posts?.map((p) => p.author_id) || []),
+        ...(topics?.map((t) => t.author_id) || []),
       ].filter(Boolean);
 
       const { data: authorProfiles } = await supabase
-        .from('profiles')
-        .select('id, username')
-        .in('id', allAuthorIds);
+        .from("profiles")
+        .select("id, username")
+        .in("id", allAuthorIds);
 
       // Combine the data
-      const enrichedReports = reportsData.map(report => ({
+      const enrichedReports = reportsData.map((report) => ({
         ...report,
-        reporter: profiles?.find(p => p.id === report.reporter_id),
-        post: posts?.find(p => p.id === report.reported_post_id),
-        topic: topics?.find(t => t.id === report.reported_topic_id),
-        contentAuthor: authorProfiles?.find(p => 
-          p.id === (posts?.find(po => po.id === report.reported_post_id)?.author_id || 
-                   topics?.find(to => to.id === report.reported_topic_id)?.author_id)
-        )
+        reporter: profiles?.find((p) => p.id === report.reporter_id),
+        post: posts?.find((p) => p.id === report.reported_post_id),
+        topic: topics?.find((t) => t.id === report.reported_topic_id),
+        contentAuthor: authorProfiles?.find(
+          (p) =>
+            p.id ===
+            (posts?.find((po) => po.id === report.reported_post_id)
+              ?.author_id ||
+              topics?.find((to) => to.id === report.reported_topic_id)
+                ?.author_id)
+        ),
       }));
 
       return enrichedReports;
     },
   });
 
-  const currentReports = activeTab === 'active' ? activeReports : resolvedReports;
-  const isLoading = activeTab === 'active' ? activeLoading : resolvedLoading;
+  const currentReports =
+    activeTab === "active" ? activeReports : resolvedReports;
+  const isLoading = activeTab === "active" ? activeLoading : resolvedLoading;
 
-  const handleResolveReport = async (reportId: string, action: 'resolved' | 'dismissed') => {
+  const handleResolveReport = async (
+    reportId: string,
+    action: "resolved" | "dismissed"
+  ) => {
     try {
       const { error } = await supabase
-        .from('reports')
+        .from("reports")
         .update({
           status: action,
           reviewed_at: new Date().toISOString(),
         })
-        .eq('id', reportId);
+        .eq("id", reportId);
 
       if (error) throw error;
 
       toast({
-        title: 'Report updated',
+        title: "Report updated",
         description: `Report has been ${action}`,
       });
 
-      queryClient.invalidateQueries({ queryKey: ['reports'] });
-      queryClient.invalidateQueries({ queryKey: ['reports-count'] });
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
+      queryClient.invalidateQueries({ queryKey: ["reports-count"] });
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to update report',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to update report",
+        variant: "destructive",
       });
     }
   };
@@ -420,52 +481,53 @@ const ReportsTab = () => {
   const handleCloseReport = async (reportId: string) => {
     try {
       const { error } = await supabase
-        .from('reports')
+        .from("reports")
         .update({
-          status: 'closed',
+          status: "closed",
           reviewed_at: new Date().toISOString(),
         })
-        .eq('id', reportId);
+        .eq("id", reportId);
 
       if (error) throw error;
 
       toast({
-        title: 'Report closed',
-        description: 'Report has been closed',
+        title: "Report closed",
+        description: "Report has been closed",
       });
 
-      queryClient.invalidateQueries({ queryKey: ['reports'] });
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to close report',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to close report",
+        variant: "destructive",
       });
     }
   };
 
   const handleDeleteReport = async (reportId: string) => {
-    if (!confirm('Are you sure you want to permanently delete this report?')) return;
+    if (!confirm("Are you sure you want to permanently delete this report?"))
+      return;
 
     try {
       const { error } = await supabase
-        .from('reports')
+        .from("reports")
         .delete()
-        .eq('id', reportId);
+        .eq("id", reportId);
 
       if (error) throw error;
 
       toast({
-        title: 'Report deleted',
-        description: 'Report has been permanently deleted',
+        title: "Report deleted",
+        description: "Report has been permanently deleted",
       });
 
-      queryClient.invalidateQueries({ queryKey: ['reports'] });
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to delete report',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to delete report",
+        variant: "destructive",
       });
     }
   };
@@ -515,8 +577,12 @@ const ReportsTab = () => {
             </div>
           </div>
         </div>
-        
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-4"
+        >
           <TabsList>
             <TabsTrigger value="active" className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" />
@@ -549,54 +615,91 @@ const ReportsTab = () => {
                     <TableRow>
                       <TableHead className="w-12">
                         <Checkbox
-                          checked={currentReports && selectedReports.size === currentReports.length && currentReports.length > 0}
+                          checked={
+                            currentReports &&
+                            selectedReports.size === currentReports.length &&
+                            currentReports.length > 0
+                          }
                           onCheckedChange={handleSelectAll}
                           aria-label="Select all reports"
                         />
                       </TableHead>
                       <TableHead className="min-w-[120px]">Reporter</TableHead>
-                      <TableHead className="hidden xl:table-cell">Reporter IP</TableHead>
-                      <TableHead className="min-w-[100px]">Content Type</TableHead>
+                      <TableHead className="hidden xl:table-cell">
+                        Reporter IP
+                      </TableHead>
+                      <TableHead className="min-w-[100px]">
+                        Content Type
+                      </TableHead>
                       <TableHead className="min-w-[150px]">Reason</TableHead>
-                      <TableHead className="min-w-[200px]">Content Preview</TableHead>
-                      <TableHead className="hidden md:table-cell min-w-[120px]">Author</TableHead>
-                      <TableHead className="hidden xl:table-cell">Content IP</TableHead>
-                      <TableHead className="hidden md:table-cell">Reported</TableHead>
-                      <TableHead className="hidden lg:table-cell">Status</TableHead>
+                      <TableHead className="min-w-[200px]">
+                        Content Preview
+                      </TableHead>
+                      <TableHead className="hidden md:table-cell min-w-[120px]">
+                        Author
+                      </TableHead>
+                      <TableHead className="hidden xl:table-cell">
+                        Content IP
+                      </TableHead>
+                      <TableHead className="hidden md:table-cell">
+                        Reported
+                      </TableHead>
+                      <TableHead className="hidden lg:table-cell">
+                        Status
+                      </TableHead>
                       <TableHead className="min-w-[200px]">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {currentReports?.map((report) => (
                       <TableRow key={report.id}>
-                        <TableCell className="min-w-[120px]">{report.reporter?.username || 'Anonymous'}</TableCell>
+                        <TableCell>
+                          {" "}
+                          <Checkbox
+                            checked={selectedReports.has(report.id)}
+                            onCheckedChange={() =>
+                              handleSelectReport(report.id)
+                            }
+                            aria-label={`Select report ${report.id}`}
+                          />
+                        </TableCell>
+                        <TableCell className="min-w-[120px]">
+                          {report.reporter?.username || "Anonymous"}
+                        </TableCell>
                         <TableCell className="hidden xl:table-cell">
                           <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                            {String(report.reporter_ip_address || 'N/A')}
+                            {String(report.reporter_ip_address || "N/A")}
                           </code>
                         </TableCell>
                         <TableCell className="min-w-[100px]">
-                          <Badge variant={report.reported_post_id ? 'secondary' : 'default'}>
-                            {report.reported_post_id ? 'Post' : 'Topic'}
+                          <Badge
+                            variant={
+                              report.reported_post_id ? "secondary" : "default"
+                            }
+                          >
+                            {report.reported_post_id ? "Post" : "Topic"}
                           </Badge>
                         </TableCell>
-                        <TableCell className="min-w-[150px]">
+                        <TableCell className="min-w-[150px] ">
                           <div>
                             <div className="font-medium">{report.reason}</div>
                             {report.description && (
-                              <div className="text-sm text-muted-foreground md:truncate max-w-[140px] break-words whitespace-normal" title={report.description}>
+                              <div
+                                className="text-sm text-muted-foreground max-w-[140px] break-words whitespace-normal line-clamp-3"
+                                title={report.description}
+                              >
                                 {report.description}
                               </div>
                             )}
                           </div>
                         </TableCell>
                         <TableCell className="min-w-[200px] max-w-[200px]">
-                          <Link 
+                          <Link
                             to={getReportedContentUrl(report)}
                             className="text-primary hover:text-primary/80 hover:underline block"
                           >
                             <div className="md:truncate text-sm font-medium break-words whitespace-normal">
-                              {report.post?.content || report.topic?.content || report.topic?.title}
+                              {report.post?.topics.title || report.topic?.title}
                             </div>
                             <div className="text-xs text-muted-foreground">
                               Click to view content
@@ -605,25 +708,27 @@ const ReportsTab = () => {
                         </TableCell>
                         <TableCell className="hidden md:table-cell min-w-[120px]">
                           <div className="text-sm">
-                            {report.contentAuthor?.username || 'Anonymous User'}
+                            {report.contentAuthor?.username || "Anonymous User"}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            {report.post ? 'Post author' : 'Topic author'}
+                            {report.post ? "Post author" : "Topic author"}
                           </div>
                         </TableCell>
                         <TableCell className="hidden xl:table-cell">
                           <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                            {String(report.post?.ip_address || 'N/A')}
+                            {String(report.post?.ip_address || "N/A")}
                           </code>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                           <div className="text-sm">
-                            {formatDistanceToNow(new Date(report.created_at))} ago
+                            {formatDistanceToNow(new Date(report.created_at))}{" "}
+                            ago
                           </div>
                         </TableCell>
                         <TableCell className="hidden lg:table-cell">
                           {/* Check if content is pending moderation */}
-                          {(report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending') && (
+                          {(report.post?.moderation_status === "pending" ||
+                            report.topic?.moderation_status === "pending") && (
                             <Badge variant="outline" className="text-xs">
                               <Clock className="h-3 w-3 mr-1" />
                               Pending
@@ -641,14 +746,18 @@ const ReportsTab = () => {
                             >
                               <FileText className="h-3 w-3" />
                             </Button>
-                            
+
                             {/* Content moderation actions - only show if content is pending */}
-                            {(report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending') && (
+                            {(report.post?.moderation_status === "pending" ||
+                              report.topic?.moderation_status ===
+                                "pending") && (
                               <>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => handleApproveReportedContent(report)}
+                                  onClick={() =>
+                                    handleApproveReportedContent(report)
+                                  }
                                   className="text-green-600 hover:text-green-700"
                                   title="Approve content & dismiss report"
                                 >
@@ -657,7 +766,9 @@ const ReportsTab = () => {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => handleRejectReportedContent(report)}
+                                  onClick={() =>
+                                    handleRejectReportedContent(report)
+                                  }
                                   className="text-red-600 hover:text-red-700"
                                   title="Reject content & resolve report"
                                 >
@@ -665,12 +776,14 @@ const ReportsTab = () => {
                                 </Button>
                               </>
                             )}
-                            
+
                             {/* Standard report actions */}
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleResolveReport(report.id, 'resolved')}
+                              onClick={() =>
+                                handleResolveReport(report.id, "resolved")
+                              }
                               className="text-green-600 hover:text-green-700"
                               title="Mark as resolved"
                             >
@@ -679,7 +792,9 @@ const ReportsTab = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleResolveReport(report.id, 'dismissed')}
+                              onClick={() =>
+                                handleResolveReport(report.id, "dismissed")
+                              }
                               className="text-gray-600 hover:text-gray-700"
                               title="Dismiss report"
                             >
@@ -701,7 +816,10 @@ const ReportsTab = () => {
                     ))}
                     {(!currentReports || currentReports.length === 0) && (
                       <TableRow>
-                        <TableCell colSpan={11} className="text-center text-muted-foreground">
+                        <TableCell
+                          colSpan={11}
+                          className="text-center text-muted-foreground"
+                        >
                           No active reports to display
                         </TableCell>
                       </TableRow>
@@ -723,18 +841,32 @@ const ReportsTab = () => {
                     <TableRow>
                       <TableHead className="w-12">
                         <Checkbox
-                          checked={currentReports && selectedReports.size === currentReports.length && currentReports.length > 0}
+                          checked={
+                            currentReports &&
+                            selectedReports.size === currentReports.length &&
+                            currentReports.length > 0
+                          }
                           onCheckedChange={handleSelectAll}
                           aria-label="Select all reports"
                         />
                       </TableHead>
                       <TableHead className="min-w-[120px]">Reporter</TableHead>
-                      <TableHead className="min-w-[100px]">Content Type</TableHead>
+                      <TableHead className="min-w-[100px]">
+                        Content Type
+                      </TableHead>
                       <TableHead className="min-w-[150px]">Reason</TableHead>
-                      <TableHead className="min-w-[200px]">Content Preview</TableHead>
-                      <TableHead className="hidden md:table-cell min-w-[120px]">Author</TableHead>
-                      <TableHead className="hidden lg:table-cell min-w-[80px]">Status</TableHead>
-                      <TableHead className="hidden md:table-cell min-w-[100px]">Resolved</TableHead>
+                      <TableHead className="min-w-[200px]">
+                        Content Preview
+                      </TableHead>
+                      <TableHead className="hidden md:table-cell min-w-[120px]">
+                        Author
+                      </TableHead>
+                      <TableHead className="hidden lg:table-cell min-w-[80px]">
+                        Status
+                      </TableHead>
+                      <TableHead className="hidden md:table-cell min-w-[100px]">
+                        Resolved
+                      </TableHead>
                       <TableHead className="min-w-[150px]">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -744,33 +876,44 @@ const ReportsTab = () => {
                         <TableCell>
                           <Checkbox
                             checked={selectedReports.has(report.id)}
-                            onCheckedChange={() => handleSelectReport(report.id)}
+                            onCheckedChange={() =>
+                              handleSelectReport(report.id)
+                            }
                             aria-label={`Select report ${report.id}`}
                           />
                         </TableCell>
-                        <TableCell className="min-w-[120px]">{report.reporter?.username || 'Anonymous'}</TableCell>
+                        <TableCell className="min-w-[120px]">
+                          {report.reporter?.username || "Anonymous"}
+                        </TableCell>
                         <TableCell className="min-w-[100px]">
-                          <Badge variant={report.reported_post_id ? 'secondary' : 'default'}>
-                            {report.reported_post_id ? 'Post' : 'Topic'}
+                          <Badge
+                            variant={
+                              report.reported_post_id ? "secondary" : "default"
+                            }
+                          >
+                            {report.reported_post_id ? "Post" : "Topic"}
                           </Badge>
                         </TableCell>
                         <TableCell className="min-w-[150px]">
                           <div>
                             <div className="font-medium">{report.reason}</div>
                             {report.description && (
-                              <div className="text-sm text-muted-foreground md:truncate max-w-[140px] break-words whitespace-normal" title={report.description}>
+                              <div
+                                className="text-sm text-muted-foreground line-clamp-3 max-w-[140px]"
+                                title={report.description}
+                              >
                                 {report.description}
                               </div>
                             )}
                           </div>
                         </TableCell>
                         <TableCell className="min-w-[200px] max-w-[200px]">
-                          <Link 
+                          <Link
                             to={getReportedContentUrl(report)}
                             className="text-primary hover:text-primary/80 hover:underline block"
                           >
                             <div className="md:truncate text-sm font-medium break-words whitespace-normal">
-                              {report.post?.content || report.topic?.content || report.topic?.title}
+                              {report.post?.topics.title || report.topic?.title}
                             </div>
                             <div className="text-xs text-muted-foreground">
                               Click to view content
@@ -779,14 +922,17 @@ const ReportsTab = () => {
                         </TableCell>
                         <TableCell className="hidden md:table-cell min-w-[120px]">
                           <div className="text-sm">
-                            {report.contentAuthor?.username || 'Anonymous User'}
+                            {report.contentAuthor?.username || "Anonymous User"}
                           </div>
                         </TableCell>
                         <TableCell className="hidden lg:table-cell min-w-[80px]">
-                          <Badge 
+                          <Badge
                             variant={
-                              report.status === 'resolved' ? 'default' : 
-                              report.status === 'dismissed' ? 'secondary' : 'outline'
+                              report.status === "resolved"
+                                ? "default"
+                                : report.status === "dismissed"
+                                ? "secondary"
+                                : "outline"
                             }
                           >
                             {report.status}
@@ -794,7 +940,11 @@ const ReportsTab = () => {
                         </TableCell>
                         <TableCell className="hidden md:table-cell min-w-[100px]">
                           <div className="text-sm">
-                            {report.reviewed_at ? formatDistanceToNow(new Date(report.reviewed_at)) + ' ago' : 'N/A'}
+                            {report.reviewed_at
+                              ? formatDistanceToNow(
+                                  new Date(report.reviewed_at)
+                                ) + " ago"
+                              : "N/A"}
                           </div>
                         </TableCell>
                         <TableCell className="min-w-[150px]">
@@ -824,7 +974,10 @@ const ReportsTab = () => {
                     ))}
                     {(!currentReports || currentReports.length === 0) && (
                       <TableRow>
-                        <TableCell colSpan={9} className="text-center text-muted-foreground">
+                        <TableCell
+                          colSpan={9}
+                          className="text-center text-muted-foreground"
+                        >
                           No resolved reports to display
                         </TableCell>
                       </TableRow>
@@ -836,7 +989,7 @@ const ReportsTab = () => {
           </TabsContent>
         </Tabs>
       </div>
-      
+
       <ReportDetailsModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
@@ -849,18 +1002,20 @@ const ReportsTab = () => {
 
 const AdminModeration = () => {
   const { toast } = useToast();
-  const [selectedModerationItem, setSelectedModerationItem] = React.useState<ModerationItem | null>(null);
-  const [isModerationModalOpen, setIsModerationModalOpen] = React.useState(false);
+  const [selectedModerationItem, setSelectedModerationItem] =
+    React.useState<ModerationItem | null>(null);
+  const [isModerationModalOpen, setIsModerationModalOpen] =
+    React.useState(false);
   const appealsCount = useAppealsCount();
 
   // Query for reports count
   const { data: reportsCount } = useQuery({
-    queryKey: ['reports-count'],
+    queryKey: ["reports-count"],
     queryFn: async () => {
       const { count, error } = await supabase
-        .from('reports')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending');
+        .from("reports")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending");
 
       if (error) throw error;
       return count || 0;
@@ -869,7 +1024,7 @@ const AdminModeration = () => {
 
   // Helper function to generate the correct URL for content items
   const getContentUrl = (item: ModerationItem) => {
-    if (item.type === 'topic') {
+    if (item.type === "topic") {
       // For topics, use category/topic slug pattern if available, otherwise fallback to /topic/id
       if (item.category_slug && item.slug) {
         return `/${item.category_slug}/${item.slug}`;
@@ -888,29 +1043,34 @@ const AdminModeration = () => {
   const [showReportedContent, setShowReportedContent] = React.useState(false);
 
   // Enhanced query to get only pending moderation content (excludes reported content by default)
-  const { data: moderationQueue, isLoading, refetch } = useQuery({
-    queryKey: ['moderation-queue', showReportedContent],
+  const {
+    data: moderationQueue,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["moderation-queue", showReportedContent],
     queryFn: async () => {
       // First get all pending reports to exclude reported content (unless showReportedContent is true)
       let reportedContentIds: string[] = [];
       if (!showReportedContent) {
         const { data: reports } = await supabase
-          .from('reports')
-          .select('reported_post_id, reported_topic_id')
-          .eq('status', 'pending');
-        
+          .from("reports")
+          .select("reported_post_id, reported_topic_id")
+          .eq("status", "pending");
+
         if (reports) {
           reportedContentIds = [
-            ...reports.map(r => r.reported_post_id).filter(Boolean),
-            ...reports.map(r => r.reported_topic_id).filter(Boolean)
+            ...reports.map((r) => r.reported_post_id).filter(Boolean),
+            ...reports.map((r) => r.reported_topic_id).filter(Boolean),
           ];
         }
       }
 
       // Get posts that require moderation (pending status from moderated categories)
       let postsQuery = supabase
-        .from('posts')
-        .select(`
+        .from("posts")
+        .select(
+          `
           id,
           content,
           created_at,
@@ -928,13 +1088,18 @@ const AdminModeration = () => {
               requires_moderation
             )
           )
-        `)
-        .eq('moderation_status', 'pending')
-        .order('created_at', { ascending: false });
+        `
+        )
+        .eq("moderation_status", "pending")
+        .order("created_at", { ascending: false });
 
       // Exclude reported posts unless showReportedContent is true
       if (!showReportedContent && reportedContentIds.length > 0) {
-        postsQuery = postsQuery.not('id', 'in', `(${reportedContentIds.join(',')})`);
+        postsQuery = postsQuery.not(
+          "id",
+          "in",
+          `(${reportedContentIds.join(",")})`
+        );
       }
 
       const { data: posts, error: postsError } = await postsQuery;
@@ -943,8 +1108,9 @@ const AdminModeration = () => {
 
       // Get topics that require moderation (pending status from moderated categories)
       let topicsQuery = supabase
-        .from('topics')
-        .select(`
+        .from("topics")
+        .select(
+          `
           id,
           title,
           content,
@@ -956,13 +1122,18 @@ const AdminModeration = () => {
             slug,
             requires_moderation
           )
-        `)
-        .eq('moderation_status', 'pending')
-        .order('created_at', { ascending: false });
+        `
+        )
+        .eq("moderation_status", "pending")
+        .order("created_at", { ascending: false });
 
       // Exclude reported topics unless showReportedContent is true
       if (!showReportedContent && reportedContentIds.length > 0) {
-        topicsQuery = topicsQuery.not('id', 'in', `(${reportedContentIds.join(',')})`);
+        topicsQuery = topicsQuery.not(
+          "id",
+          "in",
+          `(${reportedContentIds.join(",")})`
+        );
       }
 
       const { data: topics, error: topicsError } = await topicsQuery;
@@ -971,53 +1142,53 @@ const AdminModeration = () => {
 
       // Get author profiles for both posts and topics
       const allAuthorIds = [
-        ...(posts?.map(p => p.author_id) || []),
-        ...(topics?.map(t => t.author_id) || [])
+        ...(posts?.map((p) => p.author_id) || []),
+        ...(topics?.map((t) => t.author_id) || []),
       ].filter(Boolean);
 
       const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, username')
-        .in('id', allAuthorIds);
+        .from("profiles")
+        .select("id, username")
+        .in("id", allAuthorIds);
 
       // Get temporary users
       const { data: tempUsers } = await supabase
-        .from('temporary_users')
-        .select('id, display_name')
-        .in('id', allAuthorIds);
+        .from("temporary_users")
+        .select("id, display_name")
+        .in("id", allAuthorIds);
 
       const getAuthorName = (authorId: string | null) => {
-        if (!authorId) return 'Anonymous User';
-        const profile = profiles?.find(p => p.id === authorId);
-        const tempUser = tempUsers?.find(tu => tu.id === authorId);
-        return profile?.username || tempUser?.display_name || 'Anonymous User';
+        if (!authorId) return "Anonymous User";
+        const profile = profiles?.find((p) => p.id === authorId);
+        const tempUser = tempUsers?.find((tu) => tu.id === authorId);
+        return profile?.username || tempUser?.display_name || "Anonymous User";
       };
 
       const items: ModerationItem[] = [
-        ...(posts?.map(post => ({
+        ...(posts?.map((post) => ({
           id: post.id,
-          type: 'post' as const,
-          title: `Reply in: ${post.topics?.title || 'Unknown Topic'}`,
+          type: "post" as const,
+          title: `Reply in: ${post.topics?.title || "Unknown Topic"}`,
           content: post.content,
           author: getAuthorName(post.author_id),
-          created_at: post.created_at || '',
+          created_at: post.created_at || "",
           reported_count: 0,
-          status: 'pending' as const,
+          status: "pending" as const,
           is_anonymous: post.is_anonymous || false,
           ip_address: post.ip_address as string | null,
           topic_id: post.topic_id,
           topic_slug: post.topics?.slug,
           category_slug: post.topics?.categories?.slug,
         })) || []),
-        ...(topics?.map(topic => ({
+        ...(topics?.map((topic) => ({
           id: topic.id,
-          type: 'topic' as const,
+          type: "topic" as const,
           title: topic.title,
-          content: topic.content || '',
+          content: topic.content || "",
           author: getAuthorName(topic.author_id),
-          created_at: topic.created_at || '',
+          created_at: topic.created_at || "",
           reported_count: 0,
-          status: 'pending' as const,
+          status: "pending" as const,
           is_anonymous: false,
           ip_address: null,
           slug: topic.slug,
@@ -1025,40 +1196,48 @@ const AdminModeration = () => {
         })) || []),
       ];
 
-      return items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      return items.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     },
   });
 
-  const handleApprove = async (id: string, type: 'topic' | 'post') => {
+  const handleApprove = async (id: string, type: "topic" | "post") => {
     try {
       const { error } = await supabase
-        .from(type === 'topic' ? 'topics' : 'posts')
-        .update({ moderation_status: 'approved' })
-        .eq('id', id);
+        .from(type === "topic" ? "topics" : "posts")
+        .update({ moderation_status: "approved" })
+        .eq("id", id);
 
       if (error) throw error;
 
       toast({
-        title: 'Content Approved',
+        title: "Content Approved",
         description: `${type} has been approved and is now visible`,
       });
 
       refetch();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: error.message || `Failed to approve ${type}`,
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   };
 
-  const handleBanUser = async (author: string, itemId: string, type: 'topic' | 'post') => {
-    if (author === 'Anonymous User') {
+  const handleBanUser = async (
+    author: string,
+    itemId: string,
+    type: "topic" | "post"
+  ) => {
+    if (author === "Anonymous User") {
       toast({
-        title: 'Cannot Ban Anonymous User',
-        description: 'Anonymous users cannot be banned. Consider IP banning instead.',
-        variant: 'destructive',
+        title: "Cannot Ban Anonymous User",
+        description:
+          "Anonymous users cannot be banned. Consider IP banning instead.",
+        variant: "destructive",
       });
       return;
     }
@@ -1068,96 +1247,101 @@ const AdminModeration = () => {
     try {
       // Get user ID from username
       const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('username', author)
+        .from("profiles")
+        .select("id")
+        .eq("username", author)
         .single();
 
       if (profileError) throw profileError;
 
       // Delete user's profile (cascade will handle related data)
       const { error } = await supabase
-        .from('profiles')
+        .from("profiles")
         .delete()
-        .eq('id', profile.id);
+        .eq("id", profile.id);
 
       if (error) throw error;
 
       toast({
-        title: 'User Banned',
+        title: "User Banned",
         description: `${author} has been banned successfully`,
       });
 
       refetch();
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to ban user',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to ban user",
+        variant: "destructive",
       });
     }
   };
 
-  const handleBanIP = async (ipAddress: string | null | undefined, itemId: string, type: 'topic' | 'post') => {
+  const handleBanIP = async (
+    ipAddress: string | null | undefined,
+    itemId: string,
+    type: "topic" | "post"
+  ) => {
     if (!ipAddress) {
       toast({
-        title: 'No IP Address',
-        description: 'Cannot ban: No IP address available for this content',
-        variant: 'destructive',
+        title: "No IP Address",
+        description: "Cannot ban: No IP address available for this content",
+        variant: "destructive",
       });
       return;
     }
 
-    if (!confirm(`Are you sure you want to ban IP address: ${ipAddress}?`)) return;
+    if (!confirm(`Are you sure you want to ban IP address: ${ipAddress}?`))
+      return;
 
     try {
       // First delete the content
       const { error: deleteError } = await supabase
-        .from(type === 'topic' ? 'topics' : 'posts')
+        .from(type === "topic" ? "topics" : "posts")
         .delete()
-        .eq('id', itemId);
+        .eq("id", itemId);
 
       if (deleteError) throw deleteError;
 
       // In a real implementation, you'd add the IP to a banned_ips table
       // For now, we'll just show success message
       toast({
-        title: 'IP Banned',
+        title: "IP Banned",
         description: `IP address ${ipAddress} has been banned and content removed`,
       });
 
       refetch();
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to ban IP address',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to ban IP address",
+        variant: "destructive",
       });
     }
   };
 
-  const handleReject = async (id: string, type: 'topic' | 'post') => {
+  const handleReject = async (id: string, type: "topic" | "post") => {
     if (!confirm(`Are you sure you want to reject this ${type}?`)) return;
 
     try {
       const { error } = await supabase
-        .from(type === 'topic' ? 'topics' : 'posts')
-        .update({ moderation_status: 'rejected' })
-        .eq('id', id);
+        .from(type === "topic" ? "topics" : "posts")
+        .update({ moderation_status: "rejected" })
+        .eq("id", id);
 
       if (error) throw error;
 
       toast({
-        title: 'Content Rejected',
+        title: "Content Rejected",
         description: `${type} has been rejected and will not be visible`,
       });
 
       refetch();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: error.message || `Failed to reject ${type}`,
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   };
@@ -1179,7 +1363,9 @@ const AdminModeration = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Moderation</h1>
-        <p className="text-muted-foreground">Review and moderate forum content</p>
+        <p className="text-muted-foreground">
+          Review and moderate forum content
+        </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -1187,8 +1373,12 @@ const AdminModeration = () => {
           <div className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-yellow-500" />
             <div>
-              <div className="text-2xl font-bold">{moderationQueue?.length || 0}</div>
-              <div className="text-sm text-muted-foreground">Pending Review</div>
+              <div className="text-2xl font-bold">
+                {moderationQueue?.length || 0}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Pending Review
+              </div>
             </div>
           </div>
         </Card>
@@ -1197,7 +1387,9 @@ const AdminModeration = () => {
             <AlertTriangle className="h-5 w-5 text-red-500" />
             <div>
               <div className="text-2xl font-bold">{reportsCount || 0}</div>
-              <div className="text-sm text-muted-foreground">Pending Reports</div>
+              <div className="text-sm text-muted-foreground">
+                Pending Reports
+              </div>
             </div>
           </div>
         </Card>
@@ -1206,7 +1398,9 @@ const AdminModeration = () => {
             <ShieldCheck className="h-5 w-5 text-blue-500" />
             <div>
               <div className="text-2xl font-bold">{appealsCount}</div>
-              <div className="text-sm text-muted-foreground">Pending Appeals</div>
+              <div className="text-sm text-muted-foreground">
+                Pending Appeals
+              </div>
             </div>
           </div>
         </Card>
@@ -1240,7 +1434,10 @@ const AdminModeration = () => {
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="category-requests" className="flex items-center gap-2">
+          <TabsTrigger
+            value="category-requests"
+            className="flex items-center gap-2"
+          >
             <Users className="h-4 w-4" />
             Category Requests
           </TabsTrigger>
@@ -1252,10 +1449,14 @@ const AdminModeration = () => {
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-xl font-semibold">Pre-Approval Moderation Queue</h2>
+                  <h2 className="text-xl font-semibold">
+                    Pre-Approval Moderation Queue
+                  </h2>
                   <div className="text-sm text-muted-foreground">
-                    Content awaiting approval from moderated categories (Level 1 & 2)
-                    {!showReportedContent && " • Reported content handled in Reports tab"}
+                    Content awaiting approval from moderated categories (Level 1
+                    & 2)
+                    {!showReportedContent &&
+                      " • Reported content handled in Reports tab"}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1287,7 +1488,11 @@ const AdminModeration = () => {
                     <TableRow key={item.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Badge variant={item.type === 'topic' ? 'default' : 'secondary'}>
+                          <Badge
+                            variant={
+                              item.type === "topic" ? "default" : "secondary"
+                            }
+                          >
                             {item.type}
                           </Badge>
                           {item.is_anonymous && (
@@ -1297,14 +1502,14 @@ const AdminModeration = () => {
                           )}
                         </div>
                       </TableCell>
-                       <TableCell className="max-w-xs">
-                         <Link 
-                           to={getContentUrl(item)}
-                           className="text-primary hover:text-primary/80 hover:underline font-medium truncate block"
-                         >
-                           {item.title}
-                         </Link>
-                       </TableCell>
+                      <TableCell className="max-w-xs">
+                        <Link
+                          to={getContentUrl(item)}
+                          className="text-primary hover:text-primary/80 hover:underline font-medium truncate block"
+                        >
+                          {item.title}
+                        </Link>
+                      </TableCell>
                       <TableCell>{item.author}</TableCell>
                       <TableCell className="max-w-md">
                         <div className="truncate text-sm text-muted-foreground">
@@ -1315,20 +1520,20 @@ const AdminModeration = () => {
                         {new Date(item.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
-                        {item.ip_address || 'N/A'}
+                        {item.ip_address || "N/A"}
                       </TableCell>
-                       <TableCell>
-                         <div className="flex gap-1">
-                           <Button
-                             size="sm"
-                             variant="outline"
-                             onClick={() => handleViewModerationDetails(item)}
-                             className="text-blue-600 hover:text-blue-700"
-                             title="View full content"
-                           >
-                             <FileText className="h-3 w-3" />
-                           </Button>
-                           <Button
+                      <TableCell>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleViewModerationDetails(item)}
+                            className="text-blue-600 hover:text-blue-700"
+                            title="View full content"
+                          >
+                            <FileText className="h-3 w-3" />
+                          </Button>
+                          <Button
                             size="sm"
                             variant="outline"
                             onClick={() => handleApprove(item.id, item.type)}
@@ -1340,7 +1545,9 @@ const AdminModeration = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleBanUser(item.author, item.id, item.type)}
+                            onClick={() =>
+                              handleBanUser(item.author, item.id, item.type)
+                            }
                             className="text-orange-600 hover:text-orange-700"
                             title="Ban user"
                           >
@@ -1350,7 +1557,9 @@ const AdminModeration = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleBanIP(item.ip_address, item.id, item.type)}
+                              onClick={() =>
+                                handleBanIP(item.ip_address, item.id, item.type)
+                              }
                               className="text-purple-600 hover:text-purple-700"
                               title="Ban IP address"
                             >
@@ -1372,7 +1581,10 @@ const AdminModeration = () => {
                   ))}
                   {(!moderationQueue || moderationQueue.length === 0) && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      <TableCell
+                        colSpan={7}
+                        className="text-center text-muted-foreground"
+                      >
                         No content to moderate
                       </TableCell>
                     </TableRow>
@@ -1392,7 +1604,8 @@ const AdminModeration = () => {
             <div>
               <h2 className="text-xl font-semibold mb-2">Moderation Appeals</h2>
               <p className="text-muted-foreground">
-                Review appeals from users who believe their content was incorrectly moderated
+                Review appeals from users who believe their content was
+                incorrectly moderated
               </p>
             </div>
             <AppealsManager />
@@ -1412,12 +1625,18 @@ const AdminModeration = () => {
         </TabsContent>
 
         <TabsContent value="banned">
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Banned Content</h2>
-            <div className="text-center text-muted-foreground py-8">
-              No banned content to display.
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Banned Content</h2>
+              <p className="text-muted-foreground">
+                Manage banned IPs and banned words (and view active bans).
+              </p>
             </div>
-          </Card>
+
+            <BannedIPsManager />
+
+            <BannedWordsManager />
+          </div>
         </TabsContent>
       </Tabs>
 
