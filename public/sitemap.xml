@@ -4,7 +4,7 @@
 
   <url>
     <loc>https://minorhockeytalks.com</loc>
-    <lastmod>2025-09-27</lastmod>
+    <lastmod>2025-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
@@ -35,6 +35,12 @@
   <url>
     <loc>https://minorhockeytalks.com/category/youth-hockey-training-forum</loc>
     <lastmod>2025-07-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/category/teams-associations-usa</loc>
+    <lastmod>2025-07-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -293,12 +299,6 @@
   <url>
     <loc>https://minorhockeytalks.com/category/new-york-youth-hockey-forum</loc>
     <lastmod>2025-07-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/category/teams-and-associations</loc>
-    <lastmod>2025-07-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -3183,8 +3183,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/where-can-we-find-prep-school-hockey-scores--mg1bgdly</loc>
-    <lastmod>2025-09-26</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2016-aaa/summit-series-meh4tvp8</loc>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3195,13 +3195,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-a/u16a-sir-player-wanted-f-or-d-mehxp8xx</loc>
-    <lastmod>2025-08-19</lastmod>
+    <loc>https://minorhockeytalks.com/minnesota-2011-aaa/mn-walleye-14u-aaa-mn-mfr6bu9b</loc>
+    <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/wonderland-wizards-bridgeport-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/wonderland-wizards-bridgeport-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3213,8 +3213,26 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/pikes-peak-catamounts-colorado-springs-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/pikes-peak-catamounts-colorado-springs-co</loc>
     <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-a/u16a-sir-player-wanted-f-or-d-mehxp8xx</loc>
+    <lastmod>2025-08-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2013-a/impact-of-open-borders-mdht9ec8</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/where-can-we-find-prep-school-hockey-scores--mg1bgdly</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3225,38 +3243,26 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-aaa/ljk-2011-meqa1xak</loc>
-    <lastmod>2025-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/minnesota-2011-aaa/mn-walleye-14u-aaa-mn-mfr6bu9b</loc>
-    <lastmod>2025-09-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/wilmington-nighthawks-wilmington-de</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/wilmington-nighthawks-wilmington-de</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/hamden-dragons-hamden-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/hamden-dragons-hamden-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/cherry-creek-greenwood-village-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/cherry-creek-greenwood-village-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/is-hockey-really-inclusive-enough-me1cqy38</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2017-aaa/underagers-playing-u10--mg82ywfa</loc>
+    <lastmod>2025-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3267,25 +3273,67 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2016-aaa/summit-series-meh4tvp8</loc>
-    <lastmod>2025-08-18</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2011-aaa/ljk-2011-meqa1xak</loc>
+    <lastmod>2025-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/tucson-jr-roadrunners-tucson-az</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/tucson-jr-roadrunners-tucson-az</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-a/u13-red-select-team-in-mhl-meda5ae1</loc>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/top-10-skill-development-providers-in-ottawa-area-mecy1jyb</loc>
     <lastmod>2025-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/top-10-skill-development-providers-in-ottawa-area-mecy1jyb</loc>
+    <loc>https://minorhockeytalks.com/michigan-2010-aaa/2010-little-caesars--mew8i3lr</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2017-aaa/u9-nyhl-elite--mepucnjz</loc>
+    <lastmod>2025-08-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/this-has-been-a-boring-mffhfjeh</loc>
+    <lastmod>2025-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2014-a/2014-omha-york-simcoe-a-meyw7lw8</loc>
+    <lastmod>2025-08-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/california-goldrush-lake-forest-ca</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/general-hockey-talk-canada/half-ice-hockey-meadxp3w</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/rba-hockey-group-mevbx0f2</loc>
+    <lastmod>2025-08-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2013-a/u13-red-select-team-in-mhl-meda5ae1</loc>
     <lastmod>2025-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3303,56 +3351,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/this-has-been-a-boring-mffhfjeh</loc>
-    <lastmod>2025-09-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/minnesota-2011-aaa/shattuck-st-marys-14u-aaa-mn-mfr6cvmo</loc>
-    <lastmod>2025-09-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/california-goldrush-lake-forest-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/bakersfield-jr-condors-bakersfield-ca</loc>
     <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/rba-hockey-group-mevbx0f2</loc>
-    <lastmod>2025-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2017-aaa/u9-nyhl-elite--mepucnjz</loc>
-    <lastmod>2025-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-a/2014-omha-york-simcoe-a-meyw7lw8</loc>
-    <lastmod>2025-08-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aa/dad-of-a-mini-tank-on-skates-losing-his-mind-mfbae1zg</loc>
-    <lastmod>2025-09-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/bakersfield-jr-condors-bakersfield-ca</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/general-hockey-talk-canada/half-ice-hockey-meadxp3w</loc>
-    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3369,19 +3369,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/windsor-u18-rumours-mfoq60d1</loc>
-    <lastmod>2025-09-18</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-all-stars-anchorage-ak-mfr6oy4a</loc>
+    <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/aliso-viejo-avalanche-aliso-viejo-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/aliso-viejo-avalanche-aliso-viejo-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-a/impact-of-open-borders-mdht9ec8</loc>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/titans-early-bird-md7x9tai</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3393,26 +3393,38 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2008-aa/predictions-for-this-season-mez35vfw</loc>
-    <lastmod>2025-08-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/general-2014-a/road-to-the-redhats-who-will-be-there-in-2026-mfmn52hs</loc>
     <lastmod>2025-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/la-lions-los-angeles-ca-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/la-lions-los-angeles-ca-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/titans-early-bird-md7x9tai</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/windsor-u18-rumours-mfoq60d1</loc>
+    <lastmod>2025-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/spring-summer-canada/the-throne-tournament-mdn6xg21</loc>
+    <lastmod>2025-08-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-a/gthl-2010a-west-met1ahl6</loc>
+    <lastmod>2025-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/minnesota-2011-aaa/shattuck-st-marys-14u-aaa-mn-mfr6cvmo</loc>
+    <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3441,14 +3453,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/california-heat-panorama-city-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/california-heat-panorama-city-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-a/gthl-2010a-west-met1ahl6</loc>
-    <lastmod>2025-08-26</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2008-aa/predictions-for-this-season-mez35vfw</loc>
+    <lastmod>2025-08-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3459,13 +3471,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/west-haven-blue-devils-west-haven-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/west-haven-blue-devils-west-haven-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-elite-west-haven-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-elite-west-haven-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3477,31 +3489,25 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/south-windsor-knights-south-windsor-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/south-windsor-knights-south-windsor-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/spring-summer-canada/best-of-the-best-aka-bob-tournament--me90e711</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/anaheim-jr-ducks-anaheim-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/anaheim-jr-ducks-anaheim-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/gulf-coast-flames-ellenton-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/gulf-coast-flames-ellenton-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/alaska-oilers-anchorage-ak-mfr6qzlm</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-oilers-anchorage-ak-mfr6qzlm</loc>
     <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3513,37 +3519,31 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/tampa-bulls-brandon-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/shoreline-sharks-northford-ct-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/hartford-jr-wolfpack-cromwell-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/tampa-bulls-brandon-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aa/2014-gthl-east-aa-mffneotr</loc>
-    <lastmod>2025-09-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/san-francisco-sabercats-san-francisco-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/hartford-jr-wolfpack-cromwell-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/team-colorado-denver-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/san-francisco-sabercats-san-francisco-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/shoreline-sharks-northford-ct-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/team-colorado-denver-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3555,13 +3555,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/arapahoe-warriors-centennial-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/arapahoe-warriors-centennial-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/ridgefield-lions-ridgefield-ct</loc>
+    <loc>https://minorhockeytalks.com/ontario-2014-aa/2014-gthl-east-aa-mffneotr</loc>
+    <lastmod>2025-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/ridgefield-lions-ridgefield-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3579,50 +3585,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/ranking-of-alliance-u18aaa-for-2025-season--me7kglgg</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/ontario-2013-aaa/ranking-order--mcvde5nv</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2015-aa/how-many-teams-are-doing-pre-season-camps--meiuub16</loc>
-    <lastmod>2025-08-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-aa/2013-tri-county-aa-mevfionk</loc>
-    <lastmod>2025-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/california-2010-aaa/jr-kings-getting-new-kids-mf744x6n</loc>
-    <lastmod>2025-09-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/palmer-pioneers-palmer-ak-mfrqr0ww</loc>
-    <lastmod>2025-09-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/orange-county-hc-yorba-linda-ca</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2012-aaa/skills-coach-madness-mflgv4op</loc>
-    <lastmod>2025-09-15</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2013-aa/omha-u13aa-mfct4kpl</loc>
+    <lastmod>2025-09-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3633,13 +3603,43 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/anaheim-lady-ducks-anaheim-ca-girls-only</loc>
+    <loc>https://minorhockeytalks.com/ontario-2012-aaa/skills-coach-madness-mflgv4op</loc>
+    <lastmod>2025-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/california-2010-aaa/jr-kings-getting-new-kids-mf744x6n</loc>
+    <lastmod>2025-09-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/palmer-pioneers-palmer-ak-mfrqr0ww</loc>
+    <lastmod>2025-09-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/orange-county-hc-yorba-linda-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/alaska-wolves-anchorage-ak-mfr6u5cg</loc>
+    <loc>https://minorhockeytalks.com/ontario-2015-aa/how-many-teams-are-doing-pre-season-camps--meiuub16</loc>
+    <lastmod>2025-08-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/anaheim-lady-ducks-anaheim-ca-girls-only</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-wolves-anchorage-ak-mfr6u5cg</loc>
     <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3651,14 +3651,20 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-aa/omha-u13aa-mfct4kpl</loc>
-    <lastmod>2025-09-09</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/nw-arkansas-ice-hogs-springdale-ar</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/nw-arkansas-ice-hogs-springdale-ar</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2013-aa/2013-tri-county-aa-mevfionk</loc>
+    <lastmod>2025-08-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/ranking-of-alliance-u18aaa-for-2025-season--me7kglgg</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3669,8 +3675,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/arizona-bobcats-chandler-az</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/arizona-bobcats-chandler-az</loc>
     <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2016-aaa/brick-2026-mczn198d</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3681,8 +3693,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2016-aaa/brick-2026-mczn198d</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2017-aaa/cct-pre-season-tournament-2017-mehvv2k2</loc>
+    <lastmod>2025-08-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/16-year-old-rules-in-junior-hockey-mecoa382</loc>
+    <lastmod>2025-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3699,26 +3717,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/16-year-old-rules-in-junior-hockey-mecoa382</loc>
-    <lastmod>2025-08-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/-how-to-fix-avg-antivirus-installation-errors-mf6p9q3z</loc>
     <lastmod>2025-09-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/california-wave-artesia-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/california-wave-artesia-ca</loc>
     <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2017-aaa/cct-pre-season-tournament-2017-mehvv2k2</loc>
-    <lastmod>2025-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3729,8 +3735,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aa/ranking-the-teams-mcvw9ciy</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2013-aaa/alliance-2013-meu9bah1</loc>
+    <lastmod>2025-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3741,14 +3747,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2017-aaa/klevr-2526-season-mcuyyw63</loc>
+    <loc>https://minorhockeytalks.com/ontario-2011-aaa/is-it-to-early-for-agents-mcwr0od4</loc>
     <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-aaa/alliance-2013-meu9bah1</loc>
-    <lastmod>2025-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3759,7 +3759,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/anchorage-north-stars-anchorage-ak-mfr6vvfd</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/anchorage-north-stars-anchorage-ak-mfr6vvfd</loc>
     <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3771,31 +3771,37 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/california-bears-burbank-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/california-bears-burbank-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/tri-valley-blue-devils-dublin-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/tri-valley-blue-devils-dublin-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-aaa/is-it-to-early-for-agents-mcwr0od4</loc>
+    <loc>https://minorhockeytalks.com/ontario-2017-aaa/klevr-2526-season-mcuyyw63</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/delta-huskies-delta-junction-ak-mfr70201</loc>
+    <loc>https://minorhockeytalks.com/ontario-2010-aa/ranking-the-teams-mcvw9ciy</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/delta-huskies-delta-junction-ak-mfr70201</loc>
     <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/stamford-sharks-stamford-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/stamford-sharks-stamford-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3807,8 +3813,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/-carnevale-hockey-md3wpi4h</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2015-a/upcoming-season--mf74nnbl</loc>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3825,38 +3831,38 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/parents-who-act-like-gms-at-the-rink-mf5vmyzb</loc>
-    <lastmod>2025-09-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-chiefs-newington-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-chiefs-newington-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/northern-ct-noreaster-simsbury-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/northern-ct-noreaster-simsbury-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/team-alaska-anchorage-ak-mfr6xnig</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/team-alaska-anchorage-ak-mfr6xnig</loc>
     <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/krivo-school-of-hockey-elite-littleton-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/krivo-school-of-hockey-elite-littleton-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-hat-tricks-danbury-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-hat-tricks-danbury-ct</loc>
     <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/-carnevale-hockey-md3wpi4h</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3867,14 +3873,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/carlsbad-mavericks-carlsbad-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/carlsbad-mavericks-carlsbad-ca</loc>
     <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2015-a/upcoming-season--mf74nnbl</loc>
-    <lastmod>2025-09-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -3885,7 +3885,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/coachella-valley-jr-firebirds-cathedral-city-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/coachella-valley-jr-firebirds-cathedral-city-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3897,19 +3897,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aaa/instagram--mddom5jx</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/ontario-2011-aaa/2011-omha-aaa-mcur2p15</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-aaa/heo-2011-md4v0xkh</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3921,7 +3909,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/western-ct-jr-colonials-danbury-ct</loc>
+    <loc>https://minorhockeytalks.com/ontario-2011-aaa/heo-2011-md4v0xkh</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/western-ct-jr-colonials-danbury-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3933,7 +3927,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-aaa/-2013-omha-west-aaa-mdvtaaov</loc>
+    <loc>https://minorhockeytalks.com/ontario-2014-aaa/instagram--mddom5jx</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3951,37 +3945,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/alaska-blue-devils-eagle-river-ak-mfr72ado</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-blue-devils-eagle-river-ak-mfr72ado</loc>
     <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/california-cougars-cupertino-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/california-cougars-cupertino-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/chicago-blues-bensenville-il</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/mason-city-jr-mohawks-mason-city-ia</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/feeding-the-team-best-post-game-snacks-mg1ff7sj</loc>
-    <lastmod>2025-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/mcfetridge-riverdogs-chicago-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/chicago-blues-bensenville-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3993,19 +3969,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/step-by-step-avg-antivirus-setup-for-all-devices-mf6pcpja</loc>
-    <lastmod>2025-09-05</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/mason-city-jr-mohawks-mason-city-ia</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/alaska-grizzlies-fairbanks-ak-mfr779um</loc>
-    <lastmod>2025-09-19</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2014-aa/is-2-goals-in-a-year-25-games-enough-to-make-a-team-the-next-year-mg6zh2gb</loc>
+    <lastmod>2025-09-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-ice-cats-darien-ct-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/crystal-lake-yellowjackets-crystal-lake-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4017,19 +3993,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/crystal-lake-yellowjackets-crystal-lake-il</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/step-by-step-avg-antivirus-setup-for-all-devices-mf6pcpja</loc>
+    <lastmod>2025-09-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/heo-2010-mcydnlhj</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-grizzlies-fairbanks-ak-mfr779um</loc>
+    <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/lake-tahoe-grizzlies-south-lake-tahoe-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-ice-cats-darien-ct-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4041,25 +4017,49 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/san-diego-jr-gulls-poway-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/lake-tahoe-grizzlies-south-lake-tahoe-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/iowa-city-jr-heartlanders-iowa-city-ia</loc>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/heo-2010-mcydnlhj</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2013-aaa/-2013-omha-west-aaa-mdvtaaov</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/san-diego-jr-gulls-poway-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/colorado-thunderbirds-denver-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/iowa-city-jr-heartlanders-iowa-city-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/athens-ice-sirens-athens-ga-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/mcfetridge-riverdogs-chicago-il</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/colorado-thunderbirds-denver-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/athens-ice-sirens-athens-ga-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4077,38 +4077,26 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/discuss-site-issues/first-post-go-back-to-the-old-site--mcv3cvfm</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/west-hartford-wolves-west-hartford-ct</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/is-hockey-really-inclusive-enough-me1cqy38</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/west-hartford-wolves-west-hartford-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/arizona-jr-sun-devils-tempe-az</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/release-from-aa-to-play-aaa-md8s3wzv</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/arizona-jr-sun-devils-tempe-az</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/fresno-jr-monsters-fresno-ca</loc>
     <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/fresno-jr-monsters-fresno-ca</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2017-aaa/niagara-nationals--merv80wr</loc>
-    <lastmod>2025-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4119,25 +4107,37 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/south-kent-school-south-kent-ct</loc>
+    <loc>https://minorhockeytalks.com/ontario-2017-aaa/niagara-nationals--merv80wr</loc>
+    <lastmod>2025-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/discuss-site-issues/first-post-go-back-to-the-old-site--mcv3cvfm</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/south-kent-school-south-kent-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/darien-youth-darien-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/darien-youth-darien-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/sioux-center-storm-sioux-center-ia</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/sioux-center-storm-sioux-center-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/dubuque-jr-saints-dubuque-ia</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/dubuque-jr-saints-dubuque-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4149,7 +4149,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/san-diego-saints-la-mesa-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/san-diego-saints-la-mesa-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4167,49 +4167,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/atlanta-center-ice-sandy-springs-ga</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/atlanta-center-ice-sandy-springs-ga</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/atlanta-ice-bandits-cumming-ga</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/massachusetts-2011-aaa/neponset-valley-river-rats-14u-aaa-ma-mfr5bkvo</loc>
-    <lastmod>2025-09-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/greenwich-skating-club-greenwich-ct</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/clearwater-ice-storm-clearwater-fl</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/fixing-avg-firewall-network-conflicts-mf6pfodc</loc>
-    <lastmod>2025-09-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/east-haven-yellowjackets-east-haven-ct</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/florida-fury-lighthouse-point-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/atlanta-ice-bandits-cumming-ga</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4221,31 +4185,61 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/ventura-mariners-simi-valley-ca</loc>
+    <loc>https://minorhockeytalks.com/massachusetts-2011-aaa/neponset-valley-river-rats-14u-aaa-ma-mfr5bkvo</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-aa/shouldnt-skating-and-hockey-sense-matter-more-than-whos-tallest-mfv665tf</loc>
+    <lastmod>2025-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/greenwich-skating-club-greenwich-ct</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/clearwater-ice-storm-clearwater-fl</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/fixing-avg-firewall-network-conflicts-mf6pfodc</loc>
+    <lastmod>2025-09-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/east-haven-yellowjackets-east-haven-ct</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/florida-fury-lighthouse-point-fl</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/ventura-mariners-simi-valley-ca</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/adhl-bucks-mesa-az</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://minorhockeytalks.com/ontario-2014-aa/2014-aa-omha-mcvuoruz</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/adhl-bucks-mesa-az</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aaa/best-training-for-2014-aaa-any-ideas-md0epoiw</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2016-aaa/top-teams-and-players-mcxdri5m</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4263,19 +4257,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/discuss-site-issues/-new-reporting-feature-instant-post-hiding-on-flag-mcz69jvh</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2013-aaa/2013-girls-u13-mfmzktx7</loc>
+    <lastmod>2025-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/santa-barbara-ice-hawks-santa-barbara-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/santa-barbara-ice-hawks-santa-barbara-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/lakewood-ice-dogs-lakewood-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/lakewood-ice-dogs-lakewood-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4293,20 +4287,26 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/discuss-site-issues/-new-reporting-feature-instant-post-hiding-on-flag-mcz69jvh</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/ontario-2008-aa/mississauga-beast-playoff-moves-2008-aa-md6aixu8</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-aaa/2013-girls-u13-mfmzktx7</loc>
-    <lastmod>2025-09-16</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/mission-az-ice-peoria-az</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/mission-az-ice-peoria-az</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2014-aaa/best-training-for-2014-aaa-any-ideas-md0epoiw</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4317,14 +4317,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-clippers-milford-ct</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2016-aaa/top-teams-and-players-mcxdri5m</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/is-the-d1ohlnhl-dream-realistic-for-most-kids-mfd4zojz</loc>
-    <lastmod>2025-09-09</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-clippers-milford-ct</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4341,55 +4341,43 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/alaska-jr-avalanche-wasilla-ak-mfrr0siz</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-jr-avalanche-wasilla-ak-mfrr0siz</loc>
     <lastmod>2025-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/craig-bulldogs-craig-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/craig-bulldogs-craig-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/delaware-jr-blue-hens-newark-de</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/delaware-jr-blue-hens-newark-de</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/florida-jr-panthers-coral-springs-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/florida-jr-panthers-coral-springs-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/west-elk-wolverines-gunnison-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/west-elk-wolverines-gunnison-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/enfield-eagles-enfield-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/enfield-eagles-enfield-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/tampa-bay-lightning-oldsmar-fl-girls-only</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2018-aaa/power-rankings-for-2018--md0czp54</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/telluride-lizard-heads-telluride-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/tampa-bay-lightning-oldsmar-fl-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4401,14 +4389,26 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/sioux-city-jr-musketeers-sioux-city-ia</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/telluride-lizard-heads-telluride-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/mammoth-stars-mammoth-lakes-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/sioux-city-jr-musketeers-sioux-city-ia</loc>
     <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/mammoth-stars-mammoth-lakes-ca</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2018-aaa/power-rankings-for-2018--md0czp54</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4419,62 +4419,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/michigan-2011-aaa/victory-honda-14u-aaa-mi-mftxrpdc</loc>
-    <lastmod>2025-09-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/spring-summer-canada/crown-vs-throne-mcwqccih</loc>
     <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/okanagan-hockey-colorado-centennial-co</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-aaa/side-gjg-coaches--meuroe10</loc>
-    <lastmod>2025-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/alaska-hockey-club-northern-knights-soldotna-ak-mfrqwdyg</loc>
-    <lastmod>2025-09-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-a/players-wanted-u13-2013-birth-year-mdsza2f3</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2015-aaa/top-training-in-the-gta-md7h84kz</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/massconn-united-enfield-ct</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/new-canaan-winter-club-new-canaan-ct</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/fairbanks-arctic-lions-fairbanks-ak-mfr80p86</loc>
-    <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4485,32 +4431,92 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/arvada-arvada-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/okanagan-hockey-colorado-centennial-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/oakland-bears-oakland-ca</loc>
+    <loc>https://minorhockeytalks.com/ontario-2013-a/players-wanted-u13-2013-birth-year-mdsza2f3</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-hockey-club-northern-knights-soldotna-ak-mfrqwdyg</loc>
+    <lastmod>2025-09-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2011-aaa/side-gjg-coaches--meuroe10</loc>
+    <lastmod>2025-08-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-aa/omha-2010aa-tri-county-mg41t26b</loc>
+    <lastmod>2025-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/massconn-united-enfield-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/simsbury-youth-simsbury-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/new-canaan-winter-club-new-canaan-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/california-jr-reign-riverside-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/fairbanks-arctic-lions-fairbanks-ak-mfr80p86</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2015-aaa/top-training-in-the-gta-md7h84kz</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/arvada-arvada-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/oak-creek-kodiaks-oak-creek-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/oakland-bears-oakland-ca</loc>
     <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/simsbury-youth-simsbury-ct</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/california-jr-reign-riverside-ca</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/oak-creek-kodiaks-oak-creek-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/michigan-2011-aaa/victory-honda-14u-aaa-mi-mftxrpdc</loc>
+    <lastmod>2025-09-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4521,14 +4527,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/kodiak-hc-kodiak-ak-mfr8arr6</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/kodiak-hc-kodiak-ak-mfr8arr6</loc>
     <lastmod>2025-09-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aa/whats-the-normal-number-of-tournaments-in-a-year-mfw1wzfl</loc>
-    <lastmod>2025-09-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4539,13 +4539,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-aa/gthl-west-2011-aa-mfufea4a</loc>
-    <lastmod>2025-09-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-a/open-borders-mcxua8yq</loc>
+    <loc>https://minorhockeytalks.com/general-hockey-talk/crazy-parents-md4w0ca7</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4557,14 +4551,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/general-hockey-talk/crazy-parents-md4w0ca7</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/fairbanks-hockey-club-fairbanks-ak-mfr83vie</loc>
+    <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/fairbanks-hockey-club-fairbanks-ak-mfr83vie</loc>
-    <lastmod>2025-09-19</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2016-a/lets-cheer-for-2016-hockey-cc3d4704</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4581,19 +4575,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/florida-bulldogs-kissimmee-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/florida-bulldogs-kissimmee-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/kenai-ice-hawks-soldotna-ak-mfrqy74z</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/kenai-ice-hawks-soldotna-ak-mfrqy74z</loc>
     <lastmod>2025-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/greater-new-haven-warriors-new-haven-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/greater-new-haven-warriors-new-haven-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4605,13 +4599,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2016-a/lets-cheer-for-2016-hockey-cc3d4704</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/summit-lightning-breckenridge-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/summit-lightning-breckenridge-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4623,25 +4611,37 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/pasadena-maple-leafs-pasadena-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/pasadena-maple-leafs-pasadena-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/ontario-empire-ontario-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/ontario-empire-ontario-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/foothills-flyers-littleton-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/foothills-flyers-littleton-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/gthl-2010-aaa-mdrkzkx0</loc>
+    <loc>https://minorhockeytalks.com/ontario-2010-aa/whats-the-normal-number-of-tournaments-in-a-year-mfw1wzfl</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2011-aa/gthl-west-2011-aa-mfufea4a</loc>
+    <lastmod>2025-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2011-a/open-borders-mcxua8yq</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4653,14 +4653,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aa/any-teams-still-looking-for-players-mdq01c5l</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/roseville-capital-thunder-roseville-ca</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/roseville-capital-thunder-roseville-ca</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2014-aa/any-teams-still-looking-for-players-mdq01c5l</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4671,31 +4671,31 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/mat-su-eagles-wasilla-ak-mfrr2q31</loc>
+    <lastmod>2025-09-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/ontario-2010-aa/gthl-2010aa-east-mdrkwzz3</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/mat-su-eagles-wasilla-ak-mfrr2q31</loc>
-    <lastmod>2025-09-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/homer-glacier-kings-homer-ak-mfr86a83</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/homer-glacier-kings-homer-ak-mfr86a83</loc>
     <lastmod>2025-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/jacksonville-lunas-jacksonville-fl-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/jacksonville-lunas-jacksonville-fl-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/durango-ice-devils-durango-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/durango-ice-devils-durango-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4719,25 +4719,43 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/mid-fairfield-ct-stars-norwalk-ct-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/mid-fairfield-ct-stars-norwalk-ct-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/tampa-sting-tampa-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/tampa-sting-tampa-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/rocky-mountain-roughriders-superior-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/rocky-mountain-roughriders-superior-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/south-florida-lucky-pucks-fort-lauderdale-fl-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/south-florida-lucky-pucks-fort-lauderdale-fl-girls-only</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations/hockey-canada-trial-mdhtye9d</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/massachusetts-2011-aaa/top-gun-elite-14u-aaa-nh-mfr5hvvm</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/vail-mountaineers-vail-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4749,26 +4767,68 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/massachusetts-2011-aaa/top-gun-elite-14u-aaa-nh-mfr5hvvm</loc>
-    <lastmod>2025-09-19</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2012-aaa/omha-east-mcxrug21</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/vail-mountaineers-vail-co</loc>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/gthl-2010-aaa-mdrkzkx0</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/san-diego-angels-san-diego-ca-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/michigan-2011-aaa/honeybaked-14u-aaa-mi-mfty8wrf</loc>
-    <lastmod>2025-09-21</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/valley-thunder-wasilla-ak-mfrr6023</loc>
+    <lastmod>2025-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-associations/hockey-canada-trial-mdhtye9d</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/juneau-capitals-juneau-ak-mfr886mh</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/pensacola-jr-ice-flyers-pensacola-fl</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/denver-u-jr-pioneers-denver-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/aspen-leafs-aspen-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/stockton-colts-stockton-ca</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/san-jose-jr-sharks-san-jose-ca</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-polar-bears-shelton-ct-girls-only</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4779,67 +4839,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/san-diego-angels-san-diego-ca-girls-only</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://minorhockeytalks.com/michigan-2011-aaa/honeybaked-14u-aaa-mi-mfty8wrf</loc>
+    <lastmod>2025-09-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2012-aaa/omha-east-mcxrug21</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/valley-thunder-wasilla-ak-mfrr6023</loc>
-    <lastmod>2025-09-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/juneau-capitals-juneau-ak-mfr886mh</loc>
-    <lastmod>2025-09-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/pensacola-jr-ice-flyers-pensacola-fl</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/denver-u-jr-pioneers-denver-co</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/aspen-leafs-aspen-co</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/stockton-colts-stockton-ca</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/san-jose-jr-sharks-san-jose-ca</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-polar-bears-shelton-ct-girls-only</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/evanston-wildkits-evanston-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/evanston-wildkits-evanston-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4857,26 +4863,56 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/ontario-2018-aaa/klevr-uniform-kits--mfv2i7s1</loc>
+    <lastmod>2025-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/lewis-clark-lightning-lewiston-id</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/ontario-2014-aaa/language-advantage-mflh0arb</loc>
     <lastmod>2025-09-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/lewis-clark-lightning-lewiston-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/southeast-blades-duluth-ga</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/southeast-blades-duluth-ga</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/alaska-grizzlies-fairbanks-ak-mfrr83d2</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-grizzlies-fairbanks-ak-mfrr83d2</loc>
     <lastmod>2025-09-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/bloomington-thunder-bloomington-il</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/mountain-select-aspen-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/california-surf-westminster-ca</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/mid-fairfield-hockey-club-stamford-ct</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4887,92 +4923,56 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/bloomington-thunder-bloomington-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/boise-wings-boise-id</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/mountain-select-aspen-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/santa-clarita-flyers-santa-clarita-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/california-surf-westminster-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/st-jude-knights-crestwood-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/mid-fairfield-hockey-club-stamford-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-riverhawks-shelton-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/boise-wings-boise-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/space-coast-rockets-rockledge-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/santa-clarita-flyers-santa-clarita-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/waterloo-jr-hawks-waterloo-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2018-aaa/klevr-uniform-kits--mfv2i7s1</loc>
-    <lastmod>2025-09-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/st-jude-knights-crestwood-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/sdia-oilers-san-diego-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-riverhawks-shelton-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-all-stars-anchorage-ak</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/space-coast-rockets-rockledge-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/castle-view-sabercats-castle-rock-co</loc>
     <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/waterloo-jr-hawks-waterloo-ia</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/sdia-oilers-san-diego-ca</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/hockey-high-schools-md6edr12</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/castle-view-sabercats-castle-rock-co</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2012-aa/-omha-2012-aa-mfb4a9hd</loc>
-    <lastmod>2025-09-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4983,8 +4983,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/michigan-2011-aaa/compuware-14u-aaa-mi-mftygs9z</loc>
-    <lastmod>2025-09-21</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2012-aa/-omha-2012-aa-mfb4a9hd</loc>
+    <lastmod>2025-09-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4995,25 +4995,25 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/chicago-horned-frogs-chicago-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/chicago-horned-frogs-chicago-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/santa-clara-blackhawks-santa-clara-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/santa-clara-blackhawks-santa-clara-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/central-illinois-revolution-bloomington-il-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/central-illinois-revolution-bloomington-il-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-jr-rangers-stamford-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-jr-rangers-stamford-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5025,19 +5025,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/lafayette-locomotives-lafayette-co</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://minorhockeytalks.com/michigan-2011-aaa/compuware-14u-aaa-mi-mftygs9z</loc>
+    <lastmod>2025-09-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/michigan-2010-aaa/2010-little-caesars--mew8i3lr</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/palm-beach-hawks-palm-beach-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/lafayette-locomotives-lafayette-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5049,32 +5043,32 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/atlanta-ice-lynx-alpharetta-ga-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/palm-beach-hawks-palm-beach-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/midwest-warriors-west-des-moines-ia</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/atlanta-ice-lynx-alpharetta-ga-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/san-luis-valley-alamosa-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/midwest-warriors-west-des-moines-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/jacksonville-jr-icemen-jacksonville-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/san-luis-valley-alamosa-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/michigan-2011-aaa/any-big-changes-this-year-md6bdl3e</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/jacksonville-jr-icemen-jacksonville-fl</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -5085,13 +5079,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/boulder-hc-boulder-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/boulder-hc-boulder-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/fraser-valley-eagles-fraser-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/fraser-valley-eagles-fraser-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5103,13 +5097,19 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/michigan-2011-aaa/any-big-changes-this-year-md6bdl3e</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/michigan-2011-aaa/biggby-coffee-14u-aaa-mi-mftyjxxl</loc>
     <lastmod>2025-09-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/monument-rebels-monument-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/monument-rebels-monument-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5121,13 +5121,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/spring-summer-canada/the-throne-tournament-mdn6xg21</loc>
-    <lastmod>2025-08-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/pueblo-bulls-pueblo-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/pueblo-bulls-pueblo-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5139,55 +5133,61 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/florida-surf-palm-beach-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/florida-surf-palm-beach-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/santa-rosa-flyers-santa-rosa-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/santa-rosa-flyers-santa-rosa-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/clearwater-cyclones-clearwater-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/clearwater-cyclones-clearwater-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-jr-huskies-storrs-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-jr-huskies-storrs-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/markham-waxers-u18aaa-tournament--mfy1dryh</loc>
-    <lastmod>2025-09-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/delmarva-raptors-harrington-de</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-oilers-anchorage-ak</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/danville-freeze-danville-il</loc>
+    <loc>https://minorhockeytalks.com/ontario-2008-aa/which-is-tougher-aaa-tryouts-or-listening-to-dads-compare-which-team-their-kid-almost-made-mf8u4bst</loc>
+    <lastmod>2025-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/delmarva-raptors-harrington-de</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/grand-junction-river-hawks-grand-junction-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/coeur-dalene-thunder-coeur-dalene-id</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/boji-mammoths-spirit-lake-ia</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/grand-junction-river-hawks-grand-junction-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/boji-mammoths-spirit-lake-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5199,13 +5199,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/cda-hockey-academy-coeur-dalene-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/cda-hockey-academy-coeur-dalene-id</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/vacaville-jets-vacaville-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/vacaville-jets-vacaville-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5223,49 +5223,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2008-aa/which-is-tougher-aaa-tryouts-or-listening-to-dads-compare-which-team-their-kid-almost-made-mf8u4bst</loc>
-    <lastmod>2025-09-06</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/markham-waxers-u18aaa-tournament--mfy1dryh</loc>
+    <lastmod>2025-09-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/south-florida-golden-wolves-pembroke-pines-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/south-florida-golden-wolves-pembroke-pines-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/delaware-ducks-newark-de</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2008-a/next-gen-hockey-canada-mf8s11hi</loc>
-    <lastmod>2025-09-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/nest-hockey-academy-wesley-chapel-fl</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/coeur-dalene-thunder-coeur-dalene-id</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/minnesota-2011-aaa/mn-loons-14u-aaa-mn-mfr681ch</loc>
-    <lastmod>2025-09-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/wallingford-hawks-wallingford-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/delaware-ducks-newark-de</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5277,25 +5247,49 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2016-aaa/2026-brick-teams-me25ak2r</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/twin-rinks-sharks-buffalo-grove-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/nest-hockey-academy-wesley-chapel-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/mccall-mountaineers-mccall-id</loc>
+    <loc>https://minorhockeytalks.com/ontario-2008-a/next-gen-hockey-canada-mf8s11hi</loc>
+    <lastmod>2025-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/minnesota-2011-aaa/mn-loons-14u-aaa-mn-mfr681ch</loc>
+    <lastmod>2025-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/danville-freeze-danville-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/florida-attack-oldsmar-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/wallingford-hawks-wallingford-ct</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/twin-rinks-sharks-buffalo-grove-il</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/mccall-mountaineers-mccall-id</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/florida-attack-oldsmar-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5303,12 +5297,6 @@
   <url>
     <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/local-league-house-league-mdiva1z1</loc>
     <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/general-hockey-talk-canada/goalie-shortage-mfo9q03n</loc>
-    <lastmod>2025-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -5325,25 +5313,37 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/denver-cc-denver-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/denver-cc-denver-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/regis-jesuit-aurora-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/regis-jesuit-aurora-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/alaska-avalanche-wasilla-ak</loc>
+    <loc>https://minorhockeytalks.com/ontario-2016-aaa/2026-brick-teams-me25ak2r</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/alaska-avalanche-wasilla-ak</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/boise-ice-pilots-boise-id</loc>
+    <loc>https://minorhockeytalks.com/general-hockey-talk-canada/goalie-shortage-mfo9q03n</loc>
+    <lastmod>2025-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/boise-ice-pilots-boise-id</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5355,43 +5355,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/huntsville-jr-chargers-huntsville-al</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-a/are-false-promises-hurting-aaa-players--mfcqrsyj</loc>
-    <lastmod>2025-09-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/michigan-2011-aaa/belle-tire-14u-aaa-mi-mftymhzs</loc>
-    <lastmod>2025-09-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/homewood-flossmoor-vikings-flossmoor-il</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/can-we-please-normalize-average-hockey-beer-league-is-where-were-all-headed-anyway-mfmoebkn</loc>
-    <lastmod>2025-09-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/des-moines-jr-bucs-des-moines-ia</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/champaign-urbana-chiefs-champaign-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/huntsville-jr-chargers-huntsville-al</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5403,55 +5367,85 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/chicago-hawks-darien-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/tampa-bay-hockey-club-oldsmar-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/glenwood-springs-grizzlies-glenwood-springs-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/homewood-flossmoor-vikings-flossmoor-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/littleton-hawks-littleton-co</loc>
+    <loc>https://minorhockeytalks.com/ontario-2009-a/are-false-promises-hurting-aaa-players--mfcqrsyj</loc>
+    <lastmod>2025-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/des-moines-jr-bucs-des-moines-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/tampa-bay-hockey-club-oldsmar-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/champaign-urbana-chiefs-champaign-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/moscow-bears-moscow-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/chicago-hawks-darien-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/cristeros-hockey-club-coeur-dalene-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/glenwood-springs-grizzlies-glenwood-springs-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/colorado-rampage-monument-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/littleton-hawks-littleton-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2016-aaa/gthl-2016-aaa--mcxhnjm7</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/moscow-bears-moscow-id</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/cristeros-hockey-club-coeur-dalene-id</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/colorado-rampage-monument-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/michigan-2011-aaa/belle-tire-14u-aaa-mi-mftymhzs</loc>
+    <lastmod>2025-09-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2014-aaa/2014-aaa-pre-season-rankings-mdqimlkh</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2015-aa/gthl-2015-aa-mdonz2js</loc>
+    <loc>https://minorhockeytalks.com/ontario-2011-aa/omha-york-simcoe-ranking-mdxa708p</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5463,13 +5457,25 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/atlanta-phoenix-duluth-ga</loc>
+    <loc>https://minorhockeytalks.com/ontario-2010-aa/gthl-2010aa-west-mdrkykk1</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/atlanta-phoenix-duluth-ga</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/birmingham-bulls-pelham-al</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/birmingham-bulls-pelham-al</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/chicago-jets-chicago-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5481,73 +5487,73 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aaa/2014-aaa-pre-season-rankings-mdqimlkh</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/decatur-flames-decatur-il</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2015-aa/gthl-2015-aa-mdonz2js</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aa/gthl-2010aa-west-mdrkykk1</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/colorado-14ers-littleton-co-girls-only</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/salmon-rapids-salmon-id</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/tampa-bay-crunch-wesley-chapel-fl</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/release-from-aa-to-play-aaa-md8s3wzv</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/chicago-jets-chicago-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/salisbury-redhawks-salisbury-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/decatur-flames-decatur-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/sun-valley-sun-valley-id</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/what-are-your-hockey-kids-eating-to-stay-jacked-mfbimc17</loc>
-    <lastmod>2025-09-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/colorado-14ers-littleton-co-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/chicago-mission-chicago-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/salmon-rapids-salmon-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/norwich-hockey-club-norwich-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/tampa-bay-crunch-wesley-chapel-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/savannah-jr-ghost-pirates-savannah-ga</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-aa/omha-york-simcoe-ranking-mdxa708p</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/salisbury-redhawks-salisbury-ct</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2012-aaa/2012-omha-west-me0925cl</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/sun-valley-sun-valley-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/greenwich-cardinals-greenwich-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5559,49 +5565,31 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/chicago-mission-chicago-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/columbus-cottonmouths-columbus-ga</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/norwich-hockey-club-norwich-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/danbury-jr-hat-tricks-danbury-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/savannah-jr-ghost-pirates-savannah-ga</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/hyland-hills-jaguars-westminster-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/greenwich-cardinals-greenwich-ct</loc>
-    <lastmod>2025-09-25</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/what-are-your-hockey-kids-eating-to-stay-jacked-mfbimc17</loc>
+    <lastmod>2025-09-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/columbus-cottonmouths-columbus-ga</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/danbury-jr-hat-tricks-danbury-ct</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/hyland-hills-jaguars-westminster-co</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/little-rock-aces-little-rock-ar</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/little-rock-aces-little-rock-ar</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5613,19 +5601,13 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/idaho-lady-vipers-hailey-id-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/idaho-lady-vipers-hailey-id-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/arizona-hockey-union-gilbert-az</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/teton-valley-cutthroats-victor-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/arizona-hockey-union-gilbert-az</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5637,19 +5619,31 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/rocky-mountain-lady-roughriders-westminster-co-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/florida-kings-delray-beach-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/connecticut-game-change-west-hartford-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/teton-valley-cutthroats-victor-id</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/yale-bulldogs-new-haven-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/rocky-mountain-lady-roughriders-westminster-co-girls-only</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/connecticut-game-change-west-hartford-ct</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/yale-bulldogs-new-haven-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5661,37 +5655,31 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/florida-kings-delray-beach-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/arizona-kachinas-phoenix-az-girls-only</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/arizona-kachinas-phoenix-az-girls-only</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/ames-flyers-ames-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/ames-flyers-ames-ia</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/cedar-rapids-jr-roughriders-cedar-rapids-ia</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/cedar-rapids-jr-roughriders-cedar-rapids-ia</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/dc-titans-washington-dc</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/dc-titans-washington-dc</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/woodland-park-panthers-woodland-park-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/woodland-park-panthers-woodland-park-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5703,67 +5691,55 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-aa/gthl-2011-aa-rankings-mdokd2pg</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/ontario-2012-aa/why-are-goal-celebrations-getting-so-big-in-minor-hockey-mfzl7bb3</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aa/shouldnt-skating-and-hockey-sense-matter-more-than-whos-tallest-mfv665tf</loc>
-    <lastmod>2025-09-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/central-florida-bears-orlando-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/central-florida-bears-orlando-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/florida-jr-everblades-estero-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/florida-jr-everblades-estero-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/flagstaff-northstars-flagstaff-az</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/flagstaff-northstars-flagstaff-az</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/southeastern-ct-seahawks-norwich-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/southeastern-ct-seahawks-norwich-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/lakeland-jr-mocs-lakeland-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/lakeland-jr-mocs-lakeland-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/noco-jr-eagles-fort-collins-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/noco-jr-eagles-fort-collins-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/chicago-stallions-chicago-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/chicago-stallions-chicago-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/bay-harbor-red-wings-harbor-city-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/bay-harbor-red-wings-harbor-city-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -5775,104 +5751,98 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/team-illinois-addison-il</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/team-illinois-addison-il</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/idaho-falls-eagles-idaho-falls-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/idaho-falls-eagles-idaho-falls-id</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aaa/omha-east-u18-aaa-mfv0h4vu</loc>
-    <lastmod>2025-09-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/miami-toros-miami-fl</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/miami-toros-miami-fl</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/avon-panthers-avon-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/avon-panthers-avon-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/steamboat-stampede-steamboat-springs-co</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/steamboat-stampede-steamboat-springs-co</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/central-ct-capitals-newington-ct</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/central-ct-capitals-newington-ct</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/idaho-jr-steelheads-boise-id</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/idaho-jr-steelheads-boise-id</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/arizona-titans-phoenix-az</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/arizona-titans-phoenix-az</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/golden-state-elite-eagles-vacaville-ca</loc>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/golden-state-elite-eagles-vacaville-ca</loc>
     <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/quad-city-ice-eagles-davenport-ia</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/colorado-extreme-el-jebel-co</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/atlanta-madhatters-marietta-ga</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/dme-swamp-rabbits-daytona-beach-fl</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/la-jr-kings-los-angeles-ca</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/rose-city-pats-pasadena-ca</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/signed-but-not-insta-official--me0h57ya</loc>
+    <loc>https://minorhockeytalks.com/ontario-2016-aaa/gthl-2016-aaa--mcxhnjm7</loc>
     <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/quad-city-ice-eagles-davenport-ia</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/colorado-extreme-el-jebel-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/atlanta-madhatters-marietta-ga</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/dme-swamp-rabbits-daytona-beach-fl</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/la-jr-kings-los-angeles-ca</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/rose-city-pats-pasadena-ca</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -5883,62 +5853,68 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/san-mateo-black-stars-redwood-city-ca</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/northwestern-ct-icehawks-new-milford-ct</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/echo-stars-bolton-ct</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/colorado-springs-tigers-colorado-springs-co</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/palm-beach-breakers-west-palm-beach-fl</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/watertown-redwings-watertown-ct</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/phoenix-jr-coyotes-scottsdale-az</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/greeley-bears-greeley-co</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/florida-warriors-fort-myers-fl</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-aa/omha-lakeshore-predictions-mdsv1usy</loc>
+    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/signed-but-not-insta-official--me0h57ya</loc>
     <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/san-mateo-black-stars-redwood-city-ca</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/northwestern-ct-icehawks-new-milford-ct</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/echo-stars-bolton-ct</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/colorado-springs-tigers-colorado-springs-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/palm-beach-breakers-west-palm-beach-fl</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/watertown-redwings-watertown-ct</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/phoenix-jr-coyotes-scottsdale-az</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/greeley-bears-greeley-co</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/florida-warriors-fort-myers-fl</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/can-we-please-normalize-average-hockey-beer-league-is-where-were-all-headed-anyway-mfmoebkn</loc>
+    <lastmod>2025-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -5955,14 +5931,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aa/2014-omha-york-simcoe-aa-meyw43wr</loc>
-    <lastmod>2025-08-30</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2008-aa/what-are-we-raising-here-in-minor-hockey-mfvfnjob</loc>
+    <lastmod>2025-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/eta-2010-me5tjzqt</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2012-aa/spots-open-who-still-looking-for-an-aa-team-mg58liq9</loc>
+    <lastmod>2025-09-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -5973,14 +5949,20 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/ontario-2013-aaa/2013-aaa-gthl-mdnyyrgs</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/ontario-2012-aaa/2012-gthl-aaa-1e4de855</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2017-aa/omha-md2-vs-cpp-select-meu4um6p</loc>
-    <lastmod>2025-08-27</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2011-aa/omha-lakeshore-predictions-mdsv1usy</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -5991,14 +5973,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-aaa/2013-aaa-gthl-mdnyyrgs</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2014-aa/2014-omha-york-simcoe-aa-meyw43wr</loc>
+    <lastmod>2025-08-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2008-aa/what-are-we-raising-here-in-minor-hockey-mfvfnjob</loc>
-    <lastmod>2025-09-22</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2017-aa/omha-md2-vs-cpp-select-meu4um6p</loc>
+    <lastmod>2025-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -6015,61 +5997,19 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aaa/2014-gthl-aaa-mhtog-mf3ft9ok</loc>
-    <lastmod>2025-09-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/ontario-2013-aa/2013-gthl-aa-west-mdz2q12s</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/ontario-2014-aaa/2014-gthl-aaa-mhtog-mf3ft9ok</loc>
+    <lastmod>2025-09-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/ontario-2009-aaa/is-aggression-a-must-have-trait-in-todays-game-md6b1xsy</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2012-a/2012-gthl-a-mcxi4k9c</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2014-aaa/bottom-feeder-teams-mdpzwugs</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-a/gthl-2010a-east-mdrmyn1o</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2016-aaa/marboro-tournament-mfkhkakr</loc>
-    <lastmod>2025-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-aaa/hamilton-steel-mcys6wsa</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2013-aaa/2013-omha-east-aaa-mdohupi4</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/jealously-on-teams-players-parents-and-coaches-me0f11nf</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -6087,26 +6027,68 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/elmhurst-chiefs-elmhurst-il</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/ever-travelled-crazy-far-for-a-tournament-just-for-your-kid-to-ride-the-bench-mfhcx8ys</loc>
-    <lastmod>2025-09-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/teams-and-associations/florida-alliance-estero-fl</loc>
-    <lastmod>2025-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/ontario-2014-aa/2014-gthl-west-aa-season-predictions-mevchr8a</loc>
     <lastmod>2025-08-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/is-the-d1ohlnhl-dream-realistic-for-most-kids-mfd4zojz</loc>
+    <lastmod>2025-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2012-a/2012-gthl-a-mcxi4k9c</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2016-aaa/marboro-tournament-mfkhkakr</loc>
+    <lastmod>2025-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/elmhurst-chiefs-elmhurst-il</loc>
+    <lastmod>2025-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2013-aaa/2013-omha-east-aaa-mdohupi4</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-a/gthl-2010a-east-mdrmyn1o</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2013-aaa/hamilton-steel-mcys6wsa</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2014-aaa/bottom-feeder-teams-mdpzwugs</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/jealously-on-teams-players-parents-and-coaches-me0f11nf</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/teams-associations-usa/florida-alliance-estero-fl</loc>
+    <lastmod>2025-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -6118,12 +6100,6 @@
   </url>
   <url>
     <loc>https://minorhockeytalks.com/ontario-2009-aaa/ohl-draft-picks-2009-mcw5d74f</loc>
-    <lastmod>2025-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minorhockeytalks.com/general-minor-hockey-talk-usa/2026-2016-brick-tournament-md627qm3</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -6141,8 +6117,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2018-aaa/money-grab-everest-meo6aqc9</loc>
-    <lastmod>2025-08-23</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2008-aa/silverstick-tournament-results-mg5nyxrf</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/general-minor-hockey-talk-usa/2026-2016-brick-tournament-md627qm3</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -6153,14 +6135,14 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-a/omha-lakeshore-a-mfmlkrmj</loc>
-    <lastmod>2025-09-16</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/2010-players-needed-great-development-opportunity-me73z0bc</loc>
+    <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2010-aaa/2010-players-needed-great-development-opportunity-me73z0bc</loc>
-    <lastmod>2025-08-13</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2011-a/omha-lakeshore-a-mfmlkrmj</loc>
+    <lastmod>2025-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -6171,7 +6153,67 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/ontario-2014-aaa/what-happened-with-crc--mg6m7ik5</loc>
+    <lastmod>2025-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2011-aa/mafia-or-minor-hockey-mflhk3uk</loc>
+    <lastmod>2025-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2018-aaa/money-grab-everest-meo6aqc9</loc>
+    <lastmod>2025-08-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/eta-2010-me5tjzqt</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2008-aaa/whats-your-kids-gym-grind-look-like-mg50lhr5</loc>
+    <lastmod>2025-09-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/prep-school-vs-aaa-me8uppc2</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/omha-east-u18-aaa-mfv0h4vu</loc>
+    <lastmod>2025-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/spring-summer-canada/best-of-the-best-aka-bob-tournament--me90e711</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/feeding-the-team-best-post-game-snacks-mg1ff7sj</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2011-aa/gthl-2011-aa-rankings-mdokd2pg</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2012-aaa/2012-omha-west-me0925cl</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -6183,8 +6225,32 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2011-aa/mafia-or-minor-hockey-mflhk3uk</loc>
-    <lastmod>2025-09-15</lastmod>
+    <loc>https://minorhockeytalks.com/ontario-2009-aaa/hockey-high-schools-md6edr12</loc>
+    <lastmod>2025-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-youth-hockey-forum/parents-who-act-like-gms-at-the-rink-mf5vmyzb</loc>
+    <lastmod>2025-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2009-aa/dad-of-a-mini-tank-on-skates-losing-his-mind-mfbae1zg</loc>
+    <lastmod>2025-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2008-a/gthl-west-a-division-randoms-mg8cc4z5</loc>
+    <lastmod>2025-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://minorhockeytalks.com/ontario-2010-aaa/ever-travelled-crazy-far-for-a-tournament-just-for-your-kid-to-ride-the-bench-mfhcx8ys</loc>
+    <lastmod>2025-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -6201,20 +6267,20 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://minorhockeytalks.com/ontario-2009-aa/trt-u17aa-mg12pcm7</loc>
-    <lastmod>2025-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://minorhockeytalks.com/ontario-2009-aaa/cant-make-aaa-is-it-political-mdk5qclm</loc>
     <lastmod>2025-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://minorhockeytalks.com/ontario-2009-aa/trt-u17aa-mg12pcm7</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minorhockeytalks.com/blogs</loc>
-    <lastmod>2025-09-27</lastmod>
+    <lastmod>2025-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
