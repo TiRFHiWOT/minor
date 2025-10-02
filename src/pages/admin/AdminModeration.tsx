@@ -30,6 +30,7 @@ import {
   FileText,
   Shield,
   ShieldCheck,
+  Edit,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
@@ -41,6 +42,7 @@ import { ModerationItemDetailsModal } from "@/components/admin/ModerationItemDet
 import { useAppealsCount } from "@/hooks/useAppeals";
 import { BannedIPsManager } from "@/components/admin/BannedIPsManager";
 import { BannedWordsManager } from "@/components/admin/BannedWordsManager";
+import EditReportedContentModal from "@/components/admin/EditReportedContentModal";
 
 interface ModerationItem {
   id: string;
@@ -57,6 +59,9 @@ interface ModerationItem {
   category_slug?: string;
   topic_id?: string;
   topic_slug?: string;
+  // If this post is a reply to another post, include the parent info
+  parent_id?: string | null;
+  parent_content?: string | null;
 }
 
 const ReportsTab = () => {
@@ -64,6 +69,7 @@ const ReportsTab = () => {
   const queryClient = useQueryClient();
   const [selectedReport, setSelectedReport] = React.useState<any>(null);
   const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState("active");
   const [selectedReports, setSelectedReports] = React.useState<Set<string>>(
     new Set()
@@ -269,6 +275,7 @@ const ReportsTab = () => {
         .select(
           `
           id, 
+          parent_post_id,
           content, 
           author_id, 
           topic_id,
@@ -286,6 +293,23 @@ const ReportsTab = () => {
         `
         )
         .in("id", postIds);
+
+      // If any reported posts are replies, fetch their parent posts so we can
+      // show the parent comment in the report details / list.
+      const reportedParentIds = (posts
+        ?.map((p: { parent_post_id?: string | null }) => p.parent_post_id)
+        .filter(Boolean) || []) as string[];
+
+      let reportedParentPosts: { id: string; content: string }[] | undefined =
+        undefined;
+      if (reportedParentIds.length > 0) {
+        const { data: _reportedParents } = await supabase
+          .from("posts")
+          .select("id, content")
+          .in("id", reportedParentIds);
+        reportedParentPosts =
+          (_reportedParents as { id: string; content: string }[]) || undefined;
+      }
 
       // Fetch topics with category info for navigation
       const topicIds = reportsData
@@ -324,7 +348,22 @@ const ReportsTab = () => {
       const enrichedReports = reportsData.map((report) => ({
         ...report,
         reporter: profiles?.find((p) => p.id === report.reporter_id),
-        post: posts?.find((p) => p.id === report.reported_post_id),
+        post: posts?.find((p) => p.id === report.reported_post_id)
+          ? {
+              ...posts.find((p) => p.id === report.reported_post_id),
+              parent_content:
+                (reportedParentPosts &&
+                posts.find((p) => p.id === report.reported_post_id)
+                  ?.parent_post_id
+                  ? reportedParentPosts.find(
+                      (pp) =>
+                        pp.id ===
+                        posts.find((p) => p.id === report.reported_post_id)
+                          ?.parent_post_id
+                    )?.content
+                  : null) || null,
+            }
+          : undefined,
         topic: topics?.find((t) => t.id === report.reported_topic_id),
         contentAuthor: authorProfiles?.find(
           (p) =>
@@ -755,6 +794,18 @@ const ReportsTab = () => {
                                 <Button
                                   size="sm"
                                   variant="outline"
+                                  onClick={() => {
+                                    setSelectedReport(report);
+                                    setIsEditModalOpen(true);
+                                  }}
+                                  className="text-amber-600 hover:text-amber-700"
+                                  title="Edit content"
+                                >
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
                                   onClick={() =>
                                     handleApproveReportedContent(report)
                                   }
@@ -913,6 +964,13 @@ const ReportsTab = () => {
                             className="text-primary hover:text-primary/80 hover:underline block"
                           >
                             <div className="md:truncate text-sm font-medium break-words whitespace-normal">
+                              {report.post?.parent_content && (
+                                <div className="text-xs text-muted-foreground mb-1 truncate">
+                                  In reply to:{" "}
+                                  {report.post.parent_content.substring(0, 120)}
+                                  ...
+                                </div>
+                              )}
                               {report.post?.topics.title || report.topic?.title}
                             </div>
                             <div className="text-xs text-muted-foreground">
@@ -996,6 +1054,15 @@ const ReportsTab = () => {
         report={selectedReport}
         onUpdate={handleReportUpdate}
       />
+      <EditReportedContentModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        report={selectedReport}
+        onSaved={() => {
+          queryClient.invalidateQueries({ queryKey: ["reports"] });
+          queryClient.invalidateQueries({ queryKey: ["moderation-queue"] });
+        }}
+      />
     </Card>
   );
 };
@@ -1072,6 +1139,7 @@ const AdminModeration = () => {
         .select(
           `
           id,
+          parent_post_id,
           content,
           created_at,
           author_id,
@@ -1105,6 +1173,23 @@ const AdminModeration = () => {
       const { data: posts, error: postsError } = await postsQuery;
 
       if (postsError) throw postsError;
+
+      // If any posts are replies, fetch their parent posts so we can show the
+      // parent comment in the moderation UI.
+      const parentPostIds = (posts
+        ?.map((p: { parent_post_id?: string | null }) => p.parent_post_id)
+        .filter(Boolean) || []) as string[];
+
+      let parentPosts: { id: string; content: string }[] | undefined =
+        undefined;
+      if (parentPostIds.length > 0) {
+        const { data: _parentPosts } = await supabase
+          .from("posts")
+          .select("id, content")
+          .in("id", parentPostIds);
+        parentPosts =
+          (_parentPosts as { id: string; content: string }[]) || undefined;
+      }
 
       // Get topics that require moderation (pending status from moderated categories)
       let topicsQuery = supabase
@@ -1179,6 +1264,11 @@ const AdminModeration = () => {
           topic_id: post.topic_id,
           topic_slug: post.topics?.slug,
           category_slug: post.topics?.categories?.slug,
+          parent_id: post.parent_post_id || null,
+          parent_content:
+            (parentPosts && post.parent_post_id
+              ? parentPosts.find((pp) => pp.id === post.parent_post_id)?.content
+              : null) || null,
         })) || []),
         ...(topics?.map((topic) => ({
           id: topic.id,
@@ -1512,9 +1602,28 @@ const AdminModeration = () => {
                       </TableCell>
                       <TableCell>{item.author}</TableCell>
                       <TableCell className="max-w-md">
-                        <div className="truncate text-sm text-muted-foreground">
-                          {item.content.substring(0, 100)}...
-                        </div>
+                        {item.parent_content ? (
+                          <div className="space-y-1">
+                            <div className="text-xs text-muted-foreground">
+                              In reply to:
+                            </div>
+                            <div className="truncate text-sm text-muted-foreground max-w-md">
+                              {item.parent_content.substring(0, 140)}...
+                            </div>
+                            <div className="border-t border-muted/40 mt-1 pt-1">
+                              <div className="text-xs text-muted-foreground">
+                                Reply preview
+                              </div>
+                              <div className="truncate text-sm">
+                                {item.content.substring(0, 100)}...
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="truncate text-sm text-muted-foreground">
+                            {item.content.substring(0, 100)}...
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell>
                         {new Date(item.created_at).toLocaleDateString()}
