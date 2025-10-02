@@ -1,22 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { HTMLRenderer } from '@/components/ui/html-renderer';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { formatDistanceToNow } from 'date-fns';
-import { Link } from 'react-router-dom';
-import { CheckCircle, X, Eye, Save, ExternalLink, Trash2, RotateCcw, AlertTriangle, TrendingUp } from 'lucide-react';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { HTMLRenderer } from "@/components/ui/html-renderer";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { formatDistanceToNow } from "date-fns";
+import { Link } from "react-router-dom";
+import {
+  CheckCircle,
+  X,
+  Eye,
+  Save,
+  ExternalLink,
+  Trash2,
+  RotateCcw,
+  AlertTriangle,
+  TrendingUp,
+} from "lucide-react";
 
 interface ReportDetailsModalProps {
   isOpen: boolean;
@@ -25,8 +35,13 @@ interface ReportDetailsModalProps {
   onUpdate: () => void;
 }
 
-export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: ReportDetailsModalProps) => {
-  const [adminNotes, setAdminNotes] = useState(report?.admin_notes || '');
+export const ReportDetailsModal = ({
+  isOpen,
+  onClose,
+  report,
+  onUpdate,
+}: ReportDetailsModalProps) => {
+  const [adminNotes, setAdminNotes] = useState(report?.admin_notes || "");
   const [isUpdating, setIsUpdating] = useState(false);
   const [reporterBehavior, setReporterBehavior] = useState<any>(null);
   const [previousReports, setPreviousReports] = useState<any>(null);
@@ -42,54 +57,57 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
 
   const loadReporterData = async () => {
     if (!report) return;
-    
+
     try {
-      const { data: behavior } = await supabase.rpc('get_reporter_behavior', {
+      const { data: behavior } = await supabase.rpc("get_reporter_behavior", {
         p_reporter_id: report.reporter_id || null,
-        p_reporter_ip: report.reporter_ip_address || null
+        p_reporter_ip: report.reporter_ip_address || null,
       });
       setReporterBehavior(behavior);
     } catch (error) {
-      console.error('Error loading reporter behavior:', error);
+      console.error("Error loading reporter behavior:", error);
     }
   };
 
   const loadPreviousReports = async () => {
     if (!report) return;
-    
+
     try {
-      const { data: previousStatus } = await supabase.rpc('check_previous_report_status', {
-        p_post_id: report.reported_post_id || null,
-        p_topic_id: report.reported_topic_id || null
-      });
+      const { data: previousStatus } = await supabase.rpc(
+        "check_previous_report_status",
+        {
+          p_post_id: report.reported_post_id || null,
+          p_topic_id: report.reported_topic_id || null,
+        }
+      );
       setPreviousReports(previousStatus);
     } catch (error) {
-      console.error('Error loading previous reports:', error);
+      console.error("Error loading previous reports:", error);
     }
   };
 
   const handleSaveNotes = async () => {
     if (!report) return;
-    
+
     setIsUpdating(true);
     try {
       const { error } = await supabase
-        .from('reports')
+        .from("reports")
         .update({ admin_notes: adminNotes.trim() || null })
-        .eq('id', report.id);
+        .eq("id", report.id);
 
       if (error) throw error;
 
       toast({
-        title: 'Notes saved',
-        description: 'Admin notes have been updated successfully',
+        title: "Notes saved",
+        description: "Admin notes have been updated successfully",
       });
       onUpdate();
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to save notes',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to save notes",
+        variant: "destructive",
       });
     } finally {
       setIsUpdating(false);
@@ -98,39 +116,39 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
 
   const handleStatusUpdate = async (status: string) => {
     if (!report) return;
-    
+
     setIsUpdating(true);
     try {
       // Add specific notes for repeat reports
-      let finalNotes = adminNotes.trim() || '';
-      if (previousReports?.was_previously_approved && status === 'dismissed') {
-        finalNotes = finalNotes 
+      let finalNotes = adminNotes.trim() || "";
+      if (previousReports?.was_previously_approved && status === "dismissed") {
+        finalNotes = finalNotes
           ? `${finalNotes}\n\n[Auto] Dismissed repeat report on previously approved content.`
-          : '[Auto] Dismissed repeat report on previously approved content.';
+          : "[Auto] Dismissed repeat report on previously approved content.";
       }
-      
+
       const { error } = await supabase
-        .from('reports')
+        .from("reports")
         .update({
           status,
           reviewed_at: new Date().toISOString(),
           admin_notes: finalNotes || null,
         })
-        .eq('id', report.id);
+        .eq("id", report.id);
 
       if (error) throw error;
 
       toast({
-        title: 'Report updated',
+        title: "Report updated",
         description: `Report has been ${status}`,
       });
       onUpdate();
       onClose();
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to update report',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to update report",
+        variant: "destructive",
       });
     } finally {
       setIsUpdating(false);
@@ -139,47 +157,48 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
 
   const handleRestoreContent = async () => {
     if (!report) return;
-    
+
     setIsUpdating(true);
     try {
       // Restore the content by setting moderation status to approved
       if (report.reported_post_id) {
         const { error } = await supabase
-          .from('posts')
-          .update({ moderation_status: 'approved' })
-          .eq('id', report.reported_post_id);
+          .from("posts")
+          .update({ moderation_status: "approved" })
+          .eq("id", report.reported_post_id);
         if (error) throw error;
       } else if (report.reported_topic_id) {
         const { error } = await supabase
-          .from('topics')
-          .update({ moderation_status: 'approved' })
-          .eq('id', report.reported_topic_id);
+          .from("topics")
+          .update({ moderation_status: "approved" })
+          .eq("id", report.reported_topic_id);
         if (error) throw error;
       }
 
       // Update report status to resolved
       const { error: reportError } = await supabase
-        .from('reports')
+        .from("reports")
         .update({
-          status: 'resolved',
+          status: "resolved",
           reviewed_at: new Date().toISOString(),
           admin_notes: adminNotes.trim() || null,
         })
-        .eq('id', report.id);
+        .eq("id", report.id);
 
       if (reportError) throw reportError;
 
       toast({
-        title: 'Content restored',
-        description: 'The reported content has been approved and is now visible',
+        title: "Content restored",
+        description:
+          "The reported content has been approved and is now visible",
       });
       onUpdate();
       onClose();
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to restore content',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to restore content",
+        variant: "destructive",
       });
     } finally {
       setIsUpdating(false);
@@ -188,53 +207,55 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
 
   const handleDeleteContent = async () => {
     if (!report) return;
-    
+
     const confirmDelete = window.confirm(
-      `Are you sure you want to permanently delete this ${report.reported_post_id ? 'post' : 'topic'}? This action cannot be undone.`
+      `Are you sure you want to permanently delete this ${
+        report.reported_post_id ? "post" : "topic"
+      }? This action cannot be undone.`
     );
-    
+
     if (!confirmDelete) return;
-    
+
     setIsUpdating(true);
     try {
       // Delete the content
       if (report.reported_post_id) {
         const { error } = await supabase
-          .from('posts')
+          .from("posts")
           .delete()
-          .eq('id', report.reported_post_id);
+          .eq("id", report.reported_post_id);
         if (error) throw error;
       } else if (report.reported_topic_id) {
         const { error } = await supabase
-          .from('topics')
+          .from("topics")
           .delete()
-          .eq('id', report.reported_topic_id);
+          .eq("id", report.reported_topic_id);
         if (error) throw error;
       }
 
       // Update report status
       const { error: reportError } = await supabase
-        .from('reports')
+        .from("reports")
         .update({
-          status: 'resolved',
+          status: "resolved",
           reviewed_at: new Date().toISOString(),
           admin_notes: adminNotes.trim() || null,
         })
-        .eq('id', report.id);
+        .eq("id", report.id);
 
       if (reportError) throw reportError;
 
       toast({
-        title: 'Content deleted',
-        description: 'The reported content has been permanently removed',
+        title: "Content deleted",
+        description: "The reported content has been permanently removed",
       });
       onUpdate();
       onClose();
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to delete content',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to delete content",
+        variant: "destructive",
       });
     } finally {
       setIsUpdating(false);
@@ -253,11 +274,11 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
       }
       return `/topic/${report.topic.id}`;
     }
-    return '#';
+    return "#";
   };
 
   const formatIPAddress = (ip: string | null) => {
-    if (!ip) return 'Not available';
+    if (!ip) return "Not available";
     return ip;
   };
 
@@ -269,28 +290,35 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
         <DialogHeader>
           <DialogTitle>Report Details</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           {/* Report Status */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Badge 
+              <Badge
                 variant={
-                  report.status === 'pending' ? 'destructive' :
-                  report.status === 'resolved' ? 'default' : 'secondary'
+                  report.status === "pending"
+                    ? "destructive"
+                    : report.status === "resolved"
+                    ? "default"
+                    : "secondary"
                 }
               >
                 {report.status}
               </Badge>
-              <Badge 
+              <Badge
                 variant="outline"
                 className={
-                  (report.post?.moderation_status === 'pending' || report.topic?.moderation_status === 'pending')
-                    ? 'border-orange-500 text-orange-700'
-                    : 'border-green-500 text-green-700'
+                  report.post?.moderation_status === "pending" ||
+                  report.topic?.moderation_status === "pending"
+                    ? "border-orange-500 text-orange-700"
+                    : "border-green-500 text-green-700"
                 }
               >
-                Content: {report.post?.moderation_status || report.topic?.moderation_status || 'approved'}
+                Content:{" "}
+                {report.post?.moderation_status ||
+                  report.topic?.moderation_status ||
+                  "approved"}
               </Badge>
             </div>
             <span className="text-sm text-muted-foreground">
@@ -309,15 +337,19 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
                 </Badge>
               )}
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <Label className="text-muted-foreground">Username</Label>
-                <p className="font-medium">{report.reporter?.username || 'Anonymous'}</p>
+                <p className="font-medium">
+                  {report.reporter?.username || "Anonymous"}
+                </p>
               </div>
               <div>
                 <Label className="text-muted-foreground">IP Address</Label>
-                <p className="font-mono text-sm">{formatIPAddress(report.reporter_ip_address)}</p>
+                <p className="font-mono text-sm">
+                  {formatIPAddress(report.reporter_ip_address)}
+                </p>
               </div>
             </div>
 
@@ -331,22 +363,34 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
                 <div className="grid grid-cols-4 gap-3 text-xs">
                   <div>
                     <p className="text-muted-foreground">Total Reports</p>
-                    <p className="font-semibold">{reporterBehavior.total_reports}</p>
+                    <p className="font-semibold">
+                      {reporterBehavior.total_reports}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Today</p>
-                    <p className="font-semibold">{reporterBehavior.reports_today}</p>
+                    <p className="font-semibold">
+                      {reporterBehavior.reports_today}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Dismissed</p>
-                    <p className="font-semibold">{reporterBehavior.dismissed_reports}</p>
+                    <p className="font-semibold">
+                      {reporterBehavior.dismissed_reports}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Success Rate</p>
                     <p className="font-semibold">
-                      {reporterBehavior.total_reports > 0 
-                        ? Math.round((1 - reporterBehavior.dismissed_reports / reporterBehavior.total_reports) * 100)
-                        : 0}%
+                      {reporterBehavior.total_reports > 0
+                        ? Math.round(
+                            (1 -
+                              reporterBehavior.dismissed_reports /
+                                reporterBehavior.total_reports) *
+                              100
+                          )
+                        : 0}
+                      %
                     </p>
                   </div>
                 </div>
@@ -354,7 +398,9 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
                   <Alert className="mt-2 border-orange-200 bg-orange-50">
                     <AlertTriangle className="h-4 w-4 text-orange-600" />
                     <AlertDescription className="text-orange-800 text-xs">
-                      This reporter has made {reporterBehavior.recent_repeat_reports} reports on previously approved content in the last 24 hours.
+                      This reporter has made{" "}
+                      {reporterBehavior.recent_repeat_reports} reports on
+                      previously approved content in the last 24 hours.
                     </AlertDescription>
                   </Alert>
                 )}
@@ -366,11 +412,19 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
               <Alert className="border-amber-200 bg-amber-50">
                 <AlertTriangle className="h-4 w-4 text-amber-600" />
                 <AlertDescription className="text-amber-800 text-sm">
-                  <strong>Repeat Report:</strong> This content was previously reviewed and approved 
+                  <strong>Repeat Report:</strong> This content was previously
+                  reviewed and approved
                   {previousReports.last_approved_at && (
-                    <span> on {new Date(previousReports.last_approved_at).toLocaleDateString()}</span>
-                  )}. 
-                  Total reports on this content: {previousReports.total_reports}
+                    <span>
+                      {" "}
+                      on{" "}
+                      {new Date(
+                        previousReports.last_approved_at
+                      ).toLocaleDateString()}
+                    </span>
+                  )}
+                  . Total reports on this content:{" "}
+                  {previousReports.total_reports}
                 </AlertDescription>
               </Alert>
             )}
@@ -384,21 +438,27 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <Label className="text-muted-foreground">Type</Label>
-                <Badge variant={report.reported_post_id ? 'secondary' : 'default'}>
-                  {report.reported_post_id ? 'Post' : 'Topic'}
+                <Badge
+                  variant={report.reported_post_id ? "secondary" : "default"}
+                >
+                  {report.reported_post_id ? "Post" : "Topic"}
                 </Badge>
               </div>
               <div>
                 <Label className="text-muted-foreground">Author</Label>
-                <p className="font-medium">{report.contentAuthor?.username || 'Anonymous User'}</p>
+                <p className="font-medium">
+                  {report.contentAuthor?.username || "Anonymous User"}
+                </p>
               </div>
             </div>
-            
+
             {/* Full Content Display */}
             <div className="mt-4">
               <div className="flex items-center justify-between mb-2">
-                <Label className="text-muted-foreground font-medium">Full Content</Label>
-                <Link 
+                <Label className="text-muted-foreground font-medium">
+                  Full Content
+                </Label>
+                <Link
                   to={getReportedContentUrl(report)}
                   className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
                 >
@@ -406,14 +466,38 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
                 </Link>
               </div>
               <div className="border rounded-md p-4 bg-muted/50 max-h-80 overflow-y-auto">
-                {report.topic?.title && (
-                  <div className="mb-3">
-                    <Label className="text-xs text-muted-foreground">Title:</Label>
-                    <h4 className="font-semibold text-base">{report.topic.title}</h4>
+                {report.post?.topics.title ||
+                  (report.topic?.title && (
+                    <div className="mb-3">
+                      {/* <Label className="text-xs text-muted-foreground">
+                        Title:
+                      </Label> */}
+                      <h4 className="font-semibold text-base">
+                        {report.post?.topics.title || report.topic?.title}
+                      </h4>
+                    </div>
+                  ))}
+
+                {report.post?.parent_content && (
+                  <div className="bg-muted/30 p-3 rounded mb-2">
+                    <Label className="text-xs text-muted-foreground">
+                      In reply to:
+                    </Label>
+                    <div className="mt-1 border rounded italic text-gray-400 p-2 bg-white">
+                      <HTMLRenderer
+                        content={report.post.parent_content}
+                        className="text-sm"
+                      />
+                    </div>
                   </div>
                 )}
-                <HTMLRenderer 
-                  content={report.post?.content || report.topic?.content || 'No content available'}
+
+                <HTMLRenderer
+                  content={
+                    report.post?.content ||
+                    report.topic?.content ||
+                    "No content available"
+                  }
                   className="text-sm"
                 />
               </div>
@@ -422,8 +506,12 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
             {/* Content Creator IP (if available) */}
             {(report.post?.ip_address || report.topic?.author_id) && (
               <div className="mt-2">
-                <Label className="text-muted-foreground">Content Creator IP</Label>
-                <p className="font-mono text-sm">{formatIPAddress(report.post?.ip_address || 'Not available')}</p>
+                <Label className="text-muted-foreground">
+                  Content Creator IP
+                </Label>
+                <p className="font-mono text-sm">
+                  {formatIPAddress(report.post?.ip_address || "Not available")}
+                </p>
               </div>
             )}
           </div>
@@ -439,8 +527,12 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
             </div>
             {report.description && (
               <div>
-                <Label className="text-muted-foreground">Additional Details</Label>
-                <p className="text-sm whitespace-pre-wrap">{report.description}</p>
+                <Label className="text-muted-foreground">
+                  Additional Details
+                </Label>
+                <p className="text-sm whitespace-pre-wrap">
+                  {report.description}
+                </p>
               </div>
             )}
           </div>
@@ -449,7 +541,9 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
 
           {/* Admin Notes */}
           <div className="space-y-3">
-            <Label htmlFor="admin-notes" className="font-semibold">Admin Notes</Label>
+            <Label htmlFor="admin-notes" className="font-semibold">
+              Admin Notes
+            </Label>
             <Textarea
               id="admin-notes"
               placeholder="Add your notes about this report..."
@@ -493,18 +587,19 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Restore will approve the content and make it visible. Delete will permanently remove it.
+              Restore will approve the content and make it visible. Delete will
+              permanently remove it.
             </p>
           </div>
 
           {/* Report Status Actions */}
-          {report.status === 'pending' && (
+          {report.status === "pending" && (
             <div className="border rounded-lg p-4">
               <h3 className="font-semibold mb-3">Report Actions</h3>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
-                  onClick={() => handleStatusUpdate('dismissed')}
+                  onClick={() => handleStatusUpdate("dismissed")}
                   disabled={isUpdating}
                   className="flex-1"
                 >
@@ -513,7 +608,7 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => handleStatusUpdate('closed')}
+                  onClick={() => handleStatusUpdate("closed")}
                   disabled={isUpdating}
                   className="flex-1"
                 >
@@ -521,22 +616,24 @@ export const ReportDetailsModal = ({ isOpen, onClose, report, onUpdate }: Report
                   Close Report
                 </Button>
               </div>
-              
+
               {/* Quick Actions for Repeat Reports */}
               {previousReports?.was_previously_approved && (
                 <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
                   <p className="text-sm text-amber-800 mb-2">
-                    <strong>Quick Action:</strong> This appears to be a repeat report on approved content.
+                    <strong>Quick Action:</strong> This appears to be a repeat
+                    report on approved content.
                   </p>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      setAdminNotes(prev => 
-                        prev ? `${prev}\n\nContent was previously approved. Dismissing repeat report.` 
-                             : 'Content was previously approved. Dismissing repeat report.'
+                      setAdminNotes((prev) =>
+                        prev
+                          ? `${prev}\n\nContent was previously approved. Dismissing repeat report.`
+                          : "Content was previously approved. Dismissing repeat report."
                       );
-                      handleStatusUpdate('dismissed');
+                      handleStatusUpdate("dismissed");
                     }}
                     disabled={isUpdating}
                     className="text-amber-700 border-amber-300 hover:bg-amber-100"
