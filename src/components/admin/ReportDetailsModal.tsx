@@ -469,9 +469,6 @@ export const ReportDetailsModal = ({
                 {report.post?.topics.title ||
                   (report.topic?.title && (
                     <div className="mb-3">
-                      {/* <Label className="text-xs text-muted-foreground">
-                        Title:
-                      </Label> */}
                       <h4 className="font-semibold text-base">
                         {report.post?.topics.title || report.topic?.title}
                       </h4>

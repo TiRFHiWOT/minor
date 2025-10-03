@@ -64,6 +64,23 @@ interface ModerationItem {
   parent_content?: string | null;
 }
 
+// Helper to strip HTML tags and decode basic entities for safe preview
+const stripHtml = (input?: string | null) => {
+  if (!input) return "";
+  try {
+    if (typeof document !== "undefined") {
+      const div = document.createElement("div");
+      div.innerHTML = input;
+      return (div.textContent || div.innerText || "").toString();
+    }
+  } catch (e) {
+    // ignore and fallback to regex
+  }
+
+  // Fallback for non-DOM environments
+  return input.replace(/<[^>]+>/g, "");
+};
+
 const ReportsTab = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -411,6 +428,7 @@ const ReportsTab = () => {
         .select(
           `
           id, 
+          parent_post_id,
           content, 
           author_id, 
           topic_id,
@@ -428,6 +446,23 @@ const ReportsTab = () => {
         `
         )
         .in("id", postIds);
+
+      // If any reported posts are replies, fetch their parent posts so we can
+      // show the parent comment in the resolved report details / list.
+      const reportedParentIds = (posts
+        ?.map((p: { parent_post_id?: string | null }) => p.parent_post_id)
+        .filter(Boolean) || []) as string[];
+
+      let reportedParentPosts: { id: string; content: string }[] | undefined =
+        undefined;
+      if (reportedParentIds.length > 0) {
+        const { data: _reportedParents } = await supabase
+          .from("posts")
+          .select("id, content")
+          .in("id", reportedParentIds);
+        reportedParentPosts =
+          (_reportedParents as { id: string; content: string }[]) || undefined;
+      }
 
       // Fetch topics with category info for navigation
       const topicIds = reportsData
@@ -462,11 +497,27 @@ const ReportsTab = () => {
         .select("id, username")
         .in("id", allAuthorIds);
 
-      // Combine the data
+      // Combine the data, attach parent content when available so "In reply to"
+      // shows up even for resolved reports.
       const enrichedReports = reportsData.map((report) => ({
         ...report,
         reporter: profiles?.find((p) => p.id === report.reporter_id),
-        post: posts?.find((p) => p.id === report.reported_post_id),
+        post: posts?.find((p) => p.id === report.reported_post_id)
+          ? {
+              ...posts.find((p) => p.id === report.reported_post_id),
+              parent_content:
+                (reportedParentPosts &&
+                posts.find((p) => p.id === report.reported_post_id)
+                  ?.parent_post_id
+                  ? reportedParentPosts.find(
+                      (pp) =>
+                        pp.id ===
+                        posts.find((p) => p.id === report.reported_post_id)
+                          ?.parent_post_id
+                    )?.content
+                  : null) || null,
+            }
+          : undefined,
         topic: topics?.find((t) => t.id === report.reported_topic_id),
         contentAuthor: authorProfiles?.find(
           (p) =>
@@ -738,7 +789,20 @@ const ReportsTab = () => {
                             className="text-primary hover:text-primary/80 hover:underline block"
                           >
                             <div className="md:truncate text-sm font-medium break-words whitespace-normal">
-                              {report.post?.topics.title || report.topic?.title}
+                              {(() => {
+                                const raw =
+                                  report.post?.content ||
+                                  report.topic?.content ||
+                                  report.post?.topics?.title ||
+                                  report.topic?.title ||
+                                  "";
+                                const text = stripHtml(raw)
+                                  .replace(/\s+/g, " ")
+                                  .trim();
+                                return text.length > 200
+                                  ? text.slice(0, 200) + "..."
+                                  : text;
+                              })()}
                             </div>
                             <div className="text-xs text-muted-foreground">
                               Click to view content
@@ -945,7 +1009,7 @@ const ReportsTab = () => {
                             {report.reported_post_id ? "Post" : "Topic"}
                           </Badge>
                         </TableCell>
-                        <TableCell className="min-w-[150px]">
+                        <TableCell className="max-w-[150px]">
                           <div>
                             <div className="font-medium">{report.reason}</div>
                             {report.description && (
@@ -964,14 +1028,20 @@ const ReportsTab = () => {
                             className="text-primary hover:text-primary/80 hover:underline block"
                           >
                             <div className="md:truncate text-sm font-medium break-words whitespace-normal">
-                              {report.post?.parent_content && (
-                                <div className="text-xs text-muted-foreground mb-1 truncate">
-                                  In reply to:{" "}
-                                  {report.post.parent_content.substring(0, 120)}
-                                  ...
-                                </div>
-                              )}
-                              {report.post?.topics.title || report.topic?.title}
+                              {(() => {
+                                const raw =
+                                  report.post?.content ||
+                                  report.topic?.content ||
+                                  report.post?.topics?.title ||
+                                  report.topic?.title ||
+                                  "";
+                                const text = stripHtml(raw)
+                                  .replace(/\s+/g, " ")
+                                  .trim();
+                                return text.length > 200
+                                  ? text.slice(0, 200) + "..."
+                                  : text;
+                              })()}
                             </div>
                             <div className="text-xs text-muted-foreground">
                               Click to view content
@@ -1604,12 +1674,6 @@ const AdminModeration = () => {
                       <TableCell className="max-w-md">
                         {item.parent_content ? (
                           <div className="space-y-1">
-                            <div className="text-xs text-muted-foreground">
-                              In reply to:
-                            </div>
-                            <div className="truncate text-sm text-muted-foreground max-w-md">
-                              {item.parent_content.substring(0, 140)}...
-                            </div>
                             <div className="border-t border-muted/40 mt-1 pt-1">
                               <div className="text-xs text-muted-foreground">
                                 Reply preview
