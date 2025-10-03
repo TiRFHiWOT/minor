@@ -10,6 +10,7 @@ import { TopicTable } from "./TopicTable";
 import { ReportModal } from "./ReportModal";
 import { BannerAd } from "../ads/BannerAd";
 import { AdSlot300x250 } from "../ads/AdSlot300x250";
+import GPTResponsiveAd from "../ads/GPTResponsiveAd";
 
 export const ForumHome = () => {
   const { getSetting } = useForumSettings();
@@ -56,12 +57,8 @@ export const ForumHome = () => {
         </p>
       </div>
 
-      {/* Banner Ad Above Tabs */}
-      <BannerAd
-        id="home-banner-ad"
-        mobileUnitPath="/21849154601,423899568/Ad.Plus-Mobile-Banner"
-        desktopUnitPath="/21849154601,423899568/Ad.Plus-Desktop-Banner"
-      />
+      {/* Leaderboard Top */}
+      <GPTResponsiveAd slotId="responsive-1" />
 
       {/* New Topics Section */}
       <div className="forum-spacing">
