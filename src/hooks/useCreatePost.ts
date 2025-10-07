@@ -85,6 +85,30 @@ export const useCreatePost = () => {
         }
       }
 
+      // Sanitize content using server-side processing so banned words are replaced
+      try {
+        type ProcessedResponse = string | { processed_text?: string } | null;
+        const { data: processedText, error: processError } =
+          (await supabase.rpc("process_banned_words", {
+            content_text: data.content,
+          })) as { data: ProcessedResponse; error: unknown };
+        if (processError) {
+          console.error("process_banned_words RPC failed:", processError);
+        } else if (processedText) {
+          if (typeof processedText === "string") {
+            data.content = processedText;
+          } else if (processedText.processed_text) {
+            data.content = processedText.processed_text;
+          }
+          console.log(
+            "[SpamDetection] Content sanitized via process_banned_words:",
+            data.content
+          );
+        }
+      } catch (e) {
+        console.error("process_banned_words exception:", e);
+      }
+
       // Get the topic to validate its category and check moderation requirements
       const { data: topic, error: topicError } = await supabase
         .from("topics")

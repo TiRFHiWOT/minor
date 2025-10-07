@@ -140,6 +140,59 @@ export const useCreateTopic = () => {
           );
         }
       }
+      // Sanitize content via server-side processing so banned words are replaced
+      try {
+        type ProcessedResponse = string | { processed_text?: string } | null;
+        const { data: processedContent, error: processContentError } =
+          (await supabase.rpc("process_banned_words", {
+            content_text: data.content,
+          })) as { data: ProcessedResponse; error: unknown };
+        if (processContentError) {
+          console.error(
+            "process_banned_words (content) failed:",
+            processContentError
+          );
+        } else if (processedContent) {
+          if (typeof processedContent === "string") {
+            data.content = processedContent;
+          } else if (processedContent.processed_text) {
+            data.content = processedContent.processed_text;
+          }
+          console.log(
+            "[SpamDetection] Content sanitized via process_banned_words:",
+            data.content
+          );
+        }
+      } catch (e) {
+        console.error("process_banned_words (content) exception:", e);
+      }
+
+      // Also sanitize title so banned words don't show in topic list
+      try {
+        type ProcessedResponse2 = string | { processed_text?: string } | null;
+        const { data: processedTitle, error: processTitleError } =
+          (await supabase.rpc("process_banned_words", {
+            content_text: data.title,
+          })) as { data: ProcessedResponse2; error: unknown };
+        if (processTitleError) {
+          console.error(
+            "process_banned_words (title) failed:",
+            processTitleError
+          );
+        } else if (processedTitle) {
+          if (typeof processedTitle === "string") {
+            data.title = processedTitle;
+          } else if (processedTitle.processed_text) {
+            data.title = processedTitle.processed_text;
+          }
+          console.log(
+            "[SpamDetection] Title sanitized via process_banned_words:",
+            data.title
+          );
+        }
+      } catch (e) {
+        console.error("process_banned_words (title) exception:", e);
+      }
       console.log("Creating topic:", data);
 
       // Get user's IP address for tracking - MANDATORY
@@ -207,7 +260,21 @@ export const useCreateTopic = () => {
         );
       }
 
-      const topicData: any = {
+      const topicData: {
+        title: string;
+        content: string;
+        category_id: string;
+        slug: string;
+        is_pinned: boolean;
+        is_locked: boolean;
+        view_count: number;
+        reply_count: number;
+        last_reply_at: string;
+        moderation_status: string;
+        ip_address: string;
+        is_anonymous: boolean;
+        author_id: string;
+      } = {
         title: data.title,
         content: data.content,
         category_id: data.category_id,
