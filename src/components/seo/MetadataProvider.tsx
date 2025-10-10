@@ -662,9 +662,19 @@ export const MetadataProvider: React.FC<MetadataProviderProps> = ({
                 id: (topicMetadata as TopicMetadataType).id,
                 title: (topicMetadata as TopicMetadataType).title,
                 content: (topicMetadata as TopicMetadataType).content,
-                author: null,
-                created_at: (topicMetadata as TopicMetadataType).created_at,
+                // Always provide author for schema.org
+                author: (topicMetadata as any).profiles?.username
+                  ? {
+                      username: (topicMetadata as any).profiles.username,
+                      id: (topicMetadata as any).profiles.id,
+                    }
+                  : { username: "Anonymous", id: null },
+                // Always provide created_at for schema.org
+                created_at:
+                  (topicMetadata as TopicMetadataType).created_at ||
+                  new Date().toISOString(),
                 reply_count: (topicMetadata as TopicMetadataType).reply_count,
+                // Always provide url for schema.org
                 url:
                   metadata.canonical ||
                   `${
