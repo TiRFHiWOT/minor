@@ -54,7 +54,7 @@ export const useUpdateAppeal = () => {
 
       if (error) throw error;
 
-      // If appeal is approved (UI-level), we need to restore the content
+      // If appeal is approved (UI-level), we need to reject the content
       if (status === "approved") {
         const { data: appeal } = await supabase
           .from("moderation_appeals")
@@ -66,12 +66,12 @@ export const useUpdateAppeal = () => {
           if (appeal.content_type === "topic") {
             await supabase
               .from("topics")
-              .update({ moderation_status: "approved" })
+              .update({ moderation_status: "rejected" })
               .eq("id", appeal.content_id);
           } else if (appeal.content_type === "post") {
             await supabase
               .from("posts")
-              .update({ moderation_status: "approved" })
+              .update({ moderation_status: "rejected" })
               .eq("id", appeal.content_id);
           }
         }
