@@ -643,7 +643,7 @@ const ReportsTab = () => {
   return (
     <Card>
       <div className="p-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="md:flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">User Reports</h2>
           <div className="flex items-center gap-2">
             {selectedReports.size > 0 && (
@@ -673,7 +673,10 @@ const ReportsTab = () => {
           onValueChange={setActiveTab}
           className="space-y-4"
         >
-          <TabsList>
+          <TabsList
+            className="flex items-center justify-start w-full sm:w-fit overflow-x-auto"
+            style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+          >
             <TabsTrigger value="active" className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" />
               Active Reports
@@ -1081,7 +1084,7 @@ const ReportsTab = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => handleViewReportDetails(report)}
-                              className="text-blue-600 hover:text-blue-700"
+                              className="text-blue-600 hover:text-blue-700 shrink-0"
                               title="View details"
                             >
                               <FileText className="h-3 w-3" />
@@ -1090,7 +1093,7 @@ const ReportsTab = () => {
                               size="sm"
                               variant="destructive"
                               onClick={() => handleDeleteReport(report.id)}
-                              className="text-white"
+                              className="text-white shrink-0"
                               title="Delete report permanently"
                             >
                               <Trash2 className="h-3 w-3" />
@@ -1576,7 +1579,10 @@ const AdminModeration = () => {
       </div>
 
       <Tabs defaultValue="queue" className="space-y-4">
-        <TabsList>
+        <TabsList
+          className="w-fit overflow-x-auto whitespace-nowrap flex justify-start pr-8 md:pr-0"
+          style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+        >
           <TabsTrigger value="queue" className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
             Moderation Queue
@@ -1607,7 +1613,7 @@ const AdminModeration = () => {
         <TabsContent value="queue">
           <Card>
             <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="md:flex items-center justify-between mb-4">
                 <div>
                   <h2 className="text-xl font-semibold">
                     Pre-Approval Moderation Queue
@@ -1619,7 +1625,7 @@ const AdminModeration = () => {
                       " • Reported content handled in Reports tab"}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 my-2 md:my-0">
                   <label className="text-sm text-muted-foreground">
                     Show reported content:
                   </label>
@@ -1696,12 +1702,12 @@ const AdminModeration = () => {
                         {item.ip_address || "N/A"}
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-1">
+                        <div className="flex gap-1 w-60">
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => handleViewModerationDetails(item)}
-                            className="text-blue-600 hover:text-blue-700"
+                            className="text-blue-600 hover:text-blue-700 shrink-0"
                             title="View full content"
                           >
                             <FileText className="h-3 w-3" />
@@ -1710,7 +1716,7 @@ const AdminModeration = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleApprove(item.id, item.type)}
-                            className="text-green-600 hover:text-green-700"
+                            className="text-green-600 hover:text-green-700 shrink-0"
                             title="Approve content"
                           >
                             <CheckCircle className="h-3 w-3" />
@@ -1721,7 +1727,7 @@ const AdminModeration = () => {
                             onClick={() =>
                               handleBanUser(item.author, item.id, item.type)
                             }
-                            className="text-orange-600 hover:text-orange-700"
+                            className="text-orange-600 hover:text-orange-700 shrink-0"
                             title="Ban user"
                           >
                             <UserX className="h-3 w-3" />
@@ -1733,7 +1739,7 @@ const AdminModeration = () => {
                               onClick={() =>
                                 handleBanIP(item.ip_address, item.id, item.type)
                               }
-                              className="text-purple-600 hover:text-purple-700"
+                              className="text-purple-600 hover:text-purple-700 shrink-0"
                               title="Ban IP address"
                             >
                               <WifiOff className="h-3 w-3" />
@@ -1743,7 +1749,7 @@ const AdminModeration = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleReject(item.id, item.type)}
-                            className="text-red-600 hover:text-red-700"
+                            className="text-red-600 hover:text-red-700 shrink-0"
                             title="Remove content"
                           >
                             <Ban className="h-3 w-3" />

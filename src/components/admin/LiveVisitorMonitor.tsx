@@ -1,14 +1,30 @@
-import React, { useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Globe, Users, MapPin, Eye, Clock, Shield, Wifi, AlertTriangle } from 'lucide-react';
-import { useActiveVisitors, useGeographicSummary } from '@/hooks/useActiveVisitors';
-import { useVPNTrafficStats } from '@/hooks/useVPNTrafficStats';
-import { formatDistanceToNow } from 'date-fns';
+import React, { useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Globe,
+  Users,
+  MapPin,
+  Eye,
+  Clock,
+  Shield,
+  Wifi,
+  AlertTriangle,
+} from "lucide-react";
+import {
+  useActiveVisitors,
+  useGeographicSummary,
+} from "@/hooks/useActiveVisitors";
+import { useVPNTrafficStats } from "@/hooks/useVPNTrafficStats";
+import { formatDistanceToNow } from "date-fns";
 
 export const LiveVisitorMonitor: React.FC = () => {
-  const { data: activeVisitors, isLoading: visitorsLoading, refetch } = useActiveVisitors();
+  const {
+    data: activeVisitors,
+    isLoading: visitorsLoading,
+    refetch,
+  } = useActiveVisitors();
   const { data: geoSummary, isLoading: geoLoading } = useGeographicSummary(24);
   const { data: vpnStats, isLoading: vpnLoading } = useVPNTrafficStats();
 
@@ -22,36 +38,41 @@ export const LiveVisitorMonitor: React.FC = () => {
   }, [refetch]);
 
   const getFlagEmoji = (countryCode: string) => {
-    if (!countryCode || countryCode === 'Unknown') return '🌍';
-    return countryCode.toUpperCase().replace(/./g, char => 
-      String.fromCodePoint(127397 + char.charCodeAt(0))
-    );
+    if (!countryCode || countryCode === "Unknown") return "🌍";
+    return countryCode
+      .toUpperCase()
+      .replace(/./g, (char) =>
+        String.fromCodePoint(127397 + char.charCodeAt(0))
+      );
   };
 
   const getPageDisplayName = (path: string) => {
-    if (path === '/') return 'Home';
-    if (path.startsWith('/c/')) return 'Category';
-    if (path.startsWith('/t/')) return 'Topic';
-    if (path.startsWith('/admin')) return 'Admin';
-    return path.replace(/^\//, '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    if (path === "/") return "Home";
+    if (path.startsWith("/c/")) return "Category";
+    if (path.startsWith("/t/")) return "Topic";
+    if (path.startsWith("/admin")) return "Admin";
+    return path
+      .replace(/^\//, "")
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
   return (
     <div className="space-y-6">
       {/* Header with live count */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap gap-2 items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             <h2 className="text-xl font-semibold">Live Visitors</h2>
           </div>
-          <Badge variant="secondary" className="text-sm">
+          <Badge variant="secondary" className="text-sm whitespace-nowrap">
             {activeVisitors?.length || 0} active now
           </Badge>
         </div>
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => refetch()}
           disabled={visitorsLoading}
         >
@@ -68,19 +89,26 @@ export const LiveVisitorMonitor: React.FC = () => {
             <div>
               <p className="text-sm text-muted-foreground">Countries (24h)</p>
               <p className="text-2xl font-bold">
-                {geoLoading ? '...' : geoSummary?.length || 0}
+                {geoLoading ? "..." : geoSummary?.length || 0}
               </p>
             </div>
           </div>
         </Card>
-        
+
         <Card className="p-4">
           <div className="flex items-center gap-3">
             <Users className="h-8 w-8 text-green-600" />
             <div>
-              <p className="text-sm text-muted-foreground">Total Visitors (24h)</p>
+              <p className="text-sm text-muted-foreground">
+                Total Visitors (24h)
+              </p>
               <p className="text-2xl font-bold">
-                {geoLoading ? '...' : geoSummary?.reduce((sum, item) => sum + item.visitor_count, 0) || 0}
+                {geoLoading
+                  ? "..."
+                  : geoSummary?.reduce(
+                      (sum, item) => sum + item.visitor_count,
+                      0
+                    ) || 0}
               </p>
             </div>
           </div>
@@ -92,7 +120,12 @@ export const LiveVisitorMonitor: React.FC = () => {
             <div>
               <p className="text-sm text-muted-foreground">Page Views (24h)</p>
               <p className="text-2xl font-bold">
-                {geoLoading ? '...' : geoSummary?.reduce((sum, item) => sum + item.page_views, 0) || 0}
+                {geoLoading
+                  ? "..."
+                  : geoSummary?.reduce(
+                      (sum, item) => sum + item.page_views,
+                      0
+                    ) || 0}
               </p>
             </div>
           </div>
@@ -104,7 +137,7 @@ export const LiveVisitorMonitor: React.FC = () => {
             <div>
               <p className="text-sm text-muted-foreground">VPN Traffic (24h)</p>
               <p className="text-2xl font-bold">
-                {vpnLoading ? '...' : vpnStats?.total_vpn_visits_24h || 0}
+                {vpnLoading ? "..." : vpnStats?.total_vpn_visits_24h || 0}
               </p>
               {vpnStats && (
                 <p className="text-xs text-muted-foreground">
@@ -123,63 +156,81 @@ export const LiveVisitorMonitor: React.FC = () => {
             <Shield className="h-5 w-5 text-orange-600" />
             VPN & Security Traffic (Last 24 Hours)
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
               <div className="flex items-center gap-2 mb-2">
                 <Wifi className="h-4 w-4 text-orange-600" />
-                <span className="text-sm font-medium text-orange-800">VPN Visitors</span>
+                <span className="text-sm font-medium text-orange-800">
+                  VPN Visitors
+                </span>
               </div>
-              <p className="text-xl font-bold text-orange-900">{vpnStats.unique_vpn_ips_24h}</p>
+              <p className="text-xl font-bold text-orange-900">
+                {vpnStats.unique_vpn_ips_24h}
+              </p>
               <p className="text-xs text-orange-700">Unique IPs detected</p>
             </div>
-            
+
             <div className="bg-green-50 p-4 rounded-lg border border-green-200">
               <div className="flex items-center gap-2 mb-2">
                 <Users className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium text-green-800">Active VPN Users</span>
+                <span className="text-sm font-medium text-green-800">
+                  Active VPN Users
+                </span>
               </div>
-              <p className="text-xl font-bold text-green-900">{vpnStats.active_vpn_users}</p>
+              <p className="text-xl font-bold text-green-900">
+                {vpnStats.active_vpn_users}
+              </p>
               <p className="text-xs text-green-700">Currently online (30min)</p>
             </div>
-            
+
             <div className="bg-red-50 p-4 rounded-lg border border-red-200">
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle className="h-4 w-4 text-red-600" />
-                <span className="text-sm font-medium text-red-800">Blocked Attempts</span>
+                <span className="text-sm font-medium text-red-800">
+                  Blocked Attempts
+                </span>
               </div>
-              <p className="text-xl font-bold text-red-900">{vpnStats.vpn_post_attempts_blocked}</p>
+              <p className="text-xl font-bold text-red-900">
+                {vpnStats.vpn_post_attempts_blocked}
+              </p>
               <p className="text-xs text-red-700">VPN posting blocked</p>
             </div>
-            
+
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="flex items-center gap-2 mb-2">
                 <Shield className="h-4 w-4 text-gray-600" />
-                <span className="text-sm font-medium text-gray-800">Total Blocks</span>
+                <span className="text-sm font-medium text-gray-800">
+                  Total Blocks
+                </span>
               </div>
-              <p className="text-xl font-bold text-gray-900">{vpnStats.total_blocked_attempts}</p>
+              <p className="text-xl font-bold text-gray-900">
+                {vpnStats.total_blocked_attempts}
+              </p>
               <p className="text-xs text-gray-700">All blocked attempts</p>
             </div>
           </div>
-          
+
           {vpnStats.total_vpn_visits_24h > 0 ? (
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
               <p className="text-sm text-blue-800">
-                <strong>Traffic Analysis:</strong> {vpnStats.total_vpn_visits_24h} VPN visits detected in last 24 hours 
-                ({vpnStats.vpn_percentage}% of total traffic) from {vpnStats.unique_vpn_ips_24h} unique IPs.
-                {vpnStats.active_vpn_users > 0 && 
-                  ` Currently ${vpnStats.active_vpn_users} VPN users are active.`
-                }
-                {vpnStats.vpn_post_attempts_blocked > 0 ? 
-                  ` ${vpnStats.vpn_post_attempts_blocked} posting attempts were blocked.` : 
-                  ' No posting attempts were blocked.'
-                }
+                <strong>Traffic Analysis:</strong>{" "}
+                {vpnStats.total_vpn_visits_24h} VPN visits detected in last 24
+                hours ({vpnStats.vpn_percentage}% of total traffic) from{" "}
+                {vpnStats.unique_vpn_ips_24h} unique IPs.
+                {vpnStats.active_vpn_users > 0 &&
+                  ` Currently ${vpnStats.active_vpn_users} VPN users are active.`}
+                {vpnStats.vpn_post_attempts_blocked > 0
+                  ? ` ${vpnStats.vpn_post_attempts_blocked} posting attempts were blocked.`
+                  : " No posting attempts were blocked."}
               </p>
             </div>
           ) : (
             <div className="text-center py-4 text-muted-foreground">
               <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No VPN traffic detected in last 24 hours</p>
+              <p className="text-sm">
+                No VPN traffic detected in last 24 hours
+              </p>
             </div>
           )}
         </Card>
@@ -191,7 +242,7 @@ export const LiveVisitorMonitor: React.FC = () => {
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           Active Visitors Right Now
         </h3>
-        
+
         {visitorsLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
@@ -203,14 +254,17 @@ export const LiveVisitorMonitor: React.FC = () => {
         ) : activeVisitors && activeVisitors.length > 0 ? (
           <div className="space-y-3">
             {activeVisitors.map((visitor, index) => (
-              <div key={`${visitor.ip_address}-${index}`} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
-                <div className="flex items-center gap-4">
-                  <div className="text-2xl">
+              <div
+                key={`${visitor.ip_address}-${index}`}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg border gap-3"
+              >
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
+                  <div className="text-2xl mb-2 sm:mb-0">
                     {getFlagEmoji(visitor.country_code)}
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="font-medium truncate">
                         {visitor.city}, {visitor.country_name}
                       </span>
                       {visitor.is_vpn && (
@@ -220,29 +274,33 @@ export const LiveVisitorMonitor: React.FC = () => {
                         </Badge>
                       )}
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1 truncate">
                         <MapPin className="h-3 w-3" />
                         {visitor.ip_address}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <Globe className="h-3 w-3" />
+                      <span className="flex items-start gap-1">
+                        <Globe className="h-3 w-3 shrink-0 mt-[2.5px]" />
                         {getPageDisplayName(visitor.current_page)}
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 truncate">
                         <Eye className="h-3 w-3" />
                         {visitor.total_pages} pages
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="text-right text-sm">
+                <div className="text-left sm:text-right text-sm w-full sm:w-auto">
                   <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                    <Clock className="h-3 w-3" />
-                    Last active: {formatDistanceToNow(new Date(visitor.last_activity))} ago
+                    <span className="flex items-center gap-1 whitespace-nowrap">
+                      <Clock className="h-3 w-3 shrink-0" />
+                      Last active:{" "}
+                    </span>
+                    {formatDistanceToNow(new Date(visitor.last_activity))} ago
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Session: {formatDistanceToNow(new Date(visitor.session_start))} ago
+                    Session:{" "}
+                    {formatDistanceToNow(new Date(visitor.session_start))} ago
                   </div>
                 </div>
               </div>
@@ -252,7 +310,10 @@ export const LiveVisitorMonitor: React.FC = () => {
           <div className="text-center py-8 text-muted-foreground">
             <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>No active visitors detected</p>
-            <p className="text-sm">Visitors are considered active if they've been on the site in the last 10 minutes</p>
+            <p className="text-sm">
+              Visitors are considered active if they've been on the site in the
+              last 10 minutes
+            </p>
           </div>
         )}
       </Card>
@@ -260,12 +321,19 @@ export const LiveVisitorMonitor: React.FC = () => {
       {/* Geographic Distribution */}
       {geoSummary && geoSummary.length > 0 && (
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Geographic Distribution (Last 24 Hours)</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            Geographic Distribution (Last 24 Hours)
+          </h3>
           <div className="space-y-2">
             {geoSummary.slice(0, 10).map((country, index) => (
-              <div key={country.country_code} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+              <div
+                key={country.country_code}
+                className="flex flex-wrap gap-2 items-center justify-between p-3 bg-gray-50 rounded"
+              >
                 <div className="flex items-center gap-3">
-                  <span className="text-lg">{getFlagEmoji(country.country_code)}</span>
+                  <span className="text-lg">
+                    {getFlagEmoji(country.country_code)}
+                  </span>
                   <span className="font-medium">{country.country_name}</span>
                 </div>
                 <div className="flex items-center gap-4 text-sm">

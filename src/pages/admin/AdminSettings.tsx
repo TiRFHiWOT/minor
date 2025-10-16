@@ -1,19 +1,39 @@
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { useForumSettings } from '@/hooks/useForumSettings';
-import { useEnhancedForumStats } from '@/hooks/useEnhancedForumStats';
-import { WysiwygEditor } from '@/components/ui/wysiwyg-editor';
-import { Save, Settings, Users, Shield, Database, BarChart3, Eye, TrendingUp, Calendar, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
-import { AnalyticsSettings } from '@/components/admin/AnalyticsSettings';
-import { UrlMigrationManager } from '@/components/admin/UrlMigrationManager';
+import React, { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { useForumSettings } from "@/hooks/useForumSettings";
+import { useEnhancedForumStats } from "@/hooks/useEnhancedForumStats";
+import { WysiwygEditor } from "@/components/ui/wysiwyg-editor";
+import {
+  Save,
+  Settings,
+  Users,
+  Shield,
+  Database,
+  BarChart3,
+  Eye,
+  TrendingUp,
+  Calendar,
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+} from "lucide-react";
+import { AnalyticsSettings } from "@/components/admin/AnalyticsSettings";
+import { UrlMigrationManager } from "@/components/admin/UrlMigrationManager";
 
 const AdminSettings = () => {
   const { toast } = useToast();
@@ -21,27 +41,34 @@ const AdminSettings = () => {
   const { data: stats, isLoading: statsLoading } = useEnhancedForumStats();
 
   // Local state for form inputs
-  const [headerCode, setHeaderCode] = useState('');
-  const [termsContent, setTermsContent] = useState('');
-  const [privacyContent, setPrivacyContent] = useState('');
-  const [googleAnalyticsId, setGoogleAnalyticsId] = useState('');
-  const [customCss, setCustomCss] = useState('');
-  const [bannerMessage, setBannerMessage] = useState('');
-  const [forumDescription, setForumDescription] = useState('');
+  const [headerCode, setHeaderCode] = useState("");
+  const [termsContent, setTermsContent] = useState("");
+  const [privacyContent, setPrivacyContent] = useState("");
+  const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
+  const [customCss, setCustomCss] = useState("");
+  const [bannerMessage, setBannerMessage] = useState("");
+  const [forumDescription, setForumDescription] = useState("");
 
   // Update local state when settings load
   React.useEffect(() => {
     if (settings) {
-      const headerCodeValue = getSetting('header_code', '');
-      const gaIdValue = getSetting('google_analytics_id', '');
-      const customCssValue = getSetting('custom_css', '');
-      const termsValue = getSetting('terms_content', '');
-      const privacyValue = getSetting('privacy_content', '');
-      const bannerMessageValue = getSetting('banner_message', '');
-      const forumDescriptionValue = getSetting('forum_description', 'A community forum for minor hockey discussions');
-      
-      console.log('Loading settings:', { headerCodeValue, gaIdValue, customCssValue });
-      
+      const headerCodeValue = getSetting("header_code", "");
+      const gaIdValue = getSetting("google_analytics_id", "");
+      const customCssValue = getSetting("custom_css", "");
+      const termsValue = getSetting("terms_content", "");
+      const privacyValue = getSetting("privacy_content", "");
+      const bannerMessageValue = getSetting("banner_message", "");
+      const forumDescriptionValue = getSetting(
+        "forum_description",
+        "A community forum for minor hockey discussions"
+      );
+
+      console.log("Loading settings:", {
+        headerCodeValue,
+        gaIdValue,
+        customCssValue,
+      });
+
       setHeaderCode(headerCodeValue);
       setGoogleAnalyticsId(gaIdValue);
       setCustomCss(customCssValue);
@@ -54,50 +81,56 @@ const AdminSettings = () => {
 
   const handleSaveGeneral = async () => {
     updateSetting({
-      key: 'forum_name',
-      value: getSetting('forum_name', 'Minor Hockey Talks'),
-      type: 'string',
-      category: 'general'
+      key: "forum_name",
+      value: getSetting("forum_name", "Minor Hockey Talks"),
+      type: "string",
+      category: "general",
     });
   };
 
   const handleSaveTechnical = async () => {
     await Promise.all([
       updateSetting({
-        key: 'header_code',
+        key: "header_code",
         value: headerCode,
-        type: 'code',
-        category: 'technical',
-        description: 'Custom HTML code to inject in header'
+        type: "code",
+        category: "technical",
+        description: "Custom HTML code to inject in header",
       }),
       updateSetting({
-        key: 'google_analytics_id',
+        key: "google_analytics_id",
         value: googleAnalyticsId,
-        type: 'string',
-        category: 'technical',
-        description: 'Google Analytics tracking ID'
-      })
+        type: "string",
+        category: "technical",
+        description: "Google Analytics tracking ID",
+      }),
     ]);
   };
 
   const handleSaveAppearance = async () => {
     updateSetting({
-      key: 'custom_css',
+      key: "custom_css",
       value: customCss,
-      type: 'code',
-      category: 'appearance',
-      description: 'Custom CSS styles'
+      type: "code",
+      category: "appearance",
+      description: "Custom CSS styles",
     });
   };
 
   const handleBackupDatabase = async () => {
     toast({
-      title: 'Backup Started',
-      description: 'Database backup has been initiated',
+      title: "Backup Started",
+      description: "Database backup has been initiated",
     });
   };
 
-  const StatCard = ({ title, value, change, icon: Icon, color = "text-primary" }: {
+  const StatCard = ({
+    title,
+    value,
+    change,
+    icon: Icon,
+    color = "text-primary",
+  }: {
     title: string;
     value: number | string;
     change?: string;
@@ -120,40 +153,63 @@ const AdminSettings = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Settings</h1>
-        <p className="text-muted-foreground">Configure forum settings and preferences</p>
+        <p className="text-muted-foreground">
+          Configure forum settings and preferences
+        </p>
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-8">
-          <TabsTrigger value="general" className="flex items-center gap-2">
+        <TabsList
+          className="w-full flex items-center justify-between overflow-x-auto scrollbar-hide"
+          style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+        >
+          <TabsTrigger
+            value="general"
+            className="flex items-center gap-2 w-full"
+          >
             <Settings className="h-4 w-4" />
             General
           </TabsTrigger>
-          <TabsTrigger value="legal" className="flex items-center gap-2">
+          <TabsTrigger value="legal" className="flex items-center gap-2 w-full">
             <Shield className="h-4 w-4" />
             Legal
           </TabsTrigger>
-          <TabsTrigger value="technical" className="flex items-center gap-2">
+          <TabsTrigger
+            value="technical"
+            className="flex items-center gap-2 w-full"
+          >
             <Database className="h-4 w-4" />
             Technical
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
+          <TabsTrigger
+            value="analytics"
+            className="flex items-center gap-2 w-full"
+          >
             <TrendingUp className="h-4 w-4" />
             Analytics
           </TabsTrigger>
-          <TabsTrigger value="appearance" className="flex items-center gap-2">
+          <TabsTrigger
+            value="appearance"
+            className="flex items-center gap-2 w-full"
+          >
             <Eye className="h-4 w-4" />
             Appearance
           </TabsTrigger>
-          <TabsTrigger value="migration" className="flex items-center gap-2">
+          <TabsTrigger
+            value="migration"
+            className="flex items-center gap-2 w-full"
+          >
             <Users className="h-4 w-4" />
             URL Migration
           </TabsTrigger>
-          <TabsTrigger value="stats" className="flex items-center gap-2">
+          <TabsTrigger value="stats" className="flex items-center gap-2 w-full">
             <BarChart3 className="h-4 w-4" />
             Traffic Stats
           </TabsTrigger>
-          <TabsTrigger value="system" className="flex items-center gap-2">
+          <TabsTrigger
+            value="system"
+            className="flex items-center gap-2 w-full"
+          >
             <Users className="h-4 w-4" />
             System
           </TabsTrigger>
@@ -167,18 +223,20 @@ const AdminSettings = () => {
                 <h2 className="text-xl font-semibold mb-4">General Settings</h2>
               </div>
 
-                <div className="grid gap-4">
+              <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="forum-name">Forum Name</Label>
                   <Input
                     id="forum-name"
-                    value={getSetting('forum_name', 'Minor Hockey Talks')}
-                    onChange={(e) => updateSetting({
-                      key: 'forum_name',
-                      value: e.target.value,
-                      type: 'string',
-                      category: 'general'
-                    })}
+                    value={getSetting("forum_name", "Minor Hockey Talks")}
+                    onChange={(e) =>
+                      updateSetting({
+                        key: "forum_name",
+                        value: e.target.value,
+                        type: "string",
+                        category: "general",
+                      })
+                    }
                     placeholder="Enter forum name"
                   />
                 </div>
@@ -188,7 +246,8 @@ const AdminSettings = () => {
                   <div>
                     <h3 className="font-medium mb-3">Site-Wide Banner</h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Display a banner message at the top of every page for all visitors
+                      Display a banner message at the top of every page for all
+                      visitors
                     </p>
                   </div>
 
@@ -200,13 +259,15 @@ const AdminSettings = () => {
                       </div>
                     </div>
                     <Switch
-                      checked={getSetting('banner_enabled', false)}
-                      onCheckedChange={(checked) => updateSetting({
-                        key: 'banner_enabled',
-                        value: checked,
-                        type: 'boolean',
-                        category: 'banner'
-                      })}
+                      checked={getSetting("banner_enabled", false)}
+                      onCheckedChange={(checked) =>
+                        updateSetting({
+                          key: "banner_enabled",
+                          value: checked,
+                          type: "boolean",
+                          category: "banner",
+                        })
+                      }
                     />
                   </div>
 
@@ -216,12 +277,14 @@ const AdminSettings = () => {
                       id="banner-message"
                       value={bannerMessage}
                       onChange={(e) => setBannerMessage(e.target.value)}
-                      onBlur={() => updateSetting({
-                        key: 'banner_message',
-                        value: bannerMessage,
-                        type: 'string',
-                        category: 'banner'
-                      })}
+                      onBlur={() =>
+                        updateSetting({
+                          key: "banner_message",
+                          value: bannerMessage,
+                          type: "string",
+                          category: "banner",
+                        })
+                      }
                       placeholder="Enter banner message..."
                       rows={2}
                     />
@@ -231,23 +294,31 @@ const AdminSettings = () => {
                     <div className="space-y-2">
                       <Label htmlFor="banner-style">Banner Style</Label>
                       <Select
-                        value={getSetting('banner_style', 'info')}
-                        onValueChange={(value) => updateSetting({
-                          key: 'banner_style',
-                          value: value,
-                          type: 'string',
-                          category: 'banner'
-                        })}
+                        value={getSetting("banner_style", "info")}
+                        onValueChange={(value) =>
+                          updateSetting({
+                            key: "banner_style",
+                            value: value,
+                            type: "string",
+                            category: "banner",
+                          })
+                        }
                       >
                         <SelectTrigger className="bg-background">
                           <SelectValue placeholder="Select banner style" />
                         </SelectTrigger>
                         <SelectContent className="bg-background border shadow-lg z-50">
                           <SelectItem value="info">Info (Blue)</SelectItem>
-                          <SelectItem value="warning">Warning (Yellow)</SelectItem>
-                          <SelectItem value="success">Success (Green)</SelectItem>
+                          <SelectItem value="warning">
+                            Warning (Yellow)
+                          </SelectItem>
+                          <SelectItem value="success">
+                            Success (Green)
+                          </SelectItem>
                           <SelectItem value="error">Error (Red)</SelectItem>
-                          <SelectItem value="announcement">Announcement (Purple)</SelectItem>
+                          <SelectItem value="announcement">
+                            Announcement (Purple)
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -260,28 +331,38 @@ const AdminSettings = () => {
                         </div>
                       </div>
                       <Switch
-                        checked={getSetting('banner_dismissible', true)}
-                        onCheckedChange={(checked) => updateSetting({
-                          key: 'banner_dismissible',
-                          value: checked,
-                          type: 'boolean',
-                          category: 'banner'
-                        })}
+                        checked={getSetting("banner_dismissible", true)}
+                        onCheckedChange={(checked) =>
+                          updateSetting({
+                            key: "banner_dismissible",
+                            value: checked,
+                            type: "boolean",
+                            category: "banner",
+                          })
+                        }
                       />
                     </div>
                   </div>
 
-                  {getSetting('banner_enabled', false) && (
+                  {getSetting("banner_enabled", false) && (
                     <div className="bg-muted/50 border rounded-lg p-3">
                       <p className="text-sm font-medium mb-1">Preview:</p>
-                      <div className={`p-2 border rounded text-sm ${
-                        getSetting('banner_style', 'info') === 'warning' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-800' :
-                        getSetting('banner_style', 'info') === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-800' :
-                        getSetting('banner_style', 'info') === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-800' :
-                        getSetting('banner_style', 'info') === 'announcement' ? 'bg-purple-500/10 border-purple-500/20 text-purple-800' :
-                        'bg-blue-500/10 border-blue-500/20 text-blue-800'
-                      }`}>
-                        {bannerMessage || 'Your banner message will appear here...'}
+                      <div
+                        className={`p-2 border rounded text-sm ${
+                          getSetting("banner_style", "info") === "warning"
+                            ? "bg-yellow-500/10 border-yellow-500/20 text-yellow-800"
+                            : getSetting("banner_style", "info") === "success"
+                            ? "bg-green-500/10 border-green-500/20 text-green-800"
+                            : getSetting("banner_style", "info") === "error"
+                            ? "bg-red-500/10 border-red-500/20 text-red-800"
+                            : getSetting("banner_style", "info") ===
+                              "announcement"
+                            ? "bg-purple-500/10 border-purple-500/20 text-purple-800"
+                            : "bg-blue-500/10 border-blue-500/20 text-blue-800"
+                        }`}
+                      >
+                        {bannerMessage ||
+                          "Your banner message will appear here..."}
                       </div>
                     </div>
                   )}
@@ -293,12 +374,14 @@ const AdminSettings = () => {
                     id="forum-description"
                     value={forumDescription}
                     onChange={(e) => setForumDescription(e.target.value)}
-                    onBlur={() => updateSetting({
-                      key: 'forum_description',
-                      value: forumDescription,
-                      type: 'string',
-                      category: 'general'
-                    })}
+                    onBlur={() =>
+                      updateSetting({
+                        key: "forum_description",
+                        value: forumDescription,
+                        type: "string",
+                        category: "general",
+                      })
+                    }
                     placeholder="Enter forum description"
                     rows={3}
                   />
@@ -312,13 +395,15 @@ const AdminSettings = () => {
                     </div>
                   </div>
                   <Switch
-                    checked={getSetting('allow_registration', true)}
-                    onCheckedChange={(checked) => updateSetting({
-                      key: 'allow_registration',
-                      value: checked,
-                      type: 'boolean',
-                      category: 'general'
-                    })}
+                    checked={getSetting("allow_registration", true)}
+                    onCheckedChange={(checked) =>
+                      updateSetting({
+                        key: "allow_registration",
+                        value: checked,
+                        type: "boolean",
+                        category: "general",
+                      })
+                    }
                   />
                 </div>
 
@@ -330,20 +415,24 @@ const AdminSettings = () => {
                     </div>
                   </div>
                   <Switch
-                    checked={getSetting('allow_anonymous_posts', true)}
-                    onCheckedChange={(checked) => updateSetting({
-                      key: 'allow_anonymous_posts',
-                      value: checked,
-                      type: 'boolean',
-                      category: 'general'
-                    })}
+                    checked={getSetting("allow_anonymous_posts", true)}
+                    onCheckedChange={(checked) =>
+                      updateSetting({
+                        key: "allow_anonymous_posts",
+                        value: checked,
+                        type: "boolean",
+                        category: "general",
+                      })
+                    }
                   />
                 </div>
 
                 {/* Security Section */}
                 <div className="space-y-4 border-t pt-4">
                   <div>
-                    <h3 className="font-medium mb-3">Security & Access Control</h3>
+                    <h3 className="font-medium mb-3">
+                      Security & Access Control
+                    </h3>
                     <p className="text-sm text-muted-foreground mb-4">
                       Configure security features and access restrictions
                     </p>
@@ -357,13 +446,15 @@ const AdminSettings = () => {
                       </div>
                     </div>
                     <Switch
-                      checked={getSetting('vpn_detection_enabled', true)}
-                      onCheckedChange={(checked) => updateSetting({
-                        key: 'vpn_detection_enabled',
-                        value: checked,
-                        type: 'boolean',
-                        category: 'security'
-                      })}
+                      checked={getSetting("vpn_detection_enabled", true)}
+                      onCheckedChange={(checked) =>
+                        updateSetting({
+                          key: "vpn_detection_enabled",
+                          value: checked,
+                          type: "boolean",
+                          category: "security",
+                        })
+                      }
                     />
                   </div>
                 </div>
@@ -379,77 +470,96 @@ const AdminSettings = () => {
 
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <Label htmlFor="facebook-url" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="facebook-url"
+                        className="flex items-center gap-2"
+                      >
                         <Facebook className="h-4 w-4" />
                         Facebook URL
                       </Label>
                       <Input
                         id="facebook-url"
-                        value={getSetting('social_facebook', '')}
-                        onChange={(e) => updateSetting({
-                          key: 'social_facebook',
-                          value: e.target.value,
-                          type: 'string',
-                          category: 'social'
-                        })}
+                        value={getSetting("social_facebook", "")}
+                        onChange={(e) =>
+                          updateSetting({
+                            key: "social_facebook",
+                            value: e.target.value,
+                            type: "string",
+                            category: "social",
+                          })
+                        }
                         placeholder="https://facebook.com/yourpage"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="twitter-url" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="twitter-url"
+                        className="flex items-center gap-2"
+                      >
                         <Twitter className="h-4 w-4" />
                         Twitter/X URL
                       </Label>
                       <Input
                         id="twitter-url"
-                        value={getSetting('social_twitter', '')}
-                        onChange={(e) => updateSetting({
-                          key: 'social_twitter',
-                          value: e.target.value,
-                          type: 'string',
-                          category: 'social'
-                        })}
+                        value={getSetting("social_twitter", "")}
+                        onChange={(e) =>
+                          updateSetting({
+                            key: "social_twitter",
+                            value: e.target.value,
+                            type: "string",
+                            category: "social",
+                          })
+                        }
                         placeholder="https://twitter.com/yourhandle"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="instagram-url" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="instagram-url"
+                        className="flex items-center gap-2"
+                      >
                         <Instagram className="h-4 w-4" />
                         Instagram URL
                       </Label>
                       <Input
                         id="instagram-url"
-                        value={getSetting('social_instagram', '')}
-                        onChange={(e) => updateSetting({
-                          key: 'social_instagram',
-                          value: e.target.value,
-                          type: 'string',
-                          category: 'social'
-                        })}
+                        value={getSetting("social_instagram", "")}
+                        onChange={(e) =>
+                          updateSetting({
+                            key: "social_instagram",
+                            value: e.target.value,
+                            type: "string",
+                            category: "social",
+                          })
+                        }
                         placeholder="https://instagram.com/youraccount"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="youtube-url" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="youtube-url"
+                        className="flex items-center gap-2"
+                      >
                         <Youtube className="h-4 w-4" />
                         YouTube URL
                       </Label>
                       <Input
                         id="youtube-url"
-                        value={getSetting('social_youtube', '')}
-                        onChange={(e) => updateSetting({
-                          key: 'social_youtube',
-                          value: e.target.value,
-                          type: 'string',
-                          category: 'social'
-                        })}
+                        value={getSetting("social_youtube", "")}
+                        onChange={(e) =>
+                          updateSetting({
+                            key: "social_youtube",
+                            value: e.target.value,
+                            type: "string",
+                            category: "social",
+                          })
+                        }
                         placeholder="https://youtube.com/yourchannel"
                       />
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -467,7 +577,9 @@ const AdminSettings = () => {
           <Card className="p-6">
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-semibold mb-4">Legal Content Management</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  Legal Content Management
+                </h2>
                 <p className="text-muted-foreground">
                   Manage your Terms & Conditions and Privacy Policy content
                 </p>
@@ -487,14 +599,15 @@ const AdminSettings = () => {
                     size="sm"
                     onClick={() => {
                       updateSetting({
-                        key: 'terms_content',
+                        key: "terms_content",
                         value: termsContent,
-                        type: 'text',
-                        category: 'legal'
+                        type: "text",
+                        category: "legal",
                       });
                       toast({
                         title: "Terms Updated",
-                        description: "Terms & Conditions have been updated successfully.",
+                        description:
+                          "Terms & Conditions have been updated successfully.",
                       });
                     }}
                     className="w-full"
@@ -518,14 +631,15 @@ const AdminSettings = () => {
                     size="sm"
                     onClick={() => {
                       updateSetting({
-                        key: 'privacy_content',
+                        key: "privacy_content",
                         value: privacyContent,
-                        type: 'text',
-                        category: 'legal'
+                        type: "text",
+                        category: "legal",
                       });
                       toast({
                         title: "Privacy Policy Updated",
-                        description: "Privacy Policy has been updated successfully.",
+                        description:
+                          "Privacy Policy has been updated successfully.",
                       });
                     }}
                     className="w-full"
@@ -545,7 +659,9 @@ const AdminSettings = () => {
           <Card className="p-6">
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-semibold mb-4">Technical Settings</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  Technical Settings
+                </h2>
               </div>
 
               <div className="grid gap-4">
@@ -560,23 +676,27 @@ const AdminSettings = () => {
                     className="font-mono text-sm"
                   />
                   <p className="text-xs text-muted-foreground">
-                    HTML code entered here will be injected into the site header. Useful for analytics codes, custom scripts, etc.
+                    HTML code entered here will be injected into the site
+                    header. Useful for analytics codes, custom scripts, etc.
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="google-analytics">Google Analytics Tracking ID</Label>
+                  <Label htmlFor="google-analytics">
+                    Google Analytics Tracking ID
+                  </Label>
                   <Input
                     id="google-analytics"
                     value={googleAnalyticsId}
                     onChange={(e) => {
-                      console.log('GA input changed:', e.target.value);
+                      console.log("GA input changed:", e.target.value);
                       setGoogleAnalyticsId(e.target.value);
                     }}
                     placeholder="G-XXXXXXXXXX"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Enter your Google Analytics 4 tracking ID to enable visitor tracking
+                    Enter your Google Analytics 4 tracking ID to enable visitor
+                    tracking
                   </p>
                 </div>
               </div>
@@ -594,7 +714,9 @@ const AdminSettings = () => {
           <Card className="p-6">
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-semibold mb-4">Appearance Settings</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  Appearance Settings
+                </h2>
               </div>
 
               <div className="grid gap-4">
@@ -627,7 +749,9 @@ const AdminSettings = () => {
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-semibold mb-4">Traffic Statistics</h2>
-              <p className="text-muted-foreground">Monitor your forum's activity and growth</p>
+              <p className="text-muted-foreground">
+                Monitor your forum's activity and growth
+              </p>
             </div>
 
             {statsLoading ? (
@@ -698,15 +822,15 @@ const AdminSettings = () => {
                   <Card className="p-6">
                     <h3 className="font-semibold mb-2">Most Active Category</h3>
                     <p className="text-2xl font-bold text-primary">
-                      {stats.most_active_category || 'No activity yet'}
+                      {stats.most_active_category || "No activity yet"}
                     </p>
                     <p className="text-sm text-muted-foreground">This week</p>
                   </Card>
-                  
+
                   <Card className="p-6">
                     <h3 className="font-semibold mb-2">Top Poster</h3>
                     <p className="text-2xl font-bold text-primary">
-                      {stats.top_poster || 'No posts yet'}
+                      {stats.top_poster || "No posts yet"}
                     </p>
                     <p className="text-sm text-muted-foreground">This week</p>
                   </Card>
@@ -714,7 +838,9 @@ const AdminSettings = () => {
               </>
             ) : (
               <Card className="p-6">
-                <p className="text-muted-foreground">Unable to load statistics</p>
+                <p className="text-muted-foreground">
+                  Unable to load statistics
+                </p>
               </Card>
             )}
           </div>
@@ -735,74 +861,92 @@ const AdminSettings = () => {
           <Card className="p-6">
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-semibold mb-4">System Management</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  System Management
+                </h2>
               </div>
 
               <div className="grid gap-6">
                 {/* Maintenance Mode Section */}
                 <div className="space-y-4">
                   <div>
-                    <h3 className="font-medium text-orange-600 dark:text-orange-400">⚠️ Maintenance Mode</h3>
+                    <h3 className="font-medium text-orange-600 dark:text-orange-400">
+                      ⚠️ Maintenance Mode
+                    </h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Take the site offline for general users while allowing admin access
+                      Take the site offline for general users while allowing
+                      admin access
                     </p>
-                    
+
                     <div className="space-y-4 border rounded-lg p-4 bg-muted/50">
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <Label className="font-medium">Enable Maintenance Mode</Label>
+                          <Label className="font-medium">
+                            Enable Maintenance Mode
+                          </Label>
                           <div className="text-sm text-muted-foreground">
                             Site will be offline for non-admin users
                           </div>
                         </div>
                         <Switch
-                          checked={getSetting('maintenance_mode', false)}
+                          checked={getSetting("maintenance_mode", false)}
                           onCheckedChange={(checked) => {
                             updateSetting({
-                              key: 'maintenance_mode',
+                              key: "maintenance_mode",
                               value: checked,
-                              type: 'boolean',
-                              category: 'system'
+                              type: "boolean",
+                              category: "system",
                             });
                             if (checked) {
                               toast({
                                 title: "⚠️ Maintenance Mode Enabled",
-                                description: "Site is now offline for general users. Only admins can access it.",
-                                variant: "destructive"
+                                description:
+                                  "Site is now offline for general users. Only admins can access it.",
+                                variant: "destructive",
                               });
                             } else {
                               toast({
                                 title: "✅ Maintenance Mode Disabled",
-                                description: "Site is now accessible to all users.",
+                                description:
+                                  "Site is now accessible to all users.",
                               });
                             }
                           }}
                         />
                       </div>
-                      
+
                       <div className="space-y-2">
-                        <Label htmlFor="maintenance-message">Maintenance Message</Label>
+                        <Label htmlFor="maintenance-message">
+                          Maintenance Message
+                        </Label>
                         <Textarea
                           id="maintenance-message"
-                          value={getSetting('maintenance_message', 'We are currently performing scheduled maintenance. Please check back soon!')}
-                          onChange={(e) => updateSetting({
-                            key: 'maintenance_message',
-                            value: e.target.value,
-                            type: 'text',
-                            category: 'system'
-                          })}
+                          value={getSetting(
+                            "maintenance_message",
+                            "We are currently performing scheduled maintenance. Please check back soon!"
+                          )}
+                          onChange={(e) =>
+                            updateSetting({
+                              key: "maintenance_message",
+                              value: e.target.value,
+                              type: "text",
+                              category: "system",
+                            })
+                          }
                           placeholder="Enter message to display during maintenance..."
                           rows={3}
                         />
                         <p className="text-xs text-muted-foreground">
-                          This message will be displayed to users when the site is in maintenance mode
+                          This message will be displayed to users when the site
+                          is in maintenance mode
                         </p>
                       </div>
-                      
-                      {getSetting('maintenance_mode', false) && (
+
+                      {getSetting("maintenance_mode", false) && (
                         <div className="bg-orange-500/10 border border-orange-500/20 rounded p-3">
                           <p className="text-sm text-orange-600 dark:text-orange-400 font-medium">
-                            🔧 Maintenance mode is currently ACTIVE. Only admins can access the site.
+                            🔧 Maintenance mode is currently ACTIVE. Only admins
+                            can access the site.
                           </p>
                         </div>
                       )}
@@ -833,13 +977,15 @@ const AdminSettings = () => {
                           </div>
                         </div>
                         <Switch
-                          checked={getSetting('enable_rate_limiting', true)}
-                          onCheckedChange={(checked) => updateSetting({
-                            key: 'enable_rate_limiting',
-                            value: checked,
-                            type: 'boolean',
-                            category: 'security'
-                          })}
+                          checked={getSetting("enable_rate_limiting", true)}
+                          onCheckedChange={(checked) =>
+                            updateSetting({
+                              key: "enable_rate_limiting",
+                              value: checked,
+                              type: "boolean",
+                              category: "security",
+                            })
+                          }
                         />
                       </div>
                     </div>

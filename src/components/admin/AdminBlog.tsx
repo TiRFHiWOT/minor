@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
-import { Plus, Search, Edit, Trash2, Eye, Calendar, User } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useAdminBlogPosts, useDeleteBlogPost } from '@/hooks/useBlogPosts';
-import { useToast } from '@/hooks/use-toast';
-import { BlogPostEditor } from './BlogPostEditor';
+import React, { useState } from "react";
+import { Plus, Search, Edit, Trash2, Eye, Calendar, User } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useAdminBlogPosts, useDeleteBlogPost } from "@/hooks/useBlogPosts";
+import { useToast } from "@/hooks/use-toast";
+import { BlogPostEditor } from "./BlogPostEditor";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,33 +24,45 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 
-const categories = ['All', 'Training', 'Equipment', 'Team Building', 'Health', 'Safety'];
-const statuses = ['All', 'draft', 'published', 'archived'];
+const categories = [
+  "All",
+  "Training",
+  "Equipment",
+  "Team Building",
+  "Health",
+  "Safety",
+];
+const statuses = ["All", "draft", "published", "archived"];
 
 export const AdminBlog = () => {
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedStatus, setSelectedStatus] = useState('All');
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedStatus, setSelectedStatus] = useState("All");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<any>(null);
   const { toast } = useToast();
 
-  const { data: blogPosts = [], isLoading, error, refetch } = useAdminBlogPosts({
-    category: selectedCategory !== 'All' ? selectedCategory : undefined,
+  const {
+    data: blogPosts = [],
+    isLoading,
+    error,
+    refetch,
+  } = useAdminBlogPosts({
+    category: selectedCategory !== "All" ? selectedCategory : undefined,
     status: selectedStatus as any,
     search: search || undefined,
   });
 
   // Debug logging
-  console.log('AdminBlog Debug:', {
+  console.log("AdminBlog Debug:", {
     blogPosts,
     isLoading,
     error,
     selectedCategory,
     selectedStatus,
-    search
+    search,
   });
 
   const deletePostMutation = useDeleteBlogPost();
@@ -67,22 +85,22 @@ export const AdminBlog = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published':
-        return 'bg-green-100 text-green-800';
-      case 'draft':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'archived':
-        return 'bg-gray-100 text-gray-800';
+      case "published":
+        return "bg-green-100 text-green-800";
+      case "draft":
+        return "bg-yellow-100 text-yellow-800";
+      case "archived":
+        return "bg-gray-100 text-gray-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -106,10 +124,12 @@ export const AdminBlog = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap gap-2 justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">Blog Management</h1>
-          <p className="text-muted-foreground">Manage your blog posts and content</p>
+          <p className="text-muted-foreground">
+            Manage your blog posts and content
+          </p>
         </div>
         <Button onClick={() => setIsCreateModalOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -131,7 +151,7 @@ export const AdminBlog = () => {
               />
             </div>
           </div>
-          
+
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="Category" />
@@ -152,7 +172,9 @@ export const AdminBlog = () => {
             <SelectContent>
               {statuses.map((status) => (
                 <SelectItem key={status} value={status}>
-                  {status === 'All' ? 'All Statuses' : status.charAt(0).toUpperCase() + status.slice(1)}
+                  {status === "All"
+                    ? "All Statuses"
+                    : status.charAt(0).toUpperCase() + status.slice(1)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -174,35 +196,43 @@ export const AdminBlog = () => {
         ) : (
           blogPosts.map((post) => (
             <Card key={post.id} className="p-6">
-              <div className="flex justify-between items-start gap-4">
+              <div className="flex flex-wrap justify-between items-start gap-4">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-lg font-semibold">{post.title}</h3>
-                    <Badge className={getStatusColor(post.published_status)}>
-                      {post.published_status}
-                    </Badge>
-                    <Badge variant="outline">{post.category}</Badge>
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <h3 className="text-lg font-semibold break-words">
+                      {post.title}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <Badge className={getStatusColor(post.published_status)}>
+                        {post.published_status}
+                      </Badge>
+                      <Badge variant="outline" className="whitespace-nowrap">
+                        {post.category}
+                      </Badge>
+                    </div>
                   </div>
-                  
+
                   {post.excerpt && (
                     <p className="text-muted-foreground mb-3 line-clamp-2">
                       {post.excerpt}
                     </p>
                   )}
-                  
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <User className="h-3 w-3" />
-                      <span>{post.author_username || 'Unknown'}</span>
+                      <span>{post.author_username || "Unknown"}</span>
                     </div>
-                    
+
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       <span>
-                        {post.published_at ? formatDate(post.published_at) : formatDate(post.created_at)}
+                        {post.published_at
+                          ? formatDate(post.published_at)
+                          : formatDate(post.created_at)}
                       </span>
                     </div>
-                    
+
                     {post.view_count > 0 && (
                       <div className="flex items-center gap-1">
                         <Eye className="h-3 w-3" />
@@ -217,13 +247,20 @@ export const AdminBlog = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => setEditingPost(post)}
+                    title="Edit Post"
+                    className="shrink-0"
                   >
                     <Edit className="h-3 w-3" />
                   </Button>
-                  
+
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="outline" size="sm">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        title="Delete Post"
+                        className="shrink-0"
+                      >
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </AlertDialogTrigger>
@@ -231,7 +268,8 @@ export const AdminBlog = () => {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Blog Post</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Are you sure you want to delete "{post.title}"? This action cannot be undone.
+                          Are you sure you want to delete "{post.title}"? This
+                          action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

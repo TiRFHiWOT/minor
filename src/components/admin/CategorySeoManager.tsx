@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { SeoMetadataForm, SeoMetadata } from './SeoMetadataForm';
-import { useToast } from '@/hooks/use-toast';
-import { Edit, Search } from 'lucide-react';
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { SeoMetadataForm, SeoMetadata } from "./SeoMetadataForm";
+import { useToast } from "@/hooks/use-toast";
+import { Edit, Search } from "lucide-react";
 
 interface Category {
   id: string;
@@ -24,56 +35,66 @@ interface Category {
 }
 
 export const CategorySeoManager: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [seoData, setSeoData] = useState<SeoMetadata>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: categories, isLoading } = useQuery({
-    queryKey: ['categories-seo'],
+    queryKey: ["categories-seo"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('categories')
-        .select(`
+        .from("categories")
+        .select(
+          `
           id, name, slug, level,
           meta_title, meta_description, canonical_url,
           meta_keywords, og_title, og_description, og_image
-        `)
-        .in('level', [1, 2, 3])
-        .order('level')
-        .order('name');
-      
+        `
+        )
+        .in("level", [1, 2, 3])
+        .order("level")
+        .order("name");
+
       if (error) throw error;
       return data as Category[];
-    }
+    },
   });
 
   const updateCategorySeoMutation = useMutation({
-    mutationFn: async ({ categoryId, seoData }: { categoryId: string; seoData: SeoMetadata }) => {
+    mutationFn: async ({
+      categoryId,
+      seoData,
+    }: {
+      categoryId: string;
+      seoData: SeoMetadata;
+    }) => {
       const { error } = await supabase
-        .from('categories')
+        .from("categories")
         .update(seoData)
-        .eq('id', categoryId);
-      
+        .eq("id", categoryId);
+
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories-seo'] });
+      queryClient.invalidateQueries({ queryKey: ["categories-seo"] });
       setIsDialogOpen(false);
       setSelectedCategory(null);
       toast({
-        title: 'SEO Updated',
-        description: 'Category SEO metadata has been updated successfully.',
+        title: "SEO Updated",
+        description: "Category SEO metadata has been updated successfully.",
       });
     },
     onError: (error) => {
       toast({
-        title: 'Error',
-        description: 'Failed to update SEO metadata.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to update SEO metadata.",
+        variant: "destructive",
       });
-    }
+    },
   });
 
   const openSeoEditor = (category: Category) => {
@@ -92,33 +113,45 @@ export const CategorySeoManager: React.FC = () => {
 
   const handleSave = () => {
     if (!selectedCategory) return;
-    
+
     updateCategorySeoMutation.mutate({
       categoryId: selectedCategory.id,
-      seoData
+      seoData,
     });
   };
 
   const getLevelLabel = (level: number) => {
     switch (level) {
-      case 1: return 'Level 1';
-      case 2: return 'Level 2';
-      case 3: return 'Level 3';
-      default: return `Level ${level}`;
+      case 1:
+        return "Level 1";
+      case 2:
+        return "Level 2";
+      case 3:
+        return "Level 3";
+      default:
+        return `Level ${level}`;
     }
   };
 
   const getLevelColor = (level: number) => {
     switch (level) {
-      case 1: return 'bg-blue-100 text-blue-800';
-      case 2: return 'bg-green-100 text-green-800';
-      case 3: return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 1:
+        return "bg-blue-100 text-blue-800";
+      case 2:
+        return "bg-green-100 text-green-800";
+      case 3:
+        return "bg-purple-100 text-purple-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const hasSeoData = (category: Category) => {
-    return !!(category.meta_title || category.meta_description || category.canonical_url);
+    return !!(
+      category.meta_title ||
+      category.meta_description ||
+      category.canonical_url
+    );
   };
 
   if (isLoading) {
@@ -140,7 +173,7 @@ export const CategorySeoManager: React.FC = () => {
         {categories?.map((category) => (
           <Card key={category.id}>
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Badge className={getLevelColor(category.level)}>
                     {getLevelLabel(category.level)}
@@ -150,7 +183,7 @@ export const CategorySeoManager: React.FC = () => {
                     <CardDescription>/{category.slug}</CardDescription>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
                   {hasSeoData(category) && (
                     <Badge variant="outline" className="gap-1">
                       <Search className="h-3 w-3" />
@@ -174,17 +207,20 @@ export const CategorySeoManager: React.FC = () => {
                 <div className="space-y-2 text-sm">
                   {category.meta_title && (
                     <div>
-                      <span className="font-medium">Meta Title:</span> {category.meta_title}
+                      <span className="font-medium">Meta Title:</span>{" "}
+                      {category.meta_title}
                     </div>
                   )}
                   {category.meta_description && (
                     <div>
-                      <span className="font-medium">Meta Description:</span> {category.meta_description}
+                      <span className="font-medium">Meta Description:</span>{" "}
+                      {category.meta_description}
                     </div>
                   )}
                   {category.canonical_url && (
                     <div>
-                      <span className="font-medium">Canonical URL:</span> {category.canonical_url}
+                      <span className="font-medium">Canonical URL:</span>{" "}
+                      {category.canonical_url}
                     </div>
                   )}
                 </div>
@@ -208,22 +244,21 @@ export const CategorySeoManager: React.FC = () => {
               title="Category SEO"
               description="Configure SEO metadata for this category"
               autoPreview={{
-                type: 'category',
-                title: selectedCategory?.name
+                type: "category",
+                title: selectedCategory?.name,
               }}
             />
             <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsDialogOpen(false)}
-              >
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
               <Button
                 onClick={handleSave}
                 disabled={updateCategorySeoMutation.isPending}
               >
-                {updateCategorySeoMutation.isPending ? 'Saving...' : 'Save SEO Metadata'}
+                {updateCategorySeoMutation.isPending
+                  ? "Saving..."
+                  : "Save SEO Metadata"}
               </Button>
             </div>
           </div>

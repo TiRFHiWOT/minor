@@ -157,12 +157,114 @@ export const AppealsManager = () => {
                   <Card key={appeal.id} className="p-6">
                     <div className="flex items-start justify-between">
                       <div className="space-y-3 flex-1">
-                        <div className="flex items-center gap-2">
-                          {getContentTypeIcon(appeal.content_type)}
-                          <span className="font-medium capitalize">
-                            {appeal.content_type} Appeal
-                          </span>
-                          {getStatusBadge(appeal.status)}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            {getContentTypeIcon(appeal.content_type)}
+                            <span className="font-medium capitalize">
+                              {appeal.content_type} Appeal
+                            </span>
+                            {getStatusBadge(appeal.status)}
+                          </div>
+
+                          <Dialog
+                            open={isReviewDialogOpen}
+                            onOpenChange={setIsReviewDialogOpen}
+                          >
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedAppeal(appeal);
+                                  setAdminResponse("");
+                                }}
+                              >
+                                Review
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl">
+                              <DialogHeader>
+                                <DialogTitle>Review Appeal</DialogTitle>
+                              </DialogHeader>
+
+                              {selectedAppeal && (
+                                <div className="space-y-4">
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium">
+                                      Content Type
+                                    </Label>
+                                    <p className="text-sm capitalize">
+                                      {selectedAppeal.content_type}
+                                    </p>
+                                  </div>
+
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium">
+                                      Appeal Reason
+                                    </Label>
+                                    <p className="text-sm">
+                                      {selectedAppeal.appeal_reason}
+                                    </p>
+                                  </div>
+
+                                  {selectedAppeal.content_context && (
+                                    <div className="space-y-2">
+                                      <Label className="text-sm font-medium">
+                                        Content Context
+                                      </Label>
+                                      <ScrollArea className="h-24 w-full rounded border p-3">
+                                        <p className="text-sm">
+                                          {selectedAppeal.content_context}
+                                        </p>
+                                      </ScrollArea>
+                                    </div>
+                                  )}
+
+                                  <div className="space-y-2">
+                                    <Label htmlFor="admin-response">
+                                      Admin Response (Optional)
+                                    </Label>
+                                    <Textarea
+                                      id="admin-response"
+                                      value={adminResponse}
+                                      onChange={(e) =>
+                                        setAdminResponse(e.target.value)
+                                      }
+                                      placeholder="Provide feedback to the appellant..."
+                                      rows={3}
+                                    />
+                                  </div>
+
+                                  <div className="flex gap-2 justify-end">
+                                    <Button
+                                      variant="outline"
+                                      onClick={() =>
+                                        setIsReviewDialogOpen(false)
+                                      }
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      variant="destructive"
+                                      onClick={() => handleReview("denied")}
+                                      disabled={updateAppeal.isLoading}
+                                    >
+                                      <XCircle className="h-4 w-4 mr-2" />
+                                      Deny Appeal
+                                    </Button>
+                                    <Button
+                                      onClick={() => handleReview("approved")}
+                                      disabled={updateAppeal.isLoading}
+                                      className="bg-success hover:bg-success/90 text-success-foreground"
+                                    >
+                                      <CheckCircle className="h-4 w-4 mr-2" />
+                                      Approve Appeal
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
+                            </DialogContent>
+                          </Dialog>
                         </div>
 
                         <div className="space-y-2">
@@ -187,7 +289,7 @@ export const AppealsManager = () => {
                           )}
                         </div>
 
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <User className="h-4 w-4" />
                             {appeal.appellant_email || "Anonymous"}
@@ -200,104 +302,6 @@ export const AppealsManager = () => {
                           </div>
                         </div>
                       </div>
-
-                      <Dialog
-                        open={isReviewDialogOpen}
-                        onOpenChange={setIsReviewDialogOpen}
-                      >
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedAppeal(appeal);
-                              setAdminResponse("");
-                            }}
-                          >
-                            Review
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl">
-                          <DialogHeader>
-                            <DialogTitle>Review Appeal</DialogTitle>
-                          </DialogHeader>
-
-                          {selectedAppeal && (
-                            <div className="space-y-4">
-                              <div className="space-y-2">
-                                <Label className="text-sm font-medium">
-                                  Content Type
-                                </Label>
-                                <p className="text-sm capitalize">
-                                  {selectedAppeal.content_type}
-                                </p>
-                              </div>
-
-                              <div className="space-y-2">
-                                <Label className="text-sm font-medium">
-                                  Appeal Reason
-                                </Label>
-                                <p className="text-sm">
-                                  {selectedAppeal.appeal_reason}
-                                </p>
-                              </div>
-
-                              {selectedAppeal.content_context && (
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">
-                                    Content Context
-                                  </Label>
-                                  <ScrollArea className="h-24 w-full rounded border p-3">
-                                    <p className="text-sm">
-                                      {selectedAppeal.content_context}
-                                    </p>
-                                  </ScrollArea>
-                                </div>
-                              )}
-
-                              <div className="space-y-2">
-                                <Label htmlFor="admin-response">
-                                  Admin Response (Optional)
-                                </Label>
-                                <Textarea
-                                  id="admin-response"
-                                  value={adminResponse}
-                                  onChange={(e) =>
-                                    setAdminResponse(e.target.value)
-                                  }
-                                  placeholder="Provide feedback to the appellant..."
-                                  rows={3}
-                                />
-                              </div>
-
-                              <div className="flex gap-2 justify-end">
-                                <Button
-                                  variant="outline"
-                                  onClick={() => setIsReviewDialogOpen(false)}
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  variant="destructive"
-                                  onClick={() => handleReview("denied")}
-                                  disabled={updateAppeal.isLoading}
-                                >
-                                  <XCircle className="h-4 w-4 mr-2" />
-                                  Deny Appeal
-                                </Button>
-                                <Button
-                                  onClick={() => handleReview("approved")}
-                                  disabled={updateAppeal.isLoading}
-                                  className="bg-success hover:bg-success/90 text-success-foreground"
-                                >
-                                  <CheckCircle className="h-4 w-4 mr-2" />
-                                  Approve Appeal
-                                </Button>
-                              </div>
-                            </div>
-                          )}
-                        </DialogContent>
-                      </Dialog>
                     </div>
                   </Card>
                 ))}
@@ -355,7 +359,7 @@ export const AppealsManager = () => {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <User className="h-4 w-4" />
                           {appeal.appellant_email || "Anonymous"}

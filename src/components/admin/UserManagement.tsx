@@ -1,34 +1,33 @@
-
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { 
+import React, { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { 
+} from "@/components/ui/table";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Search, MoreHorizontal, Ban, Shield, User } from 'lucide-react';
-import { useAdminUsers, AdminUser } from '@/hooks/useAdminUsers';
-import { formatDistanceToNow } from 'date-fns';
-import { RoleChangeModal } from './RoleChangeModal';
-import { BanUserModal } from './BanUserModal';
-import { EditProfileModal } from './EditProfileModal';
-import { CreateUserModal } from './CreateUserModal';
-import { useQueryClient } from '@tanstack/react-query';
+} from "@/components/ui/dropdown-menu";
+import { Search, MoreHorizontal, Ban, Shield, User } from "lucide-react";
+import { useAdminUsers, AdminUser } from "@/hooks/useAdminUsers";
+import { formatDistanceToNow } from "date-fns";
+import { RoleChangeModal } from "./RoleChangeModal";
+import { BanUserModal } from "./BanUserModal";
+import { EditProfileModal } from "./EditProfileModal";
+import { CreateUserModal } from "./CreateUserModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const UserManagement = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [isBanModalOpen, setIsBanModalOpen] = useState(false);
@@ -41,27 +40,35 @@ export const UserManagement = () => {
     return (
       <div className="space-y-6">
         <div className="text-center p-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Users</h2>
-          <p className="text-gray-600">{error.message || 'Unable to load user data'}</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Error Loading Users
+          </h2>
+          <p className="text-gray-600">
+            {error.message || "Unable to load user data"}
+          </p>
         </div>
       </div>
     );
   }
 
-  const filteredUsers = users?.filter(user => 
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const filteredUsers =
+    users?.filter((user) =>
+      user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-red-100 text-red-800';
-      case 'moderator': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-blue-100 text-blue-800';
+      case "admin":
+        return "bg-red-100 text-red-800";
+      case "moderator":
+        return "bg-yellow-100 text-yellow-800";
+      default:
+        return "bg-blue-100 text-blue-800";
     }
   };
 
   const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+    queryClient.invalidateQueries({ queryKey: ["admin-users"] });
   };
 
   const handleEditProfile = (user: AdminUser) => {
@@ -81,7 +88,7 @@ export const UserManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap gap-2 items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
         <Button onClick={() => setIsCreateModalOpen(true)}>Add New User</Button>
       </div>
@@ -135,9 +142,7 @@ export const UserManagement = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="text-sm">
-                        {user.email || 'No email'}
-                      </div>
+                      <div className="text-sm">{user.email || "No email"}</div>
                     </TableCell>
                     <TableCell>
                       <Badge className={getRoleColor(user.role)}>
@@ -145,7 +150,10 @@ export const UserManagement = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {user.created_at ? formatDistanceToNow(new Date(user.created_at)) + ' ago' : 'Unknown'}
+                      {user.created_at
+                        ? formatDistanceToNow(new Date(user.created_at)) +
+                          " ago"
+                        : "Unknown"}
                     </TableCell>
                     <TableCell>{user.post_count}</TableCell>
                     <TableCell>{user.reputation}</TableCell>
@@ -157,16 +165,20 @@ export const UserManagement = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-white">
-                          <DropdownMenuItem onClick={() => handleEditProfile(user)}>
+                          <DropdownMenuItem
+                            onClick={() => handleEditProfile(user)}
+                          >
                             <User className="mr-2 h-4 w-4" />
                             Edit Profile
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleChangeRole(user)}>
+                          <DropdownMenuItem
+                            onClick={() => handleChangeRole(user)}
+                          >
                             <Shield className="mr-2 h-4 w-4" />
                             Change Role
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-red-600" 
+                          <DropdownMenuItem
+                            className="text-red-600"
                             onClick={() => handleBanUser(user)}
                           >
                             <Ban className="mr-2 h-4 w-4" />
@@ -178,11 +190,13 @@ export const UserManagement = () => {
                   </TableRow>
                 ))
               ) : (
-                 <TableRow>
-                   <TableCell colSpan={7} className="text-center py-8">
-                     {searchTerm ? 'No users found matching your search.' : 'No users found.'}
-                   </TableCell>
-                 </TableRow>
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8">
+                    {searchTerm
+                      ? "No users found matching your search."
+                      : "No users found."}
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
@@ -194,22 +208,26 @@ export const UserManagement = () => {
         <Card className="p-6">
           <h3 className="font-semibold text-gray-900 mb-2">Total Users</h3>
           <p className="text-2xl font-bold text-blue-600">
-            {isLoading ? '...' : users?.length || 0}
+            {isLoading ? "..." : users?.length || 0}
           </p>
         </Card>
-        
+
         <Card className="p-6">
           <h3 className="font-semibold text-gray-900 mb-2">Active Users</h3>
           <p className="text-2xl font-bold text-green-600">
-            {isLoading ? '...' : users?.length || 0}
+            {isLoading ? "..." : users?.length || 0}
           </p>
-          <p className="text-sm text-gray-500">All users are considered active</p>
+          <p className="text-sm text-gray-500">
+            All users are considered active
+          </p>
         </Card>
-        
+
         <Card className="p-6">
           <h3 className="font-semibold text-gray-900 mb-2">Admins</h3>
           <p className="text-2xl font-bold text-red-600">
-            {isLoading ? '...' : users?.filter(u => u.role === 'admin').length || 0}
+            {isLoading
+              ? "..."
+              : users?.filter((u) => u.role === "admin").length || 0}
           </p>
         </Card>
       </div>
@@ -221,21 +239,21 @@ export const UserManagement = () => {
         onClose={() => setIsRoleModalOpen(false)}
         onSuccess={handleRefresh}
       />
-      
+
       <BanUserModal
         user={selectedUser}
         isOpen={isBanModalOpen}
         onClose={() => setIsBanModalOpen(false)}
         onSuccess={handleRefresh}
       />
-      
+
       <EditProfileModal
         user={selectedUser}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSuccess={handleRefresh}
       />
-      
+
       <CreateUserModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
