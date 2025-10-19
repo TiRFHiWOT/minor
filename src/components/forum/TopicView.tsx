@@ -702,7 +702,7 @@ export const TopicView = () => {
       )}
 
       {/* Video Ad - High-value placement for topics with multiple posts */}
-      {/* {totalPosts > 10 && <VideoAd id="topic-video-ad" className="my-6" />} */}
+      {totalPosts > 10 && <VideoAd id="topic-video-ad" className="my-6" />}
 
       {/* Comments */}
       <div className="bg-card">
@@ -734,7 +734,7 @@ export const TopicView = () => {
 
                 {/* Add in-content ads every 3-4 posts */}
 
-                {/* {(index + 1) % 4 === 0 && (
+                {(index + 1) % 4 === 0 && (
                   <InContentAd
                     id={`in-content-${Math.floor((index + 1) / 4)}`}
                     unitPath={`/21849154601,423899568/Ad.Plus-InContent-${Math.floor(
@@ -742,7 +742,7 @@ export const TopicView = () => {
                     )}`}
                     className="my-4"
                   />
-                )} */}
+                )}
               </React.Fragment>
             ))}
           </div>
