@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { MessageSquare } from "lucide-react";
 import { useTopics } from "@/hooks/useTopics";
+import { useHotTopics } from "@/hooks/useHotTopics";
+import { useMostCommentedTopics } from "@/hooks/useMostCommentedTopics";
+import { useMostViewedTopics } from "@/hooks/useMostViewedTopics";
 import { useCategories } from "@/hooks/useCategories";
 import { useForumSettings } from "@/hooks/useForumSettings";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { TopicTable } from "./TopicTable";
 import { ReportModal } from "./ReportModal";
-import { BannerAd } from "../ads/BannerAd";
 import { AdSlot300x250 } from "../ads/AdSlot300x250";
 import GPTResponsiveAd from "../ads/GPTResponsiveAd";
 
@@ -21,16 +23,68 @@ export const ForumHome = () => {
     isOpen: false,
   });
 
-  // Pagination state for new topics
-  const [newPage, setNewPage] = useState(1);
+  // Sort & pagination state for the main topics list
+  const [searchParams] = useSearchParams();
+  const sort = searchParams.get("sort") || "";
+  const [page, setPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
-  // Paginated data hooks - only new topics
-  const { data: newTopicsData, isLoading: newTopicsLoading } = useTopics(
+  // Reset page when sort changes
+  useEffect(() => {
+    setPage(1);
+  }, [sort]);
+
+  // Choose the appropriate hook based on the `sort` query param
+  // - hot => useHotTopics
+  // - top => useMostCommentedTopics (alternative: useMostViewedTopics)
+  // - new => useTopics(..., 'created_at')
+  // - default/unknown => useTopics(..., 'last_reply_at')
+  const isHot = sort === "hot";
+  const isTop = sort === "top";
+  const isNew = sort === "new";
+
+  const hotHook = useHotTopics(page, ITEMS_PER_PAGE);
+  const mostCommentedHook = useMostCommentedTopics(page, ITEMS_PER_PAGE);
+  const mostViewedHook = useMostViewedTopics(page, ITEMS_PER_PAGE);
+  const topicsHook = useTopics(
     undefined,
-    newPage,
-    10,
-    "last_reply_at"
+    page,
+    ITEMS_PER_PAGE,
+    isNew ? "created_at" : "last_reply_at"
   );
+
+  // Select active hook result
+  const active = isHot ? hotHook : isTop ? mostCommentedHook : topicsHook;
+
+  // Normalize topics array to the shape TopicTable expects
+  const topics = (active.data?.data || []).map((topic) => ({
+    // prefer existing nested shapes from enriched topics, otherwise use flat fields returned by other RPCs
+    ...topic,
+    id: topic.id,
+    title: topic.title,
+    slug: topic.slug || topic.topic_slug || topic.topic?.slug || "",
+    username: topic.profiles?.username || topic.username || null,
+    avatar_url: topic.profiles?.avatar_url || topic.avatar_url || null,
+    category_name:
+      topic.categories?.name ||
+      topic.category_name ||
+      topic.category ||
+      "General",
+    category_color:
+      topic.categories?.color || topic.category_color || "#3b82f6",
+    category_slug: topic.categories?.slug || topic.category_slug || "",
+    hot_score: topic.hot_score || 0,
+    last_post_id: topic.last_post_id || null,
+    parent_category_id:
+      topic.categories?.parent_category_id || topic.parent_category_id || null,
+    parent_category_slug: topic.parent_category_slug || null,
+    last_reply_username: topic.last_reply_username || null,
+    last_reply_avatar: topic.last_reply_avatar || null,
+  }));
+
+  const activeLoading = active.isLoading;
+  const activeTotalPages = active.data?.totalPages || 0;
+  const activeTotalCount = active.data?.totalCount || 0;
 
   const { data: level1Forums } = useCategories(null, 1); // Only Level 1 forums
   const { data: level2Forums } = useCategories(undefined, 2); // Province/State forums
@@ -60,37 +114,21 @@ export const ForumHome = () => {
       {/* Leaderboard Top */}
       <GPTResponsiveAd slotId="responsive-1" />
 
-      {/* New Topics Section */}
+      {/* Topics Section (sorted by ?sort=) */}
       <div className="forum-spacing">
         <TopicTable
-          topics={
-            newTopicsData?.data?.map((topic) => ({
-              ...topic,
-              username: topic.profiles?.username || null,
-              avatar_url: topic.profiles?.avatar_url || null,
-              category_name: topic.categories?.name || "General",
-              category_color: topic.categories?.color || "#3b82f6",
-              category_slug: topic.categories?.slug || "",
-              slug: topic.slug,
-              hot_score: 0,
-              last_post_id: topic.last_post_id,
-              parent_category_id: topic.categories?.parent_category_id || null,
-              parent_category_slug: null,
-              last_reply_username: topic.last_reply_username,
-              last_reply_avatar: topic.last_reply_avatar,
-            })) || []
-          }
-          loading={newTopicsLoading}
+          topics={topics}
+          loading={activeLoading}
           showCategory={true}
         />
-        {newTopicsData && newTopicsData.data.length > 0 && (
+        {topics.length > 0 && (
           <PaginationControls
-            currentPage={newPage}
-            totalPages={newTopicsData.totalPages}
-            totalItems={newTopicsData.totalCount}
-            itemsPerPage={10}
-            onPageChange={setNewPage}
-            loading={newTopicsLoading}
+            currentPage={page}
+            totalPages={activeTotalPages}
+            totalItems={activeTotalCount}
+            itemsPerPage={ITEMS_PER_PAGE}
+            onPageChange={setPage}
+            loading={activeLoading}
           />
         )}
       </div>

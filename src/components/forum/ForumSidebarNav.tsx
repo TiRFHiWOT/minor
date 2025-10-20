@@ -50,7 +50,10 @@ export const ForumSidebarNav = () => {
   const { data: categories } = useCategoriesByActivity(); // All active categories by activity
   const { data: forumStats } = useEnhancedForumStats();
 
-  const isActive = (path: string) => location.pathname === path;
+  // include search (query string) when checking active state so
+  // paths like '/?sort=hot' correctly match the current URL
+  const isActive = (path: string) =>
+    location.pathname + location.search === path;
 
   const navItems = [
     { label: "Home", path: "/", icon: Home },
@@ -68,21 +71,24 @@ export const ForumSidebarNav = () => {
           Browse
         </h3>
         <div className="space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-colors",
-                isActive(item.path)
-                  ? "bg-primary/10 text-primary font-medium"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              <span>{item.label}</span>
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  "flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-colors",
+                  isActive(item.path)
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </div>
       </Card>
 
