@@ -704,6 +704,18 @@ export const TopicView = () => {
       {/* Video Ad - High-value placement for topics with multiple posts */}
       {totalPosts > 10 && <VideoAd id="topic-video-ad" className="my-6" />}
 
+      {/* Pagination Controls */}
+      {totalPosts > 0 && (
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={Math.ceil(totalPosts / postsPerPage)}
+          totalItems={totalPosts}
+          itemsPerPage={postsPerPage}
+          onPageChange={handlePageChange}
+          loading={postsLoading}
+        />
+      )}
+
       {/* Comments */}
       <div className="bg-card">
         <div className="p-3 md:p-6 border-b border-border">
