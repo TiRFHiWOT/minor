@@ -164,7 +164,7 @@ export const Footer = () => {
   return (
     <footer className="bg-card border-t mt-auto">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Minor Hockey Talks</h3>
@@ -224,100 +224,117 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* Social Media */}
-          <div className="space-y-4">
-            <h4 className="font-medium">Follow Us</h4>
-            <div className="flex space-x-3">
-              {(() => {
-                const facebookUrl = getSetting("social_facebook", "");
-                const cleanUrl =
-                  typeof facebookUrl === "string"
-                    ? facebookUrl.replace(/^"(.*)"$/, "$1")
-                    : "";
-                return (
-                  cleanUrl &&
-                  cleanUrl !== "" && (
-                    <a
-                      href={cleanUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      <Facebook className="h-5 w-5" />
-                    </a>
-                  )
-                );
-              })()}
-              {(() => {
-                const twitterUrl = getSetting("social_twitter", "");
-                const cleanUrl =
-                  typeof twitterUrl === "string"
-                    ? twitterUrl.replace(/^"(.*)"$/, "$1")
-                    : "";
-                return (
-                  cleanUrl &&
-                  cleanUrl !== "" && (
-                    <a
-                      href={cleanUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      <Twitter className="h-5 w-5" />
-                    </a>
-                  )
-                );
-              })()}
-              {(() => {
-                const instagramUrl = getSetting("social_instagram", "");
-                const cleanUrl =
-                  typeof instagramUrl === "string"
-                    ? instagramUrl.replace(/^"(.*)"$/, "$1")
-                    : "";
-                return (
-                  cleanUrl &&
-                  cleanUrl !== "" && (
-                    <a
-                      href={cleanUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      <Instagram className="h-5 w-5" />
-                    </a>
-                  )
-                );
-              })()}
-              {(() => {
-                const youtubeUrl = getSetting("social_youtube", "");
-                const cleanUrl =
-                  typeof youtubeUrl === "string"
-                    ? youtubeUrl.replace(/^"(.*)"$/, "$1")
-                    : "";
-                return (
-                  cleanUrl &&
-                  cleanUrl !== "" && (
-                    <a
-                      href={cleanUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      <Youtube className="h-5 w-5" />
-                    </a>
-                  )
-                );
-              })()}
-              {isRssEnabled && (
+          <div className="col-span-1 lg:col-span-2 grid grid-cols-1 h-fit lg:grid-cols-2 gap-8 md:gap-4">
+            {/* Partner Sites */}
+            <div className="space-y-4">
+              <h4 className="font-medium">Partner Sites</h4>
+              <div className="space-y-2 text-sm">
                 <a
-                  href="/rss"
+                  href="https://minorbaseballtalks.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
-                  <Rss className="h-5 w-5" />
+                  minorbaseballtalks.com
                 </a>
-              )}
+              </div>
+            </div>
+
+            {/* Social Media */}
+            <div className="space-y-4">
+              <h4 className="font-medium">Follow Us</h4>
+              <div className="flex space-x-3">
+                {(() => {
+                  const facebookUrl = getSetting("social_facebook", "");
+                  const cleanUrl =
+                    typeof facebookUrl === "string"
+                      ? facebookUrl.replace(/^"(.*)"$/, "$1")
+                      : "";
+                  return (
+                    cleanUrl &&
+                    cleanUrl !== "" && (
+                      <a
+                        href={cleanUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <Facebook className="h-5 w-5" />
+                      </a>
+                    )
+                  );
+                })()}
+                {(() => {
+                  const twitterUrl = getSetting("social_twitter", "");
+                  const cleanUrl =
+                    typeof twitterUrl === "string"
+                      ? twitterUrl.replace(/^"(.*)"$/, "$1")
+                      : "";
+                  return (
+                    cleanUrl &&
+                    cleanUrl !== "" && (
+                      <a
+                        href={cleanUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <Twitter className="h-5 w-5" />
+                      </a>
+                    )
+                  );
+                })()}
+                {(() => {
+                  const instagramUrl = getSetting("social_instagram", "");
+                  const cleanUrl =
+                    typeof instagramUrl === "string"
+                      ? instagramUrl.replace(/^"(.*)"$/, "$1")
+                      : "";
+                  return (
+                    cleanUrl &&
+                    cleanUrl !== "" && (
+                      <a
+                        href={cleanUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <Instagram className="h-5 w-5" />
+                      </a>
+                    )
+                  );
+                })()}
+                {(() => {
+                  const youtubeUrl = getSetting("social_youtube", "");
+                  const cleanUrl =
+                    typeof youtubeUrl === "string"
+                      ? youtubeUrl.replace(/^"(.*)"$/, "$1")
+                      : "";
+                  return (
+                    cleanUrl &&
+                    cleanUrl !== "" && (
+                      <a
+                        href={cleanUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <Youtube className="h-5 w-5" />
+                      </a>
+                    )
+                  );
+                })()}
+                {isRssEnabled && (
+                  <a
+                    href="/rss"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Rss className="h-5 w-5" />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
 
